@@ -1,8 +1,42 @@
-# React + Vite
+## Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#### 기술 스택 
 
-Currently, two official plugins are available:
+- react 18.3.1
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- react-router-dom 6.28.2
+
+- node.js 22.12.0
+
+#### 컴포넌트 규칙
+
+- 컴포넌트명은 PascalCase로 작성
+
+- api명세에 기반하여 컴포넌트 작성
+
+- router 사용법
+
+    main.jsx
+
+- index.js 사용법
+
+    각 컴포넌트 상위 폴더에 index.js를 두면 유지보수하기에 편해진다.
+
+    예를 들어, User 폴더에 Login, Signup 폴더가 있다고 하자.
+    
+     └─ User               
+     ├─ FindId.jsx    
+     ├─ FindPw.jsx      
+     ├─ Login.jsx     
+     └─ Signup.jsx 
+
+    ```jsx
+    
+    ```
+
+    
+- 참고
+
+    [리액트 폴더 구조 설계 참고](https://aierse.tistory.com/4)
+
+#### 리액트  
