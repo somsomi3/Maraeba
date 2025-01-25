@@ -40,16 +40,16 @@
   
   /* 카드 색상 구분 */
   .card:nth-child(1) {
-    background-color: #f4aaab; /* 첫 번째 카드 색상 */
+    background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 첫 번째 카드 그라데이션 */
     color: #fff;
   }
   .card:nth-child(2) {
-    background-color: #9bd6fe; /* 두 번째 카드 색상 */
-    color: #fff;
+      background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 두 번째 카드 그라데이션 */
+      color: #fff;
   }
   .card:nth-child(3) {
-    background-color: #ffca88; /* 세 번째 카드 색상 */
-    color: #fff;
+      background: linear-gradient(135deg, #ffb88c, #ffd7a5); /* 세 번째 카드 그라데이션 */
+      color: #fff;
   }
   
   .card-title {

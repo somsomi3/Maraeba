@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import './index.css';
+import './PronsMain.css';
 
-const StageOne = () => {
+const PronsMain = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 React Router 훅
 
   return (
@@ -37,4 +37,4 @@ const StageOne = () => {
   );
 };
 
-export default StageOne;
+export default PronsMain;
