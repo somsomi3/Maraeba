@@ -3,9 +3,6 @@ import os
 from gtts import gTTS
 from io import BytesIO
 
-OUTPUT_FOLDER = "outputs"
-os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-
 def text_to_speech(text):
     # 메모리 버퍼에 음성 저장
     audio_buffer = BytesIO()

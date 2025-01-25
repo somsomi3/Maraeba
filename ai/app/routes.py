@@ -2,11 +2,51 @@ import os
 from flask import Blueprint, request, jsonify, send_file
 from stt import recognize_speech_from_file
 from tts import text_to_speech
+from ipa import word_to_ipa
 
 api_bp = Blueprint('api', __name__)
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# 음성 유사도 비교
+@api_bp.route('/compare', methods=['POST'])
+def compare_endpoint():
+
+    # request 누락시
+    if 'file' not in request.files or 'text' not in request.form:
+        return jsonify({"error": "File or text missing from request"}), 400
+
+    file = request.files['file']
+    correct_text = request.form['text'].strip()
+
+    if file.filename == '' or not correct_text:
+        return jsonify({"error": "Empty file or text provided"}), 400
+
+    try:
+        # 음성파일 임시 저장
+        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+        file.save(file_path)
+
+        # 함수 호출
+        recognized_text = recognize_speech_from_file(file_path)
+
+        # 임시 음성파일 삭제
+        os.remove(file_path)
+
+        # 변환된 텍스트와 정답 텍스트를 IPA 기호로 각각 변환하기
+        recognized_ipa = word_to_ipa(recognized_text)
+        correct_ipa = word_to_ipa(correct_text)
+
+        # 변환한 IPA 기호의 유사도를 계산하고 반환하기
+        # 일단 IPA 기호 변환까지 했음
+        
+        return jsonify({
+            "recognized_ipa": recognized_ipa,
+            "correct_ipa": correct_ipa
+        })
+    except Exception as e:
+        return jsonify({"error": f"Error during comparison: {str(e)}"}), 500
 
 # 텍스트 -> 음성 변환 요청
 @api_bp.route('/tts', methods=['POST'])
