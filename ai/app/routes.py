@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, request, jsonify, after_this_request, send_file
+from flask import Blueprint, request, jsonify, send_file
 from stt import recognize_speech_from_file
 from tts import text_to_speech
 
@@ -17,21 +17,20 @@ def tts_endpoint():
     if not data or 'text' not in data:
         return jsonify({"error": "No text provided"}), 400
 
-    text = data['text']
+    text = data['text'].strip()
+    if not text:
+        return jsonify({"error": "Text is empty"}), 400
+    
     try:
-        # TTS 함수 호출
-        audio_file_path = text_to_speech(text)
-        
+        # TTS 함수 호출 (메모리 버퍼 반환)
+        audio_buffer = text_to_speech(text)
 
-        # 파일을 바로 응답으로 반환
-        @after_this_request
-        def remove_file(response):
-            if os.path.exists(audio_file_path):
-                os.remove(audio_file_path)
-                print(f"Deleted file: {audio_file_path}")
-            return response
-
-        return send_file(audio_file_path, mimetype="audio/mp3", as_attachment=True, download_name="output.mp3")
+        # 메모리 버퍼를 바로 응답으로 반환
+        return send_file(
+            audio_buffer,
+            mimetype="audio/mp3",
+            as_attachment=False,
+        )
     except Exception as e:
         return jsonify({"error": f"TTS conversion failed: {str(e)}"}), 500
 
