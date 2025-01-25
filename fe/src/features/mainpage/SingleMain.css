@@ -63,3 +63,31 @@
     line-height: 1.6;
   }
   
+  .home-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* 버튼 크기 */
+    height: 60px;
+    border-radius: 50%; /* 둥근 버튼 */
+    background-color: #ffeb3b; /* 버튼 배경색 */
+    color: #424242; /* 아이콘 색상 */
+    font-size: 1.5rem; /* 아이콘 크기 */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* 버튼 그림자 */
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  
+  /* 호버 효과 */
+  .home-button:hover {
+    background-color: #ffc107; /* 호버 시 배경색 변경 */
+    transform: scale(1.1); /* 살짝 커지는 효과 */
+  }
+  
+  /* 활성화 상태(클릭 시) */
+  .home-button:active {
+    transform: scale(0.95); /* 클릭 시 살짝 줄어드는 효과 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 클릭 시 그림자 감소 */
+  }
+  

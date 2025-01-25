@@ -17,7 +17,7 @@
 
 - api 명세에 기반하여 컴포넌트 구조 설정
 
-- router 사용법
+- **router** 사용법
 
     [react router 6.28.2ver 공식문서](https://reactrouter.com/en/6.28.2/start/tutorial)
 
@@ -49,9 +49,9 @@
     ```
 
 
-- index.js 사용법
+- **index.js** 사용법
 
-    각 컴포넌트 상위 폴더에 index.js를 두면 유지보수하기에 편해진다.
+    각 기능별 폴더에 index.js를 두면 유지보수하기 편해진다.
 
     예를 들어, User 폴더가 다음과 같이 구성되어 있다고 하자.
     
@@ -100,8 +100,57 @@
 
     [리액트 폴더 구조 설계 참고](https://aierse.tistory.com/4)
 
+    [리액트 폴더 구조 설계 참고 2](https://dev.to/fpaghar/folder-structuring-techniques-for-beginner-to-advanced-react-projects-30d7)
+    
 
-#### 디렉토리 설명
+#### 폴더 구조 및 설명명
+
+```
+src                        
+├─ assets                  
+│  ├─ logo.png             
+│  └─ react.svg            
+├─ components              
+│  └─ button               
+│     ├─ CustomButton.css  
+│     └─ CustomButton.jsx  
+├─ features                
+│  ├─ auth                 
+│  │  ├─ FindId.jsx        
+│  │  ├─ FindPw.jsx        
+│  │  ├─ index.css         
+│  │  ├─ index.js          
+│  │  ├─ Login.jsx         
+│  │  └─ Register.jsx      
+│  ├─ conversation         
+│  │  ├─ Conversation.css  
+│  │  ├─ Conversation.jsx  
+│  │  └─ index.js          
+│  ├─ mainpage             
+│  │  ├─ index.js          
+│  │  ├─ Main.css          
+│  │  ├─ Main.jsx          
+│  │  ├─ MultiMain.css     
+│  │  ├─ MultiMain.jsx     
+│  │  ├─ SingleMain.css    
+│  │  └─ SingleMain.jsx    
+│  ├─ pronunciation        
+│  │  ├─ index.js          
+│  │  ├─ PronsMain.css     
+│  │  └─ PronsMain.jsx     
+│  ├─ session              
+│  └─ wordgame             
+│     ├─ index.js          
+│     ├─ WordMain.css      
+│     └─ WordMain.jsx      
+├─ utils                   
+│  └─ api.js               
+├─ App.css                 
+├─ App.jsx                 
+├─ index.css               
+└─ main.jsx                
+```
+
 
 - main.jsx
 
@@ -125,7 +174,7 @@
 
 - features
 
-    기능별 컴포넌트(MainPage, SingleMode ...)
+    기능별 컴포넌트(auth, mainpage ...)
 
 - utils 
 

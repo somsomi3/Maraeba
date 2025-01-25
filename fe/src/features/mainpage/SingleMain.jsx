@@ -11,7 +11,7 @@ const SingleMain = () => {
         className="home-button" 
         onClick={() => navigate('/main')}
       >
-        홈으로
+        🏠
       </button>
 
       <h1 className="main-title"></h1>

@@ -10,7 +10,7 @@ import './index.css';
 import App from './App.jsx';
 import { Login, Register, FindId, FindPw } from './features/auth' 
 import { Main, MultiMain, SingleMain } from './features/mainpage';
-import { PronsMain } from './features/pronunciation';
+import { PronsMain, PronsFirst, PronsSecond, PronsThird } from './features/pronunciation';
 import { WordMain } from './features/wordgame';
 import { Conversation } from './features/conversation';
 
@@ -26,6 +26,9 @@ const router = createBrowserRouter(
       <Route path="/main" element={<Main />} />
       <Route path="/single" element={<SingleMain />} />
       <Route path="/prons" element={<PronsMain />} />
+      <Route path="/prons-first" element={<PronsFirst />} />
+      <Route path="/prons-second" element={<PronsSecond />} />
+      <Route path="/prons-third" element={<PronsThird />} />
       <Route path="/wgame" element={<WordMain />} />
       <Route path="/conversation" element={<Conversation />} />
       <Route path="/multi" element={<MultiMain />} />

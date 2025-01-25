@@ -6,12 +6,11 @@ const Conversation = () => {
 
   return (
     <div className="conversation-container">
-      <button className="home-button" onClick={() => navigate('/single')}>
-      ↩
+      <button className="back-button" onClick={() => navigate('/single')}>
+        이전으로
       </button>
       <h1>이야기 나누기</h1>
       <p>상황 고르기, 상황 만들기, 대화화면 구성</p>
-
     </div>
   );
 };
