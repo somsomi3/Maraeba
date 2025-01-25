@@ -21,6 +21,7 @@ def tts_endpoint():
     try:
         # TTS 함수 호출
         audio_file_path = text_to_speech(text)
+        
 
         # 파일을 바로 응답으로 반환
         @after_this_request
