@@ -103,7 +103,7 @@
     [리액트 폴더 구조 설계 참고 2](https://dev.to/fpaghar/folder-structuring-techniques-for-beginner-to-advanced-react-projects-30d7)
     
 
-#### 폴더 구조 및 설명명
+#### 폴더 구조 및 설명
 
 ```
 src                        
