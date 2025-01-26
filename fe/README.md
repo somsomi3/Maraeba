@@ -179,3 +179,31 @@ src
 - utils 
 
     유틸리티 함수(api.js ...)
+
+
+#### font 사용법
+
+    1. src/fonts 폴더에 font.ttf 파일 업로드
+
+    2. css 파일에 
+    
+        ```css
+        @font-face {
+        font-family: 'Dovemayo_gothic';
+        src: url('./assets/fonts/Dovemayo_wild.ttf') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+        }
+        ```
+        와 같이 url에 폰트 파일 경로를 넣는다. 
+
+    3. 각 css 파일에서 불러와서 사용한다. 
+
+        ```
+        .card{
+        font-family: Dovemayo_gothic;
+        font-size: 1.5rem;
+        }
+        ```
+        기본이 되는 폰트는 가장 바깥에 있는 index.css 에 정의하면, 모든 컴포넌트에서 사용가능하다 😇
+        

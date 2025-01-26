@@ -19,7 +19,7 @@ const PronsFirst = () => {
           입술을 둥그렇게 오므려 소리를 내어요. 만약 입술을 오므리기 어렵다면 입술 양 옆의 볼을 손으로 살짝 눌러 앞으로 내밀어보도록 해요!
         </p>
       </div>
-      <button className="next-button">다음으로</button>
+      <button className="next-button" onClick={() => navigate('/first-prac')}>다음으로</button>
     </div>
   );
 };

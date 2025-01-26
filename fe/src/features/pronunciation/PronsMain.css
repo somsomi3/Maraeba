@@ -1,8 +1,13 @@
 .prons-container {
-    padding: 20px;
+    padding: 10px;
     text-align: center;
   }
   
+  .card{
+    font-family: Dovemayo_gothic;
+    font-size: 1.5rem;
+  }
+
   .home-button {
     position: fixed; /* 화면의 오른쪽 위로 고정 */
     top: 20px; /* 화면의 위쪽에서 20px 떨어짐 */

@@ -6,12 +6,11 @@ const SingleMain = () => {
 
   return (
     <div className="main-container">
-      {/* 홈 버튼 */}
       <button 
         className="home-button" 
         onClick={() => navigate('/main')}
       >
-        🏠
+        ↩
       </button>
 
       <h1 className="main-title"></h1>
