@@ -3,7 +3,7 @@ import requests
 # Flask 서버의 URL
 url = "http://localhost:5000/compare"
 file_path = "./test/audio.wav"
-correct_text = "오늘 날씨가 좋아요"
+correct_text = "오늘 날씨가 좋아"
 
 # 요청 데이터 준비
 with open(file_path, "rb") as audio_file:

@@ -3,6 +3,7 @@ from flask import Blueprint, request, jsonify, send_file
 from stt import recognize_speech_from_file
 from tts import text_to_speech
 from ipa import word_to_ipa
+from similarity import calculate_similarities
 
 api_bp = Blueprint('api', __name__)
 
@@ -39,11 +40,11 @@ def compare_endpoint():
         correct_ipa = word_to_ipa(correct_text)
 
         # 변환한 IPA 기호의 유사도를 계산하고 반환하기
-        # 일단 IPA 기호 변환까지 했음
+        similarities = calculate_similarities(recognized_ipa, correct_ipa)
         
         return jsonify({
-            "recognized_ipa": recognized_ipa,
-            "correct_ipa": correct_ipa
+            "recognized_text": recognized_ipa,
+            "similarities": similarities 
         })
     except Exception as e:
         return jsonify({"error": f"Error during comparison: {str(e)}"}), 500
