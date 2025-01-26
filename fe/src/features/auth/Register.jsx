@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from './api'; // Axios 인스턴스 가져오기
+import api from '../../utils/api';
 import './index.css'; // 기존 CSS 유지
 
-const Signup = () => {
+const Register = () => {
   const [formData, setFormData] = useState({
     user_id: '', // 로그인 ID
     password: '', // 비밀번호
@@ -112,4 +112,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Register;

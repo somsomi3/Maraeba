@@ -1,9 +1,9 @@
-const MultiMode = () => {
+const MultiMain = () => {
     return (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#eaf7fc" }}>
-            <h1>멀티모드 페이지</h1>
+            <h1>멀티모드 메인(선생님과 단어 놀이)</h1>
         </div>
     );
 };
 
-export default MultiMode;
+export default MultiMain;

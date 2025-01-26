@@ -1,0 +1,93 @@
+/* MainPage 스타일 */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffe0b1;
+    height: 100vh;
+  }
+  
+  .main-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  .cards-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    width: 320px; /* 카드 너비 키움 */
+    height: 500px; /* 카드 높이 키움 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* 카드 색상 구분 */
+  .card:nth-child(1) {
+    background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 첫 번째 카드 그라데이션 */
+    color: #fff;
+  }
+  .card:nth-child(2) {
+      background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 두 번째 카드 그라데이션 */
+      color: #fff;
+  }
+  .card:nth-child(3) {
+      background: linear-gradient(135deg, #ffb88c, #ffd7a5); /* 세 번째 카드 그라데이션 */
+      color: #fff;
+  }
+  
+  .card-title {
+    font-size: 1.8rem; /* 제목 크기 키움 */
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .card-description {
+    font-size: 1.2rem; /* 설명 크기 키움 */
+    line-height: 1.6;
+  }
+  
+  .home-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* 버튼 크기 */
+    height: 60px;
+    border-radius: 50%; /* 둥근 버튼 */
+    background-color: #ffeb3b; /* 버튼 배경색 */
+    color: #424242; /* 아이콘 색상 */
+    font-size: 1.5rem; /* 아이콘 크기 */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* 버튼 그림자 */
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  
+  /* 호버 효과 */
+  .home-button:hover {
+    background-color: #ffc107; /* 호버 시 배경색 변경 */
+    transform: scale(1.1); /* 살짝 커지는 효과 */
+  }
+  
+  /* 활성화 상태(클릭 시) */
+  .home-button:active {
+    transform: scale(0.95); /* 클릭 시 살짝 줄어드는 효과 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 클릭 시 그림자 감소 */
+  }
+  

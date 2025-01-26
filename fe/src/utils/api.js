@@ -44,7 +44,7 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken'); // Refresh 토큰 가져오기
       if (refreshToken) {
         return axios
-          .post('http://localhost:8080/auth/token', { refreshToken })
+          .post('http://localhost:8081/auth/token', { refreshToken })
           .then((res) => {
             const newAccessToken = res.data.token; // 새 Access 토큰
             localStorage.setItem('token', newAccessToken); // 로컬 스토리지에 저장

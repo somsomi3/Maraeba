@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import "./index.css";
+import "./Main.css";
 
-const MainPage = () => {
+const Main = () => {
     const navigate = useNavigate();
 
     return (
@@ -35,4 +35,4 @@ const MainPage = () => {
     );
 };
 
-export default MainPage;
+export default Main;
