@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import './PronsMain.css';
+import pronstitle from '../../assets/images/pronstitle.png'
 
 const PronsMain = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 React Router 훅
@@ -10,6 +11,8 @@ const PronsMain = () => {
         ↩
       </button>
       <h1 className="stage-one-title">발음 익히기</h1>
+
+      <img src={pronstitle} alt="Pronunciation Title" className="pronstitle-image" />
 
       <div className="card-slider">
         <div className="card">

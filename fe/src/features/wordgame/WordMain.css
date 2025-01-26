@@ -23,3 +23,10 @@
 .home-button:hover {
   background-color: #c06c84; /* 버튼 호버 색상 */
 }
+
+.wordtitle-image {
+  width: 100%;
+  max-width: 600px;
+  margin: 2.5rem auto;
+  display: block;
+}
