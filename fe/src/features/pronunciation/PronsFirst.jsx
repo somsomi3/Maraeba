@@ -1,14 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import './PronsFirst.css';
+import GoBackButton from '../../components/button/GoBackButton';
 
 const PronsFirst = () => {
     const navigate = useNavigate();
 
   return (
     <div className="prons-first-container">
-     <button className="home-button" onClick={() => navigate('/prons')}>
-        ↩
-      </button>
+        <GoBackButton />
       <div className="image-container">
         <img src="/path/to/lip-shape-image.jpg" alt="입모양" className="lip-image" />
         <img src="/path/to/mouth-shape-image.jpg" alt="구강 내부" className="mouth-image" />

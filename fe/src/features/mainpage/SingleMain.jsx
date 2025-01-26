@@ -1,17 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import './SingleMain.css';
+import HomeButton from '../../components/button/HomeButton';
+import singlePageImage from '../../assets/images/singlepage.png';
 
 const SingleMain = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 React Router 훅
 
   return (
     <div className="main-container">
-      <button 
-        className="home-button" 
-        onClick={() => navigate('/main')}
-      >
-        ↩
-      </button>
+     <HomeButton />
+
+     <div className="background-image-container">
+        <img src={singlePageImage} alt="Background" className="background-image" />
+      </div>
 
       <h1 className="main-title"></h1>
       <div className="cards-container">
