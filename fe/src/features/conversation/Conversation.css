@@ -34,3 +34,10 @@
   transform: translateY(2px); /* 클릭 시 아래로 눌리는 효과 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 줄임 */
 }
+
+.conversation-image {
+  width: 100%;
+  max-width: 600px;
+  margin: 2.5rem auto;
+  display: block;
+}

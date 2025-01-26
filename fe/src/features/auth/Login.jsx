@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // React Router의 useNavigate 훅
 import api from '../../utils/api'; // Axios 인스턴스 불러오기
 import './index.css';
-import logo from '../../assets/logo.png'; // 로고 이미지 경로 확인 필요
+import logo from '../../assets/logo.png'; // 로고 이미지 경로
 
 const Login = () => {
   const [formData, setFormData] = useState({

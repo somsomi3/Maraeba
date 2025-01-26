@@ -1,31 +1,41 @@
-/* 전체 레이아웃 */
-.main-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #ffe0b1; /* 배경 색상 */
-}
-
 /* 카드 컨테이너 */
 .card-container {
     display: flex;
-    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    flex-wrap: nowrap; /* 줄바꿈 없이 한 줄로 배치 */
+    overflow-x: auto; /* 화면이 작아질 때 가로 스크롤 생성 */
 }
 
+/* 스크롤바 스타일 (선택 사항) */
+.card-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.card-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.card-container::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);
+}
 /* 카드 스타일 */
 .card {
-    width: 300px;
+    position: relative; /* 이미지를 아래로 배치하기 위해 사용 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 텍스트를 카드 상단에 배치 */
+    align-items: center;
+    text-align: center;
+    width: 1.5rem;
     height: 450px;
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
     cursor: pointer;
-    padding: 20px;
+    padding: 2rem;
+    overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -37,22 +47,72 @@
 
 /* 카드 개별 색상 */
 .single-mode {
-    background: linear-gradient(135deg, #f28d8d, #f5b2b2);
+    background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 그라데이션 */
     color: white;
 }
 
 .multi-mode {
-    background: linear-gradient(135deg, #88c2d8, #b3e4f2);
+    background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 그라데이션 */
     color: white;
 }
 
 /* 카드 내부 텍스트 */
-.card h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+.card-content {
+    z-index: 1; /* 이미지를 텍스트 뒤로 보내기 위해 설정 */
+    margin-bottom: auto; /* 텍스트를 카드 상단에 고정 */
 }
 
-.card p {
+.card-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-family: "Roboto", sans-serif; /* 폰트 변경 */
+}
+
+.card-content p {
     font-size: 1rem;
     line-height: 1.5;
+    font-family: "Roboto", sans-serif; /* 폰트 변경 */
 }
+
+/* 카드 이미지 스타일 */
+.card-image {
+    position: absolute;
+    bottom: -10px;
+    width: 180px;
+    height: auto;
+    object-fit: contain;
+    z-index: 0; /* 텍스트 위로 겹치지 않도록 설정 */
+    opacity: 1; /* 항상 보이도록 */
+    transition: transform 0.2s, opacity 0.2s; /* 부드러운 애니메이션 효과 */
+}
+
+/* 개별 이미지 조정 */
+.single-image {
+    width: 36rem;
+    bottom: 0px;
+}
+
+.multi-image {
+    margin-right: 10%;
+    width: 38rem;
+    bottom: -2px;
+}
+
+/* 반응형 디자인 */
+/* @media (max-width: 768px) {
+    .card {
+        height: 400px;
+    }
+
+    .card-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .card-content p {
+        font-size: 0.9rem;
+    }
+
+    .card-image {
+        width: 150px;
+    }
+} */

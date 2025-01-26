@@ -61,4 +61,20 @@
     text-decoration: none; /* 밑줄 제거 */
     outline: none; /* 클릭 시 외곽선 제거 */
   }
+
+  .small-button {
+    font-size: 0.8rem; /* 작아진 폰트 크기 */
+    padding: 5px 10px; /* 작은 크기의 버튼 패딩 */
+    margin-top: 10px;
+    background-color: #4CAF50; /* 원하는 색상으로 변경 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .small-button:hover {
+    background-color: #45a049; /* 호버 시 색상 변경 */
+  }
+  
   

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import './WordMain.css';
+import wordtitle from '../../assets/images/wordtitle.png'
 
 const WordMain = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 React Router 훅
@@ -9,7 +10,8 @@ const WordMain = () => {
       <button className="home-button" onClick={() => navigate('/single')}>
       ↩
       </button>
-      <h1>단어와 친해지기</h1>
+
+      <img src={wordtitle} alt="Wordgame Title" className="wordtitle-image" />
       <p>요리, 동물 게임 고르는 페이지</p>
     </div>
   );
