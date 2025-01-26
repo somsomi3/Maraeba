@@ -9,15 +9,13 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-
 public class User extends BaseEntity {
 	String userId;
 	String password;
 	String email;
 	String username;
+	String provider;
+	String providerId;
 	LocalDateTime createDate;
 	LocalDateTime modifyDate;
-	String snsType;
-	String snsId;
-	String snsConnectDate;
 }

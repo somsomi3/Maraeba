@@ -7,7 +7,7 @@ import com.be.domain.users.request.UserUpdateRequest;
 
 public interface UserService {
 	//사용자 정보 조회
-	User getCurrent(Long id);
+	User getCurrentUser(Long id);
 
 	//사용자 정보 수정
 	void updateUser(Long id, UserUpdateRequest request);
