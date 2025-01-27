@@ -34,7 +34,8 @@
     cursor: pointer;
     z-index: 0.5;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  }
+    position: relative;
+}
   
   .card:hover {
     transform: translateY(-10px);
@@ -69,15 +70,12 @@
     line-height: 1.6;
   }
   
-  .background-image {
-    position: fixed; /* 카드 아래에 위치 */
-    bottom: 10%; /* 페이지 하단에 맞춤 */
-    left: 50%; /* 가로 중앙 정렬 */
-    transform: translateX(-50%); /* 가운데 정렬 */
-    width: 95%; /* 페이지 폭에 맞춤 */
-    max-width: 1200px; /* 최대 너비 제한 */
-    height: 60%;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.8; /* 약간 투명하게 설정 (필요 시) */
-  }
+/* 카드 이미지 스타일 */
+ .fox-image{
+    width: 50%; /* 이미지 너비를 카드 너비의 150%로 설정 */
+    height: auto; /* 비율 유지 */
+    
+    z-index: 30;
+    left: 3%;
+    
+ }
