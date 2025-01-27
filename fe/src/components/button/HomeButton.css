@@ -10,7 +10,7 @@
   }
   
   .home-button img {
-    width: 50px; /* 이미지 너비 */
-    height: 50px; /* 이미지 높이 */
+    width: 75px; /* 이미지 너비 */
+    height: 75px; /* 이미지 높이 */
     object-fit: cover; /* 이미지 비율 유지 */
   }
