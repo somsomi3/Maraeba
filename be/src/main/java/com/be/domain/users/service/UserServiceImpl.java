@@ -22,17 +22,18 @@ public class UserServiceImpl implements UserService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
+	private User findUserById(long id) {
+		return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+	}
+
 	@Override
 	public User getCurrentUser(Long id) {
-		return userRepository.findById(id)
-			.orElseThrow(UserNotFoundException::new);
+		return findUserById(id);
 	}
 
 	@Override
 	public void updateUser(Long id, UserUpdateRequest request) {
-		User user = userRepository.findById(id)
-			.orElseThrow(UserNotFoundException::new);
-
+		User user = findUserById(id);
 		user.setEmail(request.getEmail());
 		user.setUsername(request.getUsername());
 		userRepository.save(user);
@@ -40,22 +41,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void updatePassword(Long id, PasswordUpdateRequest request) {
-		User user = userRepository.findById(id)
-			.orElseThrow(UserNotFoundException::new);
-
+		User user = findUserById(id);
 		if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
 			throw new PasswordMismatchException();
 		}
-
 		user.setPassword(passwordEncoder.encode(request.getNewPassword()));
 		userRepository.save(user);
 	}
 
 	@Override
 	public void deleteUser(Long id, PasswordRequest request) {
-		User user = userRepository.findById(id)
-			.orElseThrow(UserNotFoundException::new);
-
+		User user = findUserById(id);
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException();
 		}

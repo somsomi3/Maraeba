@@ -19,15 +19,17 @@ public class GetCurrentUserResponse extends BaseResponseBody {
 	LocalDateTime createDate;
 	LocalDateTime modifyDate;
 
-	public static GetCurrentUserResponse from(User user) {
+	public static GetCurrentUserResponse from(User user, String message, Integer status) {
 		GetCurrentUserResponse response = new GetCurrentUserResponse();
+		response.setMessage(message);
+		response.setStatusCode(status);
 		response.id = user.getId();
 		response.userId = user.getUserId();
 		response.email = user.getEmail();
 		response.username = user.getUsername();
 		response.provider = user.getProvider();
-		response.createDate = user.getCreateDate();
-		response.modifyDate = user.getModifyDate();
+		response.createDate = user.getCreatedAt();
+		response.modifyDate = user.getUpdatedAt();
 		return response;
 	}
 }

@@ -1,7 +1,6 @@
 package com.be.db.entity;
 
-import java.time.LocalDateTime;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,12 +9,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class User extends BaseEntity {
-	String userId;
-	String password;
-	String email;
-	String username;
-	String provider;
-	String providerId;
-	LocalDateTime createDate;
-	LocalDateTime modifyDate;
+
+	@Column(nullable = false, unique = true)
+	private String userId;
+
+	private String password;
+
+	@Column(nullable = false, unique = true)
+	private String email;
+
+	@Column(nullable = false, length = 100)
+	private String username;
+
+	@Column(nullable = false, length = 50)
+	private String provider;
+
+	private String providerId;
 }

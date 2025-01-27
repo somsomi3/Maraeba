@@ -8,7 +8,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-
 public class BaseResponseBody {
 	private String message = null;
 	private Integer statusCode = null;
