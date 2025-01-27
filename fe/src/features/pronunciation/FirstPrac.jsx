@@ -1,18 +1,15 @@
-import { useNavigate } from 'react-router-dom';
 import './FirstPrac.css';
-
+import tongue from "../../assets/images/tongue.png"
+import lipshape from "../../assets/images/lipshape.png"
+import GoBackButton from '../../components/button/GoBackButton';
 const FirstPrac = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="first-prac-container">
-      <button className="back-button" onClick={() => navigate('/prons-first')}>
-        ↩
-      </button>
+      <GoBackButton />
       <div className="content-container">
         <div className="image-section">
-          <img src="/path/to/lip-shape-image.jpg" alt="발음 입모양" className="image-top" />
-          <img src="/path/to/tongue-position-image.jpg" alt="혀 위치" className="image-bottom" />
+          <img src={lipshape} alt="발음 입모양" className="image-top" />
+          <img src={tongue} alt="혀 위치" className="image-bottom" />
         </div>
         <div className="camera-section">
           <div className="camera-frame">

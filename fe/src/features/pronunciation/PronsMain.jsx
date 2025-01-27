@@ -1,15 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import './PronsMain.css';
 import pronstitle from '../../assets/images/pronstitle.png'
+import GoBackButton from '../../components/button/GoBackButton';
 
 const PronsMain = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 React Router 훅
 
   return (
     <div className="prons-container">
-      <button className="home-button" onClick={() => navigate('/single')}>
-        ↩
-      </button>
+      <GoBackButton />
 
       <img src={pronstitle} alt="Pronunciation Title" className="pronstitle-image" />
 
