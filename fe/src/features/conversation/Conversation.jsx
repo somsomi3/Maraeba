@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream
-import './Conversation.css';
-import conversation from '../../assets/images/conversation.png'
-import GoBackButton from '../../components/button/GoBackButton';
-
-const Conversation = () => {
-
-  return (
-    <div className="conversation-container">
-    <GoBackButton />
-      <img src={conversation} alt="Conversation Title" className="conversation-image" />
-=======
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Conversation.css';
@@ -67,7 +55,6 @@ const Conversation = () => {
             className="conversation-title-image"
           />
         </div>
->>>>>>> Stashed changes
 
         {/* 메인 컨텐츠 */}
         <div className="conversation-content">
