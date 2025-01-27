@@ -62,7 +62,7 @@
   background-image: url('../../assets/images/animal_bg.png');
 }
 
-/* 카드 호버 효과 */
+/* 카드 호버 효과  */
 .game-card:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
