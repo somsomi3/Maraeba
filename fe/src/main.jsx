@@ -12,7 +12,9 @@ import { Login, Register, FindId, FindPw } from './features/auth'
 import { Main, MultiMain, SingleMain } from './features/mainpage';
 import { PronsMain, PronsFirst, PronsSecond, PronsThird, FirstPrac } from './features/pronunciation';
 import { WordMain } from './features/wordgame';
-import { Conversation } from './features/conversation';
+import Conversation from "./features/conversation/Conversation";
+import ConversationStart from "./features/conversation/ConversationStart";
+
 
 // 라우트 정의
 const router = createBrowserRouter(
@@ -32,6 +34,7 @@ const router = createBrowserRouter(
       <Route path="/prons-third" element={<PronsThird />} />
       <Route path="/wgame" element={<WordMain />} />
       <Route path="/conversation" element={<Conversation />} />
+      <Route path="/conversation/start" element={<ConversationStart />} />
       <Route path="/multi" element={<MultiMain />} />
     </>
   )
