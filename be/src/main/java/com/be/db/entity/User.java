@@ -1,7 +1,10 @@
 package com.be.db.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +28,14 @@ public class User extends BaseEntity {
 	private String provider;
 
 	private String providerId;
+
+	// 관계
+	@OneToMany(mappedBy = "user")
+	private List<PronunciationSession> pronunciationSessions;
+
+	@OneToMany(mappedBy = "user")
+	private List<PronunciationRecord> pronunciationRecords;
+
+	@OneToMany(mappedBy = "user")
+	private List<PronunciationCompletedClass> pronunciationCompletedClasses;
 }
