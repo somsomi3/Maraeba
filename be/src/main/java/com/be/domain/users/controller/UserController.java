@@ -1,36 +1,64 @@
 package com.be.domain.users.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.be.common.model.response.BaseResponseBody;
+import com.be.db.entity.User;
 import com.be.domain.users.request.PasswordRequest;
 import com.be.domain.users.request.PasswordUpdateRequest;
 import com.be.domain.users.request.UserUpdateRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.be.domain.users.response.GetCurrentUserResponse;
+import com.be.domain.users.service.UserService;
 
 @RequestMapping("/users")
+@RestController
 public class UserController {
 
-    @GetMapping("/me")
-    public ResponseEntity<? extends BaseResponseBody> getCurrentUser() {
-        //사용자 정보 조회
-        return null;
-    }
+	private final UserService userService;
 
-    @PatchMapping("/me")
-    public ResponseEntity<? extends BaseResponseBody> updateUser(@RequestBody UserUpdateRequest request) {
-        //사용자 정보 수정
-        return null;
-    }
-    
-    @PatchMapping("/me/password")
-    public ResponseEntity<? extends BaseResponseBody> updatePassword(@RequestBody PasswordUpdateRequest request) {
-        //사용자 비밀번호 변경
-        return null;
-    }
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
 
-    @DeleteMapping("/me")
-    public ResponseEntity<? extends BaseResponseBody> deleteUser(@RequestBody PasswordRequest request) {
-        //회원 탈퇴
-        return null;
-    }
+	//사용자 정보 조회
+	@GetMapping("/me")
+	public ResponseEntity<? extends BaseResponseBody> getCurrentUser(
+		@AuthenticationPrincipal Long id) {
+		User user = userService.getCurrentUser(id);
+		return ResponseEntity.ok(GetCurrentUserResponse.from(user, "Current user data founded successfully", 200));
+	}
+
+	//사용자 정보 수정
+	@PatchMapping("/me")
+	public ResponseEntity<? extends BaseResponseBody> updateUser(
+		@AuthenticationPrincipal Long id,
+		@RequestBody UserUpdateRequest request) {
+		userService.updateUser(id, request);
+		return ResponseEntity.ok(BaseResponseBody.of("User information updated successfully.", 200));
+	}
+
+	//사용자 비밀번호 변경
+	@PatchMapping("/me/password")
+	public ResponseEntity<? extends BaseResponseBody> updatePassword(
+		@AuthenticationPrincipal Long id,
+		@RequestBody PasswordUpdateRequest request) {
+		userService.updatePassword(id, request);
+		return ResponseEntity.ok(BaseResponseBody.of("Password updated successfully.", 200));
+	}
+
+	//회원 탈퇴
+	@DeleteMapping("/me")
+	public ResponseEntity<? extends BaseResponseBody> deleteUser(
+		@AuthenticationPrincipal Long id,
+		@RequestBody PasswordRequest request) {
+		userService.deleteUser(id, request);
+		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", 200));
+	}
 }

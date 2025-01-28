@@ -1,16 +1,12 @@
 import uuid
 import os
 from gtts import gTTS
-
-OUTPUT_FOLDER = "outputs"
-os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+from io import BytesIO
 
 def text_to_speech(text):
-    # 고유 식별자 기반 음성파일 생성성
-    unique_filename = f"{uuid.uuid4()}.mp3"
-    audio_file_path = os.path.join(OUTPUT_FOLDER, unique_filename)
-
-    # mp3 파일로 변환
+    # 메모리 버퍼에 음성 저장
+    audio_buffer = BytesIO()
     tts = gTTS(text=text, lang="ko")
-    tts.save(audio_file_path)
-    return audio_file_path
+    tts.write_to_fp(audio_buffer)  # 메모리 버퍼에 저장
+    audio_buffer.seek(0)  # 버퍼의 시작 위치로 이동
+    return audio_buffer

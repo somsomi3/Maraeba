@@ -1,0 +1,208 @@
+/* fe/src/features/conversation/ConversationStart.css  */
+/* 전체 컨테이너 스타일 */
+.conversation-start-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  padding: 20px;
+  background-color: #FFE0B1; /* 밝은 베이지색 */
+  font-family: Arial, sans-serif;
+  position: relative; /* 정지 버튼 위치를 위한 기준 컨테이너 */
+}
+
+/* 대화 행 */
+.conversation-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.conversation-row.self {
+  justify-content: flex-end;
+}
+
+/* 아바타 컨테이너 */
+.avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid #ffa500;
+}
+
+.role {
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* 말풍선 */
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.self-bubble {
+  background-color: #d1f7c4; /* 연한 녹색 */
+}
+
+/* 하단 버튼 */
+.footer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: auto;
+}
+
+/* 마이크 버튼 (화면 하단 가운데) */
+.mic-button {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background-color: #ffa500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: absolute; /* 위치를 자유롭게 설정 */
+  bottom: 20px; /* 하단에서 20px */
+  left: 50%; /* 화면 가운데로 정렬 */
+  transform: translateX(-50%); /* 정확히 가운데로 맞춤 */
+}
+
+
+
+/* 정지 버튼 (화면 오른쪽 상단) */
+.stop-button {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background-color: #ff4d4d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: fixed; /* 화면 전체 기준으로 위치를 고정 */
+  top: 40px; /* 상단에서 20px */
+  right: 40px; /* 오른쪽에서 20px */
+  z-index: 2000; /* 다른 요소 위에 위치 */
+}
+
+.stop-button img {
+  width: 75px;
+  height: 75px;
+}
+
+/* 녹음중 팝업 */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px 40px;
+  background-color: rgba(0, 0, 0, 0.8); /* 반투명 검정 */
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 팝업 안의 정지 버튼 */
+.popup-stop-button {
+  margin-top: 20px; /* 상단 요소와 간격 */
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background-color: #ff4d4d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.popup-stop-button img {
+  width: 50px;
+  height: 50px;
+}
+
+/* 종료 확인 팝업 */
+.exit-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #FFEEB1; /* 팝업 배경색 */
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  width: 300px;
+}
+
+.exit-popup h2 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.exit-popup-image {
+  width: 100px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.exit-popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.continue-button,
+.exit-button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.continue-button {
+  background-color: #6cc1ff;
+  color: #fff;
+}
+
+.exit-button {
+  background-color: #ff6c6c;
+  color: #fff;
+}
+
+

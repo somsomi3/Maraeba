@@ -1,0 +1,44 @@
+.prons-third-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .info-box {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 70%;
+    margin-bottom: 20px;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #00796b;
+    margin-bottom: 10px;
+  }
+  
+  .text {
+    font-size: 1.2rem;
+    color: #004d40;
+  }
+  
+  .next-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #00897b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .next-button:hover {
+    background-color: #00695c;
+  }
+  

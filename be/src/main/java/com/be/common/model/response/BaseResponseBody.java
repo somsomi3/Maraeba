@@ -9,24 +9,26 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BaseResponseBody {
-    private String message = null;
-    private Integer statusCode = null;
+	private String message = null;
+	private Integer statusCode = null;
 
-    public BaseResponseBody() {}
-    public BaseResponseBody(Integer statusCode) {
-        this.statusCode = statusCode;
-    }
+	public BaseResponseBody() {
+	}
 
-    public BaseResponseBody(String message, Integer statusCode) {
-        this.message = message;
-        this.statusCode = statusCode;
-    }
+	public BaseResponseBody(Integer statusCode) {
+		this.statusCode = statusCode;
+	}
 
-    //정적 팩토리 메서드, 주어진 값으로 객체를 반환
-    public static BaseResponseBody of(String message, Integer statusCode) {
-        BaseResponseBody responseBody = new BaseResponseBody();
-        responseBody.message = message;
-        responseBody.statusCode = statusCode;
-        return responseBody;
-    }
+	public BaseResponseBody(String message, Integer statusCode) {
+		this.message = message;
+		this.statusCode = statusCode;
+	}
+
+	//정적 팩토리 메서드, 주어진 값으로 객체를 반환
+	public static BaseResponseBody of(String message, Integer statusCode) {
+		BaseResponseBody responseBody = new BaseResponseBody();
+		responseBody.message = message;
+		responseBody.statusCode = statusCode;
+		return responseBody;
+	}
 }

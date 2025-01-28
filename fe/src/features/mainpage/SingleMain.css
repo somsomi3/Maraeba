@@ -1,0 +1,81 @@
+/* MainPage 스타일 */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffe0b1;
+    height: 100vh;
+  }
+  
+  .main-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  .cards-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2.5rem;
+    z-index: 0;
+  }
+  
+  .card {
+    width: 320px; /* 카드 너비 키움 */
+    height: 500px; /* 카드 높이 키움 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 0.5;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    position: relative;
+}
+  
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* 카드 색상 구분 */
+  .card:nth-child(1) {
+    background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 첫 번째 카드 그라데이션 */
+    color: #fff;
+    z-index: 10;
+  }
+  .card:nth-child(2) {
+      background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 두 번째 카드 그라데이션 */
+      color: #fff;
+      z-index: 10;
+  }
+  .card:nth-child(3) {
+      background: linear-gradient(135deg, #ffb88c, #ffd7a5); /* 세 번째 카드 그라데이션 */
+      color: #fff;
+      z-index: 10;
+    }
+  
+  .card-title {
+    font-size: 1.8rem; /* 제목 크기 키움 */
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .card-description {
+    font-size: 1.2rem; /* 설명 크기 키움 */
+    line-height: 1.6;
+  }
+  
+/* 카드 이미지 스타일 */
+ .fox-image{
+    width: 50%; /* 이미지 너비를 카드 너비의 150%로 설정 */
+    height: auto; /* 비율 유지 */
+    
+    z-index: 30;
+    left: 3%;
+    
+ }

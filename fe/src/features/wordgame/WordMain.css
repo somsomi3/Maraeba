@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap');
+
+/* 전체 컨테이너 */
+.word-main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #ffe0b1; /* 배경색 */
+  height: 100vh;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+/* 제목 이미지 */
+.wordtitle-image {
+  width: 80%;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+/* 게임 카드 섹션 */
+.game-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+
+/* 게임 카드 공통 스타일 */
+.game-card {
+  position: relative;
+  width: calc(25vw); /* 너비를 30%로 확대 */
+  height: calc(70vh); /* 높이를 40%로 확대 */
+  max-width: 400px; /* 최대 너비를 400px로 증가 */
+  max-height: 500px; /* 최대 높이를 500px로 증가 */
+  border-radius: 20px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  margin: 1rem;
+  text-align: center;
+  color: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 요리를 하자 카드 */
+.game-card.cooking {
+  background-image: url('../../assets/images/cooking_bg.png');
+}
+
+/* 동물을 찾자 카드 */
+.game-card.animal {
+  background-image: url('../../assets/images/animal_bg.png');
+}
+
+/* 카드 호버 효과  */
+.game-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* 카드 제목 */
+.game-card h2 {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: calc(1.5rem + 0.5vw); /* 부모의 너비에 따라 크기 조정 */
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(239, 153, 58); /* 텍스트 그림자 */
+  margin-bottom: 0.5rem;
+  
+}
+
+/* 카드 설명 */
+.game-card p {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: calc(1.3rem + 0.3vw); /* 부모의 너비에 따라 크기 조정 */
+  line-height: 1.6;
+  text-shadow: 2px 2px 4px rgba(239, 153, 58); /* 텍스트 그림자 */
+  margin: 0;
+  
+}
+
+/* 버튼 그룹 */
+.button-group {
+  
+  width: 80%; /* 너비를 80%로 설정 */
+  margin: 30px auto; /* 가운데 정렬 */
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* 버튼 간 간격 */
+}
+
+/* 버튼 공통 스타일 */
+.button-group button {
+  margin-top: 100px; /* 버튼 그룹 위 간격 */
+  flex: 1; /* 버튼이 그룹 내에서 균등하게 크기를 차지 */
+  padding: 8px 12px; /* 버튼 내부의 간격 */
+  border-radius: 30px;
+  border: none;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 120px; /* 버튼 너비를 120px로 고정 */
+}
+
+.guide-button {
+  width: 100px; /* 버튼의 고정 너비 */
+  height: 40px; /* 버튼의 고정 높이 */
+  font-size: 14px; /* 텍스트 크기 조정 */
+  background-color: #6cc1ff;
+}
+
+.game-start-button {
+  width: 100px; /* 버튼의 고정 너비 */
+  height: 40px; /* 버튼의 고정 높이 */
+  font-size: 14px; /* 텍스트 크기 조정 */
+  background-color: #ffa500;
+}
+
+.button-group button:hover {
+  transform: scale(1.1);
+  background-color: #f07c00;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .game-card {
+    width: calc(40vw);
+    height: calc(45vh);
+  }
+
+  .game-card h2 {
+    font-size: calc(1.3rem + 0.5vw); /* 태블릿 크기에 맞게 조정 */
+  }
+
+  .game-card p {
+    font-size: calc(0.9rem + 0.3vw); /* 태블릿 크기에 맞게 조정 */
+  }
+}
+
+@media (max-width: 768px) {
+  .game-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .game-card {
+    width: calc(90vw);
+    height: calc(50vh);
+  }
+
+  .game-card h2 {
+    font-size: calc(1.2rem + 0.5vw); /* 모바일 크기에 맞게 조정 */
+  }
+
+  .game-card p {
+    font-size: calc(0.8rem + 0.2vw); /* 모바일 크기에 맞게 조정 */
+  }
+
+  .button-group button {
+    width: 90px; /* 작은 화면에서 버튼 너비 축소 */
+  }
+}
