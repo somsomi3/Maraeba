@@ -10,21 +10,23 @@ import StageOne from './components/SingleMode/StageOne';
 import StageTwo from './components/SingleMode/StageTwo';
 import StageThree from './components/SingleMode/StageThree';
 import MultiMode from './components/MultiMode';
+import WordGame from './components/SingleMode/StageTwo/WordGame';
 function App() {
   return (
     <Router>
-      <div className="container">
+      <div className='container'>
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/find-id" element={<FindId />} />
-          <Route path="/find-pw" element={<FindPw />} />
-          <Route path="/main" element={<MainPage />} />
-          <Route path="/single" element={<SingleMode />} />
-          <Route path="/stage-one" element={<StageOne />} />
-          <Route path="/stage-two" element={<StageTwo />} />
-          <Route path="/stage-three" element={<StageThree />} />
-          <Route path="/multi" element={<MultiMode />} />
+          <Route path='/' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/find-id' element={<FindId />} />
+          <Route path='/find-pw' element={<FindPw />} />
+          <Route path='/main' element={<MainPage />} />
+          <Route path='/single' element={<SingleMode />} />
+          <Route path='/stage-one' element={<StageOne />} />
+          <Route path='/stage-two' element={<StageTwo />} />
+          <Route path='/stage-three' element={<StageThree />} />
+          <Route path='/multi' element={<MultiMode />} />
+          <Route path='/word-game' element={<WordGame />} />
         </Routes>
       </div>
     </Router>
