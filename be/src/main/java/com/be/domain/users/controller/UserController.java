@@ -17,6 +17,8 @@ import com.be.domain.users.request.UserUpdateRequest;
 import com.be.domain.users.response.GetCurrentUserResponse;
 import com.be.domain.users.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RequestMapping("/users")
 @RestController
 public class UserController {
@@ -39,7 +41,7 @@ public class UserController {
 	@PatchMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> updateUser(
 		@AuthenticationPrincipal Long id,
-		@RequestBody UserUpdateRequest request) {
+		@Valid @RequestBody UserUpdateRequest request) {
 		userService.updateUser(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("User information updated successfully.", 200));
 	}
@@ -48,7 +50,7 @@ public class UserController {
 	@PatchMapping("/me/password")
 	public ResponseEntity<? extends BaseResponseBody> updatePassword(
 		@AuthenticationPrincipal Long id,
-		@RequestBody PasswordUpdateRequest request) {
+		@Valid @RequestBody PasswordUpdateRequest request) {
 		userService.updatePassword(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("Password updated successfully.", 200));
 	}
@@ -57,7 +59,7 @@ public class UserController {
 	@DeleteMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> deleteUser(
 		@AuthenticationPrincipal Long id,
-		@RequestBody PasswordRequest request) {
+		@Valid @RequestBody PasswordRequest request) {
 		userService.deleteUser(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", 200));
 	}

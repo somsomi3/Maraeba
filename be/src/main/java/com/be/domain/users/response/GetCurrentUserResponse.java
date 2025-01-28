@@ -16,8 +16,8 @@ public class GetCurrentUserResponse extends BaseResponseBody {
 	String email;
 	String username;
 	String provider;
-	LocalDateTime createDate;
-	LocalDateTime modifyDate;
+	LocalDateTime createdAt;
+	LocalDateTime updatedAt;
 
 	public static GetCurrentUserResponse from(User user, String message, Integer status) {
 		GetCurrentUserResponse response = new GetCurrentUserResponse();
@@ -28,8 +28,8 @@ public class GetCurrentUserResponse extends BaseResponseBody {
 		response.email = user.getEmail();
 		response.username = user.getUsername();
 		response.provider = user.getProvider();
-		response.createDate = user.getCreatedAt();
-		response.modifyDate = user.getUpdatedAt();
+		response.createdAt = user.getCreatedAt();
+		response.updatedAt = user.getUpdatedAt();
 		return response;
 	}
 }
