@@ -33,11 +33,6 @@ public class FoodGameServiceImpl implements FoodGameService {
 
     @Override
     public FoodResponse pickFood() {
-//		long cnt = foodGameRepository.count();
-//		Random random = new Random();
-//		int randId = random.nextInt((int)cnt) + 1;
-//		FoodGame foodGame = foodGameRepository.findById(randId).get();
-
 
         // 1. FoodGame에서 랜덤으로 1개의 엔티티 가져오기
         FoodGame foodGame = foodGameRepository.findRandomFoodGame();
@@ -103,7 +98,7 @@ public class FoodGameServiceImpl implements FoodGameService {
         ClovaSpeechClient.NestRequestEntity nestRequestEntity = new ClovaSpeechClient.NestRequestEntity();
         nestRequestEntity.setDiarization(diarization);
         String result = speechClient.upload(audioFile, nestRequestEntity);
-        //        System.out.println("Clova Speech API 결과: " + result);
+        System.out.println("Clova Speech API 결과: " + result);
 
         // JSON 파싱 및 "text" 필드 추출
         ObjectMapper objectMapper = new ObjectMapper();

@@ -1,38 +1,50 @@
 package com.be.domain.wgames.service;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gson.Gson;
+import jakarta.annotation.PostConstruct;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
-
-import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ClovaSpeechClient {
 
+    @Value("${external.naverClova-api-key}")
+    private String naverClovaApiKey;
+
+    @Value("${external.naverClova-invoke-url}")
+    private String naverClovaInvokeUrl;
+
     // Clova Speech secret key
-    private static final String SECRET = "5bf7da1b1bdb492db4e9de3204e873d5";
+    private static String SECRET;
     // Clova Speech invoke URL
-    private static final String INVOKE_URL = "https://clovaspeech-gw.ncloud.com/external/v1/10272/5a69889c7257e274257702d9fcf441622e9c2540add0be11fcba9df0859b11a3";
+    private static String INVOKE_URL;
+
+    // @PostConstruct로 초기화
+    @PostConstruct
+    public void init() {
+        SECRET = naverClovaApiKey;
+        INVOKE_URL = naverClovaInvokeUrl;
+    }
 
     private CloseableHttpClient httpClient = HttpClients.createDefault();
     private Gson gson = new Gson();
 
-    private static final Header[] HEADERS = new Header[] {
+    private static final Header[] HEADERS = new Header[]{
             new BasicHeader("Accept", "application/json"),
             new BasicHeader("X-CLOVASPEECH-API-KEY", SECRET),
     };
