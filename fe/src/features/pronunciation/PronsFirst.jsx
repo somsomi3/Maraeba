@@ -3,8 +3,8 @@ import './PronsFirst.css';
 import GoBackButton from '../../components/button/GoBackButton';
 
 const PronsFirst = () => {
-    const navigate = useNavigate();
-
+  const navigate = useNavigate();
+  
   return (
     <div className="prons-first-container">
         <GoBackButton />

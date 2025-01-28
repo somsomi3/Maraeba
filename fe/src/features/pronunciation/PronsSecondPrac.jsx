@@ -1,11 +1,21 @@
-import './FirstPrac.css';
-import tongue from "../../assets/images/tongue.png"
-import lipshape from "../../assets/images/lipshape.png"
+import './PronsSecondPrac.css';
+import tongue from "../../assets/images/tongue.png";
+import lipshape from "../../assets/images/lipshape.png";
 import GoBackButton from '../../components/button/GoBackButton';
-const FirstPrac = () => {
+import PausePopup from "../../components/popup/PausePopup";
+import { useNavigate } from 'react-router-dom';
+
+const PronsSecondPrac = () => {
+  const navigate = useNavigate();
+
+  const handleExit = () => {
+    navigate('/prons');
+  };
+
   return (
-    <div className="first-prac-container">
+    <div className="second-prac-container">
       <GoBackButton />
+      <PausePopup onExit={handleExit} />
       <div className="content-container">
         <div className="image-section">
           <img src={lipshape} alt="발음 입모양" className="image-top" />
@@ -16,11 +26,11 @@ const FirstPrac = () => {
             <p>아이의 카메라 화면</p>
             <span role="img" aria-label="wave emoji">👋</span>
           </div>
-          <div className="accuracy">정확도: 86%</div>
+          <div className="accuracy">정확도: 90%</div>
         </div>
       </div>
     </div>
   );
 };
 
-export default FirstPrac;
+export default PronsSecondPrac;
