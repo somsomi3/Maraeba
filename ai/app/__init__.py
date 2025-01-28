@@ -5,6 +5,6 @@ def create_app():
 
     # 라우트 등록
     from app.routes import api_bp
-    app.register_blueprint(api_bp, url_prefix='/ai')
+    app.register_blueprint(api_bp)
 
     return app
