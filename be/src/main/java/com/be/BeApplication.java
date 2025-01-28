@@ -8,15 +8,11 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 @EnableAspectJAutoProxy
 public class BeApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(BeApplication.class, args);
     }
-
-
     //Cross-Origin Resource Sharing (CORS)
     //http://localhost:5173/ 으로부터 오는 모든 요청 허용하기
-
 //	@Bean
 //	public WebMvcConfigurer corsConfigurer() {
 //		return new WebMvcConfigurer() {

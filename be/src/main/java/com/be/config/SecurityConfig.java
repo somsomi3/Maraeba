@@ -10,11 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 /**
  * 아직 수정 중
  */
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     //비밀번호 암호화
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -30,4 +28,3 @@ public class SecurityConfig {
                 );
     }
 }
-
