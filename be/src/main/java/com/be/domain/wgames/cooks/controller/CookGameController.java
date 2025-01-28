@@ -1,9 +1,9 @@
-package com.be.domain.wgames.controller;
+package com.be.domain.wgames.cooks.controller;
 
-import com.be.domain.wgames.request.AnswerCorrectRequest;
-import com.be.domain.wgames.response.AnswerResponse;
-import com.be.domain.wgames.response.FoodResponse;
-import com.be.domain.wgames.service.FoodGameService;
+import com.be.domain.wgames.cooks.request.AnswerCorrectRequest;
+import com.be.domain.wgames.cooks.response.FoodAnswerResponse;
+import com.be.domain.wgames.cooks.response.FoodResponse;
+import com.be.domain.wgames.cooks.service.FoodGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,12 +29,12 @@ public class CookGameController {
     }
 
     @PostMapping("/is-correct")
-    public ResponseEntity<AnswerResponse> isCorrect(@ModelAttribute AnswerCorrectRequest request) throws IOException {
+    public ResponseEntity<FoodAnswerResponse> isCorrect(@ModelAttribute AnswerCorrectRequest request) throws IOException {
         System.out.println("여기 왔음!");
         System.out.println(request.getFoodName());
         System.out.println(request.getItem1());
         System.out.println(request.getItem2());
-        AnswerResponse answerResponse = foodGameService.isCorrect(request);
+        FoodAnswerResponse answerResponse = foodGameService.isCorrect(request);
         return ResponseEntity.ok(answerResponse);
     }
 }

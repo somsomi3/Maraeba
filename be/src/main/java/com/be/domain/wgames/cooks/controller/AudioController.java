@@ -1,14 +1,15 @@
-package com.be.domain.wgames.controller;
+package com.be.domain.wgames.cooks.controller;
 
 import com.be.domain.wgames.AudioConverter;
-import com.be.domain.wgames.response.AnswerResponse;
-import com.be.domain.wgames.service.ClovaSpeechClient;
-import com.be.domain.wgames.service.ClovaSpeechClient.NestRequestEntity;
+import com.be.domain.wgames.cooks.service.ClovaSpeechClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.sampled.AudioFileFormat;
@@ -16,9 +17,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")

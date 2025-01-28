@@ -1,4 +1,4 @@
-package com.be.domain.wgames.service;
+package com.be.domain.wgames.cooks.service;
 
 import com.google.gson.Gson;
 import jakarta.annotation.PostConstruct;
@@ -7,6 +7,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -175,6 +176,7 @@ public class ClovaSpeechClient {
         }
     }
 
+    //장문 API
     public String upload(File file, NestRequestEntity nestRequestEntity) {
         HttpPost httpPost = new HttpPost(INVOKE_URL + "/recognizer/upload");
         httpPost.setHeaders(HEADERS);
@@ -185,6 +187,31 @@ public class ClovaSpeechClient {
         httpPost.setEntity(httpEntity);
         return execute(httpPost);
     }
+
+    //단문 API
+    public String upload2(File file, NestRequestEntity nestRequestEntity) {
+        // URL에 쿼리 파라미터 추가 (예: lang, assessment, utterance, graph)
+        String url = INVOKE_URL + "?lang=Kor&assessment=false&graph=false";
+
+        // POST 요청을 위한 HttpPost 객체 생성
+        HttpPost httpPost = new HttpPost(url);
+
+        // 헤더 설정
+        httpPost.setHeader("Content-Type", "application/octet-stream");
+        httpPost.setHeader("X-CLOVASPEECH-API-KEY", SECRET);
+
+        // 요청 본문에 파일 추가
+        try {
+            HttpEntity httpEntity = new FileEntity(file, ContentType.APPLICATION_OCTET_STREAM);
+            httpPost.setEntity(httpEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to build request entity", e);
+        }
+
+        // 요청 실행
+        return execute(httpPost);
+    }
+
 
     private String execute(HttpPost httpPost) {
         try (final CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {

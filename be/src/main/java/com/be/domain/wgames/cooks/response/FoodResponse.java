@@ -1,4 +1,4 @@
-package com.be.domain.wgames.response;
+package com.be.domain.wgames.cooks.response;
 
 import lombok.Getter;
 import lombok.Setter;

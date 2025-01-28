@@ -78,6 +78,7 @@ const WordGame = () => {
 
       if (response.ok) {
         const result = await response.json();
+        console.log(result);
         if (result.ifCorrect) {
           if (result.cnt === 1) {
             setGameData((prevState) => ({
