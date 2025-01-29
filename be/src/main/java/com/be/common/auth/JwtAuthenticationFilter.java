@@ -34,5 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				//ToDO : 토큰이 유효하다면 인증된 것
 			}
 		}
+		filterChain.doFilter(request, response);
 	}
 }
