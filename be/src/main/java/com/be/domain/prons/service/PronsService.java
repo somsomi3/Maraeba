@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationSessionDTO;
 
 public interface PronsService {
 	/**
@@ -26,4 +27,36 @@ public interface PronsService {
 	 * @return
 	 */
 	PronunciationDataDTO getSpecificData(Long classId, Integer sequence);
+
+	/**
+	 * 수업 세션 생성
+	 * @param session
+	 */
+	void saveSession(PronunciationSessionDTO session);
+
+	/**
+	 * 수업 세션 가져오기
+	 * @param id
+	 * @return
+	 */
+	PronunciationSessionDTO getSession(String id);
+
+	/**
+	 * 수업 세션 삭제
+	 * @param id
+	 */
+	void deleteSession(String id);
+
+	/**
+	 * 발음 유사도 저장
+	 * @param id
+	 * @param similarity
+	 */
+	void savePronunciationSimilarity(String id, double similarity);
+
+	/**
+	 * 통계 저장
+	 * @param id
+	 */
+	void saveSessionHistory(String id);
 }
