@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.common.model.response.BaseResponseBody;
-import com.be.db.entity.User;
 import com.be.domain.users.request.PasswordRequest;
 import com.be.domain.users.request.PasswordUpdateRequest;
 import com.be.domain.users.request.UserUpdateRequest;
@@ -18,23 +17,21 @@ import com.be.domain.users.response.GetCurrentUserResponse;
 import com.be.domain.users.service.UserService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
-@RequestMapping("/users")
 @RestController
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
 	private final UserService userService;
-
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
 
 	//사용자 정보 조회
 	@GetMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> getCurrentUser(
 		@AuthenticationPrincipal Long id) {
-		User user = userService.getCurrentUser(id);
-		return ResponseEntity.ok(GetCurrentUserResponse.from(user, "Current user data founded successfully", 200));
+		GetCurrentUserResponse getCurrentUserResponse = userService.getCurrentUser(id);
+		return ResponseEntity.status(getCurrentUserResponse.getStatus()).body(getCurrentUserResponse);
 	}
 
 	//사용자 정보 수정

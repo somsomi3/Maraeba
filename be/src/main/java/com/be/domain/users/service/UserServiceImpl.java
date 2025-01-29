@@ -10,25 +10,24 @@ import com.be.db.repository.UserRepository;
 import com.be.domain.users.request.PasswordRequest;
 import com.be.domain.users.request.PasswordUpdateRequest;
 import com.be.domain.users.request.UserUpdateRequest;
+import com.be.domain.users.response.GetCurrentUserResponse;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-
-	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
 
 	private User findUserById(long id) {
 		return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 	}
 
 	@Override
-	public User getCurrentUser(Long id) {
-		return findUserById(id);
+	public GetCurrentUserResponse getCurrentUser(Long id) {
+		return GetCurrentUserResponse.from(findUserById(id));
 	}
 
 	@Override

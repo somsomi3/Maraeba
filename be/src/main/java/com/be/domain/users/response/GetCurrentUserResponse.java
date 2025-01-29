@@ -6,30 +6,41 @@ import com.be.common.model.response.BaseResponseBody;
 import com.be.db.entity.User;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class GetCurrentUserResponse extends BaseResponseBody {
-	Long id;
-	String userId;
-	String email;
-	String username;
-	String provider;
-	LocalDateTime createdAt;
-	LocalDateTime updatedAt;
+	private Long id;
+	private String userId;
+	private String email;
+	private String username;
+	private String provider;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
-	public static GetCurrentUserResponse from(User user, String message, Integer status) {
-		GetCurrentUserResponse response = new GetCurrentUserResponse();
-		response.setMessage(message);
-		response.setStatusCode(status);
-		response.id = user.getId();
-		response.userId = user.getUserId();
-		response.email = user.getEmail();
-		response.username = user.getUsername();
-		response.provider = user.getProvider();
-		response.createdAt = user.getCreatedAt();
-		response.updatedAt = user.getUpdatedAt();
-		return response;
+	private GetCurrentUserResponse(String message, Integer status, Long id, String userId, String email, String username, String provider, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		super(message, status);
+		this.id = id;
+		this.userId = userId;
+		this.email = email;
+		this.username = username;
+		this.provider = provider;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+
+	public static GetCurrentUserResponse from(User user) {
+		return new GetCurrentUserResponse(
+			"Current user data founded successfully",
+			200,
+			user.getId(),
+			user.getUserId(),
+			user.getEmail(),
+			user.getUsername(),
+			user.getProvider(),
+			user.getCreatedAt(),
+			user.getUpdatedAt()
+		);
 	}
 }
