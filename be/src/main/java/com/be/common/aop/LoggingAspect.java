@@ -13,14 +13,14 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 @Component
 public class LoggingAspect {
-	
-	@Pointcut("execution(* *.controller..*(..)) || execution(* *.service..*(..))")
+
+	@Pointcut("execution(* com.be..controller..*(..)) || execution(* com.be..service..*(..))")
 	public void pointcut() {
 	}
 
 	@Before("pointcut()")
 	public void logMethodInputs(JoinPoint joinPoint) {
-		String className = joinPoint.getSignature().getDeclaringTypeName(); // 클래스 이름
+		String className = joinPoint.getTarget().getClass().getSimpleName(); // 클래스 이름
 		String methodName = joinPoint.getSignature().getName(); // 메서드 이름
 		Object[] args = joinPoint.getArgs(); // 파라미터
 
@@ -29,7 +29,7 @@ public class LoggingAspect {
 
 	@AfterReturning(value = "pointcut()", returning = "result")
 	public void logMethodOutputs(JoinPoint joinPoint, Object result) {
-		String className = joinPoint.getSignature().getDeclaringTypeName(); // 클래스 이름
+		String className = joinPoint.getTarget().getClass().getSimpleName(); // 클래스 이름
 		String methodName = joinPoint.getSignature().getName(); // 메서드 이름
 
 		log.info("메서드 반환: {}.{} - 반환값: {}", className, methodName, result);
