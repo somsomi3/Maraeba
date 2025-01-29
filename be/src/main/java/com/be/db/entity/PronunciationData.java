@@ -1,12 +1,12 @@
 package com.be.db.entity;
 
-import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +17,7 @@ public class PronunciationData extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "class_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private PronunciationClass pronunciationClass;
 
 	@Column(nullable = false)
@@ -33,9 +34,5 @@ public class PronunciationData extends BaseEntity {
 
 	@Column(nullable = false)
 	private Integer sequence;
-
-	// 관계
-	@OneToMany(mappedBy = "pronunciationData")
-	private List<PronunciationRecord> pronunciationRecords;
 
 }

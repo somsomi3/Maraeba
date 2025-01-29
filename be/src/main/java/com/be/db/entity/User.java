@@ -31,11 +31,5 @@ public class User extends BaseEntity {
 
 	// 관계
 	@OneToMany(mappedBy = "user")
-	private List<PronunciationSession> pronunciationSessions;
-
-	@OneToMany(mappedBy = "user")
-	private List<PronunciationRecord> pronunciationRecords;
-
-	@OneToMany(mappedBy = "user")
-	private List<PronunciationCompletedClass> pronunciationCompletedClasses;
+	private List<PronunciationHistory> pronunciationHistories;
 }
