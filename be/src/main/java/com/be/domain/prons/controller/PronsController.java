@@ -11,6 +11,7 @@ import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.response.GetClassDataRes;
 import com.be.domain.prons.response.GetClassesRes;
+import com.be.domain.prons.response.GetSpecificDataRes;
 import com.be.domain.prons.service.PronsService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,9 +31,18 @@ public class PronsController {
 	}
 
 	// 특정 수업 학습자료 가져오기
-	@GetMapping("/{class_id}")
+	@GetMapping("/class/{class_id}")
 	public GetClassDataRes getClassData(@PathVariable("class_id") Long classId) {
 		List<PronunciationDataDTO> dataDTOS = pronsService.getClassData(classId);
 		return new GetClassDataRes("Success", 200, dataDTOS);
 	}
+
+	// 특정 수업 특정 발음 자료 가져오기
+	@GetMapping("/class/{class_id}/seq/{seq_id}")
+	public GetSpecificDataRes getSpecificData(@PathVariable("class_id") Long classId,
+		@PathVariable("seq_id") Integer sequence) {
+		PronunciationDataDTO dataDTO = pronsService.getSpecificData(classId, sequence);
+		return new GetSpecificDataRes("Success", 200, dataDTO);
+	}
+
 }

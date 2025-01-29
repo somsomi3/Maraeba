@@ -18,4 +18,12 @@ public interface PronsService {
 	 * @return response
 	 */
 	List<PronunciationDataDTO> getClassData(Long classId);
+
+	/**
+	 * 특정 수업 특정 발음 자료 반환
+	 * @param classId
+	 * @param sequence
+	 * @return
+	 */
+	PronunciationDataDTO getSpecificData(Long classId, Integer sequence);
 }

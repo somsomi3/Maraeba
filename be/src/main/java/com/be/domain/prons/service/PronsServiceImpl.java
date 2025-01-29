@@ -32,4 +32,12 @@ public class PronsServiceImpl implements PronsService {
 			classId);
 		return dataDTOS;
 	}
+
+	// 특정 수업 특정 발음 자료 반환
+	@Override
+	public PronunciationDataDTO getSpecificData(Long classId, Integer sequence) {
+		PronunciationDataDTO dataDTO = pronunciationDataRepository.findByPronunciationClassIdAndSequence(classId,
+			sequence);
+		return dataDTO;
+	}
 }

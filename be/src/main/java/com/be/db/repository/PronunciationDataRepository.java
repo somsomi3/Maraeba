@@ -9,4 +9,6 @@ import com.be.domain.prons.dto.PronunciationDataDTO;
 
 public interface PronunciationDataRepository extends JpaRepository<PronunciationData, Long> {
 	List<PronunciationDataDTO> findByPronunciationClassIdOrderBySequenceAsc(Long classId);
+
+	PronunciationDataDTO findByPronunciationClassIdAndSequence(Long classId, Integer sequence);
 }
