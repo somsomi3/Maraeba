@@ -14,11 +14,9 @@ import com.be.domain.prons.response.GetClassesRes;
 import com.be.domain.prons.service.PronsService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 @RequestMapping("/prons")
 public class PronsController {
 

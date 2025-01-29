@@ -31,7 +31,8 @@ public class SecurityConfig {
 			.formLogin(AbstractHttpConfigurer::disable) // 기본 로그인 제거
 			.httpBasic(AbstractHttpConfigurer::disable) // 기본 HTTP Basic 인증 제거
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/auth/check-user-id", "/auth/login", "/auth/register", "/auth/social", "/prons/**",
+				.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/auth/check-user-id", "/auth/login",
+					"/auth/register", "/auth/social", "/prons/**",
 					"/error").permitAll()
 				.requestMatchers("/auth/logout", "/auth/token").authenticated()
 				.anyRequest().authenticated()
