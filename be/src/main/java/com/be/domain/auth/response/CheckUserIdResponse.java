@@ -17,7 +17,7 @@ public class CheckUserIdResponse extends BaseResponseBody {
 		this.isDuplicate = isDuplicate;
 	}
 
-	public CheckUserIdResponse of(String message, Integer status ,String userId, boolean isDuplicate) {
+	public static CheckUserIdResponse of(String message, Integer status ,String userId, boolean isDuplicate) {
 		return new CheckUserIdResponse(message, status, userId, isDuplicate);
 	}
 }

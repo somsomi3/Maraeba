@@ -7,14 +7,15 @@ import com.be.domain.auth.request.TokenRefreshRequest;
 import com.be.domain.auth.response.CheckEmailResponse;
 import com.be.domain.auth.response.CheckUserIdResponse;
 import com.be.domain.auth.response.LoginResponse;
-import com.be.domain.auth.response.RegisterResponse;
 import com.be.domain.auth.response.TokenRefreshResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public interface AuthService {
-	RegisterResponse register(RegisterRequest request);
+	void register(RegisterRequest request);
 	CheckUserIdResponse checkUserId(String userId);
 	CheckEmailResponse checkEmail(String email);
 	LoginResponse login(LoginRequest request);
-	TokenRefreshResponse tokenRefresh(Long id, TokenRefreshRequest request);
-	void logout(Long id, LogoutRequest request);
+	TokenRefreshResponse tokenRefresh(TokenRefreshRequest request);
+	void logout(HttpServletRequest httpServletRequest, LogoutRequest request);
 }

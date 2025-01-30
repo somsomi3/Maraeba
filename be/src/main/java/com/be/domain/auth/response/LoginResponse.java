@@ -17,7 +17,7 @@ public class LoginResponse extends BaseResponseBody {
 		this.refreshToken = refreshToken;
 	}
 
-	public LoginResponse of(String message, Integer status, String accessToken, String refreshToken) {
-		return new LoginResponse(message, status, accessToken, refreshToken);
+	public static LoginResponse of( String accessToken, String refreshToken) {
+		return new LoginResponse("User Login successfully", 200, accessToken, refreshToken);
 	}
 }

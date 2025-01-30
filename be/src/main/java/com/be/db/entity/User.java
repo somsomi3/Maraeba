@@ -1,7 +1,9 @@
 package com.be.db.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +27,7 @@ public class User extends BaseEntity {
 	private String provider;
 
 	private String providerId;
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private RefreshToken refreshToken;
 }

@@ -17,7 +17,7 @@ public class CheckEmailResponse extends BaseResponseBody {
 		this.isDuplicate = isDuplicate;
 	}
 
-	public CheckEmailResponse of(String message, Integer status, String email, boolean isDuplicate) {
+	public static CheckEmailResponse of(String message, Integer status, String email, boolean isDuplicate) {
 		return new CheckEmailResponse(message, status, email, isDuplicate);
 	}
 }

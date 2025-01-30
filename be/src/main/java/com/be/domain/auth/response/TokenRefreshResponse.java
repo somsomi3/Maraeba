@@ -17,7 +17,7 @@ public class TokenRefreshResponse extends BaseResponseBody {
 		this.refreshToken = refreshToken;
 	}
 
-	public TokenRefreshResponse of(String message, Integer status, String accessToken, String refreshToken) {
-		return new TokenRefreshResponse(message, status, accessToken, refreshToken);
+	public static TokenRefreshResponse of(String accessToken, String refreshToken) {
+		return new TokenRefreshResponse("Token generated successfully", 201, accessToken, refreshToken);
 	}
 }

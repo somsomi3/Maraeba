@@ -1,7 +1,6 @@
 package com.be.domain.auth.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,10 +16,10 @@ import com.be.domain.auth.request.TokenRefreshRequest;
 import com.be.domain.auth.response.CheckEmailResponse;
 import com.be.domain.auth.response.CheckUserIdResponse;
 import com.be.domain.auth.response.LoginResponse;
-import com.be.domain.auth.response.RegisterResponse;
 import com.be.domain.auth.response.TokenRefreshResponse;
 import com.be.domain.auth.service.AuthService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -32,8 +31,8 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<? extends BaseResponseBody> register(@Valid @RequestBody RegisterRequest request) {
-		RegisterResponse response = authService.register(request);
-		return ResponseEntity.status(response.getStatus()).body(response);
+		authService.register(request);
+		return ResponseEntity.status(201).body(BaseResponseBody.of("User registered successfully", 201));
 	}
 
 	@GetMapping("/check-user-id")
@@ -52,13 +51,13 @@ public class AuthController {
 		return ResponseEntity.status(response.getStatus()).body(response);
 	}
 	@PostMapping("/token")
-	public ResponseEntity<? extends BaseResponseBody> tokenRefresh(@AuthenticationPrincipal Long id, @Valid @RequestBody TokenRefreshRequest request) {
-		TokenRefreshResponse response = authService.tokenRefresh(id, request);
+	public ResponseEntity<? extends BaseResponseBody> tokenRefresh(@Valid @RequestBody TokenRefreshRequest request) {
+		TokenRefreshResponse response = authService.tokenRefresh(request);
 		return ResponseEntity.status(response.getStatus()).body(response);
 	}
 	@PostMapping("/logout")
-	public ResponseEntity<? extends BaseResponseBody> logout(@AuthenticationPrincipal Long id, @Valid @RequestBody LogoutRequest request) {
-		authService.logout(id, request);
-		return ResponseEntity.ok(BaseResponseBody.of("successfully", 200));
+	public ResponseEntity<? extends BaseResponseBody> logout(HttpServletRequest httpServletRequest, @Valid @RequestBody LogoutRequest request) {
+		authService.logout(httpServletRequest, request);
+		return ResponseEntity.ok(BaseResponseBody.of("Logout successfully", 200));
 	}
 }
