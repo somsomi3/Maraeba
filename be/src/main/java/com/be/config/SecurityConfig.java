@@ -53,12 +53,29 @@ public class SecurityConfig {
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용을 위한 세션 정책
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight 요청 허용
-				.requestMatchers("/auth/check-user-id", "/auth/check-email", "/auth/login", "/auth/register", "/auth/social", "/auth/token").permitAll()
-				.requestMatchers("/auth/logout").authenticated()
-				.anyRequest().authenticated()
+				.requestMatchers( // Swagger 관련 허용
+					"/swagger",
+					"/swagger-ui.html",
+					"/swagger-ui/**",
+					"/api-docs",
+					"/api-docs/**",
+					"/v3/api-docs/**",
+					"/swagger-resources/**",
+					"/webjars/**"
+				).permitAll()
+				.requestMatchers( // 로그인&회원가입 관련 허용
+					"/auth/check-user-id",
+					"/auth/check-email",
+					"/auth/login",
+					"/auth/register",
+					"/auth/social",
+					"/auth/token"
+				).permitAll()
+				.requestMatchers("/error").permitAll()
+				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
 			)
 			.exceptionHandling(exception -> exception
-				.authenticationEntryPoint(jwtAuthenticationEntryPoint)  // 인증 실패 (401) 처리
+				.authenticationEntryPoint(jwtAuthenticationEntryPoint)  // 인증 실패 (999) 처리
 			)
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 		return http.build();
@@ -68,7 +85,7 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 클라이언트 URL (프론트엔드)
+		configuration.setAllowedOrigins(List.of("http://localhost:5173")); // 클라이언트 URL (프론트엔드)
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);

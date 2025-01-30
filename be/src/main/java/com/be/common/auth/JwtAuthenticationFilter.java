@@ -30,12 +30,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		@NonNull HttpServletResponse response,
 		@NonNull FilterChain filterChain) throws ServletException, IOException {
 
+		String requestURI = request.getRequestURI();
+		System.out.println("Request URI: " + requestURI);
+
+		// Swagger 관련 요청은 필터를 그냥 통과시킴
+		if (requestURI.startsWith("/swagger") ||
+			requestURI.startsWith("/v3/api-docs") ||
+			requestURI.startsWith("/swagger-resources") ||
+			requestURI.startsWith("/webjars")
+		) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+		// /auth 관련 요청(logout제외)은 필터를 그냥 통과시킴
+		if (requestURI.startsWith("/auth") && !requestURI.equals("/auth/logout")) {
+			System.out.println("/auth 관련 요청(logout제외)은 필터를 그냥 통과시킴");
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		try{
 			String token = tokenExtractorService.extractAccessToken(request);
+			System.out.println("Extracted Token: " + token);
 
 			if (token != null && tokenService.validateToken(token)) {
 				Long id = tokenService.extractUserIdFromToken(token);
-
+				System.out.println("User ID from Token: " + id);
 				// UserDetails 가져오기
 				CustomUserDetails userDetails = new CustomUserDetails(id);
 
@@ -47,7 +67,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		} catch (Exception e){
 			// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
-			logger.error("Could not set user authentication in security context", e);
+			System.out.println("JWT Filter Exception: " + e.getMessage());
+			// logger.error("Could not set user authentication in security context", e);
 		}
 		// 다음 필터로 진행
 		filterChain.doFilter(request, response);

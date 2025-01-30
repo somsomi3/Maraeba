@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.be.common.auth.TokenExtractorService;
 import com.be.common.auth.TokenService;
 import com.be.common.auth.TokenType;
+import com.be.common.exception.DuplicateEmailException;
+import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.PasswordMismatchException;
 import com.be.common.exception.UserNotFoundException;
 import com.be.db.entity.RefreshToken;
@@ -43,6 +45,15 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	@Override
 	public void register(RegisterRequest request) {
+		// userId 중복 검사
+		if (userRepository.findByUserId(request.getUserId()).isPresent()) {
+			throw new DuplicateUserIDException();
+		}
+
+		// email 중복 검사
+		if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+			throw new DuplicateEmailException();
+		}
 		//비밀번호 암호화 후 저장
 		User user = new User();
 		user.setUserId(request.getUserId());
@@ -96,9 +107,10 @@ public class AuthServiceImpl implements AuthService {
 
 		//이미 refresh_token 값이 있다면 지움
 		refreshTokenRepository.findByUserId(user.getId()).ifPresent(refreshTokenRepository::delete);
-
+		
 		//accessToken 및 refreshToken 발급
 		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
+		System.out.println("토큰 발급");
 		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(user.getId(), TokenType.REFRESH_TOKEN);
 
 		//refreshToken DB 저장
@@ -122,7 +134,7 @@ public class AuthServiceImpl implements AuthService {
 
 		//DB에 refreshToken이 있는지 확인
 		RefreshToken refreshToken = refreshTokenRepository.findByUserId(id)
-			.orElseThrow(()->new IllegalArgumentException("Refresh token not found."));
+			.orElseThrow(()->new IllegalArgumentException("Refresh token does not exist. Please log in again."));
 
 		//DB의 refreshToken과 비교
 		if(!request.getRefreshToken().equals(refreshToken.getToken())) {
@@ -135,21 +147,15 @@ public class AuthServiceImpl implements AuthService {
 			throw new IllegalArgumentException("Refresh token expired.");
 		}
 
-		//기존의 refreshToken 제거
-		refreshTokenRepository.delete(refreshToken);
-
 		//새로운 token 생성
 		String newAccessToken = tokenService.generateToken(id, TokenType.ACCESS_TOKEN);
 		TokenService.TokenWithExpiration newRefreshTokenWithExpiration = tokenService.generateTokenWithExpiration(id, TokenType.REFRESH_TOKEN);
 
-		//새로운 refreshToken 저장
-		RefreshToken newRefreshToken = new RefreshToken();
-		newRefreshToken.setUser(refreshToken.getUser());
-		newRefreshToken.setToken(newRefreshTokenWithExpiration.getToken());
-		newRefreshToken.setExpiryDate(newRefreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		refreshTokenRepository.save(newRefreshToken);
+		//기존의 refreshToken 교체
+		refreshToken.setToken(newRefreshTokenWithExpiration.getToken());
+		refreshToken.setExpiryDate(newRefreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
-		return TokenRefreshResponse.of(newAccessToken, newRefreshToken.getToken());
+		return TokenRefreshResponse.of(newAccessToken, newRefreshTokenWithExpiration.getToken());
 	}
 
 	/**
