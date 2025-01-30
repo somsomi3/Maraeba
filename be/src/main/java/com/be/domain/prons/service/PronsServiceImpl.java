@@ -86,7 +86,7 @@ public class PronsServiceImpl implements PronsService {
 		}
 	}
 
-	// 통계 저장
+	// 히스토리 저장
 	@Override
 	public void saveSessionHistory(String id) {
 		double avgSimilarity = calculateAverageSimilarity(id);

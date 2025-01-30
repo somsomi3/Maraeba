@@ -55,7 +55,7 @@ public interface PronsService {
 	void savePronunciationSimilarity(String id, double similarity);
 
 	/**
-	 * 통계 저장
+	 * 히스토리 저장
 	 * @param id
 	 */
 	void saveSessionHistory(String id);
