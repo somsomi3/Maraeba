@@ -39,9 +39,9 @@
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.camera-frame {
+  }
+  
+  .camera-frame {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -54,7 +54,16 @@
     font-size: 18px;
     color: #333;
     margin-bottom: 10px;
-}
+    overflow: hidden;
+  }
+  
+
+  .camera-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
 
 .accuracy {
     font-size: 18px;

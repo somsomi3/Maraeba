@@ -3,7 +3,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import "./PausePopup.css";
 import bunny from "../../assets/images/bunny.png";
-import pauseIcon from "../../assets/icons/pause.png";
+import stopIcon from "../../assets/icons/stop.png";
 
 const PausePopup = ({ onExit }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -19,10 +19,10 @@ const PausePopup = ({ onExit }) => {
   return (
     <div>
       <img
-        src={pauseIcon}
-        alt="Pause Icon"
+        src={stopIcon}
+        alt="Stop Icon"
         onClick={handlePauseClick} // 버튼 클릭 시 팝업 열기
-        className="pause-button"
+        className="stop-button"
         style={{ cursor: "pointer", width: "50px" }}
       />
       {isPopupOpen && (

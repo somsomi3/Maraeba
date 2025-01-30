@@ -63,8 +63,7 @@
     opacity: 0.8;
   }
   
-  /* Pause 버튼을 화면 오른쪽 위로 이동 */
-.pause-button {
+.stop-button {
     position: fixed; /* 화면에 고정 */
     top: 20px; /* 화면 상단으로부터 20px */
     right: 20px; /* 화면 오른쪽으로부터 20px */
