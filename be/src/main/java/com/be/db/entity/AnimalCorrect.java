@@ -10,8 +10,26 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@IdClass(AnimalCorrectId.class) // 복합 키 사용
 public class AnimalCorrect {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "game_id")
+    private Integer gameId;
+
+    @Id
+    @Column(name = "animal_id")
+    private Integer animalId;
+
+    @Column(name = "location_x", nullable = false)
+    private Integer locationX;
+
+    @Column(name = "location_y", nullable = false)
+    private Integer locationY;
+
+    @ManyToOne
+    @JoinColumn(name = "animal_id", insertable = false, updatable = false)
+    private AnimalList animalList;  // 외래 키로 연결
 }
+
+

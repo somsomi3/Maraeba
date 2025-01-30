@@ -11,7 +11,14 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class AnimalList {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(nullable = false, length = 100)
+    private String animalName;
+
+    @Column(nullable = false)
+    private String animalImage;
 }

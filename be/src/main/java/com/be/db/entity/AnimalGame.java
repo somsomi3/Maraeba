@@ -16,5 +16,6 @@ public class AnimalGame {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
+    @Column(nullable = false)
+    private String image;
 }
