@@ -7,7 +7,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import com.be.common.exception.UserNotFoundException;
+import com.be.common.exception.CustomException;
+import com.be.common.exception.ErrorCode;
 import com.be.db.entity.PronunciationClass;
 import com.be.db.entity.PronunciationHistory;
 import com.be.db.entity.User;
@@ -50,7 +51,7 @@ public class PronsServiceImpl implements PronsService {
 	@Override
 	public PronunciationDataDTO getSpecificData(Long classId, Integer sequence) {
 		PronunciationDataDTO dataDTO = pronunciationDataRepository.findByPronunciationClassIdAndSequence(classId,
-			sequence).orElseThrow();
+			sequence).orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 		return dataDTO;
 	}
 
@@ -94,9 +95,9 @@ public class PronsServiceImpl implements PronsService {
 
 		if (session != null) {
 			User user = userRepository.findUserById(session.getUserId())
-				.orElseThrow(UserNotFoundException::new);
+				.orElseThrow(() ->new CustomException(ErrorCode.USER_NOT_FOUND));
 			PronunciationClass pronunciationClass = pronunciationClassRepository.findPronunciationClassById(
-				session.getClassId()).orElseThrow();
+				session.getClassId()).orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
 			PronunciationHistory statistics = new PronunciationHistory(
 				session.getId(),

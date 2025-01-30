@@ -2,6 +2,8 @@ package com.be.domain.users.response;
 
 import java.time.LocalDateTime;
 
+import org.springframework.http.HttpStatus;
+
 import com.be.common.model.response.BaseResponseBody;
 import com.be.db.entity.User;
 
@@ -19,10 +21,10 @@ public class GetCurrentUserResponse extends BaseResponseBody {
 	LocalDateTime createDate;
 	LocalDateTime modifyDate;
 
-	public static GetCurrentUserResponse from(User user, String message, Integer status) {
+	public static GetCurrentUserResponse from(User user, String message, HttpStatus status) {
 		GetCurrentUserResponse response = new GetCurrentUserResponse();
 		response.setMessage(message);
-		response.setStatusCode(status);
+		response.setStatusCode(status.value());
 		response.id = user.getId();
 		response.userId = user.getUserId();
 		response.email = user.getEmail();

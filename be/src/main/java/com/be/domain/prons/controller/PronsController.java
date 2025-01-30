@@ -1,5 +1,7 @@
 package com.be.domain.prons.controller;
 
+import com.be.common.exception.CustomException;
+import com.be.common.exception.ErrorCode;
 import com.be.common.model.response.BaseResponseBody;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
@@ -69,7 +71,7 @@ public class PronsController {
 	public GetSessionRes getLessonSession(@NotBlank @PathVariable("session_id") String id) {
 		PronunciationSessionDTO sessionDTO = pronsService.getSession(id);
 		if(sessionDTO == null) {
-			// 세션 없음 예외 처리 할 것
+			throw new CustomException(ErrorCode.SESSION_NOT_FOUND);
 		}
 		return new GetSessionRes("Success", HttpStatus.OK, sessionDTO);
 	}
