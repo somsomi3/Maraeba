@@ -1,5 +1,6 @@
 package com.be.domain.users.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +33,7 @@ public class UserController {
 	public ResponseEntity<? extends BaseResponseBody> getCurrentUser(
 		@AuthenticationPrincipal Long id) {
 		User user = userService.getCurrentUser(id);
-		return ResponseEntity.ok(GetCurrentUserResponse.from(user, "Current user data founded successfully", 200));
+		return ResponseEntity.ok(GetCurrentUserResponse.from(user, "Current user data founded successfully", HttpStatus.OK));
 	}
 
 	//사용자 정보 수정
@@ -41,7 +42,7 @@ public class UserController {
 		@AuthenticationPrincipal Long id,
 		@RequestBody UserUpdateRequest request) {
 		userService.updateUser(id, request);
-		return ResponseEntity.ok(BaseResponseBody.of("User information updated successfully.", 200));
+		return ResponseEntity.ok(BaseResponseBody.of("User information updated successfully.", HttpStatus.OK));
 	}
 
 	//사용자 비밀번호 변경
@@ -50,7 +51,7 @@ public class UserController {
 		@AuthenticationPrincipal Long id,
 		@RequestBody PasswordUpdateRequest request) {
 		userService.updatePassword(id, request);
-		return ResponseEntity.ok(BaseResponseBody.of("Password updated successfully.", 200));
+		return ResponseEntity.ok(BaseResponseBody.of("Password updated successfully.", HttpStatus.OK));
 	}
 
 	//회원 탈퇴
@@ -59,6 +60,6 @@ public class UserController {
 		@AuthenticationPrincipal Long id,
 		@RequestBody PasswordRequest request) {
 		userService.deleteUser(id, request);
-		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", 200));
+		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", HttpStatus.OK));
 	}
 }

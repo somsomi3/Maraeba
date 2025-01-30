@@ -1,18 +1,42 @@
-import './PronsFirstPrac.css';
-import tongue from "../../assets/images/tongue.png"
-import lipshape from "../../assets/images/lipshape.png"
-import GoBackButton from '../../components/button/GoBackButton';
+import { useEffect, useRef, useState } from "react";
+import "./PronsFirstPrac.css";
+import tongue from "../../assets/images/tongue.png";
+import lipshape from "../../assets/images/lipshape.png";
+import GoBackButton from "../../components/button/GoBackButton";
 import PausePopup from "../../components/popup/PausePopup";
-import { useNavigate } from 'react-router-dom';
-
+import RecordButton from "../../components/button/RecordButton";
+import { useNavigate } from "react-router-dom";
 
 const PronsFirstPrac = () => {
+  const navigate = useNavigate();
+  const videoRef = useRef(null);
+  const [accuracy, setAccuracy] = useState(null); // 정확도 저장
 
-  const navigate = useNavigate()
+  useEffect(() => {
+    const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error("카메라 접근 오류:", error);
+      }
+    };
+
+    startCamera();
+
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        let tracks = videoRef.current.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   const handleExit = () => {
-    navigate('/prons')
-  }
+    navigate("/prons");
+  };
 
   return (
     <div className="first-prac-container">
@@ -25,11 +49,17 @@ const PronsFirstPrac = () => {
         </div>
         <div className="camera-section">
           <div className="camera-frame">
-            <p>아이의 카메라 화면</p>
-            <span role="img" aria-label="wave emoji">👋</span>
+            <video ref={videoRef} autoPlay playsInline className="camera-video"></video>
           </div>
-          <div className="accuracy">정확도: 86%</div>
+          <div className="accuracy">
+            정확도: {accuracy !== null ? `${accuracy}%` : "측정 대기 중..."}
+          </div>
         </div>
+      </div>
+
+      {/* 중앙 하단 녹음 버튼 */}
+      <div className="record-button-container">
+        <RecordButton onAccuracyUpdate={setAccuracy} />
       </div>
     </div>
   );

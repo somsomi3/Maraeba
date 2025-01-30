@@ -1,15 +1,14 @@
   .logo {
         display: block;
         margin: 0 auto 20px; /* 가운데 정렬 및 아래 여백 */
-        width: 250px; /* 로고 크기 조정 */
+        width: 300px; /* 로고 크기 조정 */
         height: auto;
     }
   /* 폼 컨테이너 */
   .form-container {
-    /* background: #fedfaa; */
     padding: 10px;
     border-radius: 12px;
-    width: 350px;
+    width: 380px;
     text-align: center;
   }
   
