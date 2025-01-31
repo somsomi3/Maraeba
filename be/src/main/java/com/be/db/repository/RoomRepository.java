@@ -1,9 +1,9 @@
 package com.be.db.repository;
 
-import com.be.db.entity.Session;
+import com.be.db.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SessionRepository extends JpaRepository<Session, Long> {
+public interface RoomRepository extends JpaRepository<Room, Long> {
 }

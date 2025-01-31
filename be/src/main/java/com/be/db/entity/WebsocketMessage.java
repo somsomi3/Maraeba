@@ -21,8 +21,8 @@ public class WebsocketMessage {
     private LocalDateTime sentAt;
 
     @ManyToOne
-    @JoinColumn(name = "session_id", nullable = false)
-    private Session session;
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

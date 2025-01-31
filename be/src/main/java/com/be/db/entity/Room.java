@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Session {
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class Session {
     private User host;
 
     // 세션에 저장된 메시지들 (OneToMany)
-    @OneToMany(mappedBy = "session")
+    @OneToMany(mappedBy = "room")
     private List<WebsocketMessage> messages = new ArrayList<>();
 
 

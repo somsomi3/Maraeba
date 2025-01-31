@@ -1,4 +1,4 @@
-package com.be.domain.session.request;
+package com.be.domain.rooms.request;
 
 import lombok.Getter;
 import lombok.Setter;

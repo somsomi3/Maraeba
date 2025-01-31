@@ -7,5 +7,5 @@ import java.util.List;
 
 //WebRTC Signaling 데이터 저장 (필수는 아니지만, 디버깅 및 연결 유지용으로 유용)
 public interface WebrtcSignalingRepository extends JpaRepository<WebrtcSignaling, Long> {
-    List<WebrtcSignaling> findBySessionId(Long sessionId); // 특정 방의 WebRTC 메시지 조회
+    List<WebrtcSignaling> findByRoomId(Long roomId); // 특정 방의 WebRTC 메시지 조회
 }

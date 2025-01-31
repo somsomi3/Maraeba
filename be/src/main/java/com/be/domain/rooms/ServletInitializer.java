@@ -1,4 +1,4 @@
-package com.be.domain.session;
+package com.be.domain.rooms;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

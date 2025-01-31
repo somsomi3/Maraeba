@@ -1,4 +1,4 @@
-package com.be.domain.session.request;
+package com.be.domain.rooms.request;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RtcofferRequest {
-    private Long sessionId; // WebRTC 연결을 위한 세션 ID
+    private Long roomId; // WebRTC 연결을 위한 세션 ID
     private String sdp; // WebRTC Offer SDP 정보
 }

@@ -24,6 +24,6 @@ public class WebrtcSignaling {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "session_id", nullable = false)
-    private Session session;
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
 }

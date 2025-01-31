@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class SessionUser {
+public class RoomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +21,8 @@ public class SessionUser {
 
     // session_id 외래키 매핑
     @ManyToOne
-    @JoinColumn(name = "session_id", nullable = false) // id3 → session_id
-    private Session session;
+    @JoinColumn(name = "room_id", nullable = false) // id3 → session_id
+    private Room room;
 
     @Column(name = "joined_at", nullable = false)
     private LocalDateTime joinedAt;
