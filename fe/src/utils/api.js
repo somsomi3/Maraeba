@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Flask API 인스턴스 생성
 const flaskApi = axios.create({
-    baseURL: "/flask", // Flask 서버의 API 기본 URL
+    baseURL: import.meta.env.VITE_FLASK_API_URL, // Flask 서버의 API 기본 URL
     headers: {
         "Content-Type": "application/json", // 기본 헤더 설정
     },
@@ -10,7 +10,7 @@ const flaskApi = axios.create({
 
 // Spring API 인스턴스 생성
 const springApi = axios.create({
-    baseURL: "/spring", // Spring 서버의 API 기본 URL
+    baseURL: import.meta.env.VITE_SPRING_API_URL, // Spring 서버의 API 기본 URL
     headers: {
         "Content-Type": "application/json", // 기본 헤더 설정
     },
