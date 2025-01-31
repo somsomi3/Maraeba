@@ -29,7 +29,7 @@ class ChatBox extends Component {
             return; // 이미 연결된 경우 중복 연결 방지
         }
 
-        this.webSocket = new WebSocket("ws://192.168.0.4:8081/WebRTC/signaling");
+        this.webSocket = new WebSocket("ws://localhost:8081/WebRTC/signaling");
 
         this.webSocket.onopen = () => {
             console.log("✅ WebSocket 연결 성공");

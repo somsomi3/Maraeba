@@ -25,15 +25,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-		String authHeader = request.getHeader("Authorization");
-
-		if (authHeader != null && authHeader.startsWith("Bearer ")) {
-			String token = authHeader.substring(7);
-
-			if (tokenService.validateToken(token)) {
-				//ToDO : 토큰이 유효하다면 인증된 것
-			}
-		}
-		filterChain.doFilter(request, response);
+		filterChain.doFilter(request, response); // JWT 검증 없이 바로 다음 필터로 이동
+		System.out.println("여기 들어옴");
+		System.out.println("⏭️ 다음 필터 실행 완료: " + request.getRequestURI());
 	}
 }
