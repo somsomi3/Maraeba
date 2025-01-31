@@ -19,6 +19,8 @@ import Conversation from "./features/conversation/Conversation";
 import ConversationStart from "./features/conversation/ConversationStart";
 import ChatBox from "./features/session/ChatBox"; // ✅ ChatBox 컴포넌트 추가
 import Webrtc from "./features/session/Webrtc.jsx";
+import CookingGame from "./features/wordgame/CookingGame"; 
+
 
 // 라우트 정의
 const router = createBrowserRouter(
@@ -44,6 +46,7 @@ const router = createBrowserRouter(
             <Route path="/multi" element={<MultiMain/>}/>
             <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
             <Route path="/session/webrtc" element={<Webrtc/>}/>
+            <Route path="/cooking-game" element={<CookingGame />} />
         </>
     )
 );

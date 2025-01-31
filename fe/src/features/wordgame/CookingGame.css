@@ -1,0 +1,156 @@
+/* 전체 게임 컨테이너 */
+.cooking-game-container {
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* 게임 오버레이 */
+  .game-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+  }
+  
+  /* 게임 제목 */
+  .game-title {
+    font-family: 'Gamja Flower', sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 15px;
+  }
+  
+  /* 조합 UI */
+  .combination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  /* 음식 아이콘 */
+  .item-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+  }
+  
+  /* 선택되지 않은 음식 자리 */
+  .item-placeholder {
+    width: 80px;
+    height: 80px;
+    background: transparent;
+  }
+  
+  /* 연산 기호 */
+  .plus-sign,
+  .equals-sign {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  /* 음식 선택 버튼 컨테이너 */
+  .item-selection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+  }
+  
+  /* 음식 선택 버튼 */
+  .item-selection button {
+    background: #ffcc66;
+    color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+  }
+  
+  .item-selection button:hover {
+    background: #ffb347;
+    transform: scale(1.1);
+  }
+  
+  /* 마이크 버튼 */
+  .mic-button {
+    margin-top: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .mic-button img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  /* 반응형 디자인 */
+  @media (max-width: 768px) {
+    .game-title {
+      font-size: 1.8rem;
+    }
+  
+    .item-icon,
+    .item-placeholder {
+      width: 60px;
+      height: 60px;
+    }
+  
+    .plus-sign,
+    .equals-sign {
+      font-size: 1.5rem;
+    }
+  
+    .item-selection button {
+      font-size: 0.9rem;
+      padding: 8px 12px;
+    }
+  
+    .mic-button img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
+  /* 정답 메시지 스타일 */
+.correct-message {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff6b6b;
+    text-align: center;
+    margin-top: 20px;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  /* 정답 메시지 페이드인 효과 */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
