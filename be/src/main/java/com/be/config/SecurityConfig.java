@@ -86,14 +86,18 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:5173")); // 클라이언트 URL (프론트엔드)
+		configuration.setAllowedOrigins(
+			List.of("http://localhost:3000", "http://localhost:5173", "http://192.168.0.4:5173")); // 클라이언트 URL (프론트엔드)
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);
+
+		// ✅ WebSocket 관련 헤더 허용
+		configuration.setExposedHeaders(
+			List.of("Sec-WebSocket-Accept", "Sec-WebSocket-Protocol", "Access-Control-Allow-Origin"));
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
-
 }

@@ -25,6 +25,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final TokenExtractorService tokenExtractorService;
 
 	@Override
+
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+		FilterChain filterChain) throws ServletException, IOException {
+		filterChain.doFilter(request, response); // JWT 검증 없이 바로 다음 필터로 이동
+		System.out.println("여기 들어옴");
+		System.out.println("⏭️ 다음 필터 실행 완료: " + request.getRequestURI());
+
 	protected void doFilterInternal(
 		@NonNull HttpServletRequest request,
 		@NonNull HttpServletResponse response,
@@ -73,5 +80,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 		// 다음 필터로 진행
 		filterChain.doFilter(request, response);
+
 	}
 }
