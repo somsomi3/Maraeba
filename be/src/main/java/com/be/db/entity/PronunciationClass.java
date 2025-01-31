@@ -28,4 +28,7 @@ public class PronunciationClass extends BaseEntity {
 
 	@OneToMany(mappedBy = "pronunciationClass")
 	private List<PronunciationHistory> pronunciationHistories;
+
+	@OneToMany(mappedBy = "pronunciationClass")
+	private List<PronunciationStat> pronunciationStats;
 }
