@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 
 	private User findUserById(long id) {
+		System.out.println("id : "+id);
 		return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 	}
 

@@ -104,22 +104,30 @@ public class AuthServiceImpl implements AuthService {
 		if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException();
 		}
-
-		//이미 refresh_token 값이 있다면 지움
-		refreshTokenRepository.findByUserId(user.getId()).ifPresent(refreshTokenRepository::delete);
 		
 		//accessToken 및 refreshToken 발급
 		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
 		System.out.println("토큰 발급");
 		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(user.getId(), TokenType.REFRESH_TOKEN);
 
-		//refreshToken DB 저장
-		RefreshToken newRefreshToken = new RefreshToken();
-		newRefreshToken.setUser(user);
-		newRefreshToken.setToken(refreshTokenWithExpiration.getToken());
-		newRefreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-		refreshTokenRepository.save(newRefreshToken);
+		// 기존 Refresh Token이 있는지 확인
+		RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
+		if(refreshToken != null) {
+			// 기존 객체의 토큰 값을 변경하고 업데이트
+			refreshToken.setToken(refreshTokenWithExpiration.getToken());
+			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		} else {
+			//refreshToken DB 저장
+			refreshToken = new RefreshToken();
+			refreshToken.setUser(user);
+			refreshToken.setToken(refreshTokenWithExpiration.getToken());
+			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
+				.toInstant()
+				.atZone(ZoneId.systemDefault())
+				.toLocalDateTime());
+			refreshTokenRepository.save(refreshToken);
+		}
 		return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
 	}
 

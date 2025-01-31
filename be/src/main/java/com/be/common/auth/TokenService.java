@@ -10,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.be.common.exception.BlackTokenException;
 import com.be.db.entity.AccessTokenBlacklist;
 import com.be.db.repository.AccessTokenBlacklistRepository;
 
@@ -82,10 +83,10 @@ public class TokenService {
 	 * 토큰 유효 검사
 	 */
 	public boolean validateToken(String token) {
+		if (isBlacklisted(token)) {
+			throw new BlackTokenException();
+		}
 		try {
-			if (isBlacklisted(token)) {
-				return false;
-			}
 			Jwts.parser()
 				.verifyWith(key)
 				.build()

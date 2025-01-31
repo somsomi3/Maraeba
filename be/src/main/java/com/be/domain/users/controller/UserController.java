@@ -2,6 +2,7 @@ package com.be.domain.users.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,7 +40,8 @@ public class UserController {
 	})
 	@GetMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> getCurrentUser(
-		@AuthenticationPrincipal Long id) {
+		@AuthenticationPrincipal UserDetails userDetails) {
+		Long id = Long.parseLong(userDetails.getUsername());
 		GetCurrentUserResponse getCurrentUserResponse = userService.getCurrentUser(id);
 		return ResponseEntity.status(getCurrentUserResponse.getStatus()).body(getCurrentUserResponse);
 	}
@@ -53,8 +55,9 @@ public class UserController {
 	})
 	@PatchMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> updateUser(
-		@AuthenticationPrincipal Long id,
+		@AuthenticationPrincipal UserDetails userDetails,
 		@Valid @RequestBody UserUpdateRequest request) {
+		Long id = Long.parseLong(userDetails.getUsername());
 		userService.updateUser(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("User information updated successfully.", 200));
 	}
@@ -68,8 +71,9 @@ public class UserController {
 	})
 	@PatchMapping("/me/password")
 	public ResponseEntity<? extends BaseResponseBody> updatePassword(
-		@AuthenticationPrincipal Long id,
+		@AuthenticationPrincipal UserDetails userDetails,
 		@Valid @RequestBody PasswordUpdateRequest request) {
+		Long id = Long.parseLong(userDetails.getUsername());
 		userService.updatePassword(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("Password updated successfully.", 200));
 	}
@@ -83,8 +87,9 @@ public class UserController {
 	})
 	@DeleteMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> deleteUser(
-		@AuthenticationPrincipal Long id,
+		@AuthenticationPrincipal UserDetails userDetails,
 		@Valid @RequestBody PasswordRequest request) {
+		Long id = Long.parseLong(userDetails.getUsername());
 		userService.deleteUser(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", 200));
 	}

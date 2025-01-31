@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.be.common.exception.BlackTokenException;
 import com.be.common.exception.DuplicateEmailException;
 import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.PasswordMismatchException;
@@ -42,6 +43,13 @@ public class GlobalExceptionHandler {
 		return ResponseEntity
 			.status(HttpStatus.CONFLICT) // 409 Conflict
 			.body(BaseResponseBody.of(e.getMessage(), HttpStatus.CONFLICT.value()));
+	}
+
+	@ExceptionHandler(BlackTokenException.class)
+	public ResponseEntity<BaseResponseBody> handleBlackTokenException(BlackTokenException e) {
+		return ResponseEntity
+			.status(HttpStatus.FORBIDDEN) // 403 Forbidden
+			.body(BaseResponseBody.of(e.getMessage(), HttpStatus.FORBIDDEN.value()));
 	}
 
 	@ExceptionHandler(Exception.class)
