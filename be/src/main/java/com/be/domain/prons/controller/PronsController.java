@@ -17,6 +17,8 @@ import com.be.domain.prons.service.PronsService;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.UUID;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -44,15 +46,15 @@ public class PronsController {
 
 	// 특정 수업 학습자료 가져오기
 	@GetMapping("/class/{class_id}")
-	public GetClassDataRes getClassData(@NotBlank @PathVariable("class_id") Long classId) {
+	public GetClassDataRes getClassData(@NotNull @PathVariable("class_id") Long classId) {
 		List<PronunciationDataDTO> dataDTOS = pronsService.getClassData(classId);
 		return new GetClassDataRes("Success", HttpStatus.OK, dataDTOS);
 	}
 
 	// 특정 수업 특정 발음 자료 가져오기
 	@GetMapping("/class/{class_id}/seq/{seq_id}")
-	public GetSpecificDataRes getSpecificData(@NotBlank @PathVariable("class_id") Long classId,
-		@PathVariable("seq_id") Integer sequence) {
+	public GetSpecificDataRes getSpecificData(@NotNull @PathVariable("class_id") Long classId,
+		@NotNull @PathVariable("seq_id") Integer sequence) {
 		PronunciationDataDTO dataDTO = pronsService.getSpecificData(classId, sequence);
 		return new GetSpecificDataRes("Success", HttpStatus.OK, dataDTO);
 	}
