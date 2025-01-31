@@ -56,7 +56,7 @@ public class AuthController {
 		@RequestParam @Parameter(description = "중복 확인할 사용자 ID", required = true)
 		String userId) {
 		CheckUserIdResponse response = authService.checkUserId(userId);
-		return ResponseEntity.status(response.getStatus()).body(response);
+		return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
 
 	@Operation(summary = "이메일 중복 검사", description = "사용자의 이메일 중복 여부를 확인합니다.")
@@ -69,7 +69,7 @@ public class AuthController {
 		@RequestParam @Parameter(description = "중복 확인할 이메일", required = true)
 		String email) {
 		CheckEmailResponse response = authService.checkEmail(email);
-		return ResponseEntity.status(response.getStatus()).body(response);
+		return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
 
 	@Operation(summary = "로그인", description = "사용자의 로그인 요청을 처리합니다.")
@@ -84,7 +84,7 @@ public class AuthController {
 		@Valid @RequestBody @Parameter(description = "로그인 요청 데이터", required = true)
 		LoginRequest request) {
 		LoginResponse response = authService.login(request);
-		return ResponseEntity.status(response.getStatus()).body(response);
+		return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
 
 	@Operation(summary = "Access Token 갱신", description = "만료된 Access Token을 Refresh Token을 통해 갱신합니다.")

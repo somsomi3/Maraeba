@@ -38,6 +38,7 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+
 	//AuthenticationManager 설정 (로그인 시 필요)
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -94,4 +95,5 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
+
 }

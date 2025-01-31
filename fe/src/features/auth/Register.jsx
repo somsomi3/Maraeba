@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../utils/api';
+import { springApi } from '../../utils/api';
 import './index.css'; // 기존 CSS 유지
 
 const Register = () => {
@@ -33,7 +33,7 @@ const Register = () => {
       return;
     }
 
-    api
+    springApi
       .post('/auth/check-user-id', { user_id: formData.user_id })
       .then((response) => {
         alert(response.data.message || '사용 가능한 아이디입니다.');
@@ -71,7 +71,7 @@ const Register = () => {
     }
 
     // 서버로 데이터 전송
-    api
+    springApi
       .post('/auth/register', formData)
       .then((response) => {
         // 성공 시

@@ -369,4 +369,45 @@ src
 
     `npm list react-router-dom`
 
-    
+
+---
+#### API 호출
+
+- flask API 요청
+
+    ```js
+    import { flaskApi } from './api';
+
+    flaskApi.get('/some-flask-endpoint')
+    .then((response) => {
+        console.log('Flask API response:', response.data);
+    })
+    .catch((error) => {
+        console.error('Flask API error:', error);
+    });
+    ```
+
+- spring API 요청
+
+    ```js
+    import { springApi } from './api';
+
+    springApi.get('/some-spring-endpoint')
+    .then((response) => {
+        console.log('Spring API response:', response.data);
+    })
+    .catch((error) => {
+        console.error('Spring API error:', error);
+    });
+    ```
+
+
+
+
++ 해결해야할 것 
+
+1. 발음 학습 후 녹음된 파일 저장할 건지 or 서버로만 보내는지 
+
+2. 백엔드 서버 실행시키고 싶어요?
+
+3. 

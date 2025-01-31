@@ -1,5 +1,6 @@
 package com.be.domain.users.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,7 +44,7 @@ public class UserController {
 		@AuthenticationPrincipal UserDetails userDetails) {
 		Long id = Long.parseLong(userDetails.getUsername());
 		GetCurrentUserResponse getCurrentUserResponse = userService.getCurrentUser(id);
-		return ResponseEntity.status(getCurrentUserResponse.getStatus()).body(getCurrentUserResponse);
+		return ResponseEntity.status(getCurrentUserResponse.getStatusCode()).body(getCurrentUserResponse);
 	}
 
 	@Operation(summary = "사용자 정보 수정", description = "사용자의 이메일 또는 이름을 변경합니다.")
@@ -59,7 +60,7 @@ public class UserController {
 		@Valid @RequestBody UserUpdateRequest request) {
 		Long id = Long.parseLong(userDetails.getUsername());
 		userService.updateUser(id, request);
-		return ResponseEntity.ok(BaseResponseBody.of("User information updated successfully.", 200));
+		return ResponseEntity.ok(BaseResponseBody.of("User information updated successfully.", HttpStatus.OK));
 	}
 
 	@Operation(summary = "비밀번호 변경", description = "사용자의 비밀번호를 변경합니다.")
@@ -75,7 +76,7 @@ public class UserController {
 		@Valid @RequestBody PasswordUpdateRequest request) {
 		Long id = Long.parseLong(userDetails.getUsername());
 		userService.updatePassword(id, request);
-		return ResponseEntity.ok(BaseResponseBody.of("Password updated successfully.", 200));
+		return ResponseEntity.ok(BaseResponseBody.of("Password updated successfully.", HttpStatus.OK));
 	}
 
 	@Operation(summary = "회원 탈퇴", description = "사용자가 계정을 삭제합니다.")
@@ -91,6 +92,6 @@ public class UserController {
 		@Valid @RequestBody PasswordRequest request) {
 		Long id = Long.parseLong(userDetails.getUsername());
 		userService.deleteUser(id, request);
-		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", 200));
+		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", HttpStatus.OK));
 	}
 }

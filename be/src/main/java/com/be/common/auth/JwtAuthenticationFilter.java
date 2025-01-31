@@ -42,6 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
+
 		// /auth 관련 요청(logout제외)은 필터를 그냥 통과시킴
 		if (requestURI.startsWith("/auth") && !requestURI.equals("/auth/logout")) {
 			System.out.println("/auth 관련 요청(logout제외)은 필터를 그냥 통과시킴");
