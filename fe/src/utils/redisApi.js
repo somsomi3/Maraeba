@@ -1,16 +1,8 @@
 import axios from 'axios';
 
-// Flask API 인스턴스 생성
-const flaskApi = axios.create({
-  baseURL: import.meta.env.VITE_FLASK_API_URL, // Flask 서버의 API 기본 URL
-  headers: {
-    'Content-Type': 'application/json', // 기본 헤더 설정
-  },
-});
-
-// Spring API 인스턴스 생성
-const springApi = axios.create({
-  baseURL: import.meta.env.VITE_SPRING_API_URL, // Spring 서버의 API 기본 URL
+// Redis API 인스턴스 생성
+const redisApi = axios.create({
+  baseURL: import.meta.env.VITE_REDIS_API_URL, // Redis 서버의 API URL (이 URL은 REST API 형태로 Redis와 상호작용하는 서버여야 함)
   headers: {
     'Content-Type': 'application/json', // 기본 헤더 설정
   },
@@ -62,11 +54,31 @@ const handleResponseError = async (error) => {
 };
 
 // 요청 인터셉터 추가
-flaskApi.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
-springApi.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
+redisApi.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
 
 // 응답 인터셉터 추가
-flaskApi.interceptors.response.use((response) => response, handleResponseError);
-springApi.interceptors.response.use((response) => response, handleResponseError);
+redisApi.interceptors.response.use((response) => response, handleResponseError);
 
-export { flaskApi, springApi };
+// Redis와 상호작용하는 함수 예시
+const getRedisData = async (key) => {
+  try {
+    const response = await redisApi.get(`/redis/data/${key}`); // Redis에 GET 요청
+    return response.data;
+  } catch (error) {
+    console.error('Redis API 요청 실패:', error);
+    throw error;
+  }
+};
+
+// Redis에 데이터 설정 예시
+const setRedisData = async (key, value) => {
+  try {
+    const response = await redisApi.post('/redis/data', { key, value }); // Redis에 POST 요청
+    return response.data;
+  } catch (error) {
+    console.error('Redis API 요청 실패:', error);
+    throw error;
+  }
+};
+
+export { redisApi, getRedisData, setRedisData };

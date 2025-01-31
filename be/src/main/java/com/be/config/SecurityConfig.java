@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.be.common.auth.JwtAuthenticationEntryPoint;
 import com.be.common.auth.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	//비밀번호 암호화 설정
 	@Bean
@@ -36,10 +38,10 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
+
 	//AuthenticationManager 설정 (로그인 시 필요)
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws
-		Exception {
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
@@ -49,16 +51,33 @@ public class SecurityConfig {
 		http
 			.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화 (JWT 사용 시 필요)
 			.cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정 추가
-			.sessionManagement(
-				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용을 위한 세션 정책
+			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용을 위한 세션 정책
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight 요청 허용
-				.requestMatchers("/auth/check-user-id", "/auth/check-email", "/auth/login", "/auth/register",
-					"/auth/social", "/auth/token", "/WebRTC/**","/sessions/**").permitAll()
-				.requestMatchers("/auth/logout").authenticated()
-				.anyRequest().authenticated()
+				.requestMatchers( // Swagger 관련 허용
+					"/swagger",
+					"/swagger-ui.html",
+					"/swagger-ui/**",
+					"/api-docs",
+					"/api-docs/**",
+					"/v3/api-docs/**",
+					"/swagger-resources/**",
+					"/webjars/**"
+				).permitAll()
+				.requestMatchers( // 로그인&회원가입 관련 허용
+					"/auth/check-user-id",
+					"/auth/check-email",
+					"/auth/login",
+					"/auth/register",
+					"/auth/social",
+					"/auth/token"
+				).permitAll()
+				.requestMatchers("/error").permitAll()
+				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
 			)
-
+			.exceptionHandling(exception -> exception
+				.authenticationEntryPoint(jwtAuthenticationEntryPoint)  // 인증 실패 (999) 처리
+			)
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 		return http.build();
 	}
