@@ -1,12 +1,12 @@
 package com.be.db.entity;
 
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import java.util.List;
-
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,4 +37,7 @@ public class User extends BaseEntity {
 	// 관계
 	@OneToMany(mappedBy = "user")
 	private List<PronunciationHistory> pronunciationHistories;
+
+	@OneToMany(mappedBy = "user")
+	private List<PronunciationStat> pronunciationStats;
 }
