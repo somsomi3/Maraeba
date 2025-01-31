@@ -11,10 +11,12 @@ import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
 import com.be.db.entity.PronunciationClass;
 import com.be.db.entity.PronunciationHistory;
+import com.be.db.entity.PronunciationStat;
 import com.be.db.entity.User;
 import com.be.db.repository.PronunciationClassRepository;
 import com.be.db.repository.PronunciationDataRepository;
 import com.be.db.repository.PronunciationHistoryRepository;
+import com.be.db.repository.PronunciationStatRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
@@ -30,6 +32,7 @@ public class PronsServiceImpl implements PronsService {
 	private final PronunciationClassRepository pronunciationClassRepository;
 	private final PronunciationDataRepository pronunciationDataRepository;
 	private final PronunciationHistoryRepository pronunciationHistoryRepository;
+	private final PronunciationStatRepository pronunciationStatRepository;
 	private final RedisTemplate<String, PronunciationSessionDTO> redisTemplate;
 
 	// 수업 리스트 반환
@@ -95,7 +98,7 @@ public class PronsServiceImpl implements PronsService {
 
 		if (session != null) {
 			User user = userRepository.findUserById(session.getUserId())
-				.orElseThrow(() ->new CustomException(ErrorCode.USER_NOT_FOUND));
+				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 			PronunciationClass pronunciationClass = pronunciationClassRepository.findPronunciationClassById(
 				session.getClassId()).orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
@@ -106,6 +109,16 @@ public class PronsServiceImpl implements PronsService {
 				avgSimilarity
 			);
 			pronunciationHistoryRepository.save(statistics);
+
+			// 현재 해당 클래스 히스토리 개수
+			int count = pronunciationHistoryRepository.countByUser_IdAndPronunciationClass_Id(session.getUserId(),
+				session.getClassId());
+
+			PronunciationStat stat = pronunciationStatRepository.findByUser_IdAndPronunciationClass_Id(
+				session.getUserId(),
+				session.getClassId()).orElseThrow(() -> new CustomException(ErrorCode.STAT_NOT_FOUND));
+			stat.setAverageSimilarity((float)(stat.getAverageSimilarity() + avgSimilarity / count));
+			pronunciationStatRepository.save(stat);
 		}
 	}
 

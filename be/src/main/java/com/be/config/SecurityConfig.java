@@ -73,7 +73,8 @@ public class SecurityConfig {
 					"/auth/social",
 					"/auth/token",
 					"/WebRTC/**",
-					"/sessions/**"
+					"/sessions/**",
+					"/prons/**"
 				).permitAll()
 				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
