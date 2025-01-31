@@ -19,31 +19,34 @@ import Conversation from "./features/conversation/Conversation";
 import ConversationStart from "./features/conversation/ConversationStart";
 import ChatBox from "./features/session/ChatBox"; // ✅ ChatBox 컴포넌트 추가
 import Webrtc from "./features/session/Webrtc.jsx";
+import CookingGame from "./features/wordgame/CookingGame"; 
+
 
 // 라우트 정의
 const router = createBrowserRouter(
-    createRoutesFromElements(
-        <>
-            <Route path="/" element={<App/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/register" element={<Register/>}/>
-            <Route path="/find-id" element={<FindId/>}/>
-            <Route path="/find-pw" element={<FindPw/>}/>
-            <Route path="/main" element={<Main/>}/>
-            <Route path="/single" element={<SingleMain/>}/>
-            <Route path="/prons" element={<PronsMain/>}/>
-            <Route path="/prons-first" element={<PronsFirst/>}/>
-            <Route path="/first-prac" element={<PronsFirstPrac/>}/>
-            <Route path="/prons-second" element={<PronsSecond/>}/>
-            <Route path="/second-prac" element={<PronsSecondPrac/>}/>
-            <Route path="/prons-third" element={<PronsThird/>}/>
-            <Route path="/third-prac" element={<PronsThirdPrac/>}/>
-            <Route path="/wgame" element={<WordMain/>}/>
-            <Route path="/conversation" element={<Conversation/>}/>
-            <Route path="/conversation/start" element={<ConversationStart/>}/>
-            <Route path="/multi" element={<MultiMain/>}/>
-            <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
-            <Route path="/session/webrtc" element={<Webrtc/>}/>
+  createRoutesFromElements(
+    <>
+      <Route path="/" element={<App />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/find-id" element={<FindId />} />
+      <Route path="/find-pw" element={<FindPw />} />
+      <Route path="/main" element={<Main />} />
+      <Route path="/single" element={<SingleMain />} />
+      <Route path="/prons" element={<PronsMain />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsFirstPrac />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsSecond />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsSecondPrac />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsThird />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsThirdPrac />} />
+      <Route path="/wgame" element={<WordMain/>}/>
+      <Route path="/conversation" element={<Conversation/>}/>
+      <Route path="/conversation/start" element={<ConversationStart/>}/>
+      <Route path="/multi" element={<MultiMain/>}/>
+      <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
+      <Route path="/session/webrtc" element={<Webrtc/>}/>
+      <Route path="/cooking-game" element={<CookingGame />} />
         </>
     )
 );

@@ -1,26 +1,37 @@
-  .logo {
-        display: block;
-        margin: 0 auto 20px; /* 가운데 정렬 및 아래 여백 */
-        width: 300px; /* 로고 크기 조정 */
-        height: auto;
-    }
-  /* 폼 컨테이너 */
-  .form-container {
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 300px;
+    height: auto;
+}
+
+/* 폼 컨테이너 */
+.form-container {
     padding: 10px;
     border-radius: 12px;
     width: 380px;
     text-align: center;
-  }
-  
-  /* 입력 그룹 */
-  .input-group {
+}
+
+/* 입력 그룹 */
+.input-group {
     margin-bottom: 10px;
-  }
-  
+    display: flex;
+    flex-direction: column;
+}
 
+/* ID, 이메일 입력 필드와 버튼을 나란히 배치 */
+.inline-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-  /* 입력 필드 */
-  .input {
+.inline-group .input {
+    flex: 1; /* 남은 공간을 입력창이 차지하도록 */
+}
+
+.input {
     width: 100%;
     padding: 18px;
     font-size: 18px;
@@ -28,14 +39,14 @@
     border-radius: 10px;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
-  }
-  
-  /* 버튼 */
-  .button {
+}
+
+/* 버튼 */
+.auth-button {
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    background-color: #7cc6ce; 
+    background-color: #7cc6ce;
     color: white;
     border: none;
     border-radius: 10px;
@@ -43,37 +54,37 @@
     font-weight: bold;
     transition: background-color 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  }
-  
-  .button:hover {
-    background-color: #5dade2; /* 호버 시 진한 파랑 */
-  }
-  
-  /* 링크 버튼 */
-  .secondary-button {
+}
+
+.auth-button:hover {
+    background-color: #5dade2;
+}
+
+/* 링크 버튼 */
+.secondary-button {
     margin-top: 10px;
     font-size: 14px;
     font-weight: bold;
     background: none;
     border: none;
     cursor: pointer;
-    text-decoration: none; /* 밑줄 제거 */
-    outline: none; /* 클릭 시 외곽선 제거 */
-  }
+    text-decoration: none;
+    outline: none;
+}
 
-  .small-button {
-    font-size: 0.8rem; /* 작아진 폰트 크기 */
-    padding: 5px 10px; /* 작은 크기의 버튼 패딩 */
-    margin-top: 10px;
-    background-color: #4CAF50; /* 원하는 색상으로 변경 */
+/* 작은 버튼 (중복 검사 버튼) */
+.small-button {
+    font-size: 0.8rem;
+    padding: 12px 15px; /* 버튼 패딩 조정 */
+    background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-  }
-  
-  .small-button:hover {
-    background-color: #45a049; /* 호버 시 색상 변경 */
-  }
-  
-  
+    white-space: nowrap;
+    flex-shrink: 0; /* 버튼 크기 고정 */
+}
+
+.small-button:hover {
+    background-color: #45a049;
+}

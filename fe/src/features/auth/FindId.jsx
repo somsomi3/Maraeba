@@ -24,7 +24,7 @@ const FindId = () => {
             required
           />
         </div>
-        <button className="button" type="submit">
+        <button className="auth-button" type="submit">
           아이디 찾기
         </button>
       </form>
