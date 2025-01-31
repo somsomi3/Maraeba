@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // React Router의 useNavigate 훅
-import api from '../../utils/api'; // Axios 인스턴스 불러오기
+import { springApi } from '../../utils/api'; // Axios 인스턴스 불러오기
 import './index.css';
 import logo from '../../assets/logo.png'; // 로고 이미지 경로
 
@@ -28,7 +28,7 @@ const Login = () => {
       return;
     }
 
-    api
+    springApi
       .post('/auth/login', formData)
       .then((response) => {
         // 성공 시

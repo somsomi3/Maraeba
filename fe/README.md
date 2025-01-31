@@ -369,7 +369,40 @@ src
 
     `npm list react-router-dom`
 
-    
+
+---
+#### API 호출
+
+- flask API 요청
+
+    ```js
+    import { flaskApi } from './api';
+
+    flaskApi.get('/some-flask-endpoint')
+    .then((response) => {
+        console.log('Flask API response:', response.data);
+    })
+    .catch((error) => {
+        console.error('Flask API error:', error);
+    });
+    ```
+
+- spring API 요청
+
+    ```js
+    import { springApi } from './api';
+
+    springApi.get('/some-spring-endpoint')
+    .then((response) => {
+        console.log('Spring API response:', response.data);
+    })
+    .catch((error) => {
+        console.error('Spring API error:', error);
+    });
+    ```
+
+
+
 
 + 해결해야할 것 
 
