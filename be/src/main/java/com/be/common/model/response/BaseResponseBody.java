@@ -1,19 +1,26 @@
 package com.be.common.model.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 /**
  * 서버 요청에 대한 기본 응답값(바디) 정의
  */
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseResponseBody {
-	private String message = null;
-	private Integer statusCode = null;
+	@Schema(description = "응답 메시지", example = "메시지")
+	private String message;
+	@Schema(description = "HTTP 응답 코드", example = "Integer")
+	private Integer statusCode;
 
-	public BaseResponseBody() {
+	//정적 팩토리 메서드, 주어진 값으로 객체를 반환
+	public static BaseResponseBody of(String message, Integer statusCode) {
+		return new BaseResponseBody(message, statusCode);
 	}
 
 	public BaseResponseBody(HttpStatus statusCode) {

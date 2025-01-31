@@ -2,36 +2,53 @@ package com.be.domain.users.response;
 
 import java.time.LocalDateTime;
 
-import org.springframework.http.HttpStatus;
-
 import com.be.common.model.response.BaseResponseBody;
 import com.be.db.entity.User;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class GetCurrentUserResponse extends BaseResponseBody {
-	Long id;
-	String userId;
-	String email;
-	String username;
-	String provider;
-	LocalDateTime createDate;
-	LocalDateTime modifyDate;
+	@Schema(description = "사용자 ID (PK)", example = "1")
+	private Long id;
+	@Schema(description = "사용자 계정 ID", example = "john_doe123", name = "user_id")
+	private String userId;
+	@Schema(description = "사용자 이메일", example = "user@example.com")
+	private String email;
+	@Schema(description = "사용자 이름", example = "John Doe")
+	private String username;
+	@Schema(description = "소셜 로그인 제공자 (LOCAL, GOOGLE, NAVER 등)", example = "LOCAL")
+	private String provider;
+	@Schema(description = "계정 생성 일자", example = "2025-01-31T12:34:56", name = "created_at")
+	private LocalDateTime createdAt;
+	@Schema(description = "계정 정보 수정 일자", example = "2025-02-01T15:20:30", name = "updated_at")
+	private LocalDateTime updatedAt;
 
-	public static GetCurrentUserResponse from(User user, String message, HttpStatus status) {
-		GetCurrentUserResponse response = new GetCurrentUserResponse();
-		response.setMessage(message);
-		response.setStatusCode(status.value());
-		response.id = user.getId();
-		response.userId = user.getUserId();
-		response.email = user.getEmail();
-		response.username = user.getUsername();
-		response.provider = user.getProvider();
-		response.createDate = user.getCreatedAt();
-		response.modifyDate = user.getUpdatedAt();
-		return response;
+	private GetCurrentUserResponse(String message, Integer status, Long id, String userId, String email, String username, String provider, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		super(message, status);
+		this.id = id;
+		this.userId = userId;
+		this.email = email;
+		this.username = username;
+		this.provider = provider;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+
+	public static GetCurrentUserResponse from(User user) {
+		return new GetCurrentUserResponse(
+			"User data retrieved successfully",
+			200,
+			user.getId(),
+			user.getUserId(),
+			user.getEmail(),
+			user.getUsername(),
+			user.getProvider(),
+			user.getCreatedAt(),
+			user.getUpdatedAt()
+		);
 	}
 }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RefreshToken extends BaseEntity {
-	@ManyToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@OneToOne
+	@JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
 	private User user;
 	private String token;
 	private LocalDateTime expiryDate;
