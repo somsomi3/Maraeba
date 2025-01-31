@@ -11,6 +11,7 @@ import StageTwo from './components/SingleMode/StageTwo';
 import StageThree from './components/SingleMode/StageThree';
 import MultiMode from './components/MultiMode';
 import WordGame from './components/SingleMode/StageTwo/WordGame';
+import FindGame from './components/SingleMode/StageTwo/WordGame2';
 function App() {
   return (
     <Router>
@@ -27,6 +28,7 @@ function App() {
           <Route path='/stage-three' element={<StageThree />} />
           <Route path='/multi' element={<MultiMode />} />
           <Route path='/word-game' element={<WordGame />} />
+          <Route path='/find-animal' element={<FindGame />} />
         </Routes>
       </div>
     </Router>

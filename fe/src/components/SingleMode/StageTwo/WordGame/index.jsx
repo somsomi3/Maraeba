@@ -71,7 +71,7 @@ const WordGame = () => {
         if (gameData.item2) formData.append("item2", gameData.item2);
         try {
             const response = await fetch(
-                "http://localhost:8080/maraeba/cook-game/is-correct",
+                "http://localhost:8081/maraeba/cook-game/is-correct",
                 {
                     method: "POST",
                     body: formData,
@@ -80,8 +80,8 @@ const WordGame = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log(result);
-                if (result.ifCorrect) {
+                console.log('정답 검증 응답: ', result.item);
+                if (result.if_correct) {
                     if (result.cnt === 1) {
                         setGameData((prevState) => ({
                             ...prevState,
@@ -102,41 +102,49 @@ const WordGame = () => {
         }
     };
 
-    // 게임 시작 POST 요청
-    const newFood = async () => {
-        try {
-            const response = await fetch(
-                "http://localhost:8080/maraeba/cook-game/start-game",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Credentials": true,
-                    },
-                }
-            );
-            const result = await response.json();
-            const shuffledItems = shuffleArray(result.foodItems);
+// 게임 시작 POST 요청
+const newFood = async () => {
+    try {
+        const response = await fetch(
+            "http://localhost:8081/maraeba/cook-game/start-game",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({}) // 필요한 데이터 추가 (빈 객체로 보내도 됨)
+            }
+        );
+
+        const data = await response.json();
+        console.log("응답 데이터:", data);
+
+        // food_items가 있을 경우만 배열을 섞음
+        if (data.food_items && Array.isArray(data.food_items)) {
+            const shuffledItems = shuffleArray(data.food_items); // 배열을 섞어 shuffledItems에 저장
 
             setGameData({
-                foodName: result.foodName || "",
+                foodName: data.food_name || "",
                 item1: null,
                 item2: null,
-                itemList: shuffledItems,
+                itemList: shuffledItems, // 섞인 배열을 itemList에 저장
             });
-        } catch (error) {
-            console.log("게임 시작 데이터 로드 실패:", error);
+        } else {
+            console.log("food_items 배열이 존재하지 않거나 유효하지 않습니다.");
         }
-    };
+    } catch (error) {
+        console.log("게임 시작 데이터 로드 실패:", error);
+    }
+};
 
-    // 배열 랜덤 섞기 함수
-    const shuffleArray = (array) => {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]]; // 배열 요소 교환
-        }
-        return array;
-    };
+// 배열 랜덤 섞기 함수
+const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // 배열 요소 교환
+    }
+    return array;
+};
 
     // 타이머 설정
     useEffect(() => {

@@ -1,92 +1,57 @@
 package com.be.db;
 
-import com.be.db.entity.AnimalGame;
-import com.be.db.entity.FoodGame;
-import com.be.db.entity.FoodItem;
-import com.be.db.repository.AnimalCorrectRepository;
-import com.be.db.repository.AnimalGameRepository;
-import com.be.db.repository.FoodGameRepository;
-import com.be.db.repository.FoodItemRepository;
+import com.be.db.entity.*;
+import com.be.db.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import java.util.List;
 
 @Component
 public class AnimalDataLoader {
-
-    @Autowired
-    private FoodGameRepository foodGameRepository;
-
-    @Autowired
-    private FoodItemRepository foodItemRepository;
-
     @Autowired
     private AnimalGameRepository animalGameRepository;
 
     @Autowired
-    private AnimalCorrectRepository animalCorrectRepository;
+    private AnimalListRepository animalListRepository;
 
+    @Autowired
+    private AnimalCorrectRepository animalCorrectRepository;
 
     @PostConstruct
     public void init() {
         System.out.println("데이터 저장!");
 
-        if (animalGameRepository.count() == 0) {
+        // 1️⃣ animal_game 테이블에 ID=1인 데이터 추가
+        AnimalGame animalGame = animalGameRepository.findById(1).orElseGet(() ->
+                animalGameRepository.save(AnimalGame.builder()
+                        .image("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\img\\image.png")
+                        .build()));
 
-            animalGameRepository.save(AnimalGame.builder().image("1").build());
-            animalGameRepository.save(AnimalGame.builder().image("2").build());
-            animalGameRepository.save(AnimalGame.builder().image("3").build());
-            animalGameRepository.save(AnimalGame.builder().image("4").build());
-            animalGameRepository.save(AnimalGame.builder().image("5").build());
+        // 2️⃣ animal_list 테이블에 3개의 동물 추가
+        if (animalListRepository.count() == 0) {
+            List<AnimalList> animalLists = List.of(
+                    AnimalList.builder().animalName("사슴").animalImage("deer.png").build(),
+                    AnimalList.builder().animalName("호랑이").animalImage("tiger.png").build(),
+                    AnimalList.builder().animalName("코끼리").animalImage("elephant.png").build()
+            );
+            animalListRepository.saveAll(animalLists);
         }
 
-        if (foodItemRepository.count() == 0) {
-            FoodItem foodItem1 = FoodItem.builder()
-                    .ingredientName("사과").build();
-
-            FoodItem foodItem2 = FoodItem.builder()
-                    .ingredientName("파이 반죽").build();
-            foodItemRepository.save(foodItem1);
-            foodItemRepository.save(foodItem2);
-
-            foodItemRepository.save(FoodItem.builder().ingredientName("감자").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("기름").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("우유").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("밀가루").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("당근").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("고기").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("빵가루").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("부추").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("딸기").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("꿀").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("면").build());
-            foodItemRepository.save(FoodItem.builder().ingredientName("설탕").build());
+        // 3️⃣ animal_correct 테이블에 정답 데이터 추가 (game_id = 1)
+        List<AnimalList> animals = animalListRepository.findAll();
+        if (animalCorrectRepository.count() == 0 && !animals.isEmpty()) {
+            List<AnimalCorrect> correctAnswers = List.of(
+                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(0).getId())
+                            .locationX(100).locationY(200).build(),
+                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(1).getId())
+                            .locationX(300).locationY(400).build(),
+                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(2).getId())
+                            .locationX(500).locationY(600).build()
+            );
+            animalCorrectRepository.saveAll(correctAnswers);
         }
 
-        if (foodGameRepository.count() == 0) {
-            FoodGame foodGame = FoodGame.builder()
-                    .resultImage("이미지 예시 링크")
-                    .resultName("사과 파이")
-                    .foodItem1(foodItemRepository.findByIngredientName("사과"))
-                    .foodItem2(foodItemRepository.findByIngredientName("파이 반죽"))
-                    .build();
-            foodGameRepository.save(foodGame);
-
-            foodGame = FoodGame.builder()
-                    .resultImage("이미지 예시 링크")
-                    .resultName("감자튀김")
-                    .foodItem1(foodItemRepository.findByIngredientName("감자"))
-                    .foodItem2(foodItemRepository.findByIngredientName("기름"))
-                    .build();
-            foodGameRepository.save(foodGame);
-
-            foodGame = FoodGame.builder()
-                    .resultImage("이미지 예시 링크")
-                    .resultName("돈까스")
-                    .foodItem1(foodItemRepository.findByIngredientName("빵가루"))
-                    .foodItem2(foodItemRepository.findByIngredientName("고기"))
-                    .build();
-            foodGameRepository.save(foodGame);
-        }
+        System.out.println("데이터 저장 완료!");
     }
 }

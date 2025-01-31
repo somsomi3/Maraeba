@@ -3,6 +3,7 @@ package com.be.domain.wgames.findAnimals.service;
 import com.be.db.entity.AnimalGame;
 import com.be.db.repository.AnimalCorrectRepository;
 import com.be.db.repository.AnimalGameRepository;
+import com.be.domain.wgames.AiTest;
 import com.be.domain.wgames.AudioConverter;
 import com.be.domain.wgames.cooks.service.ClovaSpeechClient;
 import com.be.domain.wgames.findAnimals.request.AnimalCorrectRequest;
@@ -11,6 +12,7 @@ import com.be.domain.wgames.findAnimals.response.AnimalResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,8 +31,8 @@ public class FindGameServiceImpl implements FindGameService {
 
     private final AnimalGameRepository animalGameRepository;
     private final AnimalCorrectRepository animalCorrectRepository;
-    private final ClovaSpeechClient speechClient;
     private final AudioConverter convertWebMToWav;
+    private final AiTest aiTest;
 
     @Override
     public AnimalResponse pickAnimal() throws IOException {
@@ -44,6 +46,7 @@ public class FindGameServiceImpl implements FindGameService {
 
         // 3. response 생성 후 반환
         AnimalResponse animalResponse = new AnimalResponse();
+        animalResponse.setImageNumber(animalGame.getId());
         animalResponse.setImageData(imageBytes);
 
 
@@ -74,48 +77,23 @@ public class FindGameServiceImpl implements FindGameService {
 
         //webm에서 wav로 인코딩
         convertWebMToWav.convertWebMToWav(fullPathName + ".webm", fullPathName + ".wav");
-
-        // 저장된 파일을 다시 File 객체로 불러오기
-        File audioFile = new File(fullPathName + ".wav");
-
-        try {
-            AudioFileFormat fileFormat = AudioSystem.getAudioFileFormat(audioFile);
-            System.out.println("File Format: " + fileFormat.getType());
-        } catch (UnsupportedAudioFileException e) {
-            System.out.println("Invalid audio file format");
-        }
-
-        // ClovaSpeechClient 사용하여 처리
-        ClovaSpeechClient.Diarization diarization = new ClovaSpeechClient.Diarization();
-        diarization.setEnable(false); // 화자 감지 활성화 (안하면 오류남)
-        ClovaSpeechClient.NestRequestEntity nestRequestEntity = new ClovaSpeechClient.NestRequestEntity();
-        nestRequestEntity.setDiarization(diarization);
-        String result = speechClient.upload2(audioFile, nestRequestEntity);
-        System.out.println("Clova Speech API 결과: " + result);
-
-        //장문 API
-//        // JSON 파싱 및 "text" 필드 추출
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        JsonNode rootNode = objectMapper.readTree(result); // JSON 문자열 파싱
-//        String text = rootNode.path("segments").get(0).path("text").asText(); // 첫 번째 segment의 "text"
-
-        //단문 API
-        // JSON 파싱 및 "text" 필드 추출
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode rootNode = objectMapper.readTree(result); // JSON 문자열 파싱
-        String text = rootNode.path("text").asText(); // "text" 필드 추출
+        String text = aiTest.speechToText(new FileSystemResource(fullPathName + ".wav"));
 
         System.out.println("입력된 음성: " + text);
 
 
         //이미 정답을 맞춘 경우 (중복)
-        if (answerList.contains(text)) {
+        if (answerList != null && answerList.contains(text)) {
             response.setDuplication(true);
             return response;
         }
 
         //정답을 맞춘 경우
         List<String> list = animalCorrectRepository.findAnimalNamesByGameId(imageNumber);
+        System.out.println("사이즈: " + list.size());
+        for (String s : list) {
+            System.out.println(s);
+        }
         if (list.contains(text)) {
             response.setIfCorrect(true);
             response.setAnimalName(text);
