@@ -14,6 +14,7 @@ import { PronsMain, PronsFirst, PronsSecond, PronsThird, PronsFirstPrac, PronsSe
 import { WordMain } from './features/wordgame';
 import Conversation from "./features/conversation/Conversation";
 import ConversationStart from "./features/conversation/ConversationStart";
+import CookingGame from "./features/wordgame/CookingGame"; 
 
 
 // 라우트 정의
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
       <Route path="/conversation" element={<Conversation />} />
       <Route path="/conversation/start" element={<ConversationStart />} />
       <Route path="/multi" element={<MultiMain />} />
+      <Route path="/cooking-game" element={<CookingGame />} />
     </>
   )
 );
