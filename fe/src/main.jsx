@@ -28,12 +28,12 @@ const router = createBrowserRouter(
       <Route path="/main" element={<Main />} />
       <Route path="/single" element={<SingleMain />} />
       <Route path="/prons" element={<PronsMain />} />
-      <Route path="/prons-first" element={<PronsFirst />} />
-      <Route path="/first-prac" element={<PronsFirstPrac />} />
-      <Route path="/prons-second" element={<PronsSecond />} />
-      <Route path="/second-prac" element={<PronsSecondPrac />} />  
-      <Route path="/prons-third" element={<PronsThird />} />
-      <Route path="/third-prac" element={<PronsThirdPrac />} />  
+      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsFirstPrac />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsSecond />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsSecondPrac />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsThird />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsThirdPrac />} />
       <Route path="/wgame" element={<WordMain />} />
       <Route path="/conversation" element={<Conversation />} />
       <Route path="/conversation/start" element={<ConversationStart />} />

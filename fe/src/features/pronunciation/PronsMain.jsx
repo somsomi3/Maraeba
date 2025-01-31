@@ -15,25 +15,31 @@ const PronsMain = () => {
       <div className="card-slider">
         <div className="card">
           <h2>단모음</h2>
+          <span className="emoji">😃</span>
           <p>ㅏ, ㅓ, ㅗ, ㅜ, ㅡ, ㅣ</p>
+          <div className="divider"></div>
           <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
-          <button className="start-button" onClick={() => navigate('/prons-first')}>
+          <button className="start-button" onClick={() => navigate('/prons/class/1/seq/1')}>
             시작하기
           </button>
         </div>
         <div className="card">
           <h2>이중모음 1</h2>
+          <span className="emoji">😗</span>
           <p>ㅑ, ㅕ, ㅛ, ㅠ, ㅐ, ㅔ</p>
+          <div className="divider"></div>
           <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
-          <button className="start-button" onClick={() => navigate('/prons-second')}>
+          <button className="start-button" onClick={() => navigate('/prons/class/2/seq/1')}>
             시작하기
           </button>
         </div>
         <div className="card">
           <h2>이중모음 2</h2>
+          <span className="emoji">🤗</span>
           <p>ㅒ, ㅖ, ㅘ, ㅙ, ㅚ</p>
+          <div className="divider"></div>
           <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
-          <button className="start-button" onClick={() => navigate('/prons-third')}>
+          <button className="start-button" onClick={() => navigate('/prons/class/3/seq/1')}>
             시작하기
           </button>
         </div>

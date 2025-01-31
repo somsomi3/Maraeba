@@ -34,7 +34,7 @@ const FindPw = () => {
             required
           />
         </div>
-        <button className="button" type="submit">
+        <button className="auth-button" type="submit">
           비밀번호 찾기
         </button>
       </form>
