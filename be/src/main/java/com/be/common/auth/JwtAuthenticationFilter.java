@@ -25,13 +25,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final TokenExtractorService tokenExtractorService;
 
 	@Override
-
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain) throws ServletException, IOException {
-		filterChain.doFilter(request, response); // JWT 검증 없이 바로 다음 필터로 이동
-		System.out.println("여기 들어옴");
-		System.out.println("⏭️ 다음 필터 실행 완료: " + request.getRequestURI());
-
 	protected void doFilterInternal(
 		@NonNull HttpServletRequest request,
 		@NonNull HttpServletResponse response,
@@ -57,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		try{
+		try {
 			String token = tokenExtractorService.extractAccessToken(request);
 			System.out.println("Extracted Token: " + token);
 
@@ -73,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
-		} catch (Exception e){
+		} catch (Exception e) {
 			// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
 			System.out.println("JWT Filter Exception: " + e.getMessage());
 			// logger.error("Could not set user authentication in security context", e);

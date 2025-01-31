@@ -38,10 +38,10 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
-
 	//AuthenticationManager 설정 (로그인 시 필요)
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws
+		Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
@@ -51,7 +51,8 @@ public class SecurityConfig {
 		http
 			.csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화 (JWT 사용 시 필요)
 			.cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정 추가
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용을 위한 세션 정책
+			.sessionManagement(
+				session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 사용을 위한 세션 정책
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight 요청 허용
 				.requestMatchers( // Swagger 관련 허용
@@ -70,7 +71,9 @@ public class SecurityConfig {
 					"/auth/login",
 					"/auth/register",
 					"/auth/social",
-					"/auth/token"
+					"/auth/token",
+					"/WebRTC/**",
+					"/sessions/**"
 				).permitAll()
 				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
