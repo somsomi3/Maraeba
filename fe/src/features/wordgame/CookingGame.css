@@ -1,0 +1,105 @@
+/* 전체 게임 컨테이너 */
+.cooking-game-container {
+    background: url('../../assets/images/cooking_bg.png') no-repeat center center/cover;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  /* 오버레이 */
+  .game-overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+  }
+  
+  /* 일시 정지 버튼 */
+  .pause-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .pause-button img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  /* 게임 제목 */
+  .game-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px;
+  }
+  
+  /* 조합 UI */
+  .combination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .ingredient-icon {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .plus-sign,
+  .equals-sign {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  /* 재료 선택 */
+  .ingredient-selection {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+  }
+  
+  .ingredient-selection button {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .ingredient-selection button:hover {
+    background: #ffd700;
+  }
+  
+  /* 마이크 버튼 */
+  .mic-button {
+    position: absolute;
+    bottom: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .mic-button img {
+    width: 60px;
+    height: 60px;
+  }
+  
