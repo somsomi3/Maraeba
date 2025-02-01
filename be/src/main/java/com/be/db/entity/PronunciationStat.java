@@ -28,4 +28,7 @@ public class PronunciationStat extends BaseEntity {
 	@Column(nullable = false)
 	private Float averageSimilarity;
 
+	@Column(nullable = false)
+	private Integer count;
+
 }
