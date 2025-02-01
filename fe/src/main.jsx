@@ -10,12 +10,8 @@ import { FindId, FindPw, Login, Register } from "./features/auth";
 import { Main, MultiMain, SingleMain } from "./features/mainpage";
 import {
     PronsFirst,
-    PronsFirstPrac,
-    PronsMain,
     PronsSecond,
-    PronsSecondPrac,
-    PronsThird,
-    PronsThirdPrac,
+    PronsMain,
 } from "./features/pronunciation";
 import { WordMain } from "./features/wordgame";
 import Conversation from "./features/conversation/Conversation";
@@ -25,6 +21,8 @@ import Webrtc from "./features/session/Webrtc.jsx";
 import CookingGame from "./features/wordgame/CookingGame"; 
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme"; 
 import AnimalGame from "./features/wordgame/AnimalGame";
+import WaitingRoom from "./features/session/WaitingRoom";
+import CreateRoom from "./features/session/CreateRoom";
 
 // 라우트 정의
 const router = createBrowserRouter(
@@ -41,21 +39,19 @@ const router = createBrowserRouter(
       <Route path="/single" element={<SingleMain />} />
       <Route path="/prons" element={<PronsMain />} />
       <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
-      <Route path="/prons/class/1/seq/:seq_id" element={<PronsFirst />} />
-      <Route path="/prons/class/1/seq/:seq_id/prac" element={<PronsFirstPrac />} />
-      <Route path="/prons/class/2/seq/:seq_id" element={<PronsSecond />} />
-      <Route path="/prons/class/2/seq/:seq_id/prac" element={<PronsSecondPrac />} />
-      <Route path="/prons/class/3/seq/:seq_id" element={<PronsThird />} />
-      <Route path="/prons/class/3/seq/:seq_id/prac" element={<PronsThirdPrac />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsSecond />} />
       <Route path="/wgame" element={<WordMain/>}/>
       <Route path="/conversation" element={<Conversation/>}/>
       <Route path="/conversation/start" element={<ConversationStart/>}/>
       <Route path="/multi" element={<MultiMain/>}/>
       <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
       <Route path="/session/webrtc" element={<Webrtc/>}/>
+      <Route path="/session/waiting" element={<WaitingRoom />} />
+      <Route path="/session/create-room" element={<CreateRoom />} />
       <Route path="/cooking-game" element={<CookingGame />} />
       <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
       <Route path="/animal-game/:themeName" element={<AnimalGame />} />
+      
       {/* </Route> */}
         </>
     )
