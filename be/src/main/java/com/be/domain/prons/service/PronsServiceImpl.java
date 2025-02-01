@@ -124,10 +124,6 @@ public class PronsServiceImpl implements PronsService {
 			pronunciationHistoryRepository.save(history);
 
 			// 여기서부터 통계 업데이트
-			// 현재 해당 클래스 히스토리 개수
-			int count = pronunciationHistoryRepository.countByUser_IdAndPronunciationClass_Id(session.getUserId(),
-				session.getClassId());
-
 			// stat이 존재하지 않는다면 새로 만들기
 			if (!pronunciationStatRepository.existsByUser_IdAndPronunciationClass_Id(session.getUserId(),
 				session.getClassId())) {
@@ -135,6 +131,7 @@ public class PronsServiceImpl implements PronsService {
 				newStat.setUser(user);
 				newStat.setPronunciationClass(pronunciationClass);
 				newStat.setAverageSimilarity(0f); // 첫 값 설정
+				newStat.setCount(0);
 				pronunciationStatRepository.save(newStat);
 			}
 
@@ -143,7 +140,9 @@ public class PronsServiceImpl implements PronsService {
 				session.getUserId(),
 				session.getClassId()).orElseThrow(() -> new CustomException(ErrorCode.STAT_NOT_FOUND));
 			stat.setAverageSimilarity(
-				(float)(stat.getAverageSimilarity() + (avgSimilarity - stat.getAverageSimilarity()) / count));
+				(float)(stat.getAverageSimilarity() + (avgSimilarity - stat.getAverageSimilarity()) / (stat.getCount()
+					+ 1)));
+			stat.setCount(stat.getCount() + 1);
 			pronunciationStatRepository.save(stat);
 		}
 	}

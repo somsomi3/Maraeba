@@ -143,4 +143,11 @@ public class PronsController {
 		);
 		return new GetHistoriesRes("Success", HttpStatus.OK, response);
 	}
+
+	// 수업별 통계 조회
+	@Operation(summary = "수업별 통계 조회", description = "사용자 수업별 통계 조회")
+	@GetMapping("/stat")
+	public void getStats(@AuthenticationPrincipal UserDetails userDetails) {
+
+	}
 }
