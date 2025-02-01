@@ -1,10 +1,13 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
-import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider,} from 'react-router-dom';
-import './index.css';
-import App from './App.jsx';
-import {FindId, FindPw, Login, Register} from './features/auth'
-import {Main, MultiMain, SingleMain} from './features/mainpage';
+import * as React from "react";
+import * as ReactDOM from "react-dom/client";
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./store/store";
+import "./index.css";
+import App from "./App.jsx";
+// import ProtectedLayout from "./components/log/ProtectedLayout"; // ✅ 로그인 할 때만 접근가능하도록록
+import { FindId, FindPw, Login, Register } from "./features/auth";
+import { Main, MultiMain, SingleMain } from "./features/mainpage";
 import {
     PronsFirst,
     PronsFirstPrac,
@@ -12,12 +15,12 @@ import {
     PronsSecond,
     PronsSecondPrac,
     PronsThird,
-    PronsThirdPrac
-} from './features/pronunciation';
-import {WordMain} from './features/wordgame';
+    PronsThirdPrac,
+} from "./features/pronunciation";
+import { WordMain } from "./features/wordgame";
 import Conversation from "./features/conversation/Conversation";
 import ConversationStart from "./features/conversation/ConversationStart";
-import ChatBox from "./features/session/ChatBox"; // ✅ ChatBox 컴포넌트 추가
+import ChatBox from "./features/session/ChatBox";
 import Webrtc from "./features/session/Webrtc.jsx";
 import CookingGame from "./features/wordgame/CookingGame"; 
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme"; 
@@ -32,15 +35,18 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route path="/find-id" element={<FindId />} />
       <Route path="/find-pw" element={<FindPw />} />
+
+      {/* <Route element={<ProtectedLayout />}> */}
       <Route path="/main" element={<Main />} />
       <Route path="/single" element={<SingleMain />} />
       <Route path="/prons" element={<PronsMain />} />
       <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
-      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsFirstPrac />} />
-      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsSecond />} />
-      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsSecondPrac />} />
-      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsThird />} />
-      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsThirdPrac />} />
+      <Route path="/prons/class/1/seq/:seq_id" element={<PronsFirst />} />
+      <Route path="/prons/class/1/seq/:seq_id/prac" element={<PronsFirstPrac />} />
+      <Route path="/prons/class/2/seq/:seq_id" element={<PronsSecond />} />
+      <Route path="/prons/class/2/seq/:seq_id/prac" element={<PronsSecondPrac />} />
+      <Route path="/prons/class/3/seq/:seq_id" element={<PronsThird />} />
+      <Route path="/prons/class/3/seq/:seq_id/prac" element={<PronsThirdPrac />} />
       <Route path="/wgame" element={<WordMain/>}/>
       <Route path="/conversation" element={<Conversation/>}/>
       <Route path="/conversation/start" element={<ConversationStart/>}/>
@@ -50,13 +56,16 @@ const router = createBrowserRouter(
       <Route path="/cooking-game" element={<CookingGame />} />
       <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
       <Route path="/animal-game/:themeName" element={<AnimalGame />} />
+      {/* </Route> */}
         </>
     )
 );
 
-// 렌더링
-ReactDOM.createRoot(document.getElementById('root')).render(
+// ✅ Redux Provider로 전체 앱 감싸기
+ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <RouterProvider router={router}/>
+        <Provider store={store}>
+            <RouterProvider router={router} />
+        </Provider>
     </React.StrictMode>
 );

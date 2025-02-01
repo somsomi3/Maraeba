@@ -9,7 +9,7 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     email: '',
-    name: '',
+    username: '',
   });
   const [isUserIdChecked, setIsUserIdChecked] = useState(false);
   const [isEmailChecked, setIsEmailChecked] = useState(false);
@@ -31,7 +31,7 @@ const Register = () => {
       alert('아이디를 입력해주세요.');
       return;
     }
-    springApi.post('/auth/check-user-id', { user_id: formData.user_id })
+    springApi.get(`/auth/check-user-id?userId=${encodeURIComponent(formData.user_id)}`)
       .then((response) => {
         alert(response.data.message || '사용 가능한 아이디입니다.');
         setIsUserIdChecked(true);
@@ -46,7 +46,7 @@ const Register = () => {
       alert('이메일을 입력해주세요.');
       return;
     }
-    springApi.post('/auth/check-email', { email: formData.email })
+    springApi.get(`/auth/check-email?email=${encodeURIComponent(formData.email)}`)
       .then((response) => {
         alert(response.data.message || '사용 가능한 이메일입니다.');
         setIsEmailChecked(true);
@@ -58,7 +58,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.user_id || !formData.password || !formData.confirmPassword || !formData.email || !formData.name) {
+    if (!formData.user_id || !formData.password || !formData.confirmPassword || !formData.email || !formData.username) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -138,9 +138,9 @@ const Register = () => {
           <input
             className="input"
             type="text"
-            name="name"
+            name="username"
             placeholder="자녀 이름"
-            value={formData.name}
+            value={formData.username}
             onChange={handleChange}
             required
           />

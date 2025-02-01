@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // React Router의 useNavigate 훅
+import { useDispatch } from "react-redux";
+import { login } from "../../store/authSlice";
 import { springApi } from '../../utils/api'; // Axios 인스턴스 불러오기
 import './index.css';
 import logo from '../../assets/logo.png'; // 로고 이미지 경로
@@ -11,6 +13,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate(); // 페이지 이동을 위한 훅
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,13 +36,14 @@ const Login = () => {
       .then((response) => {
         // 성공 시
         const { token, refreshToken } = response.data; // 서버로부터 Access 토큰과 Refresh 토큰 받기
+        
+        dispatch(login(token))
+        
         localStorage.setItem('token', token); // Access 토큰 저장
         localStorage.setItem('refreshToken', refreshToken); // Refresh 토큰 저장
-        alert('로그인 완료!');
         navigate('/main'); // 로그인 성공 후 메인 페이지로 이동
       })
       .catch((error) => {
-        // 실패 시
         console.error('Error during login:', error);
         if (error.response) {
           alert(error.response.data.message || '로그인에 실패했습니다.');
