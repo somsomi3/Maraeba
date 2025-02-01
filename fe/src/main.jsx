@@ -87,38 +87,41 @@ import Conversation from "./features/conversation/Conversation";
 import ConversationStart from "./features/conversation/ConversationStart";
 import ChatBox from "./features/session/ChatBox";
 import Webrtc from "./features/session/Webrtc.jsx";
-import CookingGame from "./features/wordgame/CookingGame";
+import CookingGame from "./features/wordgame/CookingGame"; 
+import AnimalGameTheme from "./features/wordgame/AnimalGameTheme"; 
+import AnimalGame from "./features/wordgame/AnimalGame";
 
-// ✅ 로그인 필요 없는 페이지 설정 (로그인 페이지만 예외)
+// 라우트 정의
 const router = createBrowserRouter(
-    createRoutesFromElements(
-        <>
-            {/* 로그인 페이지 (로그인 없이 접근 가능) */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/find-id" element={<FindId />} />
-            <Route path="/find-pw" element={<FindPw />} />
+  createRoutesFromElements(
+    <>
+      <Route path="/" element={<App />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/find-id" element={<FindId />} />
+      <Route path="/find-pw" element={<FindPw />} />
 
-            {/* ✅ 로그인해야 접근 가능한 페이지 (ProtectedLayout 적용) */}
-            <Route element={<ProtectedLayout />}>
-                <Route path="/" element={<App />} />
-                <Route path="/main" element={<Main />} />
-                <Route path="/single" element={<SingleMain />} />
-                <Route path="/prons" element={<PronsMain />} />
-                <Route path="/prons/class/1/seq/:seq_id" element={<PronsFirst />} />
-                <Route path="/prons/class/1/seq/:seq_id/prac" element={<PronsFirstPrac />} />
-                <Route path="/prons/class/2/seq/:seq_id" element={<PronsSecond />} />
-                <Route path="/prons/class/2/seq/:seq_id/prac" element={<PronsSecondPrac />} />
-                <Route path="/prons/class/3/seq/:seq_id" element={<PronsThird />} />
-                <Route path="/prons/class/3/seq/:seq_id/prac" element={<PronsThirdPrac />} />
-                <Route path="/wgame" element={<WordMain />} />
-                <Route path="/conversation" element={<Conversation />} />
-                <Route path="/conversation/start" element={<ConversationStart />} />
-                <Route path="/multi" element={<MultiMain />} />
-                <Route path="/session" element={<ChatBox />} />
-                <Route path="/session/webrtc" element={<Webrtc />} />
-                <Route path="/cooking-game" element={<CookingGame />} />
-            </Route>
+      <Route element={<ProtectedLayout />}>
+      <Route path="/main" element={<Main />} />
+      <Route path="/single" element={<SingleMain />} />
+      <Route path="/prons" element={<PronsMain />} />
+      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
+      <Route path="/prons/class/1/seq/:seq_id" element={<PronsFirst />} />
+      <Route path="/prons/class/1/seq/:seq_id/prac" element={<PronsFirstPrac />} />
+      <Route path="/prons/class/2/seq/:seq_id" element={<PronsSecond />} />
+      <Route path="/prons/class/2/seq/:seq_id/prac" element={<PronsSecondPrac />} />
+      <Route path="/prons/class/3/seq/:seq_id" element={<PronsThird />} />
+      <Route path="/prons/class/3/seq/:seq_id/prac" element={<PronsThirdPrac />} />
+      <Route path="/wgame" element={<WordMain/>}/>
+      <Route path="/conversation" element={<Conversation/>}/>
+      <Route path="/conversation/start" element={<ConversationStart/>}/>
+      <Route path="/multi" element={<MultiMain/>}/>
+      <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
+      <Route path="/session/webrtc" element={<Webrtc/>}/>
+      <Route path="/cooking-game" element={<CookingGame />} />
+      <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
+      <Route path="/animal-game/:themeName" element={<AnimalGame />} />
+      </Route>
         </>
     )
 );

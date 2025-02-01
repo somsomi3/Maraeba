@@ -1,0 +1,116 @@
+/* 전체 컨테이너 */
+.animal-game-theme {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 홈 버튼 (왼쪽 하단) */
+.home-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.home-button img {
+  width: 50px;
+  height: 50px;
+}
+
+/* 일시 정지 버튼 (오른쪽 상단) */
+.pause-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.pause-button img {
+  width: 50px;
+  height: 50px;
+}
+
+/* 테마 카드 컨테이너 */
+.theme-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px; /* 기존 간격보다 더 넓게 */
+  width: 90%; /* 컨테이너 크기를 더 크게 */
+  max-width: 1200px; /* 최대 크기 증가 */
+  height: auto; /* 필요 시 높이 자동 조정 */
+  flex-wrap: wrap;
+  padding: 20px;
+}
+/* 테마 카드 */
+.theme-card {
+  width: 300px;
+  background: #ffcc66;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.theme-card:hover {
+  transform: scale(1.05);
+}
+
+/* 테마 이미지 */
+.theme-image {
+  width: 100%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+/* 테마 정보 */
+.theme-info {
+  padding: 10px;
+}
+
+.theme-info h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* 시작하기 버튼 */
+.start-button {
+  background: #ffa500;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.start-button:hover {
+  background: #ff8c00;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .theme-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .theme-card {
+    width: 80%;
+  }
+}
