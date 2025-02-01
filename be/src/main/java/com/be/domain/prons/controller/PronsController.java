@@ -3,6 +3,7 @@ package com.be.domain.prons.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
 import com.be.common.model.response.BaseResponseBody;
+import com.be.common.model.response.PageResponse;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
@@ -118,10 +121,26 @@ public class PronsController {
 	}
 
 	// 히스토리 조회
+	@Operation(summary = "히스토리 조회", description = "사용자 히스토리 조회")
 	@GetMapping("/history")
-	public GetHistoriesRes getHistories(@AuthenticationPrincipal UserDetails userDetails) {
+	public GetHistoriesRes getHistories(@AuthenticationPrincipal UserDetails userDetails,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size) {
 		Long id = Long.parseLong(userDetails.getUsername());
-		List<PronunciationHistoryDTO> historyDTOS = pronsService.getHistories(id);
-		return new GetHistoriesRes("Success", HttpStatus.OK, historyDTOS);
+
+		// 히스토리 페이지 받기
+		Page<PronunciationHistoryDTO> historyPage = pronsService.getHistories(id, page, size);
+
+		// 필요한 형태로 변환
+		PageResponse<PronunciationHistoryDTO> response = new PageResponse<>(
+			historyPage.getContent(),
+			historyPage.getTotalPages(),
+			historyPage.getTotalElements(),
+			historyPage.getSize(),
+			historyPage.getNumber(),
+			historyPage.isFirst(),
+			historyPage.isLast()
+		);
+		return new GetHistoriesRes("Success", HttpStatus.OK, response);
 	}
 }

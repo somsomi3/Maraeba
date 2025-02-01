@@ -2,6 +2,8 @@ package com.be.domain.prons.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
@@ -66,5 +68,5 @@ public interface PronsService {
 	 * @param id
 	 * @return
 	 */
-	List<PronunciationHistoryDTO> getHistories(Long id);
+	Page<PronunciationHistoryDTO> getHistories(Long id, int page, int size);
 }

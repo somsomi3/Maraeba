@@ -1,7 +1,7 @@
 package com.be.db.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,5 +14,5 @@ public interface PronunciationHistoryRepository extends JpaRepository<Pronunciat
 	int countByUser_IdAndPronunciationClass_Id(Long userId, Long classId);
 
 	@Query("SELECT new com.be.domain.prons.dto.PronunciationHistoryDTO(ph.pronunciationClass.id, ph.averageSimilarity, ph.createdAt) FROM PronunciationHistory ph WHERE ph.user.id = :userId")
-	List<PronunciationHistoryDTO> findByUser_Id(@Param("userId") Long userId);
+	Page<PronunciationHistoryDTO> findByUser_Id(@Param("userId") Long userId, Pageable pageable);
 }
