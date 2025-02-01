@@ -6,9 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.be.common.auth.TokenExtractorService;
-import com.be.common.auth.TokenService;
 import com.be.common.auth.TokenType;
+import com.be.common.auth.service.TokenService;
 import com.be.common.exception.DuplicateEmailException;
 import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.PasswordMismatchException;
@@ -37,7 +36,6 @@ public class AuthServiceImpl implements AuthService {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenService tokenService;
-	private final TokenExtractorService tokenExtractorService;
 
 	/**
 	 * 회원가입
@@ -71,10 +69,10 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public CheckUserIdResponse checkUserId(String userId) {
 		boolean exists = userRepository.findByUserId(userId).isPresent();
-		if(exists) {
-			return CheckUserIdResponse.of("User Id already exists.",200, userId, true);
+		if (exists) {
+			return CheckUserIdResponse.of("User Id already exists.", 200, userId, true);
 		} else {
-			return CheckUserIdResponse.of("User Id not exists.",200, userId, false);
+			return CheckUserIdResponse.of("User Id not exists.", 200, userId, false);
 		}
 	}
 
@@ -84,10 +82,10 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public CheckEmailResponse checkEmail(String email) {
 		boolean exists = userRepository.findByEmail(email).isPresent();
-		if(exists) {
-			return CheckEmailResponse.of("Email already exists.",200, email, true);
+		if (exists) {
+			return CheckEmailResponse.of("Email already exists.", 200, email, true);
 		} else {
-			return CheckEmailResponse.of("Email not exists.",200, email, false);
+			return CheckEmailResponse.of("Email not exists.", 200, email, false);
 		}
 	}
 
@@ -99,24 +97,28 @@ public class AuthServiceImpl implements AuthService {
 	public LoginResponse login(LoginRequest request) {
 		//user_id로 유저 조회
 		User user = userRepository.findByUserId(request.getUserId())
-			.orElseThrow(()-> new UserNotFoundException("User ID not exists."));
+			.orElseThrow(() -> new UserNotFoundException("User ID not exists."));
 		//비밀번호 검증
-		if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException();
 		}
-		
+
 		//accessToken 및 refreshToken 발급
 		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
 		System.out.println("토큰 발급");
-		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(user.getId(), TokenType.REFRESH_TOKEN);
+		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
+			user.getId(), TokenType.REFRESH_TOKEN);
 
 		// 기존 Refresh Token이 있는지 확인
 		RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
-		if(refreshToken != null) {
+		if (refreshToken != null) {
 			// 기존 객체의 토큰 값을 변경하고 업데이트
 			refreshToken.setToken(refreshTokenWithExpiration.getToken());
-			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
+				.toInstant()
+				.atZone(ZoneId.systemDefault())
+				.toLocalDateTime());
 		} else {
 			//refreshToken DB 저장
 			refreshToken = new RefreshToken();
@@ -142,26 +144,28 @@ public class AuthServiceImpl implements AuthService {
 
 		//DB에 refreshToken이 있는지 확인
 		RefreshToken refreshToken = refreshTokenRepository.findByUserId(id)
-			.orElseThrow(()->new IllegalArgumentException("Refresh token does not exist. Please log in again."));
+			.orElseThrow(() -> new IllegalArgumentException("Refresh token does not exist. Please log in again."));
 
 		//DB의 refreshToken과 비교
-		if(!request.getRefreshToken().equals(refreshToken.getToken())) {
+		if (!request.getRefreshToken().equals(refreshToken.getToken())) {
 			throw new IllegalArgumentException("Refresh token does not match.");
 		}
 
 		//받은 refreshToken이 만료된 것인지 확인
-		if(!tokenService.validateToken(request.getRefreshToken())) {
+		if (!tokenService.validateToken(request.getRefreshToken())) {
 			refreshTokenRepository.delete(refreshToken);
 			throw new IllegalArgumentException("Refresh token expired.");
 		}
 
 		//새로운 token 생성
 		String newAccessToken = tokenService.generateToken(id, TokenType.ACCESS_TOKEN);
-		TokenService.TokenWithExpiration newRefreshTokenWithExpiration = tokenService.generateTokenWithExpiration(id, TokenType.REFRESH_TOKEN);
+		TokenService.TokenWithExpiration newRefreshTokenWithExpiration = tokenService.generateTokenWithExpiration(id,
+			TokenType.REFRESH_TOKEN);
 
 		//기존의 refreshToken 교체
 		refreshToken.setToken(newRefreshTokenWithExpiration.getToken());
-		refreshToken.setExpiryDate(newRefreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+		refreshToken.setExpiryDate(
+			newRefreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
 		return TokenRefreshResponse.of(newAccessToken, newRefreshTokenWithExpiration.getToken());
 	}
@@ -173,7 +177,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public void logout(HttpServletRequest httpServletRequest, LogoutRequest request) {
 		//Access Token 추출
-		String accessToken = tokenExtractorService.extractAccessToken(httpServletRequest);
+		String accessToken = tokenService.extractAccessToken(httpServletRequest);
 		//Access Token 만료 여부 확인
 		if (!tokenService.validateToken(accessToken)) {
 			throw new IllegalArgumentException("Access Token is already expired.");

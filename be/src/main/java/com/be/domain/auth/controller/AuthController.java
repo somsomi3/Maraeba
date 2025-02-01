@@ -1,18 +1,32 @@
 package com.be.domain.auth.controller;
 
+import java.io.IOException;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.be.common.model.response.BaseResponseBody;
+import com.be.domain.auth.dto.SocialUser;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.LogoutRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.request.TokenRefreshRequest;
 import com.be.domain.auth.response.CheckEmailResponse;
 import com.be.domain.auth.response.CheckUserIdResponse;
+import com.be.domain.auth.response.GetAuthUrlResponse;
+import com.be.domain.auth.response.KakaoLoginErrorResponse;
 import com.be.domain.auth.response.LoginResponse;
+import com.be.domain.auth.response.SocialLoginSuccessResponse;
 import com.be.domain.auth.response.TokenRefreshResponse;
 import com.be.domain.auth.service.AuthService;
+import com.be.domain.auth.service.KakaoSocialService;
+import com.be.domain.auth.service.NaverSocialService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,7 +42,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
 	private final AuthService authService;
+	private final KakaoSocialService kakaoSocialService;
+	private final NaverSocialService naverSocialService;
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다.")
 	@ApiResponses(value = {
@@ -114,4 +131,45 @@ public class AuthController {
 		authService.logout(httpServletRequest, request);
 		return ResponseEntity.ok(BaseResponseBody.of("Logout successfully", 200));
 	}
+
+	@GetMapping("/kakao")
+	public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() throws
+		IOException {
+		String kakaoAuthUrl = kakaoSocialService.getAuthorizationUrl();
+		return ResponseEntity.ok(GetAuthUrlResponse.of(kakaoAuthUrl));
+	}
+
+	@GetMapping("/kakao/callback")
+	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(
+		@RequestParam(required = false) String code,
+		@RequestParam(required = false) String error,
+		@RequestParam(required = false) String error_description
+	) {
+		// 소셜 로그인 실패 처리
+		if (error != null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(KakaoLoginErrorResponse.of(error_description, error));
+		}
+
+		String accessToken = kakaoSocialService.getAccessToken(code);
+		SocialUser userInfo = kakaoSocialService.getUserInfo(accessToken);
+		return ResponseEntity.ok(
+			SocialLoginSuccessResponse.of(userInfo.getProvider(), userInfo.getProviderId(), userInfo.getEmail(),
+				userInfo.getNickname()));
+	}
+
+	@GetMapping("/naver")
+	public ResponseEntity<? extends BaseResponseBody> getNaverAuthUrl() throws
+		IOException {
+		String naverAuthUrl = naverSocialService.getAuthorizationUrl();
+		return ResponseEntity.ok(GetAuthUrlResponse.of(naverAuthUrl));
+	}
+
+	@GetMapping("/naver/callback")
+	public ResponseEntity<SocialUser> naverLogin(@RequestParam("code") String code) {
+		String accessToken = naverSocialService.getAccessToken(code);
+		SocialUser userInfo = naverSocialService.getUserInfo(accessToken);
+		return ResponseEntity.ok(userInfo);
+	}
+
 }

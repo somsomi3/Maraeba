@@ -1,4 +1,4 @@
-package com.be.common.auth;
+package com.be.common.auth.service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
@@ -10,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.be.common.auth.TokenType;
 import com.be.common.exception.BlackTokenException;
 import com.be.db.entity.AccessTokenBlacklist;
 import com.be.db.repository.AccessTokenBlacklistRepository;
@@ -18,6 +19,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -160,5 +162,17 @@ public class TokenService {
 		} catch (JwtException e) {
 			throw new IllegalArgumentException("Invalid token", e);
 		}
+	}
+
+	/**
+	 * 요청에서 Bearer 제거
+	 */
+	public String extractAccessToken(HttpServletRequest request) {
+		String authorizationHeader = request.getHeader("Authorization");
+
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			return authorizationHeader.substring(7); // "Bearer " 이후의 값 추출
+		}
+		throw new IllegalArgumentException("Access Token is missing or invalid");
 	}
 }
