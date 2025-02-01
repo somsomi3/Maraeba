@@ -61,6 +61,35 @@ const WebRTC = () => {
         setStartTime(Date.now());
         console.log("📌 통화 시작 - Call ID:", newCallId, "Start Time:", Date.now());
     };
+const getWebRTCStats = async (peerConnection) => {
+    if (!peerConnection) {
+        console.warn("⚠️ WebRTC 연결이 존재하지 않음 (기본값 반환)");
+        return { packet_loss: 0, jitter: 0, latency: 0, bitrate: 0 };
+    }
+
+    try {
+        const stats = await peerConnection.getStats();
+        let packet_loss = 0, jitter = 0, latency = 0, bitrate = 0;
+
+        stats.forEach(report => {
+            if (report.type === "remote-inbound-rtp") {
+                jitter = report.jitter || 0;
+                latency = report.roundTripTime ? report.roundTripTime * 1000 : 0;
+                packet_loss = report.packetsLost ? report.packetsLost / report.packetsReceived : 0;
+            }
+            if (report.type === "outbound-rtp" && report.kind === "video") {
+                bitrate = report.bytesSent ? (report.bytesSent * 8) / (report.timestamp / 1000) : 0;
+            }
+        });
+
+        return { packet_loss, jitter, latency, bitrate };
+    } catch (error) {
+        console.error("❌ WebRTC 통화 품질 데이터 가져오기 실패:", error);
+        return { packet_loss: 0, jitter: 0, latency: 0, bitrate: 0 };
+    }
+};
+    
+    
 
     // ✅ 통화 종료 후 서버로 로그 전송
     const endCallLog = async () => {
@@ -68,41 +97,45 @@ const WebRTC = () => {
             console.error("❌ 통화 시작 시간이 기록되지 않음");
             return;
         }
-
-        const logData = {
-            callId: callId,
-            startTime: startTime,
-            endTime: Date.now(),
-            packetLoss: 0.1,
-            jitter: 0.05,
-            latency: 20,
-            bitrate: 2500
-        };
-
-        console.log("📌 통화 종료 - Call ID:", callId, "End Time:", logData.endTime);
-
-        const accessToken = getAccessToken(); // ✅ 로그인 여부 확인
-
-        try {
-            const response = await fetch(`${API_URL}/webrtc/logs`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(accessToken && { "Authorization": `Bearer ${accessToken}` }) // ✅ 로그인된 경우만 토큰 포함
-                },
-                body: JSON.stringify(logData)
-            });
-
-            const data = await response.json();
-            if (!response.ok) {
-                console.error("❌ 로그 저장 실패:", data);
-            } else {
-                console.log("✅ 로그 저장 성공:", data);
-            }
-        } catch (error) {
-            console.error("❌ 서버 요청 오류:", error);
-        }
-    };
+       // ✅ 1초 후에 WebRTC 품질 데이터를 가져오도록 설정 (ICE 연결이 완료될 때까지 기다림)
+       setTimeout(async () => {
+           const { packet_loss, jitter, latency, bitrate } = await getWebRTCStats(peerConnectionRef.current);
+   
+           const logData = {
+               call_id: callId || Math.random().toString(36).substr(2, 9),
+               start_time: startTime || Date.now(),
+               end_time: Date.now(),
+               packet_loss,
+               jitter,
+               latency,
+               bitrate
+           };
+   
+           console.log("📌 통화 종료 - Call ID:", callId, "End Time:", new Date().toISOString());
+   
+           const accessToken = getAccessToken();
+   
+           try {
+               const response = await fetch(`${API_URL}/webrtc/logs`, {
+                   method: "POST",
+                   headers: {
+                       "Content-Type": "application/json",
+                       ...(accessToken && { "Authorization": `Bearer ${accessToken}` }) 
+                   },
+                   body: JSON.stringify(logData)
+               });
+   
+               const data = await response.json();
+               if (!response.ok) {
+                   console.error("❌ 로그 저장 실패:", data);
+               } else {
+                   console.log("✅ 로그 저장 성공:", data);
+               }
+           } catch (error) {
+               console.error("❌ 서버 요청 오류:", error);
+           }
+       }, 1000); // ✅ 1초 후에 실행하여 데이터가 정상적으로 수집되도록 함
+   };
 
     // ✅ 카메라 & 마이크 접근 및 로컬 스트림 설정
     const startMedia = async () => {
