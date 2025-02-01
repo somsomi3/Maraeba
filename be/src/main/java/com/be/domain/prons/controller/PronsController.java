@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +20,12 @@ import com.be.common.exception.ErrorCode;
 import com.be.common.model.response.BaseResponseBody;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
-import com.be.domain.prons.request.PostSessionReq;
 import com.be.domain.prons.request.PostSimilarityReq;
 import com.be.domain.prons.response.GetClassDataRes;
 import com.be.domain.prons.response.GetClassesRes;
+import com.be.domain.prons.response.GetHistoriesRes;
 import com.be.domain.prons.response.GetSessionRes;
 import com.be.domain.prons.response.GetSpecificDataRes;
 import com.be.domain.prons.response.PostSessionRes;
@@ -69,10 +72,12 @@ public class PronsController {
 
 	// 수업 세션 생성 (사용자가 수업 시작)
 	@Operation(summary = "수업 세션 생성", description = "수업 세션을 시작합니다.")
-	@PostMapping("/start")
-	public PostSessionRes startSession(@Validated @RequestBody PostSessionReq request) {
+	@PostMapping("/start/class/{class_id}")
+	public PostSessionRes startSession(@AuthenticationPrincipal UserDetails userDetails,
+		@PathVariable("class_id") Long classId) {
 		String id = UUID.randomUUID().toString(); // 세션 ID 생성
-		PronunciationSessionDTO session = new PronunciationSessionDTO(id, request.getUserId(), request.getClassId(), 0);
+		PronunciationSessionDTO session = new PronunciationSessionDTO(id, Long.parseLong(userDetails.getUsername()),
+			classId, 0);
 		pronsService.saveSession(session);
 		return new PostSessionRes("Success", HttpStatus.CREATED, id); // 클라이언트가 세션 ID를 저장
 	}
@@ -112,4 +117,11 @@ public class PronsController {
 		return new BaseResponseBody("History saved", HttpStatus.CREATED);
 	}
 
+	// 히스토리 조회
+	@GetMapping("/history")
+	public GetHistoriesRes getHistories(@AuthenticationPrincipal UserDetails userDetails) {
+		Long id = Long.parseLong(userDetails.getUsername());
+		List<PronunciationHistoryDTO> historyDTOS = pronsService.getHistories(id);
+		return new GetHistoriesRes("Success", HttpStatus.OK, historyDTOS);
+	}
 }

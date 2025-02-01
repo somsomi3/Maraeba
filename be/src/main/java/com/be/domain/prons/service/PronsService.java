@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 
 public interface PronsService {
@@ -59,4 +60,11 @@ public interface PronsService {
 	 * @param id
 	 */
 	void saveSessionHistory(String id);
+
+	/**
+	 * 히스토리 조회
+	 * @param id
+	 * @return
+	 */
+	List<PronunciationHistoryDTO> getHistories(Long id);
 }

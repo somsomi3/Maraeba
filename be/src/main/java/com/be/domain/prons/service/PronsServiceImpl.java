@@ -20,6 +20,7 @@ import com.be.db.repository.PronunciationStatRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -116,20 +117,28 @@ public class PronsServiceImpl implements PronsService {
 				session.getClassId());
 
 			// stat이 존재하지 않는다면
-			if(!pronunciationStatRepository.existsByUser_IdAndPronunciationClass_Id(session.getUserId(),
-				session.getClassId())){
+			if (!pronunciationStatRepository.existsByUser_IdAndPronunciationClass_Id(session.getUserId(),
+				session.getClassId())) {
 				PronunciationStat newStat = new PronunciationStat();
 				newStat.setUser(user);
 				newStat.setPronunciationClass(pronunciationClass);
 				newStat.setAverageSimilarity(0f); // 첫 값 설정
 				pronunciationStatRepository.save(newStat);
-			};
+			}
+			;
 			PronunciationStat stat = pronunciationStatRepository.findByUser_IdAndPronunciationClass_Id(
 				session.getUserId(),
 				session.getClassId()).orElseThrow(() -> new CustomException(ErrorCode.STAT_NOT_FOUND));
 			stat.setAverageSimilarity((float)(stat.getAverageSimilarity() + avgSimilarity / count));
 			pronunciationStatRepository.save(stat);
 		}
+	}
+
+	// 히스토리 조회
+	@Override
+	public List<PronunciationHistoryDTO> getHistories(Long id) {
+		List<PronunciationHistoryDTO> historyDTOS = pronunciationHistoryRepository.findByUser_Id(id);
+		return historyDTOS;
 	}
 
 	// 평균 정확도 계산
