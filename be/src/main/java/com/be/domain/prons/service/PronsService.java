@@ -8,6 +8,7 @@ import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
+import com.be.domain.prons.dto.PronunciationStatDTO;
 
 public interface PronsService {
 	/**
@@ -69,4 +70,11 @@ public interface PronsService {
 	 * @return
 	 */
 	Page<PronunciationHistoryDTO> getHistories(Long id, int page, int size);
+
+	/**
+	 * 통계 조회
+	 * @param id
+	 * @return
+	 */
+	List<PronunciationStatDTO> getStats(Long id);
 }

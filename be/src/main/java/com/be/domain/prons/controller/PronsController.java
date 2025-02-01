@@ -25,12 +25,14 @@ import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
+import com.be.domain.prons.dto.PronunciationStatDTO;
 import com.be.domain.prons.request.PostSimilarityReq;
 import com.be.domain.prons.response.GetClassDataRes;
 import com.be.domain.prons.response.GetClassesRes;
 import com.be.domain.prons.response.GetHistoriesRes;
 import com.be.domain.prons.response.GetSessionRes;
 import com.be.domain.prons.response.GetSpecificDataRes;
+import com.be.domain.prons.response.GetStatsRes;
 import com.be.domain.prons.response.PostSessionRes;
 import com.be.domain.prons.service.PronsService;
 
@@ -147,7 +149,9 @@ public class PronsController {
 	// 수업별 통계 조회
 	@Operation(summary = "수업별 통계 조회", description = "사용자 수업별 통계 조회")
 	@GetMapping("/stat")
-	public void getStats(@AuthenticationPrincipal UserDetails userDetails) {
-
+	public GetStatsRes getStats(@AuthenticationPrincipal UserDetails userDetails) {
+		Long id = Long.parseLong(userDetails.getUsername());
+		List<PronunciationStatDTO> statsDTOs = pronsService.getStats(id);
+		return new GetStatsRes("Success", HttpStatus.OK, statsDTOs);
 	}
 }

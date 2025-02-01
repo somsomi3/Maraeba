@@ -26,6 +26,7 @@ import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
+import com.be.domain.prons.dto.PronunciationStatDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -152,6 +153,13 @@ public class PronsServiceImpl implements PronsService {
 	public Page<PronunciationHistoryDTO> getHistories(Long id, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 		return pronunciationHistoryRepository.findByUser_Id(id, pageable);
+	}
+
+	// 통계 조회
+	@Override
+	public List<PronunciationStatDTO> getStats(Long id) {
+		List<PronunciationStatDTO> statDTOs = pronunciationStatRepository.findByUser_Id(id);
+		return statDTOs;
 	}
 
 	// 평균 정확도 계산
