@@ -50,7 +50,7 @@ const WordMain = () => {
             <button className="guide-button" onClick={() => alert('게임 방법')}>
               게임 방법
             </button>
-            <button className="game-start-button" onClick={() => navigate('/animal-game')}>
+            <button className="game-start-button" onClick={() => navigate('/animal-game-theme')}>
               게임 시작
             </button>
           </div>
