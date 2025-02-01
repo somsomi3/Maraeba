@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { springApi } from '../../utils/api'; 
+import { springApi } from '../../utils/api';
 import './PronsFirst.css';
 import GoBackButton from '../../components/button/GoBackButton';
 
@@ -12,19 +12,17 @@ const PronsFirst = () => {
   const { class_id, seq_id } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [maxSeq, setMaxSeq] = useState(null); // 최대 학습 개수 저장
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    // 특정 순서 학습 자료 가져오기
     const fetchPronunciationData = async () => {
       try {
+        console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
-        setData(response.data);
+        console.log("API 응답:", response.data);
 
-        // 해당 class의 전체 학습 수 조회
-        const classResponse = await springApi.get(`/prons/class/${class_id}`);
-        setMaxSeq(classResponse.data.totalSequences); // 총 seq 개수 저장
+        setData(response.data.data || {}); // 객체이므로 data.data로 가져옴옴
+        setError(false);
       } catch (error) {
         console.error('데이터 불러오기 실패:', error);
         setError(true);
@@ -44,17 +42,31 @@ const PronsFirst = () => {
   return (
     <div className="prons-first-container">
       <GoBackButton />
-      <div className="image-container">
-        <img src={data?.lipVideoUrl || lipshape } alt="입모양" className="lip-image" />
-        <img src={data?.tongueImageUrl || tongue} alt="구강 내부" className="mouth-image" />
-      </div>
-      <div className="description-container">
-        <h2 className="vowel-title">{data?.pronunciation || '발음 학습'}</h2>
-        <p>{data?.description || '데이터를 불러오는 중 오류가 발생했습니다. 기본적인 정보를 제공합니다.'}</p>
-      </div>
-      <button className="next-button" onClick={goToPractice} disabled={loading || error}>
-        다음으로
-      </button>
+      
+      {/* 데이터 로딩 중 표시 */}
+      {loading ? (
+        <div className="loading-container">🔄 데이터 로딩 중...</div>
+      ) : (
+        <>
+          <div className="image-container">
+            <img src={lipshape} alt="입모양" className="lip-image" />
+            <img src={tongue} alt="구강 내부" className="mouth-image" />
+          </div>
+          
+          <div className="description-container">
+            <h2 className="vowel-title">{data?.pronunciation || '발음 학습'}</h2>
+            <p>{error ? '데이터를 불러오는 중 오류가 발생했습니다.' : data?.description}</p>
+          </div>
+
+          <button 
+            className="next-button" 
+            onClick={goToPractice} 
+            disabled={loading || error}
+          >
+            다음으로
+          </button>
+        </>
+      )}
     </div>
   );
 };

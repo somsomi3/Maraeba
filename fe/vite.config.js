@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => {
               },
             },
           ],
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB로 설정
         },
       }),
     ],
