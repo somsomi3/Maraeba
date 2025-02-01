@@ -5,7 +5,6 @@ import './PronsFirstPrac.css';
 import GoBackButton from '../../components/button/GoBackButton';
 import PausePopup from '../../components/popup/PausePopup';
 import RecordButton from '../../components/button/RecordButton';
-
 import lipshape from '../../assets/images/lipshape.png';
 import tongue from '../../assets/images/tongue.png';
 

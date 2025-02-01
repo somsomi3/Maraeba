@@ -19,7 +19,7 @@ const PronsMain = () => {
           <p>ㅏ, ㅓ, ㅗ, ㅜ, ㅡ, ㅣ</p>
           <div className="divider"></div>
           <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
-          <button className="start-button" onClick={() => navigate('/prons-first')}>
+          <button className="start-button" onClick={() => navigate('/prons/class/1/seq/1')}>
             시작하기
           </button>
         </div>
@@ -29,7 +29,7 @@ const PronsMain = () => {
           <p>ㅑ, ㅕ, ㅛ, ㅠ, ㅐ, ㅔ</p>
           <div className="divider"></div>
           <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
-          <button className="start-button" onClick={() => navigate('/prons-second')}>
+          <button className="start-button" onClick={() => navigate('/prons/class/2/seq/1')}>
             시작하기
           </button>
         </div>
@@ -39,7 +39,7 @@ const PronsMain = () => {
           <p>ㅒ, ㅖ, ㅘ, ㅙ, ㅚ</p>
           <div className="divider"></div>
           <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
-          <button className="start-button" onClick={() => navigate('/prons-third')}>
+          <button className="start-button" onClick={() => navigate('/prons/class/3/seq/1')}>
             시작하기
           </button>
         </div>
