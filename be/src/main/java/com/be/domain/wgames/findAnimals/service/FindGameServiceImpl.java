@@ -5,20 +5,14 @@ import com.be.db.repository.AnimalCorrectRepository;
 import com.be.db.repository.AnimalGameRepository;
 import com.be.domain.wgames.AiTest;
 import com.be.domain.wgames.AudioConverter;
-import com.be.domain.wgames.cooks.service.ClovaSpeechClient;
 import com.be.domain.wgames.findAnimals.request.AnimalCorrectRequest;
 import com.be.domain.wgames.findAnimals.response.AnimalAnswerResponse;
 import com.be.domain.wgames.findAnimals.response.AnimalResponse;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,6 +54,13 @@ public class FindGameServiceImpl implements FindGameService {
         int imageNumber = request.getImageNumber();
         List<String> answerList = request.getAnswerList();    //이미 맞춘 정답
 
+        System.out.println("이미 맞춘 정답 리스트");
+        if (answerList != null) {
+            for (String s : answerList) {
+                System.out.println(s);
+            }
+        } else System.out.println("비었음");
+
         // 저장 경로 및 파일 이름 설정
         String uploadDir = "C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\";
         String fileName = animalAudio.getOriginalFilename(); // 원본 파일명 가져오기
@@ -97,7 +98,13 @@ public class FindGameServiceImpl implements FindGameService {
         if (list.contains(text)) {
             response.setIfCorrect(true);
             response.setAnimalName(text);
-            response.setCnt(answerList.size());
+            List<Object[]> location = animalCorrectRepository.findLocationByAnimalNameAndGameId(text, imageNumber);
+            response.setX((Integer) location.get(0)[0]);
+            response.setY((Integer) location.get(0)[1]);
+
+            if (answerList != null) {
+                response.setCnt(answerList.size() + 1);
+            } else response.setCnt(1);
             return response;
         }
 

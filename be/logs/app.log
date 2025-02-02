@@ -1,24 +1,24 @@
-2025-01-30T23:39:33.105+09:00  INFO 17120 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 17120 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
-2025-01-30T23:39:33.120+09:00  INFO 17120 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
-2025-01-30T23:39:33.171+09:00  INFO 17120 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-01-30T23:39:33.171+09:00  INFO 17120 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-01-30T23:39:33.958+09:00  INFO 17120 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-01-30T23:39:34.160+09:00  INFO 17120 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 191 ms. Found 5 JPA repository interfaces.
-2025-01-30T23:39:34.726+09:00  INFO 17120 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-01-30T23:39:34.742+09:00  INFO 17120 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-01-30T23:39:34.743+09:00  INFO 17120 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
-2025-01-30T23:39:34.804+09:00  INFO 17120 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
-2025-01-30T23:39:34.804+09:00  INFO 17120 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1632 ms
-2025-01-30T23:39:34.947+09:00  INFO 17120 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-01-30T23:39:35.044+09:00  INFO 17120 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
-2025-01-30T23:39:35.082+09:00  INFO 17120 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-01-30T23:39:35.417+09:00  INFO 17120 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-01-30T23:39:35.450+09:00  INFO 17120 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-01-30T23:39:35.667+09:00  INFO 17120 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7820baf4
-2025-01-30T23:39:35.669+09:00  INFO 17120 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-01-30T23:39:35.741+09:00  WARN 17120 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-01-30T23:39:35.743+09:00  WARN 17120 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
-2025-01-30T23:39:35.763+09:00  INFO 17120 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-02-01T15:37:39.176+09:00  INFO 7688 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 7688 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
+2025-02-01T15:37:39.183+09:00  INFO 7688 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
+2025-02-01T15:37:39.241+09:00  INFO 7688 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-02-01T15:37:39.241+09:00  INFO 7688 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-02-01T15:37:40.282+09:00  INFO 7688 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-01T15:37:40.521+09:00  INFO 7688 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 229 ms. Found 5 JPA repository interfaces.
+2025-02-01T15:37:41.205+09:00  INFO 7688 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-02-01T15:37:41.222+09:00  INFO 7688 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-01T15:37:41.222+09:00  INFO 7688 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-02-01T15:37:41.292+09:00  INFO 7688 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
+2025-02-01T15:37:41.293+09:00  INFO 7688 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2051 ms
+2025-02-01T15:37:41.487+09:00  INFO 7688 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-01T15:37:41.586+09:00  INFO 7688 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-02-01T15:37:41.633+09:00  INFO 7688 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-01T15:37:42.023+09:00  INFO 7688 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-01T15:37:42.074+09:00  INFO 7688 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-01T15:37:42.318+09:00  INFO 7688 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5aa7c371
+2025-02-01T15:37:42.320+09:00  INFO 7688 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-01T15:37:42.410+09:00  WARN 7688 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-02-01T15:37:42.413+09:00  WARN 7688 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-02-01T15:37:42.439+09:00  INFO 7688 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0
@@ -26,101 +26,44 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-01-30T23:39:36.717+09:00  INFO 17120 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-01-30T23:39:37.083+09:00  WARN 17120 --- [be] [restartedMain] o.h.t.s.i.ExceptionHandlerLoggedImpl     : GenerationTarget encountered exception accepting command : Error executing DDL "alter table animal_correct add constraint FK2kd9jqipbd3e2b0dxvgxh2fy5 foreign key (animal_id) references animal_list (id)" via JDBC [Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.]
-
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table animal_correct add constraint FK2kd9jqipbd3e2b0dxvgxh2fy5 foreign key (animal_id) references animal_list (id)" via JDBC [Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:516) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applyForeignKeys(AbstractSchemaMigrator.java:448) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:269) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:112) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at java.base/java.util.HashMap.forEach(HashMap.java:1421) ~[na:na]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1859) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1808) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:336) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:307) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:334) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:204) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.2.jar:6.2.2]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.2.jar:6.2.2]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.2.jar:3.4.2]
-	at com.be.BeApplication.main(BeApplication.java:13) ~[main/:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.4.2.jar:3.4.2]
-Caused by: java.sql.SQLException: Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.StatementImpl.executeInternal(StatementImpl.java:837) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.StatementImpl.execute(StatementImpl.java:685) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java) ~[HikariCP-5.1.0.jar:na]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	... 41 common frames omitted
-
-2025-01-30T23:39:37.106+09:00  INFO 17120 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:39:37.491+09:00  INFO 17120 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-01-30T23:39:38.299+09:00  WARN 17120 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-01-30T23:39:38.464+09:00 DEBUG 17120 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
-2025-01-30T23:39:38.526+09:00 DEBUG 17120 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
-2025-01-30T23:39:38.556+09:00 DEBUG 17120 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-01-30T23:39:38.636+09:00 DEBUG 17120 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-01-30T23:39:38.704+09:00 DEBUG 17120 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-01-30T23:39:38.876+09:00  INFO 17120 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2025-01-30T23:39:38.994+09:00  INFO 17120 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/maraeba'
-2025-01-30T23:39:39.002+09:00  INFO 17120 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 6.385 seconds (process running for 7.427)
-2025-01-30T23:43:06.307+09:00  INFO 17120 --- [be] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-01-30T23:43:06.382+09:00  INFO 17120 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-01-30T23:43:06.421+09:00  INFO 17120 --- [be] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:43:06.425+09:00  INFO 17120 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-01-30T23:43:06.432+09:00  INFO 17120 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-01-30T23:43:13.332+09:00  INFO 4384 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 4384 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
-2025-01-30T23:43:13.340+09:00  INFO 4384 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
-2025-01-30T23:43:22.754+09:00  INFO 11060 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 11060 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
-2025-01-30T23:43:22.756+09:00  INFO 11060 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
-2025-01-30T23:43:22.797+09:00  INFO 11060 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-01-30T23:43:22.798+09:00  INFO 11060 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-01-30T23:43:23.556+09:00  INFO 11060 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-01-30T23:43:23.730+09:00  INFO 11060 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 164 ms. Found 5 JPA repository interfaces.
-2025-01-30T23:43:24.346+09:00  INFO 11060 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-01-30T23:43:24.362+09:00  INFO 11060 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-01-30T23:43:24.362+09:00  INFO 11060 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
-2025-01-30T23:43:24.434+09:00  INFO 11060 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
-2025-01-30T23:43:24.435+09:00  INFO 11060 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1636 ms
-2025-01-30T23:43:24.610+09:00  INFO 11060 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-01-30T23:43:24.714+09:00  INFO 11060 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
-2025-01-30T23:43:24.754+09:00  INFO 11060 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-01-30T23:43:25.092+09:00  INFO 11060 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-01-30T23:43:25.132+09:00  INFO 11060 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-01-30T23:43:25.286+09:00  INFO 11060 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@43d49b0a
-2025-01-30T23:43:25.288+09:00  INFO 11060 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-01-30T23:43:25.353+09:00  WARN 11060 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-01-30T23:43:25.354+09:00  WARN 11060 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
-2025-01-30T23:43:25.384+09:00  INFO 11060 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-02-01T15:37:43.656+09:00  INFO 7688 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-01T15:37:43.769+09:00  INFO 7688 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-01T15:37:44.198+09:00  INFO 7688 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-02-01T15:37:45.300+09:00  WARN 7688 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-01T15:37:45.478+09:00 DEBUG 7688 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
+2025-02-01T15:37:45.550+09:00 DEBUG 7688 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
+2025-02-01T15:37:45.582+09:00 DEBUG 7688 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-02-01T15:37:45.679+09:00 DEBUG 7688 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-02-01T15:37:45.743+09:00 DEBUG 7688 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-02-01T15:37:45.905+09:00  INFO 7688 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-02-01T15:37:46.022+09:00  INFO 7688 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/maraeba'
+2025-02-01T15:37:46.029+09:00  INFO 7688 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 7.655 seconds (process running for 9.618)
+2025-02-01T15:38:25.360+09:00  INFO 7688 --- [be] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-01T15:38:25.442+09:00  INFO 7688 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-01T15:38:25.489+09:00  INFO 7688 --- [be] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-01T15:38:25.494+09:00  INFO 7688 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-01T15:38:25.500+09:00  INFO 7688 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-01T15:38:30.364+09:00  INFO 18768 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 18768 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
+2025-02-01T15:38:30.366+09:00  INFO 18768 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
+2025-02-01T15:38:30.412+09:00  INFO 18768 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-02-01T15:38:30.413+09:00  INFO 18768 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-02-01T15:38:31.220+09:00  INFO 18768 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-01T15:38:31.401+09:00  INFO 18768 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 171 ms. Found 5 JPA repository interfaces.
+2025-02-01T15:38:32.021+09:00  INFO 18768 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2025-02-01T15:38:32.035+09:00  INFO 18768 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-01T15:38:32.035+09:00  INFO 18768 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-02-01T15:38:32.102+09:00  INFO 18768 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
+2025-02-01T15:38:32.102+09:00  INFO 18768 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1689 ms
+2025-02-01T15:38:32.262+09:00  INFO 18768 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-01T15:38:32.341+09:00  INFO 18768 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-02-01T15:38:32.376+09:00  INFO 18768 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-01T15:38:32.677+09:00  INFO 18768 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-01T15:38:32.708+09:00  INFO 18768 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-01T15:38:32.876+09:00  INFO 18768 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@50b1a16c
+2025-02-01T15:38:32.880+09:00  INFO 18768 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-01T15:38:32.945+09:00  WARN 18768 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-02-01T15:38:32.946+09:00  WARN 18768 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-02-01T15:38:32.972+09:00  INFO 18768 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0
@@ -128,281 +71,54 @@ Caused by: java.sql.SQLException: Referencing column 'animal_id' and referenced 
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-01-30T23:43:26.499+09:00  INFO 11060 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-01-30T23:43:26.587+09:00  WARN 11060 --- [be] [restartedMain] o.h.t.s.i.ExceptionHandlerLoggedImpl     : GenerationTarget encountered exception accepting command : Error executing DDL "alter table animal_correct add constraint FK2kd9jqipbd3e2b0dxvgxh2fy5 foreign key (animal_id) references animal_list (id)" via JDBC [Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.]
+2025-02-01T15:38:33.994+09:00  INFO 18768 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-01T15:38:34.077+09:00  INFO 18768 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-01T15:38:34.419+09:00  INFO 18768 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-02-01T15:38:35.299+09:00  WARN 18768 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-01T15:38:35.448+09:00 DEBUG 18768 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
+2025-02-01T15:38:35.519+09:00 DEBUG 18768 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
+2025-02-01T15:38:35.555+09:00 DEBUG 18768 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-02-01T15:38:35.631+09:00 DEBUG 18768 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-02-01T15:38:35.678+09:00 DEBUG 18768 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-02-01T15:38:35.841+09:00  INFO 18768 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-02-01T15:38:35.927+09:00  INFO 18768 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/maraeba'
+2025-02-01T15:38:35.934+09:00  INFO 18768 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 6.079 seconds (process running for 7.088)
+2025-02-01T15:39:53.344+09:00  INFO 18768 --- [be] [http-nio-8081-exec-1] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-01T15:39:53.344+09:00  INFO 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-01T15:39:53.344+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-02-01T15:39:53.344+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-02-01T15:39:53.344+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-02-01T15:39:53.346+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@45b1a089
+2025-02-01T15:39:53.347+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@33433e4f
+2025-02-01T15:39:53.347+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-02-01T15:39:53.347+09:00  INFO 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-02-01T15:39:53.366+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:39:53.366+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:39:53.373+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:39:53.373+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:39:53.375+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:39:53.375+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:39:53.376+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:39:53.376+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:39:53.393+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:39:53.393+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:39:53.394+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:39:53.394+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:39:53.400+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:39:53.400+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:39:53.401+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:39:53.401+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:39:53.401+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:39:53.401+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:39:53.401+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:39:53.401+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:39:53.449+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Failed to complete request: java.nio.file.NoSuchFileException: 4
+2025-02-01T15:39:53.449+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Failed to complete request: java.nio.file.NoSuchFileException: 3
+2025-02-01T15:39:53.449+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:39:53.449+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:39:53.450+09:00 ERROR 18768 --- [be] [http-nio-8081-exec-3] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/maraeba] threw exception
 
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table animal_correct add constraint FK2kd9jqipbd3e2b0dxvgxh2fy5 foreign key (animal_id) references animal_list (id)" via JDBC [Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:516) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applyForeignKeys(AbstractSchemaMigrator.java:448) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:269) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:112) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at java.base/java.util.HashMap.forEach(HashMap.java:1421) ~[na:na]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1859) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1808) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:336) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:307) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:334) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:204) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.2.jar:6.2.2]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.2.jar:6.2.2]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.2.jar:3.4.2]
-	at com.be.BeApplication.main(BeApplication.java:13) ~[main/:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.4.2.jar:3.4.2]
-Caused by: java.sql.SQLException: Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.StatementImpl.executeInternal(StatementImpl.java:837) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.StatementImpl.execute(StatementImpl.java:685) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java) ~[HikariCP-5.1.0.jar:na]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	... 41 common frames omitted
-
-2025-01-30T23:43:26.611+09:00  INFO 11060 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:43:26.991+09:00  INFO 11060 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-01-30T23:43:27.786+09:00  WARN 11060 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-01-30T23:43:27.939+09:00 DEBUG 11060 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
-2025-01-30T23:43:28.021+09:00 DEBUG 11060 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
-2025-01-30T23:43:28.070+09:00 DEBUG 11060 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-01-30T23:43:28.170+09:00 DEBUG 11060 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-01-30T23:43:28.238+09:00 DEBUG 11060 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-01-30T23:43:28.370+09:00  INFO 11060 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2025-01-30T23:43:28.449+09:00  INFO 11060 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/maraeba'
-2025-01-30T23:43:28.456+09:00  INFO 11060 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 6.164 seconds (process running for 7.03)
-2025-01-30T23:44:02.161+09:00  INFO 11060 --- [be] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-01-30T23:44:02.232+09:00  INFO 11060 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-01-30T23:44:02.254+09:00  INFO 11060 --- [be] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:44:02.256+09:00  INFO 11060 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-01-30T23:44:02.262+09:00  INFO 11060 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-01-30T23:44:08.403+09:00  INFO 5388 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 5388 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
-2025-01-30T23:44:08.405+09:00  INFO 5388 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
-2025-01-30T23:44:08.453+09:00  INFO 5388 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-01-30T23:44:08.453+09:00  INFO 5388 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-01-30T23:44:09.272+09:00  INFO 5388 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-01-30T23:44:09.467+09:00  INFO 5388 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 184 ms. Found 5 JPA repository interfaces.
-2025-01-30T23:44:10.076+09:00  INFO 5388 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-01-30T23:44:10.089+09:00  INFO 5388 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-01-30T23:44:10.089+09:00  INFO 5388 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
-2025-01-30T23:44:10.146+09:00  INFO 5388 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
-2025-01-30T23:44:10.147+09:00  INFO 5388 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1693 ms
-2025-01-30T23:44:10.280+09:00  INFO 5388 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-01-30T23:44:10.359+09:00  INFO 5388 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
-2025-01-30T23:44:10.393+09:00  INFO 5388 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-01-30T23:44:10.669+09:00  INFO 5388 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-01-30T23:44:10.700+09:00  INFO 5388 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-01-30T23:44:10.837+09:00  INFO 5388 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@11dce9fa
-2025-01-30T23:44:10.839+09:00  INFO 5388 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-01-30T23:44:10.876+09:00  WARN 5388 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-01-30T23:44:10.877+09:00  WARN 5388 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
-2025-01-30T23:44:10.909+09:00  INFO 5388 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 8.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-01-30T23:44:11.948+09:00  INFO 5388 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-01-30T23:44:12.037+09:00  WARN 5388 --- [be] [restartedMain] o.h.t.s.i.ExceptionHandlerLoggedImpl     : GenerationTarget encountered exception accepting command : Error executing DDL "alter table animal_correct add constraint FK2kd9jqipbd3e2b0dxvgxh2fy5 foreign key (animal_id) references animal_list (id)" via JDBC [Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.]
-
-org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "alter table animal_correct add constraint FK2kd9jqipbd3e2b0dxvgxh2fy5 foreign key (animal_id) references animal_list (id)" via JDBC [Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:576) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:516) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applyForeignKeys(AbstractSchemaMigrator.java:448) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:269) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:112) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at java.base/java.util.HashMap.forEach(HashMap.java:1421) ~[na:na]
-	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1859) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1808) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:336) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:307) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:334) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:204) ~[spring-beans-6.2.2.jar:6.2.2]
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:970) ~[spring-context-6.2.2.jar:6.2.2]
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:627) ~[spring-context-6.2.2.jar:6.2.2]
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.2.jar:3.4.2]
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.2.jar:3.4.2]
-	at com.be.BeApplication.main(BeApplication.java:13) ~[main/:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
-	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.4.2.jar:3.4.2]
-Caused by: java.sql.SQLException: Referencing column 'animal_id' and referenced column 'id' in foreign key constraint 'FK2kd9jqipbd3e2b0dxvgxh2fy5' are incompatible.
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.StatementImpl.executeInternal(StatementImpl.java:837) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.mysql.cj.jdbc.StatementImpl.execute(StatementImpl.java:685) ~[mysql-connector-j-9.1.0.jar:9.1.0]
-	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94) ~[HikariCP-5.1.0.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java) ~[HikariCP-5.1.0.jar:na]
-	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80) ~[hibernate-core-6.6.5.Final.jar:6.6.5.Final]
-	... 41 common frames omitted
-
-2025-01-30T23:44:12.058+09:00  INFO 5388 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:44:12.438+09:00  INFO 5388 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-01-30T23:44:13.561+09:00  WARN 5388 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-01-30T23:44:13.706+09:00 DEBUG 5388 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
-2025-01-30T23:44:13.772+09:00 DEBUG 5388 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
-2025-01-30T23:44:13.806+09:00 DEBUG 5388 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-01-30T23:44:13.890+09:00 DEBUG 5388 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-01-30T23:44:13.935+09:00 DEBUG 5388 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-01-30T23:44:14.055+09:00  INFO 5388 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2025-01-30T23:44:14.134+09:00  INFO 5388 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/maraeba'
-2025-01-30T23:44:14.142+09:00  INFO 5388 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 6.252 seconds (process running for 7.086)
-2025-01-30T23:45:32.397+09:00  INFO 5388 --- [be] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-01-30T23:45:32.476+09:00  INFO 5388 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-01-30T23:45:32.501+09:00  INFO 5388 --- [be] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:45:32.504+09:00  INFO 5388 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-01-30T23:45:32.510+09:00  INFO 5388 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-01-30T23:45:35.301+09:00  INFO 6140 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 6140 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
-2025-01-30T23:45:35.304+09:00  INFO 6140 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
-2025-01-30T23:45:35.350+09:00  INFO 6140 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-01-30T23:45:35.351+09:00  INFO 6140 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-01-30T23:45:36.265+09:00  INFO 6140 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-01-30T23:45:36.475+09:00  INFO 6140 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 195 ms. Found 5 JPA repository interfaces.
-2025-01-30T23:45:37.081+09:00  INFO 6140 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-01-30T23:45:37.094+09:00  INFO 6140 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-01-30T23:45:37.094+09:00  INFO 6140 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
-2025-01-30T23:45:37.155+09:00  INFO 6140 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
-2025-01-30T23:45:37.155+09:00  INFO 6140 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1803 ms
-2025-01-30T23:45:37.285+09:00  INFO 6140 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-01-30T23:45:37.353+09:00  INFO 6140 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
-2025-01-30T23:45:37.386+09:00  INFO 6140 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-01-30T23:45:37.668+09:00  INFO 6140 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-01-30T23:45:37.700+09:00  INFO 6140 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-01-30T23:45:37.853+09:00  INFO 6140 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@74d49c8e
-2025-01-30T23:45:37.856+09:00  INFO 6140 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-01-30T23:45:37.909+09:00  WARN 6140 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-01-30T23:45:37.910+09:00  WARN 6140 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
-2025-01-30T23:45:37.929+09:00  INFO 6140 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 8.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-01-30T23:45:38.823+09:00  INFO 6140 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-01-30T23:45:39.085+09:00  INFO 6140 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:45:39.491+09:00  INFO 6140 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-01-30T23:45:40.269+09:00  WARN 6140 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-01-30T23:45:40.479+09:00 DEBUG 6140 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
-2025-01-30T23:45:40.561+09:00 DEBUG 6140 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
-2025-01-30T23:45:40.594+09:00 DEBUG 6140 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-01-30T23:45:40.675+09:00 DEBUG 6140 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-01-30T23:45:40.738+09:00 DEBUG 6140 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-01-30T23:45:40.867+09:00  INFO 6140 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2025-01-30T23:45:40.947+09:00  INFO 6140 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/maraeba'
-2025-01-30T23:45:40.958+09:00  INFO 6140 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 6.184 seconds (process running for 6.912)
-2025-01-30T23:49:38.553+09:00  INFO 6140 --- [be] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-01-30T23:49:38.623+09:00  INFO 6140 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-01-30T23:49:38.648+09:00  INFO 6140 --- [be] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:49:38.651+09:00  INFO 6140 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-01-30T23:49:38.656+09:00  INFO 6140 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-01-30T23:49:43.742+09:00  INFO 22212 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 22212 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
-2025-01-30T23:49:43.743+09:00  INFO 22212 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
-2025-01-30T23:49:43.782+09:00  INFO 22212 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
-2025-01-30T23:49:43.783+09:00  INFO 22212 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
-2025-01-30T23:49:44.549+09:00  INFO 22212 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-01-30T23:49:44.739+09:00  INFO 22212 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 181 ms. Found 5 JPA repository interfaces.
-2025-01-30T23:49:45.578+09:00  INFO 22212 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-01-30T23:49:45.604+09:00  INFO 22212 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-01-30T23:49:45.605+09:00  INFO 22212 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
-2025-01-30T23:49:45.730+09:00  INFO 22212 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
-2025-01-30T23:49:45.731+09:00  INFO 22212 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1947 ms
-2025-01-30T23:49:46.059+09:00  INFO 22212 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-01-30T23:49:46.169+09:00  INFO 22212 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
-2025-01-30T23:49:46.231+09:00  INFO 22212 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-01-30T23:49:46.675+09:00  INFO 22212 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-01-30T23:49:46.704+09:00  INFO 22212 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-01-30T23:49:46.848+09:00  INFO 22212 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7693e1b2
-2025-01-30T23:49:46.854+09:00  INFO 22212 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-01-30T23:49:46.894+09:00  WARN 22212 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-01-30T23:49:46.896+09:00  WARN 22212 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
-2025-01-30T23:49:46.918+09:00  INFO 22212 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 8.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-01-30T23:49:47.904+09:00  INFO 22212 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-01-30T23:49:47.966+09:00  INFO 22212 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:49:48.295+09:00  INFO 22212 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-01-30T23:49:49.161+09:00  WARN 22212 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-01-30T23:49:49.297+09:00 DEBUG 22212 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
-2025-01-30T23:49:49.356+09:00 DEBUG 22212 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
-2025-01-30T23:49:49.392+09:00 DEBUG 22212 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-01-30T23:49:49.472+09:00 DEBUG 22212 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-01-30T23:49:49.523+09:00 DEBUG 22212 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-01-30T23:49:49.665+09:00  INFO 22212 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
-2025-01-30T23:49:49.756+09:00  INFO 22212 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/maraeba'
-2025-01-30T23:49:49.763+09:00  INFO 22212 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 6.518 seconds (process running for 7.351)
-2025-01-30T23:51:22.692+09:00  INFO 22212 --- [be] [http-nio-8080-exec-2] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-01-30T23:51:22.693+09:00  INFO 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-01-30T23:51:22.693+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
-2025-01-30T23:51:22.693+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
-2025-01-30T23:51:22.693+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
-2025-01-30T23:51:22.694+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@313417bc
-2025-01-30T23:51:22.695+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@2af22daa
-2025-01-30T23:51:22.695+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2025-01-30T23:51:22.696+09:00  INFO 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
-2025-01-30T23:51:22.720+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
-2025-01-30T23:51:22.728+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
-2025-01-30T23:51:22.731+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
-2025-01-30T23:51:22.732+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
-2025-01-30T23:51:22.797+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Failed to complete request: java.nio.file.NoSuchFileException: 2
-2025-01-30T23:51:22.798+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2025-01-30T23:51:22.800+09:00 ERROR 22212 --- [be] [http-nio-8080-exec-2] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/maraeba] threw exception
-
-java.nio.file.NoSuchFileException: 2
+java.nio.file.NoSuchFileException: 4
 	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85) ~[na:na]
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103) ~[na:na]
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108) ~[na:na]
@@ -410,7 +126,7 @@ java.nio.file.NoSuchFileException: 2
 	at java.base/java.nio.file.Files.newByteChannel(Files.java:380) ~[na:na]
 	at java.base/java.nio.file.Files.newByteChannel(Files.java:432) ~[na:na]
 	at java.base/java.nio.file.Files.readAllBytes(Files.java:3288) ~[na:na]
-	at com.be.domain.wgames.findAnimals.service.FindGameServiceImpl.pickAnimal(FindGameServiceImpl.java:43) ~[main/:na]
+	at com.be.domain.wgames.findAnimals.service.FindGameServiceImpl.pickAnimal(FindGameServiceImpl.java:45) ~[main/:na]
 	at com.be.domain.wgames.findAnimals.controller.FindGameController.startGame(FindGameController.java:25) ~[main/:na]
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
@@ -504,16 +220,357 @@ java.nio.file.NoSuchFileException: 2
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
 	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
 
-2025-01-30T23:51:22.813+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /error
-2025-01-30T23:51:22.814+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /error
-2025-01-30T23:51:22.815+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/maraeba/error", parameters={}
-2025-01-30T23:51:22.815+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
-2025-01-30T23:51:22.843+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
-2025-01-30T23:51:22.845+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Thu Jan 30 23:51:22 KST 2025, status=500, error=Internal Server Error, trace=java.nio.fil (truncated)...]
-2025-01-30T23:51:22.878+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 500
-2025-01-30T23:51:22.879+09:00 DEBUG 22212 --- [be] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2025-01-30T23:51:41.455+09:00  INFO 22212 --- [be] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-01-30T23:51:41.537+09:00  INFO 22212 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-01-30T23:51:41.560+09:00  INFO 22212 --- [be] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-01-30T23:51:41.563+09:00  INFO 22212 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-01-30T23:51:41.567+09:00  INFO 22212 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-01T15:39:53.450+09:00 ERROR 18768 --- [be] [http-nio-8081-exec-4] o.a.c.c.C.[.[.[.[dispatcherServlet]      : Servlet.service() for servlet [dispatcherServlet] in context with path [/maraeba] threw exception
+
+java.nio.file.NoSuchFileException: 3
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85) ~[na:na]
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103) ~[na:na]
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108) ~[na:na]
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:236) ~[na:na]
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:380) ~[na:na]
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:432) ~[na:na]
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3288) ~[na:na]
+	at com.be.domain.wgames.findAnimals.service.FindGameServiceImpl.pickAnimal(FindGameServiceImpl.java:45) ~[main/:na]
+	at com.be.domain.wgames.findAnimals.controller.FindGameController.startGame(FindGameController.java:25) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:257) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1088) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:978) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.34.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.34.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.4.2.jar:6.4.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243) ~[spring-webmvc-6.2.2.jar:6.2.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238) ~[spring-security-config-6.4.2.jar:6.4.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.2.jar:6.2.2]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.34.jar:10.1.34]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+
+2025-02-01T15:39:53.464+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /error
+2025-02-01T15:39:53.464+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /error
+2025-02-01T15:39:53.464+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /error
+2025-02-01T15:39:53.464+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /error
+2025-02-01T15:39:53.465+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/maraeba/error", parameters={}
+2025-02-01T15:39:53.465+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for POST "/maraeba/error", parameters={}
+2025-02-01T15:39:53.465+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-02-01T15:39:53.465+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)
+2025-02-01T15:39:53.483+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:39:53.483+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:39:53.485+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Sat Feb 01 15:39:53 KST 2025, status=500, error=Internal Server Error, trace=java.nio.fil (truncated)...]
+2025-02-01T15:39:53.485+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Sat Feb 01 15:39:53 KST 2025, status=500, error=Internal Server Error, trace=java.nio.fil (truncated)...]
+2025-02-01T15:39:53.517+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 500
+2025-02-01T15:39:53.517+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 500
+2025-02-01T15:39:53.517+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:39:53.517+09:00 DEBUG 18768 --- [be] [http-nio-8081-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:41:01.725+09:00  INFO 18768 --- [be] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-01T15:41:01.799+09:00  INFO 18768 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-01T15:41:01.821+09:00  INFO 18768 --- [be] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-01T15:41:01.825+09:00  INFO 18768 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-01T15:41:01.830+09:00  INFO 18768 --- [be] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-01T15:41:05.347+09:00  INFO 21296 --- [be] [restartedMain] com.be.BeApplication                     : Starting BeApplication using Java 17.0.12 with PID 21296 (C:\SSAFY\S12P11E104\be\build\classes\java\main started by 95ker in C:\SSAFY\S12P11E104\be)
+2025-02-01T15:41:05.349+09:00  INFO 21296 --- [be] [restartedMain] com.be.BeApplication                     : No active profile set, falling back to 1 default profile: "default"
+2025-02-01T15:41:05.390+09:00  INFO 21296 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-02-01T15:41:05.390+09:00  INFO 21296 --- [be] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-02-01T15:41:06.275+09:00  INFO 21296 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-02-01T15:41:06.498+09:00  INFO 21296 --- [be] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 214 ms. Found 5 JPA repository interfaces.
+2025-02-01T15:41:07.105+09:00  INFO 21296 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2025-02-01T15:41:07.119+09:00  INFO 21296 --- [be] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-02-01T15:41:07.119+09:00  INFO 21296 --- [be] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-02-01T15:41:07.194+09:00  INFO 21296 --- [be] [restartedMain] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring embedded WebApplicationContext
+2025-02-01T15:41:07.194+09:00  INFO 21296 --- [be] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1802 ms
+2025-02-01T15:41:07.346+09:00  INFO 21296 --- [be] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-02-01T15:41:07.424+09:00  INFO 21296 --- [be] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-02-01T15:41:07.462+09:00  INFO 21296 --- [be] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-02-01T15:41:07.778+09:00  INFO 21296 --- [be] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-02-01T15:41:07.811+09:00  INFO 21296 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-02-01T15:41:07.964+09:00  INFO 21296 --- [be] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@414e4db8
+2025-02-01T15:41:07.965+09:00  INFO 21296 --- [be] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-02-01T15:41:08.019+09:00  WARN 21296 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-02-01T15:41:08.020+09:00  WARN 21296 --- [be] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-02-01T15:41:08.040+09:00  INFO 21296 --- [be] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-02-01T15:41:09.019+09:00  INFO 21296 --- [be] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-02-01T15:41:09.133+09:00  INFO 21296 --- [be] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-02-01T15:41:09.489+09:00  INFO 21296 --- [be] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-02-01T15:41:10.516+09:00  WARN 21296 --- [be] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-02-01T15:41:10.667+09:00 DEBUG 21296 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 7 mappings in 'requestMappingHandlerMapping'
+2025-02-01T15:41:10.734+09:00 DEBUG 21296 --- [be] [restartedMain] o.s.w.s.c.annotation.WebMvcConfigurer    : Default resource handling disabled
+2025-02-01T15:41:10.776+09:00 DEBUG 21296 --- [be] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-02-01T15:41:10.859+09:00 DEBUG 21296 --- [be] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-02-01T15:41:10.902+09:00 DEBUG 21296 --- [be] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-02-01T15:41:11.038+09:00  INFO 21296 --- [be] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-02-01T15:41:11.126+09:00  INFO 21296 --- [be] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/maraeba'
+2025-02-01T15:41:11.134+09:00  INFO 21296 --- [be] [restartedMain] com.be.BeApplication                     : Started BeApplication in 6.295 seconds (process running for 7.18)
+2025-02-01T15:41:58.915+09:00  INFO 21296 --- [be] [http-nio-8081-exec-1] o.a.c.c.C.[.[localhost].[/maraeba]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-02-01T15:41:58.915+09:00  INFO 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-02-01T15:41:58.915+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-02-01T15:41:58.915+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-02-01T15:41:58.916+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-02-01T15:41:58.916+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@371ba2e4
+2025-02-01T15:41:58.917+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@714a9174
+2025-02-01T15:41:58.918+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-02-01T15:41:58.919+09:00  INFO 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2025-02-01T15:41:58.944+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:41:58.944+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:41:58.951+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:41:58.951+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:41:58.955+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:41:58.955+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:41:58.957+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:41:58.957+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:41:58.977+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:41:58.977+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:41:58.977+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:41:58.977+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:41:58.982+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:41:58.982+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:41:58.982+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:41:58.982+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:41:58.982+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:41:58.982+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:41:58.982+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:41:58.984+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:41:59.144+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:41:59.144+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:41:59.148+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@607eae51]
+2025-02-01T15:41:59.148+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@31b36b4a]
+2025-02-01T15:41:59.257+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:41:59.258+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:41:59.261+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:41:59.262+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:23.880+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:23.880+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:23.881+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:23.881+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:23.881+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:23.881+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:23.881+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:23.881+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:23.882+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:23.882+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:23.883+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:23.883+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:23.888+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:43:23.889+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:43:23.890+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:23.890+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:23.900+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:43:23.903+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:43:23.904+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:23.905+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:23.909+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:43:23.909+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@6f89b81f]
+2025-02-01T15:43:23.932+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:43:23.933+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@2abffca6]
+2025-02-01T15:43:23.984+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:23.985+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:23.987+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:23.987+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:24.557+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:24.558+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:24.558+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:24.559+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:24.559+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:24.559+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T15:43:24.559+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:24.561+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:24.561+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:24.561+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:24.562+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:24.562+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:24.570+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T15:43:24.581+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:43:24.581+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@17cc9435]
+2025-02-01T15:43:24.581+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T15:43:24.581+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@639ab15]
+2025-02-01T15:43:24.618+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:24.618+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T15:43:24.620+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T15:43:24.621+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T16:46:12.406+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T16:46:12.407+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /wgames/find-animal/start-game
+2025-02-01T16:46:12.408+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T16:46:12.408+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.security.web.FilterChainProxy        : Secured OPTIONS /wgames/find-animal/start-game
+2025-02-01T16:46:12.411+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T16:46:12.412+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : OPTIONS "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T16:46:12.413+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T16:46:12.413+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T16:46:12.414+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T16:46:12.415+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T16:46:12.414+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T16:46:12.416+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T16:46:12.419+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T16:46:12.419+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /wgames/find-animal/start-game
+2025-02-01T16:46:12.420+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T16:46:12.420+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.security.web.FilterChainProxy        : Secured POST /wgames/find-animal/start-game
+2025-02-01T16:46:12.420+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T16:46:12.420+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : POST "/maraeba/wgames/find-animal/start-game", parameters={}
+2025-02-01T16:46:12.421+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T16:46:12.425+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.be.domain.wgames.findAnimals.controller.FindGameController#startGame()
+2025-02-01T16:46:12.448+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T16:46:12.448+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-02-01T16:46:12.448+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@1d30008e]
+2025-02-01T16:46:12.448+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.be.domain.wgames.findAnimals.response.AnimalResponse@50216acf]
+2025-02-01T16:46:12.485+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T16:46:12.485+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T16:46:12.494+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-02-01T16:46:12.495+09:00 DEBUG 21296 --- [be] [http-nio-8081-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-02-01T16:49:12.438+09:00  INFO 21296 --- [be] [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 5 class path changes (0 additions, 0 deletions, 5 modifications)
+2025-02-01T16:49:12.443+09:00  INFO 21296 --- [be] [Thread-5] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-02-01T16:49:12.518+09:00  INFO 21296 --- [be] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-02-01T16:49:12.547+09:00  INFO 21296 --- [be] [Thread-5] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-02-01T16:49:12.550+09:00  INFO 21296 --- [be] [Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-02-01T16:49:12.552+09:00  INFO 21296 --- [be] [Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-02-01T16:49:12.654+09:00 ERROR 21296 --- [be] [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.yaml.snakeyaml.constructor.DuplicateKeyException: while constructing a mapping
+ in 'reader', line 1, column 1:
+    server:
+    ^
+found duplicate key server
+ in 'reader', line 49, column 1:
+    s
+    ^
+
+	at org.yaml.snakeyaml.constructor.SafeConstructor.processDuplicateKeys(SafeConstructor.java:126) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.SafeConstructor.flattenMapping(SafeConstructor.java:78) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.SafeConstructor.flattenMapping(SafeConstructor.java:73) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.SafeConstructor.constructMapping2ndStep(SafeConstructor.java:209) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.BaseConstructor.constructMapping(BaseConstructor.java:552) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.SafeConstructor$ConstructYamlMap.construct(SafeConstructor.java:597) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.BaseConstructor.constructObjectNoCheck(BaseConstructor.java:264) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.BaseConstructor.constructObject(BaseConstructor.java:247) ~[snakeyaml-2.3.jar:na]
+	at org.springframework.boot.env.OriginTrackedYamlLoader$OriginTrackingConstructor.constructObject(OriginTrackedYamlLoader.java:119) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.yaml.snakeyaml.constructor.BaseConstructor.constructDocument(BaseConstructor.java:201) ~[snakeyaml-2.3.jar:na]
+	at org.yaml.snakeyaml.constructor.BaseConstructor.getData(BaseConstructor.java:166) ~[snakeyaml-2.3.jar:na]
+	at org.springframework.boot.env.OriginTrackedYamlLoader$OriginTrackingConstructor.getData(OriginTrackedYamlLoader.java:99) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.yaml.snakeyaml.Yaml$1.next(Yaml.java:529) ~[snakeyaml-2.3.jar:na]
+	at org.springframework.beans.factory.config.YamlProcessor.process(YamlProcessor.java:203) ~[spring-beans-6.2.2.jar:6.2.2]
+	at org.springframework.beans.factory.config.YamlProcessor.process(YamlProcessor.java:169) ~[spring-beans-6.2.2.jar:6.2.2]
+	at org.springframework.boot.env.OriginTrackedYamlLoader.load(OriginTrackedYamlLoader.java:84) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.env.YamlPropertySourceLoader.load(YamlPropertySourceLoader.java:50) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.StandardConfigDataLoader.load(StandardConfigDataLoader.java:54) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.StandardConfigDataLoader.load(StandardConfigDataLoader.java:36) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataLoaders.load(ConfigDataLoaders.java:96) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataImporter.load(ConfigDataImporter.java:132) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataImporter.resolveAndLoad(ConfigDataImporter.java:87) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataEnvironmentContributors.withProcessedImports(ConfigDataEnvironmentContributors.java:121) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataEnvironment.processInitial(ConfigDataEnvironment.java:245) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataEnvironment.processAndApply(ConfigDataEnvironment.java:232) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor.postProcessEnvironment(ConfigDataEnvironmentPostProcessor.java:96) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.config.ConfigDataEnvironmentPostProcessor.postProcessEnvironment(ConfigDataEnvironmentPostProcessor.java:89) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.env.EnvironmentPostProcessorApplicationListener.onApplicationEnvironmentPreparedEvent(EnvironmentPostProcessorApplicationListener.java:132) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.env.EnvironmentPostProcessorApplicationListener.onApplicationEvent(EnvironmentPostProcessorApplicationListener.java:115) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.doInvokeListener(SimpleApplicationEventMulticaster.java:185) ~[spring-context-6.2.2.jar:6.2.2]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.invokeListener(SimpleApplicationEventMulticaster.java:178) ~[spring-context-6.2.2.jar:6.2.2]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:156) ~[spring-context-6.2.2.jar:6.2.2]
+	at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:138) ~[spring-context-6.2.2.jar:6.2.2]
+	at org.springframework.boot.context.event.EventPublishingRunListener.multicastInitialEvent(EventPublishingRunListener.java:136) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.context.event.EventPublishingRunListener.environmentPrepared(EventPublishingRunListener.java:81) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.SpringApplicationRunListeners.lambda$environmentPrepared$2(SpringApplicationRunListeners.java:64) ~[spring-boot-3.4.2.jar:3.4.2]
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75) ~[na:na]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:118) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.SpringApplicationRunListeners.doWithListeners(SpringApplicationRunListeners.java:112) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.SpringApplicationRunListeners.environmentPrepared(SpringApplicationRunListeners.java:63) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.SpringApplication.prepareEnvironment(SpringApplication.java:353) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:313) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.2.jar:3.4.2]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.2.jar:3.4.2]
+	at com.be.BeApplication.main(BeApplication.java:13) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.4.2.jar:3.4.2]
+

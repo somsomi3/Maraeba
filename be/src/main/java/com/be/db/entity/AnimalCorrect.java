@@ -27,9 +27,13 @@ public class AnimalCorrect {
     @Column(name = "location_y", nullable = false)
     private Integer locationY;
 
+    // AnimalList와 연결 (animal_id 외래 키)
     @ManyToOne
     @JoinColumn(name = "animal_id", insertable = false, updatable = false)
-    private AnimalList animalList;  // 외래 키로 연결
+    private AnimalList animalList;
+
+    // AnimalGame과 연결 (game_id 외래 키)
+    @ManyToOne
+    @JoinColumn(name = "game_id", insertable = false, updatable = false)
+    private AnimalGame animalGame;
 }
-
-

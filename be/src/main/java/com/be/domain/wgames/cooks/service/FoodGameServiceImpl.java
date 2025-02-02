@@ -8,20 +8,17 @@ import com.be.domain.wgames.AudioConverter;
 import com.be.domain.wgames.cooks.request.AnswerCorrectRequest;
 import com.be.domain.wgames.cooks.response.FoodAnswerResponse;
 import com.be.domain.wgames.cooks.response.FoodResponse;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -35,28 +32,34 @@ public class FoodGameServiceImpl implements FoodGameService {
     private final AiTest aiTest;
 
     @Override
-    public FoodResponse pickFood() {
+    public FoodResponse pickFood() throws IOException {
 
         // 1. FoodGame에서 랜덤으로 1개의 엔티티 가져오기
         FoodGame foodGame = foodGameRepository.findRandomFoodGame();
 
-        // 2. FoodGame에서 선택된 2개의 FoodItem 가져오기
+        // 2. 가져온 엔티티에서 루트로 이미지 가져온 후 byte[] 반환
+        File imageFile = new File(foodGame.getResultImage());
+        byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+
+        // 3. FoodGame에서 선택된 2개의 FoodItem 가져오기
         String item1 = foodGame.getFoodItem1().getIngredientName();
         String item2 = foodGame.getFoodItem2().getIngredientName();
 
-        // 3. FoodItem에서 랜덤으로 6개의 이름 가져오기
+        // 4. FoodItem에서 랜덤으로 6개의 이름 가져오기
         List<String> randomItems = foodItemRepository.findRandomFoodItems(6, item1, item2);
 
-        // 4. 모든 이름을 합쳐 클라이언트로 보낼 데이터 구성
+        // 5. 모든 이름을 합쳐 클라이언트로 보낼 데이터 구성
         List<String> allItems = new ArrayList<>();
         allItems.add(item1);
         allItems.add(item2);
         allItems.addAll(randomItems);
+        Collections.shuffle(allItems);
 
-        // 5. FoodResponse 생성 후 반환
+        // 6. FoodResponse 생성 후 반환
         FoodResponse foodResponse = new FoodResponse();
         foodResponse.setFoodName(foodGame.getResultName());
         foodResponse.setFoodItems(allItems);
+        foodResponse.setImageData(imageBytes);
         return foodResponse;
     }
 
@@ -89,13 +92,6 @@ public class FoodGameServiceImpl implements FoodGameService {
 //        // 저장된 파일을 다시 File 객체로 불러오기
 //        File audioFile = new File(fullPathName + ".wav");
 //
-//        try {
-//            AudioFileFormat fileFormat = AudioSystem.getAudioFileFormat(audioFile);
-//            System.out.println("File Format: " + fileFormat.getType());
-//        } catch (UnsupportedAudioFileException e) {
-//            System.out.println("Invalid audio file format");
-//        }
-//
 //        // ClovaSpeechClient 사용하여 처리
 //        ClovaSpeechClient.Diarization diarization = new ClovaSpeechClient.Diarization();
 //        diarization.setEnable(false); // 화자 감지 활성화 (안하면 오류남)
@@ -125,12 +121,19 @@ public class FoodGameServiceImpl implements FoodGameService {
         if (item1 == null) {
             //정답인 경우
             if (text.contains(answerItem1) || text.contains(answerItem2)) {
+                String answer = text.contains((answerItem1)) ? answerItem1 : answerItem2;
                 answerResponse.setIfCorrect(true);
-                answerResponse.setItem(text.contains(answerItem1) ? answerItem1 : answerItem2);
+                answerResponse.setItem(answer);
                 answerResponse.setCnt(1);
+
+                //가져온 엔티티에서 루트로 이미지 가져온 후 byte[] 반환
+                File imageFile = new File(foodItemRepository.findByIngredientName(text).getFoodImage());
+                byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+                answerResponse.setImageData(imageBytes);
             }
             //정답이 아닌 경우
             else {
+                answerResponse.setItem(text);
                 answerResponse.setIfCorrect(false);
                 answerResponse.setDuplication(false);
             }
@@ -138,13 +141,19 @@ public class FoodGameServiceImpl implements FoodGameService {
         //1번은 맞춘 경우
         else {
             //이미 1번에서 맞춘거임. 중복
-            if (text.contains(item1))
+            if (text.contains(item1)) {
+                answerResponse.setItem(text);
                 answerResponse.setDuplication(true);
-                //중복 아니고 정답 맞음.
+            }
+            //중복 아니고 정답 맞음.
             else if (text.contains(answerItem1) || text.contains(answerItem2)) {
                 answerResponse.setIfCorrect(true);
                 answerResponse.setItem(text.contains(answerItem1) ? answerItem1 : answerItem2);
                 answerResponse.setCnt(2);
+                //가져온 엔티티에서 루트로 이미지 가져온 후 byte[] 반환
+                File imageFile = new File(foodItemRepository.findByIngredientName(text).getFoodImage());
+                byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+                answerResponse.setImageData(imageBytes);
             }
         }
         return answerResponse;

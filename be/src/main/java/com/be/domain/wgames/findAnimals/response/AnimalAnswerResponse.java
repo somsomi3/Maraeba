@@ -11,4 +11,6 @@ public class AnimalAnswerResponse {
     private boolean duplication;
     private String animalName;
     private int cnt;
+    private int x;
+    private int y;
 }

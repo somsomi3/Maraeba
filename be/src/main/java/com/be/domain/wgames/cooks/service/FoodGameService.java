@@ -7,7 +7,7 @@ import com.be.domain.wgames.cooks.response.FoodResponse;
 import java.io.IOException;
 
 public interface FoodGameService {
-    FoodResponse pickFood();
+    FoodResponse pickFood() throws IOException;
 
     FoodAnswerResponse isCorrect(AnswerCorrectRequest answerCorrectRequest) throws IOException;
 }

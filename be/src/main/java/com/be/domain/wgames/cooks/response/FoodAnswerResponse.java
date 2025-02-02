@@ -11,4 +11,5 @@ public class FoodAnswerResponse {
     private boolean duplication;//중복 여부
     private String item;        //재료 이름
     private int cnt;            //몇번째 재료?
+    private byte[] imageData;   //정답인 경우 이미지
 }

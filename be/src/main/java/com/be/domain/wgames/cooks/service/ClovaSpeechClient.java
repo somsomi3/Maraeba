@@ -234,7 +234,7 @@ public class ClovaSpeechClient {
         requestEntity.setDiarization(diarization);
 
         final String result =
-                clovaSpeechClient.upload(new File("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\audio.wav"), requestEntity);
+                clovaSpeechClient.upload2(new File("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\audio.wav"), requestEntity);
         System.out.println(result);
     }
 }
