@@ -43,7 +43,7 @@ def compare_endpoint():
         similarities = calculate_similarities(recognized_ipa, correct_ipa)
         
         return jsonify({
-            "recognized_text": recognized_ipa,
+            "recognized_text": recognized_text,
             "similarities": similarities 
         })
     except Exception as e:
