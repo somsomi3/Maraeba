@@ -7,8 +7,8 @@
   }
   
   .record-button img {
-    width: 60px; /* 버튼 크기 */
-    height: 60px;
+    width: 50px; /* 버튼 크기 */
+    height: 50px;
   }
   
   .record-button:active {

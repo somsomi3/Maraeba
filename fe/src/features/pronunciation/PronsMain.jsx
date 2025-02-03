@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
 import "./PronsMain.css";
 import pronstitle from "../../assets/images/pronstitle.png";
-import GoBackButton from "../../components/button/GoBackButton";
-
+import HomeButton from "../../components/button/HomeButton";
 const PronsMain = () => {
   const navigate = useNavigate();
   const [classData, setClassData] = useState([]); // 초기값을 빈 배열로 설정
@@ -42,7 +41,7 @@ const PronsMain = () => {
 
   return (
     <div className="prons-container">
-      <GoBackButton />
+      <HomeButton />
       <img src={pronstitle} alt="Pronunciation Title" className="pronstitle-image" />
 
       {loading ? (

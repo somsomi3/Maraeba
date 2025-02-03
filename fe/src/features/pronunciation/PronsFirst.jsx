@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { springApi } from '../../utils/api';
 import './PronsFirst.css';
 import GoBackButton from '../../components/button/GoBackButton';
-
+import PausePopup from '../../components/popup/PausePopup';
 import lipshape from '../../assets/images/lipshape.png';
 import tongue from '../../assets/images/tongue.png';
 
@@ -42,7 +42,7 @@ const PronsFirst = () => {
   return (
     <div className="prons-first-container">
       <GoBackButton />
-      
+      <PausePopup />
       {/* 데이터 로딩 중 표시 */}
       {loading ? (
         <div className="loading-container">🔄 데이터 로딩 중...</div>

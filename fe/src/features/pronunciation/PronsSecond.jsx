@@ -1,40 +1,39 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { springApi } from '../../utils/api';
-import './PronsSecond.css';
-import GoBackButton from '../../components/button/GoBackButton';
-import PausePopup from '../../components/popup/PausePopup';
-import RecordButton from '../../components/button/RecordButton';
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { springApi } from "../../utils/api"; 
+import "./PronsSecond.css";
+import GoBackButton from "../../components/button/GoBackButton";
+import PausePopup from "../../components/popup/PausePopup";
+import RecordButton from "../../components/button/RecordButton";
 
-import lipshape from '../../assets/images/lipshape.png';
-import tongue from '../../assets/images/tongue.png';
+import lipshape from "../../assets/images/lipshape.png";
+import tongue from "../../assets/images/tongue.png";
 
 /* 학습 개수 하드코딩 (나중에 API로 변경) */
 const classMaxSeqMap = {
-  1: 6,  // 모음
-  2: 9,  // 이중모음
-  3: 14  // 자음
+  1: 6, 
+  2: 9, 
+  3: 14, 
 };
 
 const PronsSecond = () => {
   const navigate = useNavigate();
   const { class_id, seq_id } = useParams();
   const videoRef = useRef(null);
-  const [accuracy, setAccuracy] = useState(null);
+  const [accuracy, setAccuracy] = useState([null, null, null]); 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchData = async () => {
       try {
         console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
-        console.log("✅ API 응답:", response.data);
-        setData(response.data || {}); 
+        setData(response.data.data || {});
         setError(false);
       } catch (error) {
-        console.error('데이터 불러오기 실패:', error);
+        console.error("데이터 불러오기 실패:", error);
         setError(true);
       } finally {
         setLoading(false);
@@ -52,7 +51,7 @@ const PronsSecond = () => {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
-        console.error('카메라 접근 오류:', error);
+        console.error("카메라 접근 오류:", error);
       }
     };
 
@@ -61,14 +60,14 @@ const PronsSecond = () => {
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
         let tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
+        tracks.forEach((track) => track.stop());
       }
     };
   }, []);
 
-  // 🏠 학습 종료 (메인 페이지 이동)
+  // 학습 종료 (메인 페이지 이동)
   const handleExit = () => {
-    navigate('/prons');
+    navigate("/prons");
   };
 
   // ▶️ 다음 학습 화면으로 이동
@@ -77,10 +76,15 @@ const PronsSecond = () => {
     const maxSeq = classMaxSeqMap[class_id] || 1;
 
     if (nextSeqId > maxSeq) {
-      navigate('/prons'); // 모든 학습 완료 시 메인으로 이동
+      navigate("/prons"); 
     } else {
       navigate(`/prons/class/${class_id}/seq/${nextSeqId}`);
     }
+  };
+
+  // ✅ RecordButton에서 정확도 업데이트
+  const handleAccuracyUpdate = (lev, jaro, custom) => {
+    setAccuracy([lev, jaro, custom]);
   };
 
   return (
@@ -102,17 +106,32 @@ const PronsSecond = () => {
                 <video ref={videoRef} autoPlay playsInline className="camera-video"></video>
               </div>
               <div className="accuracy">
-                정확도: {accuracy !== null ? `${accuracy}%` : "측정 대기 중..."}
+                정확도: {accuracy[0] !== null ? `${accuracy[0]}%` : "측정 대기 중..."}
               </div>
             </div>
           </div>
 
+          {/* ✅ Pronunciation 표시 추가 */}
+          {data?.pronunciation && (
+            <div className="pronunciation-box">
+              {data.pronunciation}
+            </div>
+          )}
+
           <div className="record-button-container">
-            <RecordButton onAccuracyUpdate={setAccuracy} />
+            <RecordButton onAccuracyUpdate={handleAccuracyUpdate} pronunciation={data?.pronunciation} />
+          </div>
+
+          {/* ✅ 정확도 세 개를 오른쪽에 표시 */}
+          <div className="accuracy-box">
+            <h3>정확도</h3>
+            <p>lev: {accuracy[0] !== null ? `${accuracy[0]}%` : "-"}</p>
+            <p>jaro: {accuracy[1] !== null ? `${accuracy[1]}%` : "-"}</p>
+            <p>custom: {accuracy[2] !== null ? `${accuracy[2]}%` : "-"}</p>
           </div>
 
           <button className="next-button" onClick={goToNext}>
-            {parseInt(seq_id) === classMaxSeqMap[class_id] ? '학습 끝내기' : '다음으로'}
+            {parseInt(seq_id) === classMaxSeqMap[class_id] ? "학습 끝내기" : "다음으로"}
           </button>
         </>
       )}
