@@ -21,14 +21,12 @@ def compare_endpoint():
         return jsonify({"error": "File or text missing from request"}), 400
 
     file = request.files['file']
-    correct_text = request.form['text'].strip()
+    correct_text = "".join(request.form['text'].split())
 
     if file.filename == '' or not correct_text:
         return jsonify({"error": "Empty file or text provided"}), 400
 
     try:
-
-        print(file)
         # 음성파일 임시 저장
         file_path = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(file_path)
