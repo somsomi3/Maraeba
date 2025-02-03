@@ -27,13 +27,15 @@ def compare_endpoint():
         return jsonify({"error": "Empty file or text provided"}), 400
 
     try:
+
+        print(file)
         # 음성파일 임시 저장
         file_path = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(file_path)
 
         # 함수 호출
         recognized_text = recognize_speech_from_file(file_path)
-
+        
         # 임시 음성파일 삭제
         os.remove(file_path)
 

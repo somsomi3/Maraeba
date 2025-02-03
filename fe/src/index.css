@@ -42,6 +42,11 @@ body {
   font-style: normal;
 }
 
+@font-face {
+    font-family: 'DXChildsdrawing';
+    src: url('./assets/fonts/DXChildsdrawing-KSCpc-EUC-H.ttf');
+}
+
 .next-button {
     margin-top: 20px; /* 원하는 만큼 조정 (기본값보다 늘림) */
     padding: 12px 24px;
