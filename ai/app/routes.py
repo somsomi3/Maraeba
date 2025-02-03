@@ -1,11 +1,13 @@
 import os
 from flask import Blueprint, request, jsonify, send_file
+from flask_cors import CORS
 from stt import recognize_speech_from_file
 from tts import text_to_speech
 from ipa import word_to_ipa
 from similarity import calculate_similarities
 
 api_bp = Blueprint('api', __name__)
+CORS(api_bp)
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
