@@ -1,9 +1,9 @@
 import requests
 
 # Flask 서버의 URL
-url = "http://3.39.252.223:5000/ai/compare"
+url = "http://localhost:5000/ai/compare"
 file_path = "./test/audio.wav"
-correct_text = "오늘 날씨가 좋아"
+correct_text = "오눌 날씨카 조흐아"
 
 # 요청 데이터 준비
 with open(file_path, "rb") as audio_file:
