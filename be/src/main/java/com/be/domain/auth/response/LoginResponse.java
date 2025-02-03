@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class LoginResponse extends BaseResponseBody {
+public class LoginResponse extends BaseResponseBody{
 	@Schema(description = "발급된 액세스 토큰 (JWT)", example = "eyJhbGciOiJIUzI1NiIsInR...", name = "access_token")
 	private String accessToken;
 	@Schema(description = "발급된 리프레시 토큰 (JWT)", example = "eyJhbGciOiJIUzI1NiIsInR...", name = "refresh_token")

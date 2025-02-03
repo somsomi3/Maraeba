@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.be.common.auth.TokenType;
 import com.be.common.auth.service.TokenService;
-import com.be.common.exception.DuplicateEmailException;
 import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.PasswordMismatchException;
 import com.be.common.exception.UserNotFoundException;
@@ -17,9 +16,7 @@ import com.be.db.entity.User;
 import com.be.db.repository.RefreshTokenRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.auth.request.LoginRequest;
-import com.be.domain.auth.request.LogoutRequest;
 import com.be.domain.auth.request.RegisterRequest;
-import com.be.domain.auth.request.TokenRefreshRequest;
 import com.be.domain.auth.response.CheckEmailResponse;
 import com.be.domain.auth.response.CheckUserIdResponse;
 import com.be.domain.auth.response.LoginResponse;
@@ -49,9 +46,9 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		// email 중복 검사
-		if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-			throw new DuplicateEmailException();
-		}
+		// if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+		// 	throw new DuplicateEmailException();
+		// }
 		//비밀번호 암호화 후 저장
 		User user = new User();
 		user.setUserId(request.getUserId());
@@ -138,22 +135,22 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	@Transactional
 	@Override
-	public TokenRefreshResponse tokenRefresh(TokenRefreshRequest request) {
+	public TokenRefreshResponse tokenRefresh(String refreshToken) {
 		//refreshToken 으로 user 고유번호 추출
-		long id = tokenService.extractUserIdFromToken(request.getRefreshToken());
+		long id = tokenService.extractUserIdFromToken(refreshToken);
 
 		//DB에 refreshToken이 있는지 확인
-		RefreshToken refreshToken = refreshTokenRepository.findByUserId(id)
+		RefreshToken dbRefreshToken = refreshTokenRepository.findByUserId(id)
 			.orElseThrow(() -> new IllegalArgumentException("Refresh token does not exist. Please log in again."));
 
 		//DB의 refreshToken과 비교
-		if (!request.getRefreshToken().equals(refreshToken.getToken())) {
+		if (!refreshToken.equals(dbRefreshToken.getToken())) {
 			throw new IllegalArgumentException("Refresh token does not match.");
 		}
 
 		//받은 refreshToken이 만료된 것인지 확인
-		if (!tokenService.validateToken(request.getRefreshToken())) {
-			refreshTokenRepository.delete(refreshToken);
+		if (!tokenService.validateToken(refreshToken)) {
+			refreshTokenRepository.delete(dbRefreshToken);
 			throw new IllegalArgumentException("Refresh token expired.");
 		}
 
@@ -163,8 +160,8 @@ public class AuthServiceImpl implements AuthService {
 			TokenType.REFRESH_TOKEN);
 
 		//기존의 refreshToken 교체
-		refreshToken.setToken(newRefreshTokenWithExpiration.getToken());
-		refreshToken.setExpiryDate(
+		dbRefreshToken.setToken(newRefreshTokenWithExpiration.getToken());
+		dbRefreshToken.setExpiryDate(
 			newRefreshTokenWithExpiration.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 
 		return TokenRefreshResponse.of(newAccessToken, newRefreshTokenWithExpiration.getToken());
@@ -175,7 +172,7 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	@Transactional
 	@Override
-	public void logout(HttpServletRequest httpServletRequest, LogoutRequest request) {
+	public void logout(HttpServletRequest httpServletRequest) {
 		//Access Token 추출
 		String accessToken = tokenService.extractAccessToken(httpServletRequest);
 		//Access Token 만료 여부 확인
@@ -184,8 +181,16 @@ public class AuthServiceImpl implements AuthService {
 		}
 		//id 추출
 		Long id = tokenService.extractUserIdFromToken(accessToken);
-		//Refresh Token 삭제
+
+		// ✅ 1. User 엔티티에서 RefreshToken을 null로 설정 (orphanRemoval = true 적용됨)
+		userRepository.findById(id).ifPresent(user -> {
+			user.setRefreshToken(null);
+			userRepository.save(user);
+		});
+		// ✅ 2. RefreshToken 삭제
 		refreshTokenRepository.deleteByUserId(id);
+		refreshTokenRepository.flush(); // 즉시 반영
+
 		//Access Token 블랙리스트 등록
 		tokenService.addToBlacklist(accessToken);
 	}

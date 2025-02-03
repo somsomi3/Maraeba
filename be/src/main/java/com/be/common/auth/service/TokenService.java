@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import com.be.common.auth.TokenType;
@@ -79,6 +80,32 @@ public class TokenService {
 			.signWith(key)
 			.compact();
 		return new TokenWithExpiration(token, expiration);
+	}
+
+	/**
+	 * Refresh Token을 담은 쿠키 생성
+	 */
+	public ResponseCookie createRefreshTokenCookie(String refreshToken) {
+		return ResponseCookie.from("refreshToken", refreshToken)
+			.httpOnly(true)
+			.secure(true) // HTTPS 환경에서만 전송
+			.path("/") // 모든 경로에서 사용 가능
+			.maxAge(refreshTokenValiditySeconds) // application.yml의 유효기간을 사용
+			.sameSite("Strict") // CSRF 방지
+			.build();
+	}
+
+	/**
+	 * Refresh Token을 담은 쿠키 제거
+	 */
+	public ResponseCookie deleteRefreshTokenCookie() {
+		return ResponseCookie.from("refreshToken", "")
+			.httpOnly(true)
+			.secure(true) // HTTPS 환경에서만 전송
+			.path("/") // 모든 경로에서 사용 가능
+			.maxAge(0) // application.yml의 유효기간을 사용
+			.sameSite("Strict") // CSRF 방지
+			.build();
 	}
 
 	/**
