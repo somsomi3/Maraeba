@@ -1,0 +1,61 @@
+/* 전체 컨테이너 */
+.prons-first-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffe0b1;
+    padding: 20px;
+}
+
+/* 🔹 이미지 컨테이너  */
+.image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin-left: -10px; /* 🔹 왼쪽으로 50px 이동 */
+    padding: 10px;
+}
+
+/* 🔹 이미지 크기 키우기 */
+.lip-image,
+.mouth-image {
+    width: 80%; 
+    height: 90%;
+    border-radius: 1.2rem;
+    object-fit: cover;
+}
+
+/* 🔹 설명 컨테이너 크기 키우기 */
+.description-container {
+    text-align: center;
+    background-color: #e3f2fd;
+    padding: 5%; /* 기존보다 패딩 추가 */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%; /* 기존 80% → 85% */
+    max-width: 700px; /* 기존 600px → 700px */
+    margin-bottom: 25px;
+    font-size: 1rem; 
+    margin-left: -10px;
+}
+
+/* 🔹 버튼 크기 키우기 */
+.next-button {
+    padding: 14px 24px; /* 버튼 크기 키움 */
+    font-size: 1rem; /* 기존보다 폰트 크기 키움 */
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.next-button:hover {
+    background-color: #388e3c;
+}

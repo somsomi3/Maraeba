@@ -10,16 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.7.9",
-    "cors": "^2.8.5",
-    "http-proxy-middleware": "^3.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.2"
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.28.2",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
-    "@types/cors": "^2.8.17",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",

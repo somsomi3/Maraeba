@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FoodGameServiceImpl implements FoodGameService {
 
-    private final ClovaSpeechClient speechClient;
+//    private final ClovaSpeechClient speechClient;
     private final AudioConverter convertWebMToWav;
     private final FoodGameRepository foodGameRepository;
     private final FoodItemRepository foodItemRepository;

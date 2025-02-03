@@ -1,45 +1,67 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig, loadEnv } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    VitePWA({
-      registerType: 'autoUpdate', // 서비스 워커 자동 업데이트 설정
-      devOptions: {
-        enabled: true, // 개발 환경에서 PWA 활성화
-      },
-      manifest: {
-        name: 'My PWA App', // 앱의 전체 이름
-        short_name: 'PWA App', // 앱의 짧은 이름
-        start_url: '/', // 시작 URL
-        display: 'standalone', // PWA의 표시 모드
-        background_color: '#ffffff', // 배경 색상
-        theme_color: '#000000', // 테마 색상
-        icons: [
-          {
-            src: '192image.png', // 192x192 아이콘 경로
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: '512image.png', // 512x512 아이콘 경로
-            sizes: '512x512',
-            type: 'image/png',
-          },
-        ],
-      },
-    }),
-  ],
-  server: {
-    proxy: {
-      '/mareaba': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/mareaba/, ''),
-      },
+export default defineConfig(({ mode }) => {
+  // 현재 모드(dev, production)에 맞는 환경 변수 로드
+  const env = loadEnv(mode, process.cwd(), "VITE");
+
+  return {
+    base: "/",
+    define: {
+      VITE_SPRING_API_URL: JSON.stringify(env.VITE_SPRING_API_URL),
+      VITE_FLASK_API_URL: JSON.stringify(env.VITE_FLASK_API_URL),
     },
-  },
+    plugins: [
+      react(),
+      VitePWA({
+        registerType: "autoUpdate",
+        devOptions: {
+          enabled: true,
+        },
+        manifest: {
+          name: "My PWA App",
+          short_name: "PWA App",
+          start_url: "/",
+          display: "standalone",
+          background_color: "#ffffff",
+          theme_color: "#000000",
+          icons: [
+            {
+              src: "/192image.png",
+              sizes: "192x192",
+              type: "image/png",
+            },
+            {
+              src: "/512image.png",
+              sizes: "512x512",
+              type: "image/png",
+            },
+          ],
+        },
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,png,svg,ico,json}"],
+          runtimeCaching: [
+            {
+              urlPattern: new RegExp(`^(${env.VITE_SPRING_API_URL}|${env.VITE_FLASK_API_URL})/`), // ✅ 올바른 환경 변수 적용
+              handler: "NetworkFirst",
+              options: {
+                cacheName: "api-cache",
+                expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 },
+              },
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "image-cache",
+                expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              },
+            },
+          ],
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB로 설정
+        },
+      }),
+    ],
+  };
 });

@@ -1,0 +1,83 @@
+.prons-container {
+  padding: 1rem;
+  text-align: center;
+  margin-top: 7%;
+  margin-bottom:  10%; /* 아래 여백 제거 */
+  min-height: 100vh; /* 화면 전체 높이를 차지 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 수직 가운데 정렬 */
+  align-items: center; /* 수평 가운데 정렬 */
+  
+}
+  .card{
+    font-family: Dovemayo_gothic;
+    font-size: 1.5rem;
+  }
+  
+  .card-slider {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .card:nth-child(1) {
+    background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 첫 번째 카드 그라데이션 */
+    color: #fff;
+    
+  }
+  .card:nth-child(2) {
+      background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 두 번째 카드 그라데이션 */
+      color: #fff;
+      
+  }
+  .card:nth-child(3) {
+      background: linear-gradient(135deg, #ffb88c, #ffd7a5); /* 세 번째 카드 그라데이션 */
+      color: #fff;
+      
+    }
+
+
+  .card .emoji {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  .card .divider {
+    width: 80%;
+    height: 2px;
+    background-color: #ccc;
+    margin: 10px 0;
+  }
+
+  .start-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-family: Dovemayo_gothic;
+    background-color: #f5b041;
+    color: #fff;
+    border: none;
+    border-radius: 5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .start-button:hover {
+    background-color: #d68910;
+  }
+
+  .pronstitle-image {
+    width: 100%;
+    max-width: 600px;
+    margin: 2.5rem auto;
+    display: block;
+  }
+  
+  .record-button-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
