@@ -23,6 +23,8 @@ import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
 import WaitingRoom from "./features/session/WaitingRoom";
 import CreateRoom from "./features/session/CreateRoom";
+import Profile from "./features/user/Profile";
+
 
 // 라우트 정의
 const router = createBrowserRouter(
@@ -51,7 +53,8 @@ const router = createBrowserRouter(
       <Route path="/cooking-game" element={<CookingGame />} />
       <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
       <Route path="/animal-game/:themeName" element={<AnimalGame />} />
-      
+      <Route path="/profile" element={<Profile />} />
+
       {/* </Route> */}
         </>
     )
