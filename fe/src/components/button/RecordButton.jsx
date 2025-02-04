@@ -137,7 +137,7 @@ const RecordButton = ({ onAccuracyUpdate, pronunciation }) => {
             // 🔍 정확도 변환 (`levenshtein`, `jaro_winkler`, `custom_similarity_score`)
             const levenshtein = Math.round((response.data.similarities.levenshtein || 0) * 100);
             const jaroWinkler = Math.round((response.data.similarities.jaro_winkler || 0) * 100);
-            const customScore = Math.round((response.data.similarities.custom_similarity_score || 0) * 100);
+            const customScore = Math.round((response.data.similarities.custom_similarity || 0) * 100);
 
             // ✅ **부모 컴포넌트로 세 개의 정확도 데이터를 전달**
             onAccuracyUpdate(levenshtein, jaroWinkler, customScore);

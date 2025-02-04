@@ -19,6 +19,7 @@ const PronsFirst = () => {
       try {
         console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
+        
         console.log("API 응답:", response.data);
 
         setData(response.data.data || {}); // 객체이므로 data.data로 가져옴옴
