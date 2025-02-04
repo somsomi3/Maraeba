@@ -20,12 +20,14 @@ public class AnimalDataLoader {
 
     @PostConstruct
     public void init() {
+
+        String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
         System.out.println("데이터 저장!");
 
         // 1️⃣ animal_game 테이블에 ID=1인 데이터 추가
         AnimalGame animalGame = animalGameRepository.findById(1).orElseGet(() ->
                 animalGameRepository.save(AnimalGame.builder()
-                        .image("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\img\\image.png")
+                        .image(url + "\\img\\image.png")
                         .build()));
 
         // 2️⃣ animal_list 테이블에 3개의 동물 추가

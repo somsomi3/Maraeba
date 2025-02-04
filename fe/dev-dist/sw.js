@@ -88,7 +88,7 @@ define(['./workbox-9dc17825'], (function (workbox) { 'use strict';
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
     allowlist: [/^\/$/]
   }));
-  workbox.registerRoute(/^(http:\/\/localhost:8081|http:\/\/localhost:5000)\//, new workbox.NetworkFirst({
+  workbox.registerRoute(/^(http:\/\/localhost:8081|http:\/\/3.39.252.223:5000)\//, new workbox.NetworkFirst({
     "cacheName": "api-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 50,
