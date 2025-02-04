@@ -33,7 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		@NonNull FilterChain filterChain) throws ServletException, IOException {
 
 		String requestURI = request.getRequestURI();
-		System.out.println("[필터]Request URI: " + requestURI);
+		System.out.println("[JwtAuthenticationFilter]Request URI: " + requestURI);
+
+		// WebSocket Handshake 요청(`/WebRTC/signaling`)은 필터에서 제외
+		if (requestURI.startsWith("/WebRTC/signaling")) {
+			System.out.println("[JwtAuthenticationFilter]WebSocket Handshake 요청 - JWT 필터 제외");
+			filterChain.doFilter(request, response);
+			return;
+		}
 
 		// Swagger 관련 요청은 필터를 그냥 통과시킴
 		if (requestURI.startsWith("/swagger") ||
@@ -48,25 +55,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// /auth 관련 요청(logout제외)은 필터를 그냥 통과시킴
 		if (requestURI.startsWith("/auth") && !requestURI.equals("/auth/logout")) {
-			System.out.println("[필터]/auth 관련 요청(logout제외)은 필터를 그냥 통과시킴");
+			System.out.println("[JwtAuthenticationFilter]/auth 관련 요청(logout제외)은 필터를 그냥 통과시킴");
 			filterChain.doFilter(request, response);
 			return;
 		}
 
 		// 파비콘 요청이면 필터 통과
 		if ("/favicon.ico".equals(requestURI)) {
-			System.out.println("[필터]/favicon.ico 요청은 필터를 그냥 통과시킴");
+			System.out.println("[JwtAuthenticationFilter]/favicon.ico 요청은 필터를 그냥 통과시킴");
 			filterChain.doFilter(request, response);
 			return;
 		}
 
 		try {
 			String token = tokenService.extractAccessToken(request);
-			System.out.println("[필터]Extracted Token: " + token);
+			System.out.println("[JwtAuthenticationFilter]Extracted Token: " + token);
 
 			if (token != null && tokenService.validateToken(token)) {
 				Long id = tokenService.extractUserIdFromToken(token);
-				System.out.println("[필터]User ID from Token: " + id);
+				System.out.println("[JwtAuthenticationFilter]User ID from Token: " + id);
 				// UserDetails 가져오기
 				CustomUserDetails userDetails = new CustomUserDetails(id);
 
@@ -78,7 +85,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		} catch (Exception e) {
 			// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
-			System.out.println("[필터]JWT Filter Exception: " + e.getMessage());
+			System.out.println("[JwtAuthenticationFilter]JWT Filter Exception: " + e.getMessage());
 			// logger.error("Could not set user authentication in security context", e);
 		}
 		// 다음 필터로 진행

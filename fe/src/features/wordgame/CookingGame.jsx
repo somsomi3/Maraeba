@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import "./CookingGame.css";
 import backgroundImage from "../../assets/images/CookingGame_Bg.png";
 import foodNamePlaceholder from "../../assets/images/strawberryCake.png";
-import RecordButton from "../../components/button/RecordButton";
+import GameRecordBtn from "../../components/button/RecordButton";
 import PausePopup from "../../components/popup/PausePopup";
 import { useNavigate } from "react-router-dom";
-import { springApi } from "../../utils/api"; // ✅ API 인스턴스 사용
+import { springApi } from "../../utils/api"; // API 인스턴스 사용
 
 const CookingGame = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -16,7 +16,7 @@ const CookingGame = () => {
     item1: null,
     item2: null,
     itemList: [],
-    imageData: "",
+    imageData: "", // pickFood()에서 받아온 음식 이미지의 Blob URL
   });
   const [foodImg, setFoodImg] = useState({
     food: "",
@@ -29,7 +29,7 @@ const CookingGame = () => {
   const recordingTimeoutRef = useRef(null);
   const navigate = useNavigate();
 
-  // ✅ Base64 → Blob 변환 (도우미 함수)
+  // Base64 문자열을 Blob으로 변환하는 도우미 함수
   const base64ToBlob = (base64, mimeType) => {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
@@ -40,7 +40,7 @@ const CookingGame = () => {
     return new Blob([byteArray], { type: mimeType });
   };
 
-  // ✅ 게임 데이터 가져오기 (JWT 인증 포함)
+  // 백엔드의 pickFood() 메서드 호출: 음식 이름, 재료 목록, 그리고 이미지 데이터를 가져옴
   const fetchGameData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -58,8 +58,10 @@ const CookingGame = () => {
       if (!response.data) throw new Error("응답 데이터가 없습니다.");
       console.log("서버 응답 데이터:", response.data);
 
-      // Base64 → Blob 변환 후 URL 생성
-      const blob = base64ToBlob(response.data.image_data, "image/png");
+      // 백엔드에서는 FoodResponse의 image_data 필드에 byte[] 데이터가
+      // Jackson에 의해 Base64 문자열로 전송됩니다.
+      const base64Image = response.data.image_data;
+      const blob = base64ToBlob(base64Image, "image/png");
       const url = URL.createObjectURL(blob);
 
       setGameData({
@@ -69,16 +71,17 @@ const CookingGame = () => {
         itemList: response.data.food_items,
         imageData: url,
       });
-
       setFoodImg({
         food: url,
+        item1: "",
+        item2: "",
       });
     } catch (error) {
       console.error("게임 시작 데이터 로드 실패:", error);
     }
   };
 
-  // ✅ 음성 녹음 시작
+  // 음성 녹음 시작
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -106,7 +109,7 @@ const CookingGame = () => {
     }
   };
 
-  // ✅ 녹음 종료
+  // 음성 녹음 종료
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
@@ -115,49 +118,62 @@ const CookingGame = () => {
     }
   };
 
-  // ✅ 서버에 음성 데이터 전송 (JWT 인증 포함)
+  // 서버에 음성 데이터 전송 후 인식된 단어로 자동 선택
   const sendAudioToServer = async (audioBlob) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
 
       const formData = new FormData();
-      formData.append("audio", audioBlob, "audio");
-
-      if (gameData.foodName) formData.append("foodName", gameData.foodName);
-      if (gameData.item1) formData.append("item1", gameData.item1);
-      if (gameData.item2) formData.append("item2", gameData.item2);
-
+      formData.append("audio", audioBlob, "recording.wav"); // 파일명 지정
+  
       const response = await springApi.post("/cook-game/is-correct", formData, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
-
+  
       if (response.data) {
-        console.log("응답 데이터:", response.data);
-
-        // Base64 → Blob 변환 후 URL 생성
-        const blob = base64ToBlob(response.data.image_data, "image/png");
-        const url = URL.createObjectURL(blob);
-
-        if (response.data.cnt === 1) {
-          setGameData((prevState) => ({
-            ...prevState,
-            item1: response.data.item,
-          }));
-          setFoodImg((prevState) => ({
-            ...prevState,
-            item1: url,
-          }));
-        } else {
-          setGameData((prevState) => ({
-            ...prevState,
-            item2: response.data.item,
-          }));
-          setFoodImg((prevState) => ({
-            ...prevState,
-            item2: url,
-          }));
+        console.log("✅ AI 분석 응답:", response.data);
+  
+        // 백엔드에서 반환된 음성 인식 결과
+        const recognizedText = response.data.recognized_text;
+  
+        if (recognizedText) {
+          // 현재 게임의 아이템 목록에서 인식된 단어가 존재하는지 확인
+          const matchedItem = gameData.itemList.find((item) => item === recognizedText);
+  
+          if (matchedItem) {
+            console.log(`🎯 '${matchedItem}' 자동 선택됨`);
+            handleSelectItem(matchedItem); // 자동 선택 처리
+          } else {
+            console.log(`❌ '${recognizedText}'이(가) 현재 아이템 목록에 없음`);
+          }
+        }
+  
+        // 이미지 데이터 처리 (정답에 따른 이미지 업데이트)
+        if (response.data.image_data) {
+          const blob = base64ToBlob(response.data.image_data, "image/png");
+          const url = URL.createObjectURL(blob);
+  
+          if (response.data.cnt === 1) {
+            setGameData((prevState) => ({
+              ...prevState,
+              item1: response.data.item,
+            }));
+            setFoodImg((prevState) => ({
+              ...prevState,
+              item1: url,
+            }));
+          } else {
+            setGameData((prevState) => ({
+              ...prevState,
+              item2: response.data.item,
+            }));
+            setFoodImg((prevState) => ({
+              ...prevState,
+              item2: url,
+            }));
+          }
         }
       }
     } catch (error) {
@@ -165,25 +181,35 @@ const CookingGame = () => {
     }
   };
 
+  // 선택한 아이템에 해당하는 이미지를 가져옴
   const handleSelectItem = async (item) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
-  
-      const response = await springApi.get("/cook-game/get-item-image", {
-        params: { itemName: item },
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-  
-      if (!response.data) throw new Error("이미지 데이터를 불러오지 못했습니다.");
-      console.log(`이미지 데이터 (${item}):`, response.data);
-  
-      // ✅ Base64 → Blob 변환 후 URL 생성
+
+      // 여기서 아이템 이미지 요청 엔드포인트로 "/cook-game/start-game"을 사용 (설계상 맞다고 가정)
+      const response = await springApi.post(
+        "/cook-game/start-game",
+        { item_name: item },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (!response.data || !response.data.image_data) {
+        throw new Error("이미지 데이터를 불러오지 못했습니다.");
+      }
+      console.log(`아이템 이미지 데이터 (${item}):`, response.data);
+
+      // 받은 Base64 문자열을 Blob URL로 변환
       const blob = base64ToBlob(response.data.image_data, "image/png");
       const url = URL.createObjectURL(blob);
-  
-      // ✅ 선택된 아이템을 item1 또는 item2로 저장
+
+      // 아직 item1이 없으면 item1로, 그렇지 않으면 item2로 저장
       if (!gameData.item1) {
         setGameData((prevState) => ({
           ...prevState,
@@ -207,14 +233,13 @@ const CookingGame = () => {
       console.error("아이템 이미지 불러오기 실패:", error);
     }
   };
-  
 
-  // ✅ 게임 초기화 (컴포넌트 마운트 시 게임 데이터 로드)
+  // 컴포넌트 마운트 시 게임 데이터 로드 (pickFood() 호출)
   useEffect(() => {
     fetchGameData();
   }, []);
 
-  // ✅ 정답이 모두 맞춰지면 1초 후 다음 음식 데이터 로드
+  // 두 재료 모두 선택되면 1초 후에 새로운 음식 데이터를 로드
   useEffect(() => {
     if (gameData.item2 !== null) {
       setTimeout(() => {
@@ -223,7 +248,7 @@ const CookingGame = () => {
     }
   }, [gameData.item2]);
 
-  // ✅ 타이머 설정
+  // 타이머 설정: 시간이 0이 되면 타이머 중지 및 녹음 종료
   useEffect(() => {
     if (isTimerActive && timeLeft > 0) {
       const timerId = setInterval(() => {
@@ -254,7 +279,8 @@ const CookingGame = () => {
             <img src={foodImg.item2} alt="재료 2" className="item-icon" />
           )}
           <span className="equals-sign">=</span>
-          <img src={foodNamePlaceholder} alt="결과" className="item-icon" />
+          {/* 최종 결과 이미지: pickFood()로 받아온 이미지 */}
+          <img src={foodImg.food || foodNamePlaceholder} alt="결과" className="item-icon" />
         </div>
         <div className="item-selection">
           {gameData.itemList.map((item, index) => (
@@ -263,7 +289,7 @@ const CookingGame = () => {
             </button>
           ))}
         </div>
-        <RecordButton onClick={isRecording ? stopRecording : startRecording} />
+        <GameRecordBtn onClick={isRecording ? stopRecording : startRecording} />
       </div>
     </div>
   );

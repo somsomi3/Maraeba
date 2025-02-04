@@ -17,14 +17,18 @@ import {
 import { WordMain } from "./features/wordgame";
 import Conversation from "./features/conversation/Conversation";
 import ConversationStart from "./features/conversation/ConversationStart";
-import ChatBox from "./features/session/ChatBox";
-import Webrtc from "./features/session/Webrtc.jsx";
+
+import ChatBox from "./features/session/ChatBox"; // ✅ ChatBox 컴포넌트 추가
+import Webrtc from "./features/session/Webrtc";
 import CookingGame from "./features/wordgame/CookingGame"; 
+import RoomPage from "./features/session/RoomPage";
+import RoomList from "./features/session/RoomList";
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme"; 
 import AnimalGame from "./features/wordgame/AnimalGame";
 import WaitingRoom from "./features/session/WaitingRoom";
 import CreateRoom from "./features/session/CreateRoom";
 import Profile from "./features/user/Profile";
+
 
 
 // 라우트 정의
@@ -53,11 +57,15 @@ const router = createBrowserRouter(
       <Route path="/session/waiting" element={<WaitingRoom />} />
       <Route path="/session/create-room" element={<CreateRoom />} />
       <Route path="/cooking-game" element={<CookingGame />} />
+     <Route path="/room/:roomId" element={<RoomPage />} /> {/* ✅ RoomPage 라우트 추가 */}
+      <Route path="/session/RoomList" element={<RoomList/>}/>
+
       <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
       <Route path="/animal-game/:themeName" element={<AnimalGame />} />
       <Route path="/profile" element={<Profile />} />
 
       </Route>
+
         </>
     )
 );

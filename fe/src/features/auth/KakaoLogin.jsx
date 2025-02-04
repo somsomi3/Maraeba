@@ -1,5 +1,5 @@
-import kakao from "../../assets/icons/kakao_login.png"
-import { useEffect } from "react";
+import kakao from "../../assets/icons/kakao_login.png";
+// import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
 import { springApi } from "../../utils/api";
@@ -32,22 +32,23 @@ const KakaoLoginButton = () => {
         return;
       }
 
-      // 🔹 팝업 창에서 JWT 토큰을 받아서 저장
-      const checkPopup = setInterval(() => {
+      // 🔹 팝업이 닫히면 백엔드에서 Access Token을 요청하여 로그인 처리
+      const checkPopup = setInterval(async () => {
         try {
           if (!popup || popup.closed) {
             clearInterval(checkPopup);
             console.log("✅ 팝업이 닫혔습니다. 로그인 성공 여부 확인");
 
-            // 🔹 부모 창(localStorage)에 저장된 토큰 확인
-            const accessToken = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
+            // ✅ 백엔드에서 자동으로 Access Token을 가져와 로그인 처리
+            const tokenResponse = await springApi.get("/auth/me", {
+              withCredentials: true, // Refresh Token은 쿠키에서 자동 전송됨
+            });
 
-            if (accessToken && refreshToken) {
+            if (tokenResponse.data.accessToken) {
               console.log("✅ 로그인 성공, Redux 상태 업데이트");
 
               // Redux 상태 업데이트
-              dispatch(login(accessToken));
+              dispatch(login(tokenResponse.data.accessToken));
 
               // 메인 페이지로 이동
               window.location.href = "/main";

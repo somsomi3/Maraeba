@@ -136,7 +136,7 @@ public class AuthController {
 			content = @Content(schema = @Schema(implementation = GetAuthUrlResponse.class)))
 	})
 	@GetMapping("/kakao")
-	public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() throws IOException {
+	public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() {
 		String kakaoAuthUrl = kakaoSocialService.getAuthorizationUrl();
 		return ResponseEntity.ok(GetAuthUrlResponse.of(kakaoAuthUrl));
 	}
@@ -184,4 +184,30 @@ public class AuthController {
 		SocialUser userInfo = naverSocialService.getUserInfo(accessToken);
 		return ResponseEntity.ok(userInfo);
 	}
+
+	/**
+	 * ✅ JWT 검증 API
+	 */
+	@GetMapping("/validate")
+	@Operation(summary = "JWT 검증", description = "사용자의 Access Token이 유효한지 확인합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "토큰이 유효함"),
+		@ApiResponse(responseCode = "401", description = "토큰이 유효하지 않음")
+	})
+	public ResponseEntity<BaseResponseBody> validateToken(HttpServletRequest request) {
+		try {
+			// ✅ TokenExtractorService를 사용하여 JWT 추출
+			String token = tokenService.extractAccessToken(request);
+
+			// ✅ JWT 검증 (TokenService 활용)
+			if (!tokenService.validateToken(token)) {
+				return ResponseEntity.status(401).body(BaseResponseBody.of("토큰이 유효하지 않습니다.", 401));
+			}
+
+			return ResponseEntity.ok(BaseResponseBody.of("토큰이 유효합니다.", 200));
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(401).body(BaseResponseBody.of("토큰이 존재하지 않거나 올바르지 않습니다.", 401));
+		}
+	}
+
 }
