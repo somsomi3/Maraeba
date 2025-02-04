@@ -51,6 +51,7 @@ public class RoomController {
 
         // ✅ Room 리스트를 RoomResponse 리스트로 변환
         List<RoomResponse> roomResponses = rooms.stream()
+            //다음줄에 포함된 각각의 id는
             .map(room -> new RoomResponse(room.getId(), room.getTitle(), room.getHost().getUsername()))
             .toList();
 
