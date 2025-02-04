@@ -81,12 +81,8 @@ const PronsSecond = () => {
       await springApi.post(`/prons/session/history/${session_id}`);
       console.log("✅ 히스토리 저장 완료");
 
-      console.log("📡 통계 업데이트 요청");
-      await springApi.get("/prons/stat");
-      console.log("✅ 통계 업데이트 완료");
-
       alert("학습이 성공적으로 완료되었습니다!");
-      navigate("/prons"); // 학습 메인 페이지로 이동
+      navigate("/prons/result"); // 학습 메인 페이지로 이동
     } catch (error) {
       console.error("❌ 세션 종료 또는 데이터 저장 실패:", error);
       alert("학습 종료를 처리하는 중 오류가 발생했습니다.");

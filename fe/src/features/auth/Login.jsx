@@ -5,7 +5,8 @@ import { login } from "../../store/authSlice";
 import { loginApi } from "../../utils/api"; // ✅ 로그인 API 변경
 import "./index.css";
 import logo from "../../assets/logo.png";
-import kakao from "../../assets/icons/kakao_login.png"
+
+import KakaoLoginButton from "./KakaoLogin";
 
 const Login = () => {
   const [formData, setFormData] = useState({ user_id: "", password: "" });
@@ -74,10 +75,7 @@ const Login = () => {
         </button>
       </form>
     
-      <button className="kakaobtn">
-            <img src={kakao} alt="카카오 로그인" className="kakao" />
-      </button>
-        
+      <KakaoLoginButton />
       <div className="secondary-button">
         <span onClick={() => navigate("/find-id")}>아이디 찾기</span> |{" "}
         <span onClick={() => navigate("/find-pw")}>비밀번호 찾기</span>
