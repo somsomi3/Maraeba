@@ -1,6 +1,6 @@
 import requests
 
-url = "http://3.39.252.223:5000/ai/stt"
+url = "http://localhost:5000/ai/stt"
 file_path = "./test/audio.wav"
 
 with open(file_path, "rb") as f:

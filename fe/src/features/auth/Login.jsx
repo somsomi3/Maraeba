@@ -1,16 +1,17 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // React Router의 useNavigate 훅
-import { springApi } from '../../utils/api'; // Axios 인스턴스 불러오기
-import './index.css';
-import logo from '../../assets/logo.png'; // 로고 이미지 경로
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/authSlice";
+import { loginApi } from "../../utils/api"; // ✅ 로그인 API 변경
+import "./index.css";
+import logo from "../../assets/logo.png";
+
+import KakaoLoginButton from "./KakaoLogin";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    user_id: '', // 아이디
-    password: '', // 비밀번호
-  });
-
-  const navigate = useNavigate(); // 페이지 이동을 위한 훅
+  const [formData, setFormData] = useState({ user_id: "", password: "" });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,35 +21,27 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.user_id || !formData.password) {
-      alert('아이디와 비밀번호를 입력해주세요.');
+      alert("아이디와 비밀번호를 입력해주세요.");
       return;
     }
 
-    springApi
-      .post('/auth/login', formData)
-      .then((response) => {
-        // 성공 시
-        const { access_token, refresh_token } = response.data; // 서버로부터 Access 토큰과 Refresh 토큰 받기
-        const token = access_token;
-        const refreshToken = refresh_token;
-        localStorage.setItem('token', token); // Access 토큰 저장
-        localStorage.setItem('refreshToken', refreshToken); // Refresh 토큰 저장
-        alert('로그인 완료!');
-        navigate('/main'); // 로그인 성공 후 메인 페이지로 이동
-      })
-      .catch((error) => {
-        // 실패 시
-        console.error('Error during login:', error);
-        if (error.response) {
-          alert(error.response.data.message || '로그인에 실패했습니다.');
-        } else {
-          alert('서버와 연결할 수 없습니다.');
-        }
-      });
+    try {
+      // ✅ 로그인 API 요청 (withCredentials: true 적용)
+      const { data } = await loginApi(formData);
+
+      // ✅ Access Token만 저장
+      dispatch(login(data.access_token));
+      localStorage.setItem("token", data.access_token);
+
+      navigate("/main"); // 로그인 성공 후 이동
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      alert(error.response?.data?.message || "로그인에 실패했습니다.");
+    }
   };
 
   return (
@@ -59,7 +52,6 @@ const Login = () => {
           <input
             className="input"
             type="text"
-            id="user_id"
             name="user_id"
             placeholder="아이디"
             value={formData.user_id}
@@ -71,7 +63,6 @@ const Login = () => {
           <input
             className="input"
             type="password"
-            id="password"
             name="password"
             placeholder="비밀번호"
             value={formData.password}
@@ -83,18 +74,20 @@ const Login = () => {
           로그인
         </button>
       </form>
+    
+      <KakaoLoginButton />
       <div className="secondary-button">
-        <span onClick={() => navigate('/find-id')}>아이디 찾기</span> |{' '}
-        <span onClick={() => navigate('/find-pw')}>비밀번호 찾기</span>
+        <span onClick={() => navigate("/find-id")}>아이디 찾기</span> |{" "}
+        <span onClick={() => navigate("/find-pw")}>비밀번호 찾기</span>
       </div>
       <div>
-        <button className="secondary-button" onClick={() => navigate('/register')}>
+        <button className="secondary-button" onClick={() => navigate("/register")}>
           회원가입하기
         </button>
       </div>
-       {/* /main으로 이동하는 임시 버튼 */}
-       <div>
-        <button className="secondary-button" onClick={() => navigate('/main')}>
+      {/* /main으로 이동하는 임시 버튼 */}
+      <div>
+        <button className="secondary-button" onClick={() => navigate("/main")}>
           메인 페이지로 이동
         </button>
       </div>

@@ -1,11 +1,13 @@
 import os
 from flask import Blueprint, request, jsonify, send_file
+from flask_cors import CORS
 from stt import recognize_speech_from_file
 from tts import text_to_speech
 from ipa import word_to_ipa
 from similarity import calculate_similarities
 
 api_bp = Blueprint('api', __name__)
+CORS(api_bp)
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -25,13 +27,15 @@ def compare_endpoint():
         return jsonify({"error": "Empty file or text provided"}), 400
 
     try:
+
+        print(file)
         # 음성파일 임시 저장
         file_path = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(file_path)
 
         # 함수 호출
         recognized_text = recognize_speech_from_file(file_path)
-
+        
         # 임시 음성파일 삭제
         os.remove(file_path)
 
@@ -43,7 +47,7 @@ def compare_endpoint():
         similarities = calculate_similarities(recognized_ipa, correct_ipa)
         
         return jsonify({
-            "recognized_text": recognized_ipa,
+            "recognized_text": recognized_text,
             "similarities": similarities 
         })
     except Exception as e:

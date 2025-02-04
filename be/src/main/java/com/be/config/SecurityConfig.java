@@ -72,6 +72,8 @@ public class SecurityConfig {
 					"/auth/register",
 					"/auth/social",
 					"/auth/token",
+					"/auth/kakao",
+					"/auth/kakao/callback",
 					"/WebRTC/**",
 					"/webrtc/**",
 					"/rooms/**",
@@ -79,7 +81,7 @@ public class SecurityConfig {
 					"/prons/**",
 					"/session/**"
 				).permitAll()
-				.requestMatchers("/error").permitAll()
+				.requestMatchers("/error", "/favicon.ico").permitAll()
 				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
 			)
 			.exceptionHandling(exception -> exception
