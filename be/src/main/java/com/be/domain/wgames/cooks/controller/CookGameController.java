@@ -22,6 +22,7 @@ public class CookGameController {
 
     @PostMapping("/start-game")
     public ResponseEntity<FoodResponse> startGame() throws IOException {
+        System.out.println("게임 시작 요청 도착");
         FoodResponse foodResponse = foodGameService.pickFood();
         System.out.println("선택된 음식: " + foodResponse.getFoodName());
         System.out.println("아이템 목록: " + foodResponse.getFoodItems());

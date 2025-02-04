@@ -17,8 +17,7 @@ const authSlice = createSlice({
         logout: (state) => {
             state.token = null;
             state.isAuthenticated = false;
-            localStorage.removeItem("token"); // ✅ 토큰 삭제
-            localStorage.removeItem("refreshToken"); // ✅ 리프레시 토큰 삭제 
+            localStorage.removeItem("token"); // ✅ Access Token만 삭제
         },
     },
 });
