@@ -58,7 +58,7 @@ const WebRTC = () => {
 //             return;
 //         }
 
-        webSocketRef.current = new WebSocket(`ws://localhost:8081/WebRTC/signaling?token=${token}`);
+        webSocketRef.current = new WebSocket(`ws://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`);
 
         webSocketRef.current.onopen = () => {
             console.log("✅ WebSocket 연결됨 (Signaling)");

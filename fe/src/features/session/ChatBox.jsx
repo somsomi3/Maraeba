@@ -58,7 +58,7 @@ class ChatBox extends Component {
     connectWebSocket = (token) => {
         if (this.webSocket && this.webSocket.readyState === WebSocket.OPEN) return;
 
-        this.webSocket = new WebSocket(`ws://localhost:8081/WebRTC/signaling?token=${token}`);
+        this.webSocket = new WebSocket(`ws://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`);
 
         this.webSocket.onopen = () => {
             console.log("✅ WebSocket 연결 성공");
