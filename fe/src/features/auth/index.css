@@ -44,12 +44,13 @@
 /* 버튼 */
 .auth-button {
     width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #7cc6ce;
+    padding: 14px;
+    margin-bottom: 1%;
+    font-size: 18px;
+    background-color: #81bec5;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s ease;
@@ -88,3 +89,24 @@
 .small-button:hover {
     background-color: #45a049;
 }
+
+.kakaobtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex; /* 버튼 내 요소를 정렬 */
+    justify-content: center; /* 가운데 정렬 */
+    align-items: center; /* 세로 가운데 정렬 */
+    width: 100%; /* 버튼이 부모 요소의 전체 너비를 차지하도록 설정 */
+  }
+  
+  .kakao {
+    width: 100%; /* 가이드에 맞춘 크기 */
+    height: auto;
+    display: block;
+    margin: 10px auto; /* 중앙 정렬 */
+    box-shadow: inset;
+  }
+
+
