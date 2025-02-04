@@ -35,6 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String requestURI = request.getRequestURI();
 		System.out.println("[필터]Request URI: " + requestURI);
 
+		// ✅ WebSocket Handshake 요청(`/WebRTC/signaling`)은 필터에서 제외
+		if (requestURI.startsWith("/WebRTC/signaling")) {
+			System.out.println("🛑 WebSocket Handshake 요청 - JWT 필터 제외");
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		// Swagger 관련 요청은 필터를 그냥 통과시킴
 		if (requestURI.startsWith("/swagger") ||
 			requestURI.startsWith("/swagger-ui") ||
@@ -52,6 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
+		System.out.println("jwt필터 시작점");
 
 		// 파비콘 요청이면 필터 통과
 		if ("/favicon.ico".equals(requestURI)) {

@@ -15,14 +15,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class SignalingHandler extends TextWebSocketHandler {
 
-	private final Map<String, WebSocketSession> rooms = new ConcurrentHashMap<>();
+	private final Map<Long, WebSocketSession> rooms = new ConcurrentHashMap<>();
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	public void afterConnectionEstablished(WebSocketSession room) throws Exception {
-		String roomId = room.getId();
-		rooms.put(roomId, room);
-		System.out.println("✅ WebRTC WebSocket 연결됨: " + roomId);
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		// ✅ WebSocketAuthInterceptor에서 설정한 userId 가져오기
+		Long userId = (Long) session.getAttributes().get("user");
+
+		if (userId != null) {
+			rooms.put(userId, session);
+			System.out.println("✅ WebRTC WebSocket 연결됨 - 사용자 ID: " + userId);
+			// ✅ 사용자 ID를 WebSocket 메시지로 클라이언트에게 전송
+			String userIdMessage = "{\"type\": \"userId\", \"userId\": " + userId + "}";
+			session.sendMessage(new TextMessage(userIdMessage));
+		} else {
+			System.out.println("❌ WebRTC 연결 실패 - 사용자 ID 없음");
+			session.close(CloseStatus.NOT_ACCEPTABLE);
+		}
 	}
 
 	@Override
@@ -41,24 +51,52 @@ public class SignalingHandler extends TextWebSocketHandler {
 				s.sendMessage(message);
 			}
 		}
+
+		// // ✅ 빈 메시지 또는 유효하지 않은 sender는 처리하지 않음
+		// if ("Unknown".equals(sender) || text.isBlank()) {
+		// 	System.out.println("⚠️ 메시지 전송 취소 - sender 또는 text가 유효하지 않음");
+		// 	return;
+		// }
+		//
+		// // ✅ 모든 WebSocket 세션에 메시지 전송 (본인 제외)
+		// for (WebSocketSession s : rooms.values()) {
+		// 	if (s != null && s.isOpen() && !s.equals(session)) {
+		// 		s.sendMessage(message);
+		// 	}
+		// }
 	}
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		rooms.remove(session.getId());
-		System.out.println("🔴 WebRTC WebSocket 연결 종료: " + session.getId());
+		Long userId = (Long) session.getAttributes().get("user");
+
+		if (userId != null) {
+			rooms.remove(userId);
+			System.out.println("🔴 WebRTC WebSocket 연결 종료 - 사용자 ID: " + userId);
+		} else {
+			System.out.println("🔴 WebRTC WebSocket 연결 종료 - ID 없음");
+		}
 	}
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-		rooms.remove(session.getId());
+		Long userId = (Long) session.getAttributes().get("user");
+
+		if (userId != null) {
+			rooms.remove(userId);
+			System.out.println("❌ WebSocket 오류 발생 - 사용자 ID: " + userId + " / 오류: " + exception.getMessage());
+		} else {
+			System.out.println("❌ WebSocket 오류 발생 - 사용자 ID 없음 / 오류: " + exception.getMessage());
+		}
+
 		session.close(CloseStatus.SERVER_ERROR);
-		System.err.println("❌ WebSocket 오류 발생: " + exception.getMessage());
 	}
 
-	private void sendMessage(WebSocketSession room, JsonNode message) throws Exception {
-		if (room.isOpen()) {
-			room.sendMessage(new TextMessage(message.toString()));
+	private void sendMessage(WebSocketSession session, JsonNode message) throws Exception {
+		if (session.isOpen()) {
+			session.sendMessage(new TextMessage(message.toString()));
 		}
 	}
+
+
 }

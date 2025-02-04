@@ -75,8 +75,11 @@ public class SecurityConfig {
 					"/auth/kakao",
 					"/auth/kakao/callback",
 					"/WebRTC/**",
-					"/sessions/**",
-					"/prons/**"
+					"/webrtc/**",
+					"/rooms/**",
+					"/game/**",
+					"/prons/**",
+					"/session/**"
 				).permitAll()
 				.requestMatchers("/error", "/favicon.ico").permitAll()
 				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
