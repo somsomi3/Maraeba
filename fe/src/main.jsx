@@ -12,6 +12,7 @@ import {
     PronsFirst,
     PronsSecond,
     PronsMain,
+    PronsResult,
 } from "./features/pronunciation";
 import { WordMain } from "./features/wordgame";
 import Conversation from "./features/conversation/Conversation";
@@ -42,6 +43,7 @@ const router = createBrowserRouter(
       <Route path="/prons" element={<PronsMain />} />
       <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
       <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsSecond />} />
+      <Route path='/prons/result' element={<PronsResult/>} />
       <Route path="/wgame" element={<WordMain/>}/>
       <Route path="/conversation" element={<Conversation/>}/>
       <Route path="/conversation/start" element={<ConversationStart/>}/>
