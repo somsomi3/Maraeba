@@ -25,7 +25,6 @@ import com.be.domain.auth.response.CheckUserIdResponse;
 import com.be.domain.auth.response.GetAuthUrlResponse;
 import com.be.domain.auth.response.KakaoLoginErrorResponse;
 import com.be.domain.auth.response.LoginResponse;
-import com.be.domain.auth.response.SocialLoginSuccessResponse;
 import com.be.domain.auth.response.TokenRefreshResponse;
 import com.be.domain.auth.service.AuthService;
 import com.be.domain.auth.service.KakaoSocialService;
@@ -77,6 +76,7 @@ public class AuthController {
 
 	@Operation(summary = "이메일 중복 검사", description = "사용자의 이메일 중복 여부를 확인합니다.")
 	@GetMapping("/check-email")
+	@Deprecated
 	public ResponseEntity<? extends BaseResponseBody> checkEmail(
 		@RequestParam @Parameter(description = "중복 확인할 이메일", required = true)
 		String email) {
@@ -131,6 +131,10 @@ public class AuthController {
 	}
 
 	@Operation(summary = "카카오 로그인 요청", description = "카카오 소셜 로그인 URL을 반환합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "카카오 로그인 URL 반환 성공",
+			content = @Content(schema = @Schema(implementation = GetAuthUrlResponse.class)))
+	})
 	@GetMapping("/kakao")
 	public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() throws IOException {
 		String kakaoAuthUrl = kakaoSocialService.getAuthorizationUrl();
@@ -138,6 +142,12 @@ public class AuthController {
 	}
 
 	@Operation(summary = "카카오 로그인 콜백", description = "카카오 로그인 후 콜백을 처리합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "로그인 성공",
+			content = @Content(schema = @Schema(implementation = AccessTokenResponse.class))),
+		@ApiResponse(responseCode = "401", description = "로그인 실패 (인가 거부 등)",
+			content = @Content(schema = @Schema(implementation = KakaoLoginErrorResponse.class)))
+	})
 	@GetMapping("/kakao/callback")
 	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(
 		@RequestParam(required = false) String code,
@@ -151,10 +161,13 @@ public class AuthController {
 
 		String accessToken = kakaoSocialService.getAccessToken(code);
 		SocialUser userInfo = kakaoSocialService.getUserInfo(accessToken);
+		LoginResponse response = kakaoSocialService.socialLogin(userInfo);
 
-		return ResponseEntity.ok(
-			SocialLoginSuccessResponse.of(userInfo.getProvider(), userInfo.getProviderId(), userInfo.getEmail(),
-				userInfo.getNickname()));
+		ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
+
+		return ResponseEntity.ok()
+			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+			.body(AccessTokenResponse.from(response));
 	}
 
 	@Operation(summary = "네이버 로그인 요청", description = "네이버 소셜 로그인 URL을 반환합니다.")

@@ -53,6 +53,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
+		// 파비콘 요청이면 필터 통과
+		if ("/favicon.ico".equals(requestURI)) {
+			System.out.println("[필터]/favicon.ico 요청은 필터를 그냥 통과시킴");
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		try {
 			String token = tokenService.extractAccessToken(request);
 			System.out.println("[필터]Extracted Token: " + token);
