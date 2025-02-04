@@ -34,11 +34,21 @@ const PronsMain = () => {
     fetchClasses();
   }, []);
 
-  const handleStart = (classId) => {
-    console.log(`🔹 Navigating to class_id: ${classId}`);
-    navigate(`/prons/class/${classId}/seq/1`);
+  const handleStart = async (classId) => {
+    try {
+      console.log(`수업 세션 생성 요청: /prons/start/class/${classId}`);
+      const response = await springApi.post(`/prons/start/class/${classId}`);
+      const sessionId = response.data.session_id; // 응답에서 세션 ID 추출
+  
+      console.log("세션 생성 완료, session_id:", sessionId);
+      localStorage.setItem("session_id", sessionId); // session_id 저장
+  
+      navigate(`/prons/class/${classId}/seq/1`); // 첫 번째 발음 학습 화면으로 이동
+    } catch (error) {
+      console.error("❌ 세션 생성 실패:", error);
+      alert("수업 세션을 시작하는 데 실패했습니다.(로그인 확인)");
+    }
   };
-
   return (
     <div className="prons-container">
       <HomeButton />
