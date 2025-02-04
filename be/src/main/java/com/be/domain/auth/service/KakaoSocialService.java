@@ -1,5 +1,6 @@
 package com.be.domain.auth.service;
 
+import java.time.ZoneId;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,10 +14,24 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.be.common.auth.TokenType;
+import com.be.common.auth.service.TokenService;
+import com.be.db.entity.RefreshToken;
+import com.be.db.entity.User;
+import com.be.db.repository.RefreshTokenRepository;
+import com.be.db.repository.UserRepository;
 import com.be.domain.auth.dto.SocialUser;
+import com.be.domain.auth.response.LoginResponse;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class KakaoSocialService implements SocialService {
+
+	private final UserRepository userRepository;
+	private final TokenService tokenService;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
 	private String KAKAO_TOKEN_URL;
@@ -82,5 +97,51 @@ public class KakaoSocialService implements SocialService {
 			kakaoAccount.get("email").toString(),
 			profile.get("nickname").toString()
 		);
+	}
+
+	@Override
+	public LoginResponse socialLogin(SocialUser socialUser) {
+		String userId = socialUser.getProvider()+"_"+socialUser.getProviderId();
+		User user = userRepository.findByUserId(userId)
+			.orElseGet(()->{
+				User newUser = new User();
+				newUser.setUserId(userId);
+				newUser.setEmail(socialUser.getEmail());
+				newUser.setUsername(socialUser.getNickname());
+				newUser.setProvider(socialUser.getProvider());
+				newUser.setProviderId(socialUser.getProviderId());
+				userRepository.save(newUser);
+				return newUser;
+			});
+
+		//accessToken 및 refreshToken 발급
+		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
+		System.out.println("토큰 발급");
+		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
+			user.getId(), TokenType.REFRESH_TOKEN);
+
+		// 기존 Refresh Token이 있는지 확인
+		RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
+
+		if (refreshToken != null) {
+			// 기존 객체의 토큰 값을 변경하고 업데이트
+			refreshToken.setToken(refreshTokenWithExpiration.getToken());
+			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
+				.toInstant()
+				.atZone(ZoneId.systemDefault())
+				.toLocalDateTime());
+		} else {
+			//refreshToken DB 저장
+			refreshToken = new RefreshToken();
+			refreshToken.setUser(user);
+			refreshToken.setToken(refreshTokenWithExpiration.getToken());
+			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
+				.toInstant()
+				.atZone(ZoneId.systemDefault())
+				.toLocalDateTime());
+			refreshTokenRepository.save(refreshToken);
+		}
+		System.out.println("accessToken: " + accessToken + ", refreshToken: " + refreshToken.getToken());
+		return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
 	}
 }

@@ -13,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.be.domain.auth.dto.SocialUser;
+import com.be.domain.auth.response.LoginResponse;
 
 @Service
 public class NaverSocialService implements SocialService {
@@ -64,5 +65,10 @@ public class NaverSocialService implements SocialService {
 			userInfo.get("email").toString(),
 			userInfo.get("nickname").toString()
 		);
+	}
+
+	@Override
+	public LoginResponse socialLogin(SocialUser socialUser) {
+		return new LoginResponse();
 	}
 }

@@ -19,7 +19,7 @@ public class FoodDataLoader {
 
     @PostConstruct
     public void init() {
-        System.out.println("데이터 저장!");
+        System.out.println("[FoodDataLoader]데이터 저장!");
         if (foodItemRepository.count() == 0) {
             foodItemRepository.save(FoodItem.builder()
                     .ingredientName("사과")

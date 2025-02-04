@@ -21,6 +21,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(signalingHandler, "/WebRTC/signaling").setAllowedOrigins("*");
-		System.out.println("✅ WebSocket 핸들러 등록 완료: /WebRTC/signaling");
+		System.out.println("WebSocket 핸들러 등록 완료: /WebRTC/signaling");
 	}
 }

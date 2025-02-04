@@ -20,7 +20,7 @@ public class AnimalDataLoader {
 
     @PostConstruct
     public void init() {
-        System.out.println("데이터 저장!");
+        System.out.println("[AnimalDataLoader]데이터 저장!");
 
         // 1️⃣ animal_game 테이블에 ID=1인 데이터 추가
         AnimalGame animalGame = animalGameRepository.findById(1).orElseGet(() ->
@@ -52,6 +52,6 @@ public class AnimalDataLoader {
             animalCorrectRepository.saveAll(correctAnswers);
         }
 
-        System.out.println("데이터 저장 완료!");
+        System.out.println("[AnimalDataLoader]데이터 저장 완료!");
     }
 }
