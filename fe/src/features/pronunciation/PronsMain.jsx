@@ -4,6 +4,7 @@ import { springApi } from "../../utils/api";
 import "./PronsMain.css";
 import pronstitle from "../../assets/images/pronstitle.png";
 import HomeButton from "../../components/button/HomeButton";
+
 const PronsMain = () => {
   const navigate = useNavigate();
   const [classData, setClassData] = useState([]); // 초기값을 빈 배열로 설정
@@ -34,7 +35,7 @@ const PronsMain = () => {
     fetchClasses();
   }, []);
 
-  const handleStart = async (classId) => {
+  const handleStart = async (classId, title) => {
     try {
       console.log(`수업 세션 생성 요청: /prons/start/class/${classId}`);
       const response = await springApi.post(`/prons/start/class/${classId}`);
@@ -42,6 +43,7 @@ const PronsMain = () => {
   
       console.log("세션 생성 완료, session_id:", sessionId);
       localStorage.setItem("session_id", sessionId); // session_id 저장
+      localStorage.setItem("class_title", title); // 🔹 수업 제목 저장
   
       navigate(`/prons/class/${classId}/seq/1`); // 첫 번째 발음 학습 화면으로 이동
     } catch (error) {
@@ -49,6 +51,7 @@ const PronsMain = () => {
       alert("수업 세션을 시작하는 데 실패했습니다.(로그인 확인)");
     }
   };
+  
   return (
     <div className="prons-container">
       <HomeButton />
@@ -69,11 +72,12 @@ const PronsMain = () => {
                 <div className="divider"></div>
                 <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
                 <button
-                  className="start-button"
-                  onClick={() => handleStart(item.id)}
-                >
-                  시작하기
+                    className="start-button"
+                    onClick={() => handleStart(item.id, item.title)} // 🔹 제목 데이터 추가
+                    >
+                    시작하기
                 </button>
+
               </div>
             ))
           ) : (
