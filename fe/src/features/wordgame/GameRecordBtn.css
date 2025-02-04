@@ -1,0 +1,17 @@
+.record-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .record-button img {
+    width: 50px; /* 버튼 크기 */
+    height: 50px;
+  }
+  
+  .record-button:active {
+    transform: scale(0.9);
+  }
+  
