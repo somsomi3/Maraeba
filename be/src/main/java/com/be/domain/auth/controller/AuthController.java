@@ -41,7 +41,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -57,7 +57,7 @@ public class AuthController {
 		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 		@ApiResponse(responseCode = "409", description = "이미 존재하는 ID 또는 이메일")
 	})
-	@PostMapping("/auth/register")
+	@PostMapping("/register")
 	public ResponseEntity<? extends BaseResponseBody> register(
 		@Valid @RequestBody @Parameter(description = "회원가입 요청 데이터", required = true)
 		RegisterRequest request) {
@@ -136,7 +136,7 @@ public class AuthController {
 			content = @Content(schema = @Schema(implementation = GetAuthUrlResponse.class)))
 	})
 	@GetMapping("/kakao")
-	public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() throws IOException {
+	public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() {
 		String kakaoAuthUrl = kakaoSocialService.getAuthorizationUrl();
 		return ResponseEntity.ok(GetAuthUrlResponse.of(kakaoAuthUrl));
 	}
@@ -197,7 +197,7 @@ public class AuthController {
 	public ResponseEntity<BaseResponseBody> validateToken(HttpServletRequest request) {
 		try {
 			// ✅ TokenExtractorService를 사용하여 JWT 추출
-			String token = tokenExtractorService.extractAccessToken(request);
+			String token = tokenService.extractAccessToken(request);
 
 			// ✅ JWT 검증 (TokenService 활용)
 			if (!tokenService.validateToken(token)) {

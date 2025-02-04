@@ -5,9 +5,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import com.be.common.auth.service.TokenService;
 import com.be.domain.rooms.SignalingHandler;
 import com.be.domain.rooms.AudioWebSocketHandler;
-import com.be.common.auth.TokenService;
 import com.be.common.auth.WebSocketAuthInterceptor;
 
 @Configuration
