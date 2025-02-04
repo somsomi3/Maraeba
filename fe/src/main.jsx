@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import store from "./store/store";
 import "./index.css";
 import App from "./App.jsx";
-// import ProtectedLayout from "./components/log/ProtectedLayout"; // ✅ 로그인 할 때만 접근가능하도록록
+import ProtectedLayout from "./components/log/ProtectedLayout"; // ✅ 로그인 할 때만 접근가능하도록록
 import { FindId, FindPw, Login, Register } from "./features/auth";
 import { Main, MultiMain, SingleMain } from "./features/mainpage";
 import {
@@ -35,8 +35,8 @@ const router = createBrowserRouter(
       <Route path="/register" element={<Register />} />
       <Route path="/find-id" element={<FindId />} />
       <Route path="/find-pw" element={<FindPw />} />
-
-      {/* <Route element={<ProtectedLayout />}> */}
+      
+      <Route element={<ProtectedLayout />}>
       <Route path="/main" element={<Main />} />
       <Route path="/single" element={<SingleMain />} />
       <Route path="/prons" element={<PronsMain />} />
@@ -55,7 +55,7 @@ const router = createBrowserRouter(
       <Route path="/animal-game/:themeName" element={<AnimalGame />} />
       <Route path="/profile" element={<Profile />} />
 
-      {/* </Route> */}
+      </Route>
         </>
     )
 );
