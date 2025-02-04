@@ -64,7 +64,36 @@ const PronsSecond = () => {
     };
   }, []);
 
-  // ✅ "다음으로" 버튼을 눌렀을 때 유사도 저장
+  // ✅ 학습 완료 후 세션 종료, 히스토리 저장, 통계 업데이트
+  const handleEndSession = async () => {
+    const session_id = localStorage.getItem("session_id");
+    if (!session_id) {
+      alert("세션 ID가 존재하지 않습니다. 다시 시작해주세요.");
+      return;
+    }
+
+    try {
+      console.log("📡 수업 세션 종료 요청:", session_id);
+      await springApi.delete(`/prons/session/${session_id}`);
+      console.log("✅ 수업 세션 종료 완료");
+
+      console.log("📡 히스토리 저장 요청:", session_id);
+      await springApi.post(`/prons/session/history/${session_id}`);
+      console.log("✅ 히스토리 저장 완료");
+
+      console.log("📡 통계 업데이트 요청");
+      await springApi.get("/prons/stat");
+      console.log("✅ 통계 업데이트 완료");
+
+      alert("학습이 성공적으로 완료되었습니다!");
+      navigate("/prons"); // 학습 메인 페이지로 이동
+    } catch (error) {
+      console.error("❌ 세션 종료 또는 데이터 저장 실패:", error);
+      alert("학습 종료를 처리하는 중 오류가 발생했습니다.");
+    }
+  };
+
+  // ✅ "다음으로" 버튼을 눌렀을 때 유사도 저장 후 학습 완료 시 세션 종료
   const handleSaveSimilarityAndNext = async () => {
     const session_id = localStorage.getItem("session_id");
     if (!session_id) {
@@ -86,12 +115,12 @@ const PronsSecond = () => {
 
       console.log("✅ 유사도 저장 완료");
 
-      // ✅ 저장이 끝난 후 다음 단계로 이동
+      // ✅ 만약 마지막 수업이면 세션 종료 및 통계 업데이트
       const nextSeqId = parseInt(seq_id) + 1;
       const maxSeq = classMaxSeqMap[class_id] || 1;
 
       if (nextSeqId > maxSeq) {
-        navigate("/prons"); 
+        await handleEndSession(); // 🔥 마지막 학습 단계면 세션 종료 & 통계 업데이트
       } else {
         navigate(`/prons/class/${class_id}/seq/${nextSeqId}`);
       }
@@ -120,7 +149,7 @@ const PronsSecond = () => {
                 <video ref={videoRef} autoPlay playsInline className="camera-video"></video>
               </div>
               <div className="accuracy">
-                정확도: {accuracy[0] !== null ? `${accuracy[0]}%` : ''}
+                정확도: {accuracy[0] !== null ? `${accuracy[0]}%` : "녹음 후 정확도가 표시됩니다."}
               </div>
             </div>
           </div>
