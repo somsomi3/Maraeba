@@ -1,13 +1,13 @@
 package com.be.common.auth;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import java.util.Map;
+
+import com.be.common.auth.service.TokenService;
 
 public class WebSocketAuthInterceptor implements HandshakeInterceptor {
 
@@ -49,7 +49,7 @@ public class WebSocketAuthInterceptor implements HandshakeInterceptor {
 	 * WebSocket 요청에서 JWT 토큰을 추출
 	 */
 	private String extractTokenFromRequest(ServerHttpRequest request) {
-		// ✅ Query String에서 `token=` 값 찾기 (예: ws://localhost:8081/WebRTC/signaling?token=xxxxx)
+		// ✅ Query String 에서 `token=` 값 찾기 (예: ws://localhost:8081/WebRTC/signaling?token=xxxxx)
 		String query = request.getURI().getQuery();
 
 		if (query == null) {
