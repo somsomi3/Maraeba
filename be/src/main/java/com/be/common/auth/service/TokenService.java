@@ -88,7 +88,7 @@ public class TokenService {
 	public ResponseCookie createRefreshTokenCookie(String refreshToken) {
 		return ResponseCookie.from("refreshToken", refreshToken)
 			.httpOnly(true)
-			.secure(true) // HTTPS 환경에서만 전송
+			.secure(false) // HTTPS 환경에서만 전송
 			.path("/") // 모든 경로에서 사용 가능
 			.maxAge(refreshTokenValiditySeconds) // application.yml의 유효기간을 사용
 			.sameSite("Strict") // CSRF 방지
@@ -101,7 +101,7 @@ public class TokenService {
 	public ResponseCookie deleteRefreshTokenCookie() {
 		return ResponseCookie.from("refreshToken", "")
 			.httpOnly(true)
-			.secure(true) // HTTPS 환경에서만 전송
+			.secure(false) // HTTPS 환경에서만 전송
 			.path("/") // 모든 경로에서 사용 가능
 			.maxAge(0) // application.yml의 유효기간을 사용
 			.sameSite("Strict") // CSRF 방지

@@ -19,7 +19,8 @@ public class FoodDataLoader {
 
     @PostConstruct
     public void init() {
-        System.out.println("데이터 저장!");
+
+        System.out.println("[FoodDataLoader]데이터 저장!");
 
         String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
 
