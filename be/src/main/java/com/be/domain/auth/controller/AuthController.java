@@ -3,6 +3,8 @@ package com.be.domain.auth.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.be.common.auth.TokenExtractorService;
+import com.be.common.auth.TokenService;
 import com.be.common.model.response.BaseResponseBody;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.LogoutRequest;
@@ -25,10 +27,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping
 @RequiredArgsConstructor
 public class AuthController {
 	private final AuthService authService;
+	private final TokenExtractorService tokenExtractorService;
+	private final TokenService tokenService; // ✅ TokenService 추가
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다.")
 	@ApiResponses(value = {
@@ -37,7 +41,7 @@ public class AuthController {
 		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 		@ApiResponse(responseCode = "409", description = "이미 존재하는 ID 또는 이메일")
 	})
-	@PostMapping("/register")
+	@PostMapping("/auth/register")
 	public ResponseEntity<? extends BaseResponseBody> register(
 		@Valid @RequestBody @Parameter(description = "회원가입 요청 데이터", required = true)
 		RegisterRequest request) {
@@ -51,7 +55,7 @@ public class AuthController {
 		@ApiResponse(responseCode = "200", description = "중복 여부 반환",
 			content = @Content(schema = @Schema(implementation = CheckUserIdResponse.class)))
 	})
-	@GetMapping("/check-user-id")
+	@GetMapping("/auth/check-user-id")
 	public ResponseEntity<? extends BaseResponseBody> checkUserId(
 		@RequestParam @Parameter(description = "중복 확인할 사용자 ID", required = true)
 		String userId) {
@@ -64,7 +68,7 @@ public class AuthController {
 		@ApiResponse(responseCode = "200", description = "중복 여부 반환",
 			content = @Content(schema = @Schema(implementation = CheckEmailResponse.class)))
 	})
-	@GetMapping("/check-email")
+	@GetMapping("/auth/check-email")
 	public ResponseEntity<? extends BaseResponseBody> checkEmail(
 		@RequestParam @Parameter(description = "중복 확인할 이메일", required = true)
 		String email) {
@@ -79,7 +83,7 @@ public class AuthController {
 		@ApiResponse(responseCode = "401", description = "잘못된 자격 증명"),
 		@ApiResponse(responseCode = "403", description = "접근 거부 - 비밀번호 불일치")
 	})
-	@PostMapping("/login")
+	@PostMapping("/auth/login")
 	public ResponseEntity<? extends BaseResponseBody> login(
 		@Valid @RequestBody @Parameter(description = "로그인 요청 데이터", required = true)
 		LoginRequest request) {
@@ -114,4 +118,30 @@ public class AuthController {
 		authService.logout(httpServletRequest, request);
 		return ResponseEntity.ok(BaseResponseBody.of("Logout successfully", 200));
 	}
+
+	/**
+	 * ✅ JWT 검증 API
+	 */
+	@GetMapping("/validate")
+	@Operation(summary = "JWT 검증", description = "사용자의 Access Token이 유효한지 확인합니다.")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "토큰이 유효함"),
+		@ApiResponse(responseCode = "401", description = "토큰이 유효하지 않음")
+	})
+	public ResponseEntity<BaseResponseBody> validateToken(HttpServletRequest request) {
+		try {
+			// ✅ TokenExtractorService를 사용하여 JWT 추출
+			String token = tokenExtractorService.extractAccessToken(request);
+
+			// ✅ JWT 검증 (TokenService 활용)
+			if (!tokenService.validateToken(token)) {
+				return ResponseEntity.status(401).body(BaseResponseBody.of("토큰이 유효하지 않습니다.", 401));
+			}
+
+			return ResponseEntity.ok(BaseResponseBody.of("토큰이 유효합니다.", 200));
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(401).body(BaseResponseBody.of("토큰이 존재하지 않거나 올바르지 않습니다.", 401));
+		}
+	}
+
 }

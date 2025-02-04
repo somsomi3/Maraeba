@@ -32,7 +32,9 @@ const Login = () => {
       .post('/auth/login', formData)
       .then((response) => {
         // 성공 시
-        const { token, refreshToken } = response.data; // 서버로부터 Access 토큰과 Refresh 토큰 받기
+        const { access_token, refresh_token } = response.data; // 서버로부터 Access 토큰과 Refresh 토큰 받기
+        const token = access_token;
+        const refreshToken = refresh_token;
         localStorage.setItem('token', token); // Access 토큰 저장
         localStorage.setItem('refreshToken', refreshToken); // Refresh 토큰 저장
         alert('로그인 완료!');

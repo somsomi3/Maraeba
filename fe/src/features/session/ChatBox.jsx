@@ -1,5 +1,7 @@
-import React, {Component} from "react";
-import {useNavigate} from "react-router-dom"; // ✅ useNavigate 사용
+import React, { Component } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ useNavigate 사용
+
+const API_URL = "http://localhost:8081";
 
 class ChatBox extends Component {
     constructor(props) {
@@ -7,13 +9,14 @@ class ChatBox extends Component {
         this.state = {
             message: "",
             messages: JSON.parse(localStorage.getItem("chatMessages")) || [],
+            userId: null, // ✅ 사용자 ID 상태 추가
         };
         this.webSocket = null;
         this.reconnectInterval = null;
     }
 
     componentDidMount() {
-        this.connectWebSocket();
+        this.checkAuthAndConnectWebSocket();
     }
 
     componentWillUnmount() {
@@ -23,28 +26,58 @@ class ChatBox extends Component {
         clearInterval(this.reconnectInterval);
     }
 
-    // ✅ WebSocket 연결 함수
-    connectWebSocket = () => {
-        if (this.webSocket && this.webSocket.readyState === WebSocket.OPEN) {
-            return; // 이미 연결된 경우 중복 연결 방지
+    // ✅ JWT 토큰 가져오기
+    getToken = () => localStorage.getItem("token");
+
+    // ✅ 로그인 확인 및 WebSocket 연결
+    checkAuthAndConnectWebSocket = async () => {
+        const token = this.getToken();
+        if (!token) {
+            console.warn("🔴 로그인 필요: 로그인 페이지로 이동");
+            this.props.navigate("/login");
+            return;
         }
 
-        this.webSocket = new WebSocket("ws://localhost:8081/WebRTC/signaling");
+        try {
+            const response = await fetch(`${API_URL}/validate`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (!response.ok) throw new Error("❌ 인증 실패");
+
+            console.log("✅ 로그인 확인됨. WebRTC WebSocket 연결 시작");
+            this.connectWebSocket(token);
+        } catch (error) {
+            console.error("❌ 인증 실패: 로그인 페이지로 이동", error);
+            localStorage.removeItem("token");
+            this.props.navigate("/login");
+        }
+    };
+
+    // ✅ WebSocket 연결
+    connectWebSocket = (token) => {
+        if (this.webSocket && this.webSocket.readyState === WebSocket.OPEN) return;
+
+        this.webSocket = new WebSocket(`ws://localhost:8081/WebRTC/signaling?token=${token}`);
 
         this.webSocket.onopen = () => {
             console.log("✅ WebSocket 연결 성공");
-            clearInterval(this.reconnectInterval); // 🔄 재연결 시도 중이면 해제
+            clearInterval(this.reconnectInterval);
         };
 
         this.webSocket.onmessage = (event) => {
             console.log("📩 받은 메시지:", event.data);
             try {
                 const receivedMessage = JSON.parse(event.data);
+                
+                // ✅ 메시지를 즉시 업데이트
                 this.setState((prevState) => {
                     const updatedMessages = [...prevState.messages, receivedMessage];
-                    localStorage.setItem("chatMessages", JSON.stringify(updatedMessages)); // ✅ 메시지 저장
-                    return {messages: updatedMessages};
+                    localStorage.setItem("chatMessages", JSON.stringify(updatedMessages));
+                    return { messages: updatedMessages, userId: receivedMessage.userId };
                 });
+
+                console.log("✅ 받은 사용자 ID:", receivedMessage.userId);
             } catch (e) {
                 console.error("📩 JSON 파싱 오류:", e);
             }
@@ -56,23 +89,28 @@ class ChatBox extends Component {
 
         this.webSocket.onclose = () => {
             console.log("🔴 WebSocket 연결 종료 → 5초 후 재연결 시도...");
-            this.reconnectInterval = setTimeout(this.connectWebSocket, 5000); // ✅ 5초 후 재연결
+            this.reconnectInterval = setTimeout(() => this.connectWebSocket(token), 5000);
         };
     };
 
-    // ✅ 메시지 전송 함수
+    // ✅ 메시지 전송
     sendMessage = () => {
         if (this.state.message.trim() && this.webSocket && this.webSocket.readyState === WebSocket.OPEN) {
-            const messageObject = {sender: "나", text: this.state.message};
+            const messageObject = { sender: "나", text: this.state.message };
+            console.log("📡 메시지 전송:", messageObject);
             this.webSocket.send(JSON.stringify(messageObject));
+
             this.setState((prevState) => {
                 const updatedMessages = [...prevState.messages, messageObject];
                 localStorage.setItem("chatMessages", JSON.stringify(updatedMessages));
-                return {messages: updatedMessages, message: ""};
+                return { messages: updatedMessages, message: "" };
             });
+        } else {
+            console.error("❌ WebSocket 연결이 닫혀 있음!");
         }
     };
-    // ✅ 엔터 키 이벤트 핸들러 추가
+
+    // ✅ 엔터 키 이벤트 핸들러
     handleKeyPress = (event) => {
         if (event.key === "Enter") {
             this.sendMessage();
@@ -83,6 +121,7 @@ class ChatBox extends Component {
         return (
             <div style={styles.chatBox}>
                 <h3 style={styles.title}>채팅</h3>
+                <h4>🆔 현재 로그인한 사용자 ID: {this.state.userId ? this.state.userId : "받는 중..."}</h4> {/* ✅ 사용자 ID 표시 */}
                 <div style={styles.messageContainer}>
                     {this.state.messages.map((msg, idx) => (
                         <div key={idx} style={styles.message}>
@@ -94,18 +133,14 @@ class ChatBox extends Component {
                     <input
                         type="text"
                         value={this.state.message}
-                        onChange={(e) => this.setState({message: e.target.value})}
-                        onKeyDown={this.handleKeyPress} // ✅ 엔터 키 이벤트 추가
+                        onChange={(e) => this.setState({ message: e.target.value })}
+                        onKeyDown={this.handleKeyPress}
                         placeholder="실시간 채팅!!"
                         style={styles.input}
                     />
                     <div style={styles.buttonContainer}>
-                        <button onClick={this.sendMessage} style={styles.button}>
-                            전송
-                        </button>
-                        <button onClick={() => this.props.navigate("/main")} style={styles.buttonSecondary}>
-                            메인으로
-                        </button>
+                        <button onClick={this.sendMessage} style={styles.button}>전송</button>
+                        <button onClick={() => this.props.navigate("/main")} style={styles.buttonSecondary}>메인으로</button>
                     </div>
                 </div>
             </div>
@@ -113,7 +148,7 @@ class ChatBox extends Component {
     }
 }
 
-// ✅ 스타일 개선 (버튼 가로 정렬 추가)
+// ✅ 스타일 개선
 const styles = {
     chatBox: {
         width: "320px",
@@ -143,10 +178,10 @@ const styles = {
         margin: "5px 0",
     },
     inputContainer: {
-        display: "flex", // ✅ 버튼과 입력창을 가로로 정렬
+        display: "flex",
         alignItems: "center",
         padding: "10px",
-        gap: "5px", // ✅ 버튼 간격 조정
+        gap: "5px",
     },
     input: {
         flex: 1,
@@ -155,8 +190,8 @@ const styles = {
         borderRadius: "4px",
     },
     buttonContainer: {
-        display: "flex", // ✅ 버튼을 가로 정렬
-        gap: "5px", // ✅ 버튼 간격 추가
+        display: "flex",
+        gap: "5px",
     },
     button: {
         padding: "8px 12px",
@@ -165,7 +200,6 @@ const styles = {
         border: "none",
         borderRadius: "4px",
         cursor: "pointer",
-        whiteSpace: "nowrap", // ✅ 버튼 내 텍스트 한 줄 유지
     },
     buttonSecondary: {
         padding: "8px 12px",
@@ -174,14 +208,13 @@ const styles = {
         border: "none",
         borderRadius: "4px",
         cursor: "pointer",
-        whiteSpace: "nowrap", // ✅ 버튼 내 텍스트 한 줄 유지
     },
 };
 
 // ✅ useNavigate를 사용하는 고차 컴포넌트로 감싸기
 const ChatBoxWithNavigate = (props) => {
     const navigate = useNavigate();
-    return <ChatBox {...props} navigate={navigate}/>;
+    return <ChatBox {...props} navigate={navigate} />;
 };
 
 export default ChatBoxWithNavigate;

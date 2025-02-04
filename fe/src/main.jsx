@@ -18,8 +18,11 @@ import {WordMain} from './features/wordgame';
 import Conversation from "./features/conversation/Conversation";
 import ConversationStart from "./features/conversation/ConversationStart";
 import ChatBox from "./features/session/ChatBox"; // ✅ ChatBox 컴포넌트 추가
-import Webrtc from "./features/session/Webrtc.jsx";
+import Webrtc from "./features/session/Webrtc";
 import CookingGame from "./features/wordgame/CookingGame"; 
+import RoomPage from "./features/session/RoomPage";
+import RoomList from "./features/session/RoomList";
+
 
 
 // 라우트 정의
@@ -47,6 +50,9 @@ const router = createBrowserRouter(
       <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
       <Route path="/session/webrtc" element={<Webrtc/>}/>
       <Route path="/cooking-game" element={<CookingGame />} />
+     <Route path="/room/:roomId" element={<RoomPage />} /> {/* ✅ RoomPage 라우트 추가 */}
+      <Route path="/session/RoomList" element={<RoomList/>}/>
+      
         </>
     )
 );
