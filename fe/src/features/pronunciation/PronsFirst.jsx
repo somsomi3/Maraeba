@@ -19,6 +19,7 @@ const PronsFirst = () => {
       try {
         console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
+        
         console.log("API 응답:", response.data);
 
         setData(response.data.data || {}); // 객체이므로 data.data로 가져옴옴
@@ -34,6 +35,10 @@ const PronsFirst = () => {
     fetchPronunciationData();
   }, [class_id, seq_id]);
 
+  const handleExit = () => {
+    navigate("/prons");
+  };
+
   // 다음 연습 화면으로 이동
   const goToPractice = () => {
     navigate(`/prons/class/${class_id}/seq/${seq_id}/prac`);
@@ -42,7 +47,7 @@ const PronsFirst = () => {
   return (
     <div className="prons-first-container">
       <GoBackButton />
-      <PausePopup />
+      <PausePopup onExit={handleExit} />
       {/* 데이터 로딩 중 표시 */}
       {loading ? (
         <div className="loading-container">🔄 데이터 로딩 중...</div>

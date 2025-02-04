@@ -19,31 +19,35 @@ public class FoodDataLoader {
 
     @PostConstruct
     public void init() {
+
         System.out.println("[FoodDataLoader]데이터 저장!");
+
+        String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
+
         if (foodItemRepository.count() == 0) {
             foodItemRepository.save(FoodItem.builder()
                     .ingredientName("사과")
-                    .foodImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodItemImg\\사과.png")
+                    .foodImage(url + "\\foodItemImg\\사과.png")
                     .build());
             foodItemRepository.save(FoodItem.builder()
                     .ingredientName("파이 반죽")
-                    .foodImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodItemImg\\파이 반죽.png")
+                    .foodImage(url + "\\foodItemImg\\파이 반죽.png")
                     .build());
             foodItemRepository.save(FoodItem.builder()
                     .ingredientName("감자")
-                    .foodImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodItemImg\\감자.png")
+                    .foodImage(url + "\\foodItemImg\\감자.png")
                     .build());
             foodItemRepository.save(FoodItem.builder()
                     .ingredientName("기름")
-                    .foodImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodItemImg\\기름.png")
+                    .foodImage(url + "\\foodItemImg\\기름.png")
                     .build());
             foodItemRepository.save(FoodItem.builder()
                     .ingredientName("빵")
-                    .foodImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodItemImg\\빵.png")
+                    .foodImage(url + "\\foodItemImg\\빵.png")
                     .build());
             foodItemRepository.save(FoodItem.builder()
                     .ingredientName("야채")
-                    .foodImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodItemImg\\야채.png")
+                    .foodImage(url + "\\foodItemImg\\야채.png")
                     .build());
             foodItemRepository.save(FoodItem.builder().ingredientName("우유").build());
             foodItemRepository.save(FoodItem.builder().ingredientName("밀가루").build());
@@ -59,7 +63,7 @@ public class FoodDataLoader {
 
         if (foodGameRepository.count() == 0) {
             FoodGame foodGame = FoodGame.builder()
-                    .resultImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodImg\\사과 파이.png")
+                    .resultImage(url + "\\foodImg\\사과 파이.png")
                     .resultName("사과 파이")
                     .foodItem1(foodItemRepository.findByIngredientName("사과"))
                     .foodItem2(foodItemRepository.findByIngredientName("파이 반죽"))
@@ -67,7 +71,7 @@ public class FoodDataLoader {
             foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
-                    .resultImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodImg\\감자튀김.png")
+                    .resultImage(url + "\\foodImg\\감자튀김.png")
                     .resultName("감자튀김")
                     .foodItem1(foodItemRepository.findByIngredientName("감자"))
                     .foodItem2(foodItemRepository.findByIngredientName("기름"))
@@ -75,7 +79,7 @@ public class FoodDataLoader {
             foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
-                    .resultImage("C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\foodImg\\샌드위치.png")
+                    .resultImage(url + "\\foodImg\\샌드위치.png")
                     .resultName("샌드위치")
                     .foodItem1(foodItemRepository.findByIngredientName("빵"))
                     .foodItem2(foodItemRepository.findByIngredientName("야채"))

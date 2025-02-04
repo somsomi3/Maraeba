@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
-import { springApi } from "../../utils/api";
+import { loginApi } from "../../utils/api"; // ✅ 로그인 API 변경
 import "./index.css";
 import logo from "../../assets/logo.png";
+import kakao from "../../assets/icons/kakao_login.png"
 
 const Login = () => {
   const [formData, setFormData] = useState({ user_id: "", password: "" });
@@ -19,7 +20,7 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.user_id || !formData.password) {
@@ -27,24 +28,19 @@ const Login = () => {
       return;
     }
 
-    springApi
-      .post("/auth/login", formData)
-      .then(({ data: { access_token, refresh_token } }) => {
-        // ✅ 구조 분해 할당을 사용하여 access_token과 refresh_token을 직접 할당
-        dispatch(login(access_token)); // Redux 상태 업데이트
-        localStorage.setItem("token", access_token); // Access 토큰 저장
-        localStorage.setItem("refreshToken", refresh_token); // Refresh 토큰 저장
+    try {
+      // ✅ 로그인 API 요청 (withCredentials: true 적용)
+      const { data } = await loginApi(formData);
 
-        navigate("/main"); // 로그인 성공 후 이동
-      })
-      .catch((error) => {
-        console.error("Error during login:", error);
-        if (error.response) {
-          alert(error.response.data.message || "로그인에 실패했습니다.");
-        } else {
-          alert("서버와 연결할 수 없습니다.");
-        }
-      });
+      // ✅ Access Token만 저장
+      dispatch(login(data.access_token));
+      localStorage.setItem("token", data.access_token);
+
+      navigate("/main"); // 로그인 성공 후 이동
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      alert(error.response?.data?.message || "로그인에 실패했습니다.");
+    }
   };
 
   return (
@@ -77,6 +73,11 @@ const Login = () => {
           로그인
         </button>
       </form>
+    
+      <button className="kakaobtn">
+            <img src={kakao} alt="카카오 로그인" className="kakao" />
+      </button>
+        
       <div className="secondary-button">
         <span onClick={() => navigate("/find-id")}>아이디 찾기</span> |{" "}
         <span onClick={() => navigate("/find-pw")}>비밀번호 찾기</span>
