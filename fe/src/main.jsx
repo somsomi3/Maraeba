@@ -15,56 +15,49 @@ import {
     PronsResult,
 } from "./features/pronunciation";
 import { WordMain } from "./features/wordgame";
-import Conversation from "./features/conversation/Conversation";
-import ConversationStart from "./features/conversation/ConversationStart";
-
-import ChatBox from "./features/session/ChatBox"; // ✅ ChatBox 컴포넌트 추가
-import Webrtc from "./features/session/Webrtc";
-import CookingGame from "./features/wordgame/CookingGame"; 
-import RoomPage from "./features/session/RoomPage";
-import RoomList from "./features/session/RoomList";
-import AnimalGameTheme from "./features/wordgame/AnimalGameTheme"; 
+import { Conversation,ConversationStart } from "./features/conversation";
+import {ChatBox,Webrtc, WaitingRoom, CreateRoom, RoomPage,RoomList  } from "./features/room"
+import CookingGame from "./features/wordgame/CookingGame";
+import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
-import WaitingRoom from "./features/session/WaitingRoom";
-import CreateRoom from "./features/session/CreateRoom";
 import Profile from "./features/user/Profile";
 
 
 
 // 라우트 정의
 const router = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/" element={<App />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/find-id" element={<FindId />} />
-      <Route path="/find-pw" element={<FindPw />} />
-      
-      <Route element={<ProtectedLayout />}>
-      <Route path="/main" element={<Main />} />
-      <Route path="/single" element={<SingleMain />} />
-      <Route path="/prons" element={<PronsMain />} />
-      <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
-      <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsSecond />} />
-      <Route path='/prons/result' element={<PronsResult/>} />
-      <Route path="/wgame" element={<WordMain/>}/>
-      <Route path="/conversation" element={<Conversation/>}/>
-      <Route path="/conversation/start" element={<ConversationStart/>}/>
-      <Route path="/multi" element={<MultiMain/>}/>
-      <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
-      <Route path="/session/webrtc" element={<Webrtc/>}/>
-      <Route path="/session/waiting" element={<WaitingRoom />} />
-      <Route path="/session/create-room" element={<CreateRoom />} />
-      <Route path="/cooking-game" element={<CookingGame />} />
-      <Route path="/room/:roomId" element={<RoomPage />} /> {/* ✅ RoomPage 라우트 추가 */}
-      <Route path="/session/RoomList" element={<RoomList/>}/>
+    createRoutesFromElements(
+        <>
+            <Route path="/" element={<App />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/find-id" element={<FindId />} />
+            <Route path="/find-pw" element={<FindPw />} />
 
-      <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
-      <Route path="/animal-game/:themeName" element={<AnimalGame />} />
-      <Route path="/profile" element={<Profile />} />
+            <Route element={<ProtectedLayout />}>
+                <Route path="/main" element={<Main />} />
+                <Route path="/single" element={<SingleMain />} />
+                <Route path="/prons" element={<PronsMain />} />
+                <Route path="/prons/class/:class_id/seq/:seq_id" element={<PronsFirst />} />
+                <Route path="/prons/class/:class_id/seq/:seq_id/prac" element={<PronsSecond />} />
+                <Route path='/prons/result' element={<PronsResult/>} />
+                <Route path="/wgame" element={<WordMain/>}/>
+                <Route path="/conversation" element={<Conversation/>}/>
+                <Route path="/conversation/start" element={<ConversationStart/>}/>
+                <Route path="/multi" element={<MultiMain/>}/>
+                <Route path="/session" element={<ChatBox/>}/> {/* ✅ 채팅 페이지 추가 */}
+                <Route path="/room/webrtc" element={<Webrtc/>}/>
+                <Route path="/room/waiting" element={<WaitingRoom />} />
+                <Route path="/room/create" element={<CreateRoom />} />
+                <Route path="/cooking-game" element={<CookingGame />} />
+                <Route path="/room/:roomId" element={<RoomPage />} /> {/* ✅ RoomPage 라우트 추가 */}
+                <Route path="/room/RoomList" element={<RoomList/>}/>
 
-      </Route>
+                <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
+                <Route path="/animal-game/:themeName" element={<AnimalGame />} />
+                <Route path="/profile" element={<Profile />} />
+
+            </Route>
 
         </>
     )

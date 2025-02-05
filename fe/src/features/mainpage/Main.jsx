@@ -27,7 +27,7 @@ const Main = () => {
                 </div>
 
                 {/* 오른쪽 카드 */}
-                <div className="card multi-mode" onClick={() => navigate("/session/waiting")}>
+                <div className="card multi-mode" onClick={() => navigate("/room/RoomList")}>
                     <div className="card-content">
                         <h2>선생님과 단어 놀이</h2>
                         <p>
