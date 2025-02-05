@@ -57,7 +57,7 @@ const router = createBrowserRouter(
       <Route path="/session/waiting" element={<WaitingRoom />} />
       <Route path="/session/create-room" element={<CreateRoom />} />
       <Route path="/cooking-game" element={<CookingGame />} />
-     <Route path="/room/:roomId" element={<RoomPage />} /> {/* ✅ RoomPage 라우트 추가 */}
+      <Route path="/room/:roomId" element={<RoomPage />} /> {/* ✅ RoomPage 라우트 추가 */}
       <Route path="/session/RoomList" element={<RoomList/>}/>
 
       <Route path="/animal-game-theme" element={<AnimalGameTheme />} />

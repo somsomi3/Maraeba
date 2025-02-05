@@ -73,10 +73,6 @@ const PronsSecond = () => {
     }
 
     try {
-      console.log("📡 수업 세션 종료 요청:", session_id);
-      await springApi.delete(`/prons/session/${session_id}`);
-      console.log("✅ 수업 세션 종료 완료");
-
       console.log("📡 히스토리 저장 요청:", session_id);
       await springApi.post(`/prons/session/history/${session_id}`);
       console.log("✅ 히스토리 저장 완료");
