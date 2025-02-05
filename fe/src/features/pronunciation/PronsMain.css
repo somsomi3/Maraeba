@@ -1,9 +1,5 @@
 .prons-container {
-  padding: 1rem;
   text-align: center;
-  margin-top: 7%;
-  margin-bottom:  10%; /* 아래 여백 제거 */
-  min-height: 100vh; /* 화면 전체 높이를 차지 */
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* 수직 가운데 정렬 */
@@ -13,13 +9,13 @@
   .card{
     font-family: Dovemayo_gothic;
     font-size: 1.5rem;
+    margin-bottom: 3%;
   }
   
   .card-slider {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    width: 100%;
     box-sizing: border-box;
   }
 
@@ -71,7 +67,7 @@
   .pronstitle-image {
     width: 100%;
     max-width: 600px;
-    margin: 2.5rem auto;
+    margin: 1rem auto;
     display: block;
   }
   
