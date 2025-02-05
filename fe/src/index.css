@@ -48,13 +48,13 @@ body {
 }
 
 .next-button {
-    margin-top: 20px; /* 원하는 만큼 조정 (기본값보다 늘림) */
-    padding: 12px 24px;
-    font-size: 18px;
-    background-color: #00897b;
+    margin-top: 16px; 
+    padding: 10px 22px;
+    font-size: 16px;
+    background-color: #64d190;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 30px;
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s ease;
