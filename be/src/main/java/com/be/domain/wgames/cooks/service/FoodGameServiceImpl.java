@@ -9,6 +9,8 @@ import com.be.domain.wgames.cooks.request.AnswerCorrectRequest;
 import com.be.domain.wgames.cooks.response.FoodAnswerResponse;
 import com.be.domain.wgames.cooks.response.FoodResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FoodGameServiceImpl implements FoodGameService {
@@ -98,7 +101,7 @@ public class FoodGameServiceImpl implements FoodGameService {
 //        ClovaSpeechClient.NestRequestEntity nestRequestEntity = new ClovaSpeechClient.NestRequestEntity();
 //        nestRequestEntity.setDiarization(diarization);
 //        String result = speechClient.upload2(audioFile, nestRequestEntity);
-//        System.out.println("Clova Speech API 결과: " + result);
+//        log.info("Clova Speech API 결과: {}", result);
 
         //장문 API
 //        // JSON 파싱 및 "text" 필드 추출
@@ -112,7 +115,7 @@ public class FoodGameServiceImpl implements FoodGameService {
 //        JsonNode rootNode = objectMapper.readTree(result); // JSON 문자열 파싱
 //        String text = rootNode.path("text").asText(); // "text" 필드 추출
 //
-        System.out.println("입력된 음성: " + text);
+        log.info("입력된 음성: {}", text);
 
         FoodGame food = foodGameRepository.findByResultName(request.getFoodName());
         String answerItem1 = food.getFoodItem1().getIngredientName();

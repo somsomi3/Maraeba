@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/webrtc/audio")
 public class WebRTCAudioController {
@@ -39,7 +42,7 @@ public class WebRTCAudioController {
 			// ✅ 파일 저장
 			File audioFile = new File(uploadDir + "audio.wav");
 			file.transferTo(audioFile);
-			System.out.println("✅ 오디오 파일 저장 완료: " + audioFile.getAbsolutePath());
+			log.info("✅ 오디오 파일 저장 완료: {}", audioFile.getAbsolutePath());
 
 			// ✅ STT 변환 실행
 			FileSystemResource fileResource = new FileSystemResource(audioFile);

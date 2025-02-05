@@ -68,5 +68,5 @@
 /* 테이블 헤더 스타일 */
 .room-table th, .room-table td {
     padding: 16px; /* 셀 내부 여백을 늘려 가독성 개선 */
-    border: 2px s
+    border: 2px;
 }

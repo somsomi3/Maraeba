@@ -26,7 +26,7 @@ const CreateRoom = () => {
             });
 
             alert("방이 성공적으로 생성되었습니다!");
-            navigate("/session/waiting"); // ✅ 대기실 페이지로 이동
+            navigate("/rooms/waiting"); // ✅ 대기실 페이지로 이동
         } catch (error) {
             alert(error.response?.data?.message || "방 생성에 실패했습니다.");
         } finally {

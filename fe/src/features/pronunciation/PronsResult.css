@@ -40,5 +40,17 @@
     cursor: not-allowed;
   }
   
-
+  .exit-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  .exit-button:hover {
+    background-color: #cc0000;
+  }
   
