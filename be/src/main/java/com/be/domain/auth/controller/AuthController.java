@@ -1,6 +1,7 @@
 package com.be.domain.auth.controller;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -130,33 +131,30 @@ public class AuthController {
 			.body(BaseResponseBody.of("Logout successfully", 200));
 	}
 
-	@Operation(summary = "카카오 로그인 요청", description = "카카오 소셜 로그인 URL을 반환합니다.")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "카카오 로그인 URL 반환 성공",
-			content = @Content(schema = @Schema(implementation = GetAuthUrlResponse.class)))
-	})
-	@GetMapping("/kakao")
-	public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() {
-		String kakaoAuthUrl = kakaoSocialService.getAuthorizationUrl();
-		return ResponseEntity.ok(GetAuthUrlResponse.of(kakaoAuthUrl));
-	}
+	// @Operation(summary = "카카오 로그인 요청", description = "카카오 소셜 로그인 URL을 반환합니다.")
+	// @ApiResponses(value = {
+	// 	@ApiResponse(responseCode = "200", description = "카카오 로그인 URL 반환 성공",
+	// 		content = @Content(schema = @Schema(implementation = GetAuthUrlResponse.class)))
+	// })
+	// @Deprecated
+	// @GetMapping("/kakao")
+	// public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() {
+	// 	String kakaoAuthUrl = kakaoSocialService.getAuthorizationUrl();
+	// 	return ResponseEntity.ok(GetAuthUrlResponse.of(kakaoAuthUrl));
+	// }
 
-	@Operation(summary = "카카오 로그인 콜백", description = "카카오 로그인 후 콜백을 처리합니다.")
+	@Operation(summary = "카카오 로그인 처리", description = "프론트에서 받은 인가코드를 사용해 카카오 로그인 처리")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그인 성공",
 			content = @Content(schema = @Schema(implementation = AccessTokenResponse.class))),
-		@ApiResponse(responseCode = "401", description = "로그인 실패 (인가 거부 등)",
-			content = @Content(schema = @Schema(implementation = KakaoLoginErrorResponse.class)))
+		@ApiResponse(responseCode = "401", description = "로그인 실패")
 	})
-	@GetMapping("/kakao/callback")
-	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(
-		@RequestParam(required = false) String code,
-		@RequestParam(required = false) String error,
-		@RequestParam(required = false) String error_description
-	) {
-		if (error != null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-				.body(KakaoLoginErrorResponse.of(error_description, error));
+	@PostMapping("/kakao/callback")
+	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(@RequestBody Map<String, String> requestBody) {
+		String code = requestBody.get("code");
+
+		if (code == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(KakaoLoginErrorResponse.of("인가코드가 없습니다.", "invalid_code"));
 		}
 
 		String accessToken = kakaoSocialService.getAccessToken(code);
@@ -166,9 +164,39 @@ public class AuthController {
 		ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
 
 		return ResponseEntity.ok()
-			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-			.body(AccessTokenResponse.from(response));
+			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString()) // Refresh Token은 쿠키에 저장
+			.body(AccessTokenResponse.from(response)); // Access Token은 JSON으로 전달
 	}
+
+
+	// @Operation(summary = "카카오 로그인 콜백", description = "카카오 로그인 후 콜백을 처리합니다.")
+	// @ApiResponses(value = {
+	// 	@ApiResponse(responseCode = "200", description = "로그인 성공",
+	// 		content = @Content(schema = @Schema(implementation = AccessTokenResponse.class))),
+	// 	@ApiResponse(responseCode = "401", description = "로그인 실패 (인가 거부 등)",
+	// 		content = @Content(schema = @Schema(implementation = KakaoLoginErrorResponse.class)))
+	// })
+	// @GetMapping("/kakao/callback")
+	// public ResponseEntity<? extends BaseResponseBody> kakaoLogin(
+	// 	@RequestParam(required = false) String code,
+	// 	@RequestParam(required = false) String error,
+	// 	@RequestParam(required = false) String error_description
+	// ) {
+	// 	if (error != null) {
+	// 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	// 			.body(KakaoLoginErrorResponse.of(error_description, error));
+	// 	}
+	//
+	// 	String accessToken = kakaoSocialService.getAccessToken(code);
+	// 	SocialUser userInfo = kakaoSocialService.getUserInfo(accessToken);
+	// 	LoginResponse response = kakaoSocialService.socialLogin(userInfo);
+	//
+	// 	ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
+	//
+	// 	return ResponseEntity.ok()
+	// 		.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+	// 		.body(AccessTokenResponse.from(response));
+	// }
 
 	@Operation(summary = "네이버 로그인 요청", description = "네이버 소셜 로그인 URL을 반환합니다.")
 	@GetMapping("/naver")
@@ -186,7 +214,7 @@ public class AuthController {
 	}
 
 	/**
-	 * ✅ JWT 검증 API
+	 * JWT 검증 API
 	 */
 	@GetMapping("/validate")
 	@Operation(summary = "JWT 검증", description = "사용자의 Access Token이 유효한지 확인합니다.")
@@ -196,10 +224,10 @@ public class AuthController {
 	})
 	public ResponseEntity<BaseResponseBody> validateToken(HttpServletRequest request) {
 		try {
-			// ✅ TokenExtractorService를 사용하여 JWT 추출
+			// TokenExtractorService를 사용하여 JWT 추출
 			String token = tokenService.extractAccessToken(request);
 
-			// ✅ JWT 검증 (TokenService 활용)
+			// JWT 검증 (TokenService 활용)
 			if (!tokenService.validateToken(token)) {
 				return ResponseEntity.status(401).body(BaseResponseBody.of("토큰이 유효하지 않습니다.", 401));
 			}
