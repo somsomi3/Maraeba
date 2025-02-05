@@ -5,6 +5,8 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    justify-content: center; /* 세로 중앙 정렬 */
+    height: 100vh; /* 화면 전체 높이 */
     box-sizing: border-box;
   }
   
