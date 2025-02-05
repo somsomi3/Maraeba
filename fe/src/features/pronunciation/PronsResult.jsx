@@ -6,25 +6,34 @@ import "./PronsResult.css";
 
 const PronsResult = () => {
   const navigate = useNavigate();
-  const [history, setHistory] = useState([]);
-  const [classTitle, setClassTitle] = useState(""); // 🔹 학습 제목
+  const [history, setHistory] = useState([]); // 모든 학습 기록
+  const [latestRecord, setLatestRecord] = useState(null); // 최근 학습 기록
+  const [classTitleMap, setClassTitleMap] = useState({}); // classId -> title 매핑
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const title = localStorage.getItem("class_title");
-    if (title) {
-      setClassTitle(title);
-    }
-  }, []);
-  
+    // 🟢 PronsMain에서 저장된 제목을 localStorage에서 가져와 classTitleMap에 저장
+    const fetchClassTitles = async () => {
+      try {
+        const response = await springApi.get("/prons");
+        if (response.data && response.data.classes) {
+          const titleMap = {};
+          response.data.classes.forEach((item) => {
+            titleMap[item.id] = item.title;
+          });
+          setClassTitleMap(titleMap);
+        }
+      } catch (err) {
+        console.error("❌ 수업 목록 불러오기 실패:", err);
+      }
+    };
 
-  useEffect(() => {
+    // 🟢 학습 기록 가져오기
     const fetchHistory = async () => {
       try {
-        
         const response = await springApi.get(`/prons/history?page=${page}&size=10`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -34,9 +43,14 @@ const PronsResult = () => {
         console.log("✅ API 응답 데이터:", response.data);
 
         if (response.data && response.data.histories) {
-
-          setHistory(response.data.histories.content);
+          const records = response.data.histories.content;
+          setHistory(records); // 모든 기록 저장
           setTotalPages(response.data.histories.total_pages);
+
+          // 🟢 가장 최근 기록 가져오기
+          if (records.length > 0) {
+            setLatestRecord(records[0]); // 가장 최신 기록 저장
+          }
         } else {
           setHistory([]);
           setTotalPages(1);
@@ -51,34 +65,32 @@ const PronsResult = () => {
       }
     };
 
+    fetchClassTitles();
     fetchHistory();
   }, [page]);
 
-  useEffect(() => {
-    return () => {
-      const session_id = localStorage.getItem("session_id");
+  // 🔴 다시하기 버튼: 새로운 세션 시작
+  const handleRestart = async () => {
+    const classId = latestRecord?.class_id;
+    if (!classId) {
+      alert("클래스 ID가 없습니다.");
+      return;
+    }
 
-      if (!session_id) {
-        console.warn("⚠️ 세션 ID 없음. 이미 종료되었을 가능성이 있음.");
-        return;
-      }
+    try {
+      console.log(`📡 새 세션 시작 요청: /prons/start/class/${classId}`);
+      const response = await springApi.post(`/prons/start/class/${classId}`);
+      const sessionId = response.data.session_id;
 
-      console.log(`📡 수업 세션 종료 요청: /prons/session/${session_id}`);
+      console.log("✅ 새 세션 생성 완료, session_id:", sessionId);
+      localStorage.setItem("session_id", sessionId);
 
-      springApi
-        .delete(`/prons/session/${session_id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
-        .then(() => {
-          console.log("✅ 수업 세션 종료 완료");
-        })
-        .catch((err) => {
-          console.error("❌ 수업 세션 종료 실패:", err);
-        });
-    };
-  }, []);
+      navigate(`/prons/class/${classId}/seq/1`); // 첫 번째 학습 화면으로 이동
+    } catch (error) {
+      console.error("❌ 세션 시작 실패:", error);
+      alert("새로운 학습 세션을 시작할 수 없습니다.");
+    }
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -88,27 +100,51 @@ const PronsResult = () => {
   return (
     <div className="prons-result-container">
       <h1>📊 학습 결과</h1>
+
+      {/* ✅ 최근 학습 결과 */}
+      {latestRecord && (
+        <div className="current-session-result">
+          <div className="profile-image"></div> {/* 둥근 이미지 자리 */}
+          <div className="session-info">
+            <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>
+            <p className="session-score">유사도: {(latestRecord.average_similarity).toFixed(2)}점</p>
+            <div className="session-buttons">
+              <button onClick={handleRestart}>다시하기</button>
+              <button onClick={() => navigate("/prons")}>학습 끝내기</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ 학습 기록 히스토리 */}
+      <h2 className="history-title">결과 히스토리</h2>
       {loading ? (
         <p>🔄 학습 기록을 불러오는 중...</p>
       ) : error ? (
         <p>❌ 학습 기록을 불러오는 데 실패했습니다.</p>
       ) : history.length > 0 ? (
-        <div className="history-list">
-          {history.map((record, index) => (
-            <div key={index} className="history-item">
-              <p>{classTitle}</p>
-              <p>📅 날짜: {formatDate(record.created_at)}</p>
-              <p>🎯 평균 유사도 점수: {(record.average_similarity).toFixed(2)}%</p>
-            </div>
-          ))}
-        </div>
+        <table className="history-table">
+          <thead>
+            <tr>
+              <th>수업 제목</th>
+              <th>유사도</th>
+              <th>수업 날짜</th>
+            </tr>
+          </thead>
+          <tbody>
+            {history.map((record, index) => (
+              <tr key={index}>
+                <td>{classTitleMap[record.class_id] || `Class ${record.class_id}`}</td>
+                <td>{(record.average_similarity).toFixed(2)}점</td>
+                <td>{formatDate(record.created_at)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
         <p>📢 학습 기록이 없습니다.</p>
       )}
 
-      <button className="exit-button" onClick={() => navigate("/prons")}>
-        🔙 학습 메인으로
-      </button>
     </div>
   );
 };

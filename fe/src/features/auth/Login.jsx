@@ -6,7 +6,7 @@ import { loginApi } from "../../utils/api"; // ✅ 로그인 API 변경
 import "./index.css";
 import logo from "../../assets/logo.png";
 
-import KakaoLoginButton from "./KakaoLoginButton";
+import KakaoLogin from "./KakaoLogin";
 
 const Login = () => {
   const [formData, setFormData] = useState({ user_id: "", password: "" });
@@ -75,7 +75,7 @@ const Login = () => {
         </button>
       </form>
     
-      <KakaoLoginButton />
+      <KakaoLogin />
       <div className="secondary-button">
         <span onClick={() => navigate("/find-id")}>아이디 찾기</span> |{" "}
         <span onClick={() => navigate("/find-pw")}>비밀번호 찾기</span>

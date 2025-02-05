@@ -1,11 +1,22 @@
+.main-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* 화면 중앙 정렬 */
+    background-color: #ffe0b1; /* 기존 배경색 유지 */
+}
+
 /* 카드 컨테이너 */
 .card-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 4rem;
-    flex-wrap: nowrap; /* 줄바꿈 없이 한 줄로 배치 */
-    overflow-x: auto; /* 화면이 작아질 때 가로 스크롤 생성 */
+    gap: 3rem;
+    flex-wrap: wrap; /* 화면이 줄어들면 카드가 아래로 배치됨 */
+    width: 100%;
+    max-width: 1200px; /* 최대 너비 설정 */
+    margin-top: 3rem;
 }
 
 /* 스크롤바 스타일 (선택 사항) */
@@ -23,14 +34,14 @@
 }
 /* 카드 스타일 */
 .card {
-    position: relative; /* 이미지를 아래로 배치하기 위해 사용 */
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* 텍스트를 카드 상단에 배치 */
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
-    width: 1.5rem;
-    height: 450px;
+    width: 320px; /* 카드 크기 조정 */
+    height: 500px;
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -38,7 +49,6 @@
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
 }
-
 /* 카드 호버 효과 */
 .card:hover {
     transform: translateY(-5px);

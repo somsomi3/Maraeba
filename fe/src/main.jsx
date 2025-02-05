@@ -6,7 +6,7 @@ import store from "./store/store";
 import "./index.css";
 import App from "./App.jsx";
 import ProtectedLayout from "./components/log/ProtectedLayout"; // ✅ 로그인 할 때만 접근가능하도록록
-import { FindId, FindPw, Login, Register } from "./features/auth";
+import { FindId, FindPw, Login, Register,KakaoCallback } from "./features/auth";
 import { Main, MultiMain, SingleMain } from "./features/mainpage";
 import {
     PronsFirst,
@@ -24,11 +24,13 @@ import Profile from "./features/user/Profile";
 
 
 
+
 // 라우트 정의
 const router = createBrowserRouter(
     createRoutesFromElements(
         <>
             <Route path="/" element={<App />} />
+            <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/find-id" element={<FindId />} />
