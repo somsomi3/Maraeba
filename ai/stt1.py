@@ -27,7 +27,7 @@ def extract_phoneme_vectors(file_path):
 
 # 두 개의 음소 벡터 추출
 phoneme1 = extract_phoneme_vectors("audio/아1.wav")
-phoneme2 = extract_phoneme_vectors("audio/아2.wav")
+phoneme2 = extract_phoneme_vectors("audio/이.wav")
 
 # ✅ DTW를 사용하여 발음 유사도 계산 (음소 벡터 기반 비교)
 alignment = dtw(phoneme1, phoneme2, dist_method=euclidean)
@@ -36,6 +36,6 @@ dtw_dist = alignment.distance / alignment.index1.shape[0]  # 길이 정규화
 print(dtw_dist)
 # ✅ DTW 거리 → 유사도로 변환 (퍼센트 값)
 MAX_DTW_DIST = 100  # 🔹 DTW 거리 기준 최대값 조정
-dtw_similarity = max(0, 100 - (dtw_dist / MAX_DTW_DIST) * 100)
+# dtw_similarity = max(0, 100 - (dtw_dist / MAX_DTW_DIST) * 100)
 
-print(f"🔹 발음 유사도 (DTW 거리 기반 - 음소 확률 벡터): {dtw_similarity:.2f}%")
+# print(f"🔹 발음 유사도 (DTW 거리 기반 - 음소 확률 벡터): {dtw_similarity:.2f}%")

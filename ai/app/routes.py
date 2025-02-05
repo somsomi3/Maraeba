@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, request, jsonify, send_file
 from flask_cors import CORS
-from stt import recognize_speech_from_file
+from stt import recognize_speech_from_file, recognize_en
 from tts import text_to_speech
 from ipa import word_to_ipa
 from similarity import calculate_similarities
@@ -102,3 +102,40 @@ def stt_endpoint():
         os.remove(file_path)
 
         return jsonify({"recognized_text": recognized_text})
+    
+# 한 음절 비교
+@api_bp.route('/compare/short', methods=['POST'])
+def compare_short():
+
+    # request 누락시
+    if 'file' not in request.files or 'text' not in request.form:
+        return jsonify({"error": "File or text missing from request"}), 400
+
+    file = request.files['file']
+    correct_text = "".join(request.form['text'].split())
+
+    if file.filename == '' or not correct_text:
+        return jsonify({"error": "Empty file or text provided"}), 400
+
+    try:
+        # 음성파일 임시 저장
+        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+        file.save(file_path)
+
+        # 인식된 영어
+        recognized_text = recognize_en(file_path)
+
+        # 제시된 한글에 대한 영어랑 비교가 필요함
+
+        answer = False
+        if(recognized_text == correct_text):
+            answer = True
+        
+        # 임시 음성파일 삭제
+        os.remove(file_path)
+        
+        return jsonify({
+            "correct": recognized_text
+        })
+    except Exception as e:
+        return jsonify({"error": f"Error during comparison: {str(e)}"}), 500

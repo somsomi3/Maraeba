@@ -1,8 +1,8 @@
 import requests
 
 # Flask 서버의 URL
-url = "http://localhost:5000/ai/compare"
-file_path = "./test/audio.wav"
+url = "http://localhost:5000/ai/compare/short"
+file_path = "./audio/에1.wav"
 correct_text = "에"
 
 # 요청 데이터 준비
