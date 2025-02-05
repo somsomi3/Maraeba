@@ -6,7 +6,7 @@ import { loginApi } from "../../utils/api"; // ✅ 로그인 API 변경
 import "./index.css";
 import logo from "../../assets/logo.png";
 
-import KakaoLoginButton from "./KakaoLogin";
+import KakaoLoginButton from "./KakaoLoginButton";
 
 const Login = () => {
   const [formData, setFormData] = useState({ user_id: "", password: "" });

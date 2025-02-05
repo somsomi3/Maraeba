@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import { flaskApi } from "../../utils/api";
-import "./GameRecordButton.css";
+import "./GameRecordBtn.css";
 import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
 
-const RecordButton = ({ onAccuracyUpdate, pronunciation }) => {
+const GameRecordBtn = ({ onAccuracyUpdate, pronunciation }) => {
     const [isRecording, setIsRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
@@ -12,9 +12,7 @@ const RecordButton = ({ onAccuracyUpdate, pronunciation }) => {
     // 🔴 **녹음 시작**
     const startRecording = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                audio: true,
-            });
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             mediaRecorderRef.current = new MediaRecorder(stream);
             audioChunksRef.current = [];
 
@@ -30,16 +28,10 @@ const RecordButton = ({ onAccuracyUpdate, pronunciation }) => {
                     return;
                 }
 
-                // 원본 WebM Blob
-                const audioBlob = new Blob(audioChunksRef.current, {
-                    type: "audio/webm",
-                });
+                const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
                 console.log("📂 생성된 오디오 Blob:", audioBlob);
 
-                // ✅ WAV로 변환
                 const wavBlob = await convertToWav(audioBlob);
-
-                // 🎤 **오디오 파일 분석 요청**
                 await analyzePronunciation(wavBlob);
             };
 
@@ -52,10 +44,7 @@ const RecordButton = ({ onAccuracyUpdate, pronunciation }) => {
 
     // ⏹ **녹음 중지**
     const stopRecording = () => {
-        if (
-            mediaRecorderRef.current &&
-            mediaRecorderRef.current.state !== "inactive"
-        ) {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
             mediaRecorderRef.current.stop();
             setIsRecording(false);
         }
@@ -64,9 +53,7 @@ const RecordButton = ({ onAccuracyUpdate, pronunciation }) => {
     // ✅ **WebM -> WAV 변환 함수**
     const convertToWav = async (blob) => {
         const arrayBuffer = await blob.arrayBuffer();
-        const audioBuffer = await new AudioContext().decodeAudioData(
-            arrayBuffer
-        );
+        const audioBuffer = await new AudioContext().decodeAudioData(arrayBuffer);
 
         return encodeWav(audioBuffer);
     };
@@ -109,51 +96,58 @@ const RecordButton = ({ onAccuracyUpdate, pronunciation }) => {
             }
         }
 
-        const wavBlob = new Blob([wavHeader, new DataView(pcmData.buffer)], {
-            type: "audio/wav",
-        });
+        const wavBlob = new Blob([wavHeader, new DataView(pcmData.buffer)], { type: "audio/wav" });
         return wavBlob;
     };
 
-    // 📡 **AI 서버로 음성 데이터 전송**
-    const analyzePronunciation = async (wavBlob) => {
-        try {
-            const formData = new FormData();
-            formData.append("file", wavBlob, "recording.wav"); // ✅ WAV 파일 추가
-            formData.append("text", pronunciation || "아아"); // ✅ 목표 발음 추가
+// 📡 **AI 서버로 음성 데이터 전송**
+const analyzePronunciation = async (wavBlob) => {
+    try {
+        const formData = new FormData();
+        formData.append("file", wavBlob, "recording.wav");
+        formData.append("text", pronunciation || "아아");
 
-            console.log("🎤 전송할 FormData:");
-            for (let pair of formData.entries()) {
-                console.log(`${pair[0]}:`, pair[1]);
-            }
-
-            const response = await flaskApi.post("/ai/compare", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-
-            console.log("✅ AI 분석 응답:", response.data);
-
-            // 🔍 정확도 변환 (`levenshtein` 값 사용)
-            // 🔍 정확도 변환 (`levenshtein`, `jaro_winkler`, `custom_similarity_score`)
-            const levenshtein = Math.round((response.data.similarities.levenshtein || 0) * 100);
-            const jaroWinkler = Math.round((response.data.similarities.jaro_winkler || 0) * 100);
-            const customScore = Math.round((response.data.similarities.custom_similarity || 0) * 100);
-
-            // ✅ **부모 컴포넌트로 세 개의 정확도 데이터를 전달**
-            onAccuracyUpdate(levenshtein, jaroWinkler, customScore);
-        } catch (error) {
-            console.error("❌ AI 요청 오류:", error.response ? error.response.data : error);
+        console.log("🎤 전송할 FormData:");
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}:`, pair[1]);
         }
-    };
+
+        const response = await flaskApi.post("/ai/compare", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        console.log("✅ AI 분석 응답:", response.data);
+
+        // 🔍 정확도 변환
+        const levenshtein = Math.round((response.data.similarities.levenshtein || 0) * 100);
+        const jaroWinkler = Math.round((response.data.similarities.jaro_winkler || 0) * 100);
+        const customScore = Math.round((response.data.similarities.custom_similarity || 0) * 100);
+
+        const recognizedText = response.data.recognized_text;
+
+        // ✅ 정확도와 관계없이 gameData 업데이트, 정확도도 반영
+        if (typeof onAccuracyUpdate === "function") {
+            onAccuracyUpdate({
+                recognizedText,
+                accuracy: {
+                    levenshtein,
+                    jaroWinkler,
+                    customScore,
+                },
+            });
+        } else {
+            console.warn("⚠️ onAccuracyUpdate 함수가 존재하지 않음.");
+        }
+    } catch (error) {
+        console.error("❌ AI 요청 오류:", error.response ? error.response.data : error);
+    }
+};
 
     return (
-        <button
-            className="record-button"
-            onClick={isRecording ? stopRecording : startRecording}
-        >
+        <button className="record-button" onClick={isRecording ? stopRecording : startRecording}>
             <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" />
         </button>
     );
 };
 
-export default RecordButton;
+export default GameRecordBtn;
