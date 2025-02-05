@@ -10,6 +10,9 @@ import com.be.domain.rooms.SignalingHandler;
 import com.be.domain.rooms.AudioWebSocketHandler;
 import com.be.common.auth.WebSocketAuthInterceptor;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
@@ -36,7 +39,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
 			.addInterceptors(new WebSocketAuthInterceptor(tokenService)) // ✅ 인증 인터셉터 추가
 			.setAllowedOrigins("*");
 
-		System.out.println("✅ WebSocket 핸들러 등록 완료: /WebRTC/signaling (JWT 인증 포함)");
-		System.out.println("✅ WebSocket 핸들러 등록 완료: /WebRTC/audio (JWT 인증 포함)");
+		log.info("✅ WebSocket 핸들러 등록 완료: /WebRTC/signaling (JWT 인증 포함)");
+		log.info("✅ WebSocket 핸들러 등록 완료: /WebRTC/audio (JWT 인증 포함)");
+
 	}
 }

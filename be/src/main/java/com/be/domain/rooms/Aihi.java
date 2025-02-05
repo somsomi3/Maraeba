@@ -9,6 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class Aihi {
 
@@ -27,7 +30,7 @@ public class Aihi {
 	 * @return 변환된 텍스트
 	 */
 	public String speechToText(FileSystemResource file) {
-		System.out.println("🎙️ STT 변환 요청: " + file.getFilename());
+		log.info("🎙️ STT 변환 요청: {}", file.getFilename());
 
 		MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
 		bodyBuilder.part("file", file)
@@ -47,11 +50,11 @@ public class Aihi {
 			JsonNode rootNode = objectMapper.readTree(response);
 			String recognizedText = rootNode.path("recognized_text").asText();
 
-			System.out.println("✅ STT 변환 결과: " + recognizedText);
+			log.info("✅ STT 변환 결과: {}", recognizedText);
 			return recognizedText.isEmpty() ? "변환 실패" : recognizedText;
 
 		} catch (Exception e) {
-			System.err.println("❌ STT 요청 실패: " + e.getMessage());
+			log.error("❌ STT 요청 실패: {}", e.getMessage());
 			return "STT 변환 중 오류 발생";
 		}
 	}

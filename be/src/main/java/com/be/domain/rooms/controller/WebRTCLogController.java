@@ -1,10 +1,7 @@
 package com.be.domain.rooms.controller;
 
-import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.be.db.entity.WebRTCLog;
 import com.be.db.repository.WebRTCLogRepository;
 import com.be.domain.rooms.WebRTCLogDto;
-import com.be.domain.rooms.service.WebRTCLogService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/webrtc")
 @RequiredArgsConstructor
@@ -34,8 +33,8 @@ public class WebRTCLogController {
 		@RequestParam(required = false) Long userId,
 		@RequestParam(required = false) String callId) { // ✅ 쿼리 파라미터 추가
 
-		System.out.println("📌 요청된 userId: " + userId);
-		System.out.println("📌 요청된 callId: " + callId);
+		log.info("📌 요청된 userId: {}", userId);
+		log.info("📌 요청된 callId: {}", callId);
 
 		List<WebRTCLog> logs;
 		if (userId != null) {

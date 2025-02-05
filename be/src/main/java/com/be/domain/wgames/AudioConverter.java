@@ -2,10 +2,12 @@ package com.be.domain.wgames;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class AudioConverter {
 
@@ -31,7 +33,7 @@ public class AudioConverter {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                log.info("{}", line);
             }
         }
 

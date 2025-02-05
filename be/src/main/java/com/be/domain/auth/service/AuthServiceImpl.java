@@ -24,7 +24,9 @@ import com.be.domain.auth.response.TokenRefreshResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -102,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
 
 		//accessToken 및 refreshToken 발급
 		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
-		System.out.println("토큰 발급");
+		log.info("토큰 발급");
 		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
 			user.getId(), TokenType.REFRESH_TOKEN);
 
