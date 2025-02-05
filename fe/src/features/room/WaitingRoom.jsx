@@ -13,7 +13,7 @@ const WaitingRoom = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await springApi.get("/sessions/list");
+                const response = await springApi.get("/rooms/list");
                 setRooms(response.data);
             } catch (error) {
                 console.error("방 목록을 불러오는 중 오류 발생:", error);
@@ -44,7 +44,7 @@ const WaitingRoom = () => {
         }
 
         try {
-            await springApi.post(`/sessions/join/${selectedRoom.id}`, { room_password: password });
+            await springApi.post(`/rooms/join/${selectedRoom.id}`, { room_password: password });
             navigate(`/session/room/${selectedRoom.id}`);
         } catch (error) {
             alert(error.response?.data?.message || "방 참가에 실패했습니다.");
@@ -55,7 +55,7 @@ const WaitingRoom = () => {
         <div className="waiting-room">
             {/* 방 만들기 및 입장하기 버튼 */}
             <div className="room-actions">
-                <button className="create-room-btn" onClick={() => navigate("/session/create-room")}>
+                <button className="create-room-btn" onClick={() => navigate("/room/create")}>
                     방 만들기
                 </button>
                 <button
@@ -64,6 +64,9 @@ const WaitingRoom = () => {
                     disabled={!selectedRoom}
                 >
                     입장하기
+                </button>
+                <button className="create-room-btn" onClick={() => navigate("/room/webrtc")}>
+                    Webrtc
                 </button>
             </div>
 
@@ -74,30 +77,30 @@ const WaitingRoom = () => {
                 ) : rooms.length > 0 ? (
                     <table className="room-table">
                         <thead>
-                            <tr>
-                                <th>번호</th>
-                                <th>방 제목</th>
-                                <th>상태</th>
-                                <th>인원</th>
-                                <th>비밀번호</th>
-                            </tr>
+                        <tr>
+                            <th>번호</th>
+                            <th>방 제목</th>
+                            <th>상태</th>
+                            <th>인원</th>
+                            <th>비밀번호</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {rooms.map((room, index) => (
-                                <tr
-                                    key={room.id}
-                                    className={selectedRoom?.id === room.id ? "selected" : ""}
-                                    onClick={() => handleSelectRoom(room)}
-                                >
-                                    <td>{index + 1}</td>
-                                    <td>{room.title}</td>
-                                    <td className={room.status === "playing" ? "playing" : "waiting"}>
-                                        {room.status === "playing" ? "PLAYING" : "WAITING"}
-                                    </td>
-                                    <td>{room.current_players}/{room.max_players}</td>
-                                    <td>{room.room_password ? "🔒" : "🔓"}</td>
-                                </tr>
-                            ))}
+                        {rooms.map((room, index) => (
+                            <tr
+                                key={room.id}
+                                className={selectedRoom?.id === room.id ? "selected" : ""}
+                                onClick={() => handleSelectRoom(room)}
+                            >
+                                <td>{index + 1}</td>
+                                <td>{room.title}</td>
+                                <td className={room.status === "playing" ? "playing" : "waiting"}>
+                                    {room.status === "playing" ? "PLAYING" : "WAITING"}
+                                </td>
+                                <td>{room.current_players}/{room.max_players}</td>
+                                <td>{room.room_password ? "🔒" : "🔓"}</td>
+                            </tr>
+                        ))}
                         </tbody>
                     </table>
                 ) : (
