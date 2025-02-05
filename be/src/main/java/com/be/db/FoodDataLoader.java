@@ -5,9 +5,12 @@ import com.be.db.entity.FoodItem;
 import com.be.db.repository.FoodGameRepository;
 import com.be.db.repository.FoodItemRepository;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class FoodDataLoader {
 
@@ -20,7 +23,7 @@ public class FoodDataLoader {
     @PostConstruct
     public void init() {
 
-        System.out.println("[FoodDataLoader]데이터 저장!");
+        log.info("데이터 저장!");
 
         String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
 

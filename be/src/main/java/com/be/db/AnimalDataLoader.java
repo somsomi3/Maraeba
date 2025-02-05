@@ -3,10 +3,13 @@ package com.be.db;
 import com.be.db.entity.*;
 import com.be.db.repository.*;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
 
+@Slf4j
 @Component
 public class AnimalDataLoader {
     @Autowired
@@ -22,7 +25,7 @@ public class AnimalDataLoader {
     public void init() {
 
         String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
-        System.out.println("[AnimalDataLoader]데이터 저장!");
+        log.info(" 데이터 저장!");
 
         // 1️⃣ animal_game 테이블에 ID=1인 데이터 추가
         AnimalGame animalGame = animalGameRepository.findById(1).orElseGet(() ->
@@ -54,6 +57,6 @@ public class AnimalDataLoader {
             animalCorrectRepository.saveAll(correctAnswers);
         }
 
-        System.out.println("[AnimalDataLoader]데이터 저장 완료!");
+        log.info("데이터 저장 완료!");
     }
 }

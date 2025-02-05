@@ -9,6 +9,8 @@ import com.be.domain.wgames.findAnimals.request.AnimalCorrectRequest;
 import com.be.domain.wgames.findAnimals.response.AnimalAnswerResponse;
 import com.be.domain.wgames.findAnimals.response.AnimalResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FindGameServiceImpl implements FindGameService {
@@ -54,12 +57,13 @@ public class FindGameServiceImpl implements FindGameService {
         int imageNumber = request.getImageNumber();
         List<String> answerList = request.getAnswerList();    //이미 맞춘 정답
 
-        System.out.println("이미 맞춘 정답 리스트");
+        log.info("이미 맞춘 정답 리스트");
         if (answerList != null) {
             for (String s : answerList) {
-                System.out.println(s);
+                log.info("{}", s);
+
             }
-        } else System.out.println("비었음");
+        } else log.info("비었음");
 
         // 저장 경로 및 파일 이름 설정
         String uploadDir = "C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\";
@@ -80,8 +84,7 @@ public class FindGameServiceImpl implements FindGameService {
         convertWebMToWav.convertWebMToWav(fullPathName + ".webm", fullPathName + ".wav");
         String text = aiTest.speechToText(new FileSystemResource(fullPathName + ".wav"));
 
-        System.out.println("입력된 음성: " + text);
-
+        log.info("입력된 음성: {}", text);
 
         //이미 정답을 맞춘 경우 (중복)
         if (answerList != null && answerList.contains(text)) {
@@ -91,9 +94,9 @@ public class FindGameServiceImpl implements FindGameService {
 
         //정답을 맞춘 경우
         List<String> list = animalCorrectRepository.findAnimalNamesByGameId(imageNumber);
-        System.out.println("사이즈: " + list.size());
+        log.info("사이즈: {}", list.size());
         for (String s : list) {
-            System.out.println(s);
+            log.info("{}", s);
         }
         if (list.contains(text)) {
             response.setIfCorrect(true);

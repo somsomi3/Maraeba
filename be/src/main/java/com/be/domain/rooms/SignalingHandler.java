@@ -12,6 +12,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class SignalingHandler extends TextWebSocketHandler {
 
@@ -25,12 +28,12 @@ public class SignalingHandler extends TextWebSocketHandler {
 
 		if (userId != null) {
 			rooms.put(userId, session);
-			System.out.println("✅ WebRTC WebSocket 연결됨 - 사용자 ID: " + userId);
+			log.info("✅ WebRTC WebSocket 연결됨 - 사용자 ID: {}", userId);
 			// ✅ 사용자 ID를 WebSocket 메시지로 클라이언트에게 전송
 			String userIdMessage = "{\"type\": \"userId\", \"userId\": " + userId + "}";
 			session.sendMessage(new TextMessage(userIdMessage));
 		} else {
-			System.out.println("❌ WebRTC 연결 실패 - 사용자 ID 없음");
+			log.info("❌ WebRTC 연결 실패 - 사용자 ID 없음");
 			session.close(CloseStatus.NOT_ACCEPTABLE);
 		}
 	}
@@ -44,7 +47,7 @@ public class SignalingHandler extends TextWebSocketHandler {
 		String sender = jsonMessage.has("sender") ? jsonMessage.get("sender").asText() : "Unknown";
 		String text = jsonMessage.has("text") ? jsonMessage.get("text").asText() : "";
 
-		System.out.println("📩 받은 메시지: " + sender + " → " + text);
+		log.info("📩 받은 메시지: {} → {}", sender, text);
 
 		for (WebSocketSession s : rooms.values()) {
 			if (s != null && s.isOpen() && !s.getId().equals(room.getId())) {
@@ -54,7 +57,7 @@ public class SignalingHandler extends TextWebSocketHandler {
 
 		// // ✅ 빈 메시지 또는 유효하지 않은 sender는 처리하지 않음
 		// if ("Unknown".equals(sender) || text.isBlank()) {
-		// 	System.out.println("⚠️ 메시지 전송 취소 - sender 또는 text가 유효하지 않음");
+		// 	log.info("⚠️ 메시지 전송 취소 - sender 또는 text가 유효하지 않음");
 		// 	return;
 		// }
 		//
@@ -72,9 +75,9 @@ public class SignalingHandler extends TextWebSocketHandler {
 
 		if (userId != null) {
 			rooms.remove(userId);
-			System.out.println("🔴 WebRTC WebSocket 연결 종료 - 사용자 ID: " + userId);
+			log.info("🔴 WebRTC WebSocket 연결 종료 - 사용자 ID: {}", userId);
 		} else {
-			System.out.println("🔴 WebRTC WebSocket 연결 종료 - ID 없음");
+			log.info("🔴 WebRTC WebSocket 연결 종료 - ID 없음");
 		}
 	}
 
@@ -84,9 +87,9 @@ public class SignalingHandler extends TextWebSocketHandler {
 
 		if (userId != null) {
 			rooms.remove(userId);
-			System.out.println("❌ WebSocket 오류 발생 - 사용자 ID: " + userId + " / 오류: " + exception.getMessage());
+			log.info("❌ WebSocket 오류 발생 - 사용자 ID: {} / 오류: {}", userId, exception.getMessage());
 		} else {
-			System.out.println("❌ WebSocket 오류 발생 - 사용자 ID 없음 / 오류: " + exception.getMessage());
+			log.info("❌ WebSocket 오류 발생 - 사용자 ID 없음 / 오류: {}", exception.getMessage());
 		}
 
 		session.close(CloseStatus.SERVER_ERROR);

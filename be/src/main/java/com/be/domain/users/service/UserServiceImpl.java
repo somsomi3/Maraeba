@@ -13,7 +13,9 @@ import com.be.domain.users.request.UserUpdateRequest;
 import com.be.domain.users.response.GetCurrentUserResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -22,7 +24,7 @@ public class UserServiceImpl implements UserService {
 	private final PasswordEncoder passwordEncoder;
 
 	private User findUserById(long id) {
-		System.out.println("id : "+id);
+		log.info("id : {}", id);
 		return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 	}
 

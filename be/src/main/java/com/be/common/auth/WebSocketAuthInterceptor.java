@@ -9,6 +9,9 @@ import java.util.Map;
 
 import com.be.common.auth.service.TokenService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class WebSocketAuthInterceptor implements HandshakeInterceptor {
 
 	private final TokenService tokenService;
@@ -22,25 +25,25 @@ public class WebSocketAuthInterceptor implements HandshakeInterceptor {
 		ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) {
 
 		String token = extractTokenFromRequest(request);
-		System.out.println("🔍 WebSocket Handshake 시도, 받은 토큰: " + token);
+		log.info("🔍 WebSocket Handshake 시도, 받은 토큰: {}", token);
 
 		if (token == null) {
-			System.out.println("❌ WebSocket 인증 실패: 토큰이 전달되지 않음");
+			log.info("❌ WebSocket 인증 실패: 토큰이 전달되지 않음");
 			return false;
 		}
 
 		if (!tokenService.validateToken(token)) {
-			System.out.println("❌ WebSocket 인증 실패: 유효하지 않은 토큰");
+			log.info("❌ WebSocket 인증 실패: 유효하지 않은 토큰");
 			return false;
 		}
 
 		try {
 			Long userId = tokenService.extractUserIdFromToken(token);
 			attributes.put("user", userId); // 세션에 사용자 ID 저장
-			System.out.println("✅ WebSocket 인증 성공, 사용자 ID: " + userId);
+			log.info("✅ WebSocket 인증 성공, 사용자 ID: {}", userId);
 			return true;
 		} catch (Exception e) {
-			System.out.println("❌ WebSocket 인증 실패: 사용자 ID 추출 중 오류 발생 - " + e.getMessage());
+			log.info("❌ WebSocket 인증 실패: 사용자 ID 추출 중 오류 발생 - {}", e.getMessage());
 			return false;
 		}
 	}

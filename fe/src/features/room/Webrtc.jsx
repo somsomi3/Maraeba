@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ useNavigate 사용
-
-const WebRTC = () => {
+const API_URL = "http://localhost:8081";
+const Webrtc = () => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
     const peerConnectionRef = useRef(null);
@@ -59,7 +59,7 @@ const WebRTC = () => {
         //         }
 
         webSocketRef.current = new WebSocket(
-            `ws://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`
         );
 
         webSocketRef.current.onopen = () => {
@@ -249,4 +249,4 @@ const styles = {
     },
 };
 
-export default WebRTC;
+export default Webrtc;

@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/cook-game")
 public class CookGameController {
@@ -22,19 +25,20 @@ public class CookGameController {
 
     @PostMapping("/start-game")
     public ResponseEntity<FoodResponse> startGame() throws IOException {
-        System.out.println("게임 시작 요청 도착");
+        log.info("게임 시작 요청 도착");
         FoodResponse foodResponse = foodGameService.pickFood();
-        System.out.println("선택된 음식: " + foodResponse.getFoodName());
-        System.out.println("아이템 목록: " + foodResponse.getFoodItems());
+        log.info("선택된 음식: {}", foodResponse.getFoodName());
+        log.info("아이템 목록: {}", foodResponse.getFoodItems());
         return ResponseEntity.ok(foodResponse);
     }
 
     @PostMapping("/is-correct")
     public ResponseEntity<FoodAnswerResponse> isCorrect(@ModelAttribute AnswerCorrectRequest request) throws IOException {
-        System.out.println("여기 왔음!");
-        System.out.println(request.getFoodName());
-        System.out.println(request.getItem1());
-        System.out.println(request.getItem2());
+        log.info("여기 왔음!");
+        log.info("Food Name: {}", request.getFoodName());
+        log.info("Item1: {}", request.getItem1());
+        log.info("Item2: {}", request.getItem2());
+
         FoodAnswerResponse answerResponse = foodGameService.isCorrect(request);
         return ResponseEntity.ok(answerResponse);
     }

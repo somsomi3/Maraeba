@@ -9,15 +9,16 @@ import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.io.File;
+import lombok.extern.slf4j.Slf4j;
+
 
 @Service
+@Slf4j
 public class AiTest {
 
     public String speechToText(FileSystemResource file) throws JsonProcessingException {
-        System.out.println("STT 테스트");
+        log.info("STT 테스트");
         String url = "http://3.39.252.223:5000/ai/stt"; // 요청을 보낼 URL
 
         // WebClient 생성
@@ -82,7 +83,7 @@ public class AiTest {
                 }).block();
 
         // 응답 출력
-        System.out.println(answer);
+        log.info("{}", answer);
 
     }
 }

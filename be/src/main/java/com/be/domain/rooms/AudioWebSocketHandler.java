@@ -10,12 +10,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+@Slf4j
 @Component
 public class AudioWebSocketHandler extends BinaryWebSocketHandler {
 
@@ -27,7 +28,7 @@ public class AudioWebSocketHandler extends BinaryWebSocketHandler {
 
 	@Override
 	protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws IOException {
-		System.out.println("🎙️ 오디오 데이터 수신");
+		log.info("🎙️ 오디오 데이터 수신");
 
 		// ✅ 1. 오디오 파일 저장
 		File audioFile = new File("audio.wav");

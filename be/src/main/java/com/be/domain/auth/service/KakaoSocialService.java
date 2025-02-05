@@ -24,7 +24,9 @@ import com.be.domain.auth.dto.SocialUser;
 import com.be.domain.auth.response.LoginResponse;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoSocialService implements SocialService {
@@ -116,7 +118,7 @@ public class KakaoSocialService implements SocialService {
 
 		//accessToken 및 refreshToken 발급
 		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
-		System.out.println("토큰 발급");
+		log.info("토큰 발급");
 		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
 			user.getId(), TokenType.REFRESH_TOKEN);
 
@@ -141,7 +143,7 @@ public class KakaoSocialService implements SocialService {
 				.toLocalDateTime());
 			refreshTokenRepository.save(refreshToken);
 		}
-		System.out.println("accessToken: " + accessToken + ", refreshToken: " + refreshToken.getToken());
+		log.info("accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
 		return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
 	}
 }
