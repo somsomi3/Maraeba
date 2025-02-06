@@ -129,7 +129,7 @@ const Webrtc = () => {
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [{
-                urls: "turn:3.39.252.223?:transport=tcp",
+                urls: "turn:3.39.252.223:3478?transport=tcp",
                 username: `${import.meta.env.VITE_USERNAME_URL}`,
                 credential: `${import.meta.env.VITE_PASSWORD_URL}`,
             },],
