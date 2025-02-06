@@ -21,6 +21,7 @@ import com.be.common.model.response.BaseResponseBody;
 import com.be.domain.auth.dto.SocialUserDTO;
 import com.be.domain.auth.dto.UserIdResponseDto;
 import com.be.domain.auth.request.FindUserIdRequest;
+import com.be.domain.auth.request.ForgotPasswordRequest;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.AccessTokenResponse;
@@ -242,12 +243,41 @@ public class AuthController {
 	}
 
 	@PostMapping("/find-id")
-	public ResponseEntity<? extends BaseResponseBody> findUserIds(@RequestBody FindUserIdRequest request) {
+	@Operation(summary = "아이디 찾기", description = "이메일을 입력하여 해당 이메일과 연결된 사용자 ID 목록을 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "유저 아이디 발견",
+			content = @Content(schema = @Schema(implementation = FindUserIdsResponse.class))),
+		@ApiResponse(responseCode = "404", description = "해당 이메일의 유저가 없습니다",
+			content = @Content(schema = @Schema(implementation = BaseResponseBody.class)))
+	})
+	public ResponseEntity<? extends BaseResponseBody> findUserIds(
+		@RequestBody @Parameter(description = "아이디 찾기를 위한 이메일 요청 데이터", required = true)
+		FindUserIdRequest request) {
+
 		List<UserIdResponseDto> userIds = authService.findUserIdsByEmail(request);
+
 		if (userIds.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseBody.of("해당 이메일의 유저가 업습니다",404));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(BaseResponseBody.of("해당 이메일의 유저가 없습니다", 404));
 		}
-		return ResponseEntity.ok(FindUserIdsResponse.of("유저 아이디 발견",200, userIds));
+
+		return ResponseEntity.ok(FindUserIdsResponse.of("유저 아이디 발견", 200, userIds));
+	}
+
+	@PostMapping("/forgot-password")
+	@Operation(summary = "비밀번호 찾기", description = "사용자의 아이디와 이메일을 입력하여 임시 비밀번호를 발급받습니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "임시 비밀번호 전송 완료",
+			content = @Content(schema = @Schema(implementation = BaseResponseBody.class))),
+		@ApiResponse(responseCode = "404", description = "아이디 또는 이메일이 일치하는 사용자가 없습니다",
+			content = @Content(schema = @Schema(implementation = BaseResponseBody.class)))
+	})
+	public ResponseEntity<BaseResponseBody> forgotPassword(
+		@RequestBody @Parameter(description = "비밀번호 찾기 요청 데이터", required = true)
+		ForgotPasswordRequest request) {
+
+		authService.sendTemporaryPassword(request);
+		return ResponseEntity.ok(BaseResponseBody.of("임시 비밀번호를 이메일로 전송했습니다.", 200));
 	}
 
 }

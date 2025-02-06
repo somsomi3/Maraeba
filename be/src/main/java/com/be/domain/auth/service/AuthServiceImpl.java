@@ -2,6 +2,7 @@ package com.be.domain.auth.service;
 
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,12 +14,14 @@ import com.be.common.auth.service.TokenService;
 import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.PasswordMismatchException;
 import com.be.common.exception.UserNotFoundException;
+import com.be.common.util.PasswordGenerator;
 import com.be.db.entity.RefreshToken;
 import com.be.db.entity.User;
 import com.be.db.repository.RefreshTokenRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.auth.dto.UserIdResponseDto;
 import com.be.domain.auth.request.FindUserIdRequest;
+import com.be.domain.auth.request.ForgotPasswordRequest;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.CheckUserIdResponse;
@@ -38,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenService tokenService;
+	private final EmailService emailService;
 
 	/**
 	 * 회원가입
@@ -211,5 +215,29 @@ public class AuthServiceImpl implements AuthService {
 				user.getProvider()
 			))
 			.collect(Collectors.toList());
+	}
+
+	public void sendTemporaryPassword(ForgotPasswordRequest request) {
+		Optional<User> userOpt = userRepository.findByUserIdAndEmail(request.getUserId(), request.getEmail());
+
+		if (userOpt.isEmpty()) {
+			throw new UserNotFoundException("아이디 또는 이메일이 일치하는 사용자가 없습니다.");
+		}
+
+		User user = userOpt.get();
+
+		// 1. 임시 비밀번호 생성
+		String tempPassword = PasswordGenerator.generateTemporaryPassword();
+
+		// 2. 비밀번호 암호화 후 저장
+		user.setPassword(passwordEncoder.encode(tempPassword));
+		userRepository.save(user);
+
+		// 3. 이메일로 임시 비밀번호 전송
+		String subject = "임시 비밀번호 안내";
+		String message = "임시 비밀번호는 다음과 같습니다: " + tempPassword +
+			"\n로그인 후 비밀번호를 변경하세요.";
+
+		emailService.sendEmail(user.getEmail(), subject, message);
 	}
 }

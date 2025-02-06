@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.be.domain.auth.dto.UserIdResponseDto;
 import com.be.domain.auth.request.FindUserIdRequest;
+import com.be.domain.auth.request.ForgotPasswordRequest;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.CheckUserIdResponse;
@@ -20,4 +21,5 @@ public interface AuthService {
 	TokenRefreshResponse tokenRefresh(String refreshToken);
 	void logout(HttpServletRequest httpServletRequest);
 	List<UserIdResponseDto> findUserIdsByEmail(FindUserIdRequest request);
+	void sendTemporaryPassword(ForgotPasswordRequest request);
 }
