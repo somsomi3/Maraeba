@@ -3,11 +3,24 @@ import { flaskApi } from "../../utils/api";
 import "./GameRecordBtn.css";
 import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
+import PropTypes from "prop-types";
 
-const GameRecordBtn = ({ onAccuracyUpdate, pronunciation }) => {
+const GameRecordBtn = ({ onAccuracyUpdate, pronunciation, onAudioCapture }) => {
     const [isRecording, setIsRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
+
+    GameRecordBtn.propTypes = {
+        onAccuracyUpdate: PropTypes.func, // 필수 X (AI 인식 결과 업데이트)
+        pronunciation: PropTypes.string,  // 필수 O
+        gameData: PropTypes.shape({
+            foodName: PropTypes.string,
+            item1: PropTypes.string,
+            item2: PropTypes.string,
+        }),
+        audioBlob: PropTypes.instanceOf(Blob),
+        onAudioCapture: PropTypes.func,  // 선택적 props로 변경
+    };
 
     // 🔴 **녹음 시작**
     const startRecording = async () => {
@@ -33,6 +46,11 @@ const GameRecordBtn = ({ onAccuracyUpdate, pronunciation }) => {
 
                 const wavBlob = await convertToWav(audioBlob);
                 await analyzePronunciation(wavBlob);
+
+                // ✅ 부모 컴포넌트에 WAV 파일 전달
+                if (onAudioCapture) {
+                    onAudioCapture(wavBlob);
+                }
             };
 
             mediaRecorderRef.current.start();
@@ -54,7 +72,6 @@ const GameRecordBtn = ({ onAccuracyUpdate, pronunciation }) => {
     const convertToWav = async (blob) => {
         const arrayBuffer = await blob.arrayBuffer();
         const audioBuffer = await new AudioContext().decodeAudioData(arrayBuffer);
-
         return encodeWav(audioBuffer);
     };
 
@@ -96,52 +113,41 @@ const GameRecordBtn = ({ onAccuracyUpdate, pronunciation }) => {
             }
         }
 
-        const wavBlob = new Blob([wavHeader, new DataView(pcmData.buffer)], { type: "audio/wav" });
-        return wavBlob;
+        return new Blob([wavHeader, new DataView(pcmData.buffer)], { type: "audio/wav" });
     };
 
-// 📡 **AI 서버로 음성 데이터 전송**
-const analyzePronunciation = async (wavBlob) => {
-    try {
-        const formData = new FormData();
-        formData.append("file", wavBlob, "recording.wav");
-        formData.append("text", pronunciation || "아아");
+    // 📡 **AI 서버로 음성 데이터 전송**
+    const analyzePronunciation = async (wavBlob) => {
+        try {
+            const formData = new FormData();
+            formData.append("file", wavBlob, "recording.wav");
+            formData.append("text", pronunciation || "아아");
 
-        console.log("🎤 전송할 FormData:");
-        for (let pair of formData.entries()) {
-            console.log(`${pair[0]}:`, pair[1]);
-        }
+            console.log("🎤 전송할 FormData:");
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}:`, pair[1]);
+            }
 
-        const response = await flaskApi.post("/ai/compare", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        console.log("✅ AI 분석 응답:", response.data);
-
-        // 🔍 정확도 변환
-        const levenshtein = Math.round((response.data.similarities.levenshtein || 0) * 100);
-        const jaroWinkler = Math.round((response.data.similarities.jaro_winkler || 0) * 100);
-        const customScore = Math.round((response.data.similarities.custom_similarity || 0) * 100);
-
-        const recognizedText = response.data.recognized_text;
-
-        // ✅ 정확도와 관계없이 gameData 업데이트, 정확도도 반영
-        if (typeof onAccuracyUpdate === "function") {
-            onAccuracyUpdate({
-                recognizedText,
-                accuracy: {
-                    levenshtein,
-                    jaroWinkler,
-                    customScore,
-                },
+            const response = await flaskApi.post("/ai/compare", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
-        } else {
-            console.warn("⚠️ onAccuracyUpdate 함수가 존재하지 않음.");
+
+            console.log("✅ AI 분석 응답:", response.data);
+
+            const recognizedText = response.data.recognized_text;
+            if (!recognizedText || recognizedText === "오디오를 이해하지 못했습니다.") {
+                console.warn("⚠️ STT 변환 실패: 다시 시도해야 합니다.");
+                return;
+            }
+
+            // ✅ 부모 컴포넌트로 분석 결과 전달
+            if (typeof onAccuracyUpdate === "function") {
+                onAccuracyUpdate({ recognizedText });
+            }
+        } catch (error) {
+            console.error("❌ AI 요청 오류:", error.response ? error.response.data : error);
         }
-    } catch (error) {
-        console.error("❌ AI 요청 오류:", error.response ? error.response.data : error);
-    }
-};
+    };
 
     return (
         <button className="record-button" onClick={isRecording ? stopRecording : startRecording}>
