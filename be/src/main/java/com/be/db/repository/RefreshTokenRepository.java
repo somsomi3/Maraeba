@@ -1,5 +1,6 @@
 package com.be.db.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 	@Modifying
 	void deleteByUserId(Long id);
 
+	void deleteAllByExpiryDateBefore(LocalDateTime expiryDateBefore);
 }
