@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
 
 @Slf4j
@@ -31,21 +32,22 @@ public class FindGameServiceImpl implements FindGameService {
     private final AudioConverter convertWebMToWav;
     private final AiTest aiTest;
 
+    // 이미지 데이터를 Base64로 변환
     @Override
     public AnimalResponse pickAnimal() throws IOException {
-
-        // 1. AnimalGame에서 랜덤으로 1개의 엔티티 가져오기
         AnimalGame animalGame = animalGameRepository.findRandomAnimalGame();
-
-        // 2. 가져온 엔티티에서 루트로 이미지 가져온 후 byte[]로 변환
         File imageFile = new File(animalGame.getImage());
+
+        // 1️⃣ 파일을 읽고 바이트 배열로 변환
         byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
 
-        // 3. response 생성 후 반환
+        // 2️⃣ Base64 인코딩 추가 (변경된 부분)
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+        // 3️⃣ Base64 인코딩된 데이터를 응답에 포함
         AnimalResponse animalResponse = new AnimalResponse();
         animalResponse.setImageNumber(animalGame.getId());
-        animalResponse.setImageData(imageBytes);
-
+        animalResponse.setImageData(base64Image); // Base64로 변환된 이미지 사용
 
         return animalResponse;
     }

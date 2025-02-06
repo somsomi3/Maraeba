@@ -288,7 +288,7 @@ const sendAudioToServer = async (audioBlob) => {
         </div>
         <div className="item-selection">
           {gameData.itemList.map((item, index) => (
-            <button key={index} onClick={() => handleSelectItem(item)}>
+            <button key={index}>
               {item}
             </button>
           ))}
