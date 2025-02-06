@@ -1,6 +1,8 @@
 package com.be.domain.auth.service;
 
 import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,9 @@ import com.be.db.entity.RefreshToken;
 import com.be.db.entity.User;
 import com.be.db.repository.RefreshTokenRepository;
 import com.be.db.repository.UserRepository;
+import com.be.domain.auth.dto.UserIdResponseDto;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.RegisterRequest;
-import com.be.domain.auth.response.CheckEmailResponse;
 import com.be.domain.auth.response.CheckUserIdResponse;
 import com.be.domain.auth.response.LoginResponse;
 import com.be.domain.auth.response.TokenRefreshResponse;
@@ -75,18 +77,18 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 
-	/**
-	 * 이메일 중복 검사
-	 */
-	@Override
-	public CheckEmailResponse checkEmail(String email) {
-		boolean exists = userRepository.findByEmail(email).isPresent();
-		if (exists) {
-			return CheckEmailResponse.of("Email already exists.", 200, email, true);
-		} else {
-			return CheckEmailResponse.of("Email not exists.", 200, email, false);
-		}
-	}
+	// /**
+	//  * 이메일 중복 검사 (Unique에서 변경돼서 쓸 일 아직 없음)
+	//  */
+	// @Override
+	// public CheckEmailResponse checkEmail(String email) {
+	// 	boolean exists = userRepository.findByEmail(email).isPresent();
+	// 	if (exists) {
+	// 		return CheckEmailResponse.of("Email already exists.", 200, email, true);
+	// 	} else {
+	// 		return CheckEmailResponse.of("Email not exists.", 200, email, false);
+	// 	}
+	// }
 
 	/**
 	 * 로그인 (Access Token, Refresh Token 발급)
@@ -195,5 +197,18 @@ public class AuthServiceImpl implements AuthService {
 
 		//Access Token 블랙리스트 등록
 		tokenService.addToBlacklist(accessToken);
+	}
+
+	@Override
+	public List<UserIdResponseDto> findUserIdsByEmail(String email) {
+		List<User> users = userRepository.findByEmail(email);
+
+		return users.stream()
+			.map(user -> new UserIdResponseDto(
+				user.getUserId(),
+				user.getCreatedAt(),
+				user.getProvider()
+			))
+			.collect(Collectors.toList());
 	}
 }

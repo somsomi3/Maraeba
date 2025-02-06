@@ -5,6 +5,7 @@ import com.be.db.repository.AnimalCorrectRepository;
 import com.be.db.repository.AnimalGameRepository;
 import com.be.domain.wgames.AiTest;
 import com.be.domain.wgames.AudioConverter;
+import com.be.domain.wgames.cooks.common.service.SpeechService;
 import com.be.domain.wgames.findAnimals.request.AnimalCorrectRequest;
 import com.be.domain.wgames.findAnimals.response.AnimalAnswerResponse;
 import com.be.domain.wgames.findAnimals.response.AnimalResponse;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
 
 @Slf4j
@@ -28,24 +30,24 @@ public class FindGameServiceImpl implements FindGameService {
 
     private final AnimalGameRepository animalGameRepository;
     private final AnimalCorrectRepository animalCorrectRepository;
-    private final AudioConverter convertWebMToWav;
-    private final AiTest aiTest;
+    private final SpeechService speechService;
 
+    // 이미지 데이터를 Base64로 변환
     @Override
     public AnimalResponse pickAnimal() throws IOException {
-
-        // 1. AnimalGame에서 랜덤으로 1개의 엔티티 가져오기
         AnimalGame animalGame = animalGameRepository.findRandomAnimalGame();
-
-        // 2. 가져온 엔티티에서 루트로 이미지 가져온 후 byte[]로 변환
         File imageFile = new File(animalGame.getImage());
+
+        // 1️⃣ 파일을 읽고 바이트 배열로 변환
         byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
 
-        // 3. response 생성 후 반환
+        // 2️⃣ Base64 인코딩 추가 (변경된 부분)
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+        // 3️⃣ Base64 인코딩된 데이터를 응답에 포함
         AnimalResponse animalResponse = new AnimalResponse();
         animalResponse.setImageNumber(animalGame.getId());
-        animalResponse.setImageData(imageBytes);
-
+        animalResponse.setImageData(base64Image); // Base64로 변환된 이미지 사용
 
         return animalResponse;
     }
@@ -53,7 +55,7 @@ public class FindGameServiceImpl implements FindGameService {
     @Override
     public AnimalAnswerResponse isCorrect(AnimalCorrectRequest request) throws IOException {
         AnimalAnswerResponse response = new AnimalAnswerResponse();
-        MultipartFile animalAudio = request.getAudio();
+        MultipartFile audio = request.getAudio();
         int imageNumber = request.getImageNumber();
         List<String> answerList = request.getAnswerList();    //이미 맞춘 정답
 
@@ -65,26 +67,8 @@ public class FindGameServiceImpl implements FindGameService {
             }
         } else log.info("비었음");
 
-        // 저장 경로 및 파일 이름 설정
-        String uploadDir = "C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\";
-        String fileName = animalAudio.getOriginalFilename(); // 원본 파일명 가져오기
-
-        // 파일 저장 경로 설정
-        String fullPathName = uploadDir + fileName;
-
-        // 파일을 바이너리 형식으로 저장
-        byte[] bytes = animalAudio.getBytes();
-        File destFile = new File(fullPathName + ".webm");
-
-        try (FileOutputStream fos = new FileOutputStream(destFile)) {
-            fos.write(bytes);
-        }
-
-        //webm에서 wav로 인코딩
-        convertWebMToWav.convertWebMToWav(fullPathName + ".webm", fullPathName + ".wav");
-        String text = aiTest.speechToText(new FileSystemResource(fullPathName + ".wav"));
-
-        log.info("입력된 음성: {}", text);
+        //음성인식 결과
+        String text = speechService.SpeechToText(audio);
 
         //이미 정답을 맞춘 경우 (중복)
         if (answerList != null && answerList.contains(text)) {

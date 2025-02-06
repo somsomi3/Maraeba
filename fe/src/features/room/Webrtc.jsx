@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ useNavigate 사용
+
 const API_URL = "http://localhost:8081";
+
 const Webrtc = () => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
@@ -8,6 +10,8 @@ const Webrtc = () => {
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const webSocketRef = useRef(null);
+    const [message, setMessage] = useState("");
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         const token = getToken();
@@ -16,72 +20,69 @@ const Webrtc = () => {
         } else {
             console.error("❌ JWT 토큰 없음: 로그인 필요");
         }
+    }, []);
 
-        return () => {
-            if (webSocketRef.current) {
-                webSocketRef.current.close();
+    // ✅ WebSocket 메시지 수신 처리
+    useEffect(() => {
+        if (!webSocketRef.current) return;
+
+        webSocketRef.current.onmessage = async (event) => {
+            try {
+                const receivedMessage = JSON.parse(event.data);
+                console.log("📩 WebSocket 메시지 수신:", receivedMessage);
+
+                if (receivedMessage.type === "offer") {
+                    await handleOffer(receivedMessage);
+                } else if (receivedMessage.type === "answer") {
+                    await handleAnswer(receivedMessage);
+                } else if (receivedMessage.type === "candidate") {
+                    await handleCandidate(receivedMessage);
+                } else {
+                    // ✅ 메시지 상태 업데이트 (새로운 배열 생성)
+                    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+                    console.log("📝 업데이트된 메시지 상태:", messages);
+                }
+            } catch (e) {
+                console.error("📩 JSON 파싱 오류:", e);
             }
         };
     }, []);
 
     // ✅ JWT 토큰 가져오기
     const getToken = () => localStorage.getItem("token");
-    // ✅ 로그인 확인 및 WebSocket 연결
-    const checkAuthAndConnectWebSocket = async () => {
-        const token = getToken();
-        if (!token) {
-            console.warn("🔴 로그인 필요: 로그인 페이지로 이동");
-            navigate("/login");
+
+    // ✅ WebSocket 연결
+    const connectWebSocket = (token, roomId) => {
+        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+            console.warn("⚠️ WebSocket이 이미 연결되어 있음");
             return;
         }
 
-        try {
-            // ✅ 백엔드에 인증 요청
-            const response = await fetch(`${API_URL}/validate`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!response.ok) throw new Error("❌ 인증 실패");
-
-            console.log("✅ 로그인 확인됨. WebRTC WebSocket 연결 시작");
-            connectWebSocket(token);
-        } catch (error) {
-            console.error("❌ 인증 실패: 로그인 페이지로 이동", error);
-            localStorage.removeItem("token");
-            navigate("/login");
-        }
-    };
-    // ✅ WebSocket 연결
-    const connectWebSocket = (token) => {
-        //         if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-        //             console.log("✅ WebSocket 이미 연결됨");
-        //             return;
-        //         }
-
         webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}` // ✅ 방 ID 추가
         );
 
         webSocketRef.current.onopen = () => {
-            console.log("✅ WebSocket 연결됨 (Signaling)");
-        };
-
-        webSocketRef.current.onmessage = async (event) => {
-            const message = JSON.parse(event.data);
-            console.log("📩 WebSocket 메시지 수신:", message);
-
-            if (message.type === "offer") {
-                await handleOffer(message);
-            } else if (message.type === "answer") {
-                await handleAnswer(message);
-            } else if (message.type === "candidate") {
-                await handleCandidate(message);
-            }
+            console.log(`✅ WebSocket 연결됨 (방 ID: ${roomId})`);
         };
 
         webSocketRef.current.onclose = () => {
             console.log("🔴 WebSocket 연결 종료");
         };
+    };
+
+    // ✅ 메시지 전송
+    const sendMessage = () => {
+        if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+            const messageObject = { sender: "나", text: message };
+            console.log("📡 메시지 전송:", messageObject);
+            webSocketRef.current.send(JSON.stringify(messageObject));
+
+            setMessages((prev) => [...prev, messageObject]);
+            setMessage("");
+        } else {
+            console.error("❌ WebSocket 연결이 닫혀 있음!");
+        }
     };
 
     // ✅ 카메라 & 마이크 접근 및 로컬 스트림 설정
@@ -103,7 +104,12 @@ const Webrtc = () => {
     // ✅ WebRTC 연결 초기화
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
-            iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+            iceServers: [{
+                urls: "turn:3.39.252.223:3478?transport=tcp",
+                
+                username: `${import.meta.env.VITE_USERNAME_URL}`,
+                credential: `${import.meta.env.VITE_PASSWORD_URL}`,
+            }],
         });
 
         peerConnectionRef.current.onicecandidate = (event) => {
@@ -184,44 +190,41 @@ const Webrtc = () => {
 
     // ✅ WebSocket 메시지 전송
     const sendToServer = (message) => {
-        if (
-            webSocketRef.current &&
-            webSocketRef.current.readyState === WebSocket.OPEN
-        ) {
+        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
             webSocketRef.current.send(JSON.stringify(message));
         } else {
-            console.error(
-                "❌ WebSocket이 연결되지 않음, 메시지 전송 실패:",
-                message
-            );
+            console.error("❌ WebSocket이 연결되지 않음, 메시지 전송 실패:", message);
         }
     };
 
     return (
         <div style={styles.container}>
+            <h3>💬 채팅</h3>
+            <div style={styles.chatBox}>
+                {messages.map((msg, idx) => (
+                    <div key={idx} style={msg.sender === "나" ? styles.myMessage : styles.otherMessage}>
+                        <strong>{msg.sender}:</strong> {msg.text}
+                    </div>
+                ))}
+            </div>
+            <div style={styles.inputContainer}>
+                <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="메시지 입력..."
+                    style={styles.input}
+                />
+                <button onClick={sendMessage} style={styles.sendButton}>전송</button>
+            </div>
             <h3>WebRTC 테스트</h3>
             <div style={styles.videoContainer}>
-                <video
-                    ref={localVideoRef}
-                    autoPlay
-                    playsInline
-                    muted
-                    style={styles.video}
-                />
-                <video
-                    ref={remoteVideoRef}
-                    autoPlay
-                    playsInline
-                    style={styles.video}
-                />
+                <video ref={localVideoRef} autoPlay playsInline muted style={styles.video} />
+                <video ref={remoteVideoRef} autoPlay playsInline style={styles.video} />
             </div>
             <div style={styles.buttonContainer}>
-                <button onClick={startMedia} style={styles.button}>
-                    🎥 미디어 시작
-                </button>
-                <button onClick={createOffer} style={styles.button}>
-                    📡 연결 요청 (Offer)
-                </button>
+                <button onClick={startMedia} style={styles.button}>🎥 미디어 시작</button>
+                <button onClick={createOffer} style={styles.button}>📡 연결 요청 (Offer)</button>
             </div>
         </div>
     );
@@ -231,22 +234,9 @@ const Webrtc = () => {
 const styles = {
     container: { textAlign: "center", padding: "20px" },
     videoContainer: { display: "flex", justifyContent: "center", gap: "10px" },
-    video: {
-        width: "300px",
-        height: "200px",
-        border: "1px solid #ccc",
-        background: "black",
-    },
+    video: { width: "300px", height: "200px", border: "1px solid #ccc", background: "black" },
     buttonContainer: { marginTop: "10px" },
-    button: {
-        padding: "10px",
-        margin: "5px",
-        background: "#007BFF",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-    },
+    button: { padding: "10px", margin: "5px", background: "#007BFF", color: "white", borderRadius: "5px", cursor: "pointer" },
 };
 
 export default Webrtc;

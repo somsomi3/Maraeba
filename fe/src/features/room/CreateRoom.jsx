@@ -20,7 +20,7 @@ const CreateRoom = () => {
 
         try {
             setLoading(true);
-            await springApi.post("/sessions/create", {
+            await springApi.post("/rooms/create", {
                 title: roomTitle,
                 room_password: password || null, // 비밀번호가 없을 경우 null 전달
             });

@@ -73,6 +73,7 @@ public class SecurityConfig {
 					"/auth/social",
 					"/auth/token",
 					"/auth/kakao/callback",
+					"/auth/find-id",
 					"/WebRTC/**",
 					"/webrtc/**",
 					"/rooms/**",

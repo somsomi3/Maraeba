@@ -12,6 +12,7 @@ import com.be.domain.rooms.service.RoomService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
@@ -61,8 +62,19 @@ public class RoomController {
 
 
     @PostMapping("/join/{room_id}")
-    public String joinRoom(@PathVariable("room_id") Long roomId, @RequestBody UserJoinRequest request) {
-        return roomService.joinRoom(request.getUserId(), roomId);
+    public ResponseEntity<String> joinRoom(@PathVariable("room_id") Long roomId, @RequestBody UserJoinRequest request) {
+        // ✅ 방 정보 조회
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+
+        // ✅ 비밀번호 확인 (비밀번호가 설정된 경우)
+        if (room.getRoomPassword() != null && !room.getRoomPassword().isEmpty()) {
+            if (!room.getRoomPassword().equals(request.getRoomPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀렸습니다.");
+            }
+        }
+
+        return ResponseEntity.ok(roomService.joinRoom(request.getUserId(), roomId));
     }
 
     @PostMapping("/end/{room_id}")
