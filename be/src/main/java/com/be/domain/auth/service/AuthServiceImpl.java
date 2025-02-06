@@ -18,6 +18,7 @@ import com.be.db.entity.User;
 import com.be.db.repository.RefreshTokenRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.auth.dto.UserIdResponseDto;
+import com.be.domain.auth.request.FindUserIdRequest;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.CheckUserIdResponse;
@@ -200,8 +201,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public List<UserIdResponseDto> findUserIdsByEmail(String email) {
-		List<User> users = userRepository.findByEmail(email);
+	public List<UserIdResponseDto> findUserIdsByEmail(FindUserIdRequest request) {
+		List<User> users = userRepository.findByEmail(request.getEmail());
 
 		return users.stream()
 			.map(user -> new UserIdResponseDto(

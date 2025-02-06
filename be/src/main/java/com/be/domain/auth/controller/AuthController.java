@@ -20,6 +20,7 @@ import com.be.common.auth.service.TokenService;
 import com.be.common.model.response.BaseResponseBody;
 import com.be.domain.auth.dto.SocialUserDTO;
 import com.be.domain.auth.dto.UserIdResponseDto;
+import com.be.domain.auth.request.FindUserIdRequest;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.AccessTokenResponse;
@@ -240,9 +241,9 @@ public class AuthController {
 		}
 	}
 
-	@GetMapping("/find-id")
-	public ResponseEntity<? extends BaseResponseBody> findUserIds(@RequestParam String email) {
-		List<UserIdResponseDto> userIds = authService.findUserIdsByEmail(email);
+	@PostMapping("/find-id")
+	public ResponseEntity<? extends BaseResponseBody> findUserIds(@RequestBody FindUserIdRequest request) {
+		List<UserIdResponseDto> userIds = authService.findUserIdsByEmail(request);
 		if (userIds.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseBody.of("해당 이메일의 유저가 업습니다",404));
 		}
