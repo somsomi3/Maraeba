@@ -19,7 +19,7 @@ const AnimalGame = () => {
 
   const base64ToBlob = (base64, mimeType) => {
     try {
-        // ✅ Base64 형식이 맞는지 확인
+        // ✅ Base64  형식이 맞는지 확인
         if (!base64 || typeof base64 !== "string") {
             throw new Error("Base64 데이터가 올바르지 않습니다.");
         }

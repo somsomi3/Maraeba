@@ -85,7 +85,7 @@ const router = createBrowserRouter(
                 <Route path="/room/RoomList" element={<RoomList/>}/>
 
                 <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
-                <Route path="/animal-game/:themeName" element={<AnimalGame />} />
+                <Route path="/animal-game/start-game" element={<AnimalGame />} />
                 <Route path="/profile" element={<Profile />} />
             </Route>
         </>
