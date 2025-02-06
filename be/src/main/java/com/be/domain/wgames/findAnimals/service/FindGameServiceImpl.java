@@ -5,6 +5,7 @@ import com.be.db.repository.AnimalCorrectRepository;
 import com.be.db.repository.AnimalGameRepository;
 import com.be.domain.wgames.AiTest;
 import com.be.domain.wgames.AudioConverter;
+import com.be.domain.wgames.cooks.common.service.SpeechService;
 import com.be.domain.wgames.findAnimals.request.AnimalCorrectRequest;
 import com.be.domain.wgames.findAnimals.response.AnimalAnswerResponse;
 import com.be.domain.wgames.findAnimals.response.AnimalResponse;
@@ -29,8 +30,7 @@ public class FindGameServiceImpl implements FindGameService {
 
     private final AnimalGameRepository animalGameRepository;
     private final AnimalCorrectRepository animalCorrectRepository;
-    private final AudioConverter convertWebMToWav;
-    private final AiTest aiTest;
+    private final SpeechService speechService;
 
     // 이미지 데이터를 Base64로 변환
     @Override
@@ -55,7 +55,7 @@ public class FindGameServiceImpl implements FindGameService {
     @Override
     public AnimalAnswerResponse isCorrect(AnimalCorrectRequest request) throws IOException {
         AnimalAnswerResponse response = new AnimalAnswerResponse();
-        MultipartFile animalAudio = request.getAudio();
+        MultipartFile audio = request.getAudio();
         int imageNumber = request.getImageNumber();
         List<String> answerList = request.getAnswerList();    //이미 맞춘 정답
 
@@ -67,26 +67,8 @@ public class FindGameServiceImpl implements FindGameService {
             }
         } else log.info("비었음");
 
-        // 저장 경로 및 파일 이름 설정
-        String uploadDir = "C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\";
-        String fileName = animalAudio.getOriginalFilename(); // 원본 파일명 가져오기
-
-        // 파일 저장 경로 설정
-        String fullPathName = uploadDir + fileName;
-
-        // 파일을 바이너리 형식으로 저장
-        byte[] bytes = animalAudio.getBytes();
-        File destFile = new File(fullPathName + ".webm");
-
-        try (FileOutputStream fos = new FileOutputStream(destFile)) {
-            fos.write(bytes);
-        }
-
-        //webm에서 wav로 인코딩
-        convertWebMToWav.convertWebMToWav(fullPathName + ".webm", fullPathName + ".wav");
-        String text = aiTest.speechToText(new FileSystemResource(fullPathName + ".wav"));
-
-        log.info("입력된 음성: {}", text);
+        //음성인식 결과
+        String text = speechService.SpeechToText(audio);
 
         //이미 정답을 맞춘 경우 (중복)
         if (answerList != null && answerList.contains(text)) {
