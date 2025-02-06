@@ -4,6 +4,7 @@ import pronsStuff from "../../assets/images/prons_stuff.png";
 import wordStuff from "../../assets/images/word_stuff.png";
 import LogoutButton from "../../components/button/LogoutButton"; // ✅ 로그아웃 버튼 추가
 
+
 const Main = () => {
     const navigate = useNavigate();
 

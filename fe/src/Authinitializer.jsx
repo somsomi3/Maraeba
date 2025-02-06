@@ -1,26 +1,33 @@
-import { useEffect } from "react";
+// AuthInitializer.jsx 
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { login, logout } from "./store/authSlice"; // ✅ Redux 액션 가져오기
-import { refreshTokenApi } from "./utils/api"; // ✅ Refresh Token API 가져오기
+import { login } from "./store/authSlice";
+import { refreshTokenApi } from "./utils/api";
 
-const AuthInitializer = () => {
+function AuthInitializer({ children }) {
+    const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const refreshAccessToken = async () => {
+        async function initializeAuth() {
             try {
-                const { data } = await refreshTokenApi(); // 🔥 새 Access Token 요청
-                dispatch(login(data.token)); // ✅ Redux에 새 토큰 저장
-            } catch (error) {
-                console.error("토큰 갱신 실패:", error);
-                dispatch(logout()); // ✅ 토큰 갱신 실패 시 로그아웃 처리
+                const res = await refreshTokenApi();
+                // res.data.token이 올바르게 전달되는지 확인하세요.
+                const newToken = res.data.access_token;
+                dispatch(login(newToken));
+            } catch (err) {
+                console.error("Silent refresh 실패:", err);
+            } finally {
+                setLoading(false);
             }
-        };
-
-        refreshAccessToken(); // 🔥 새로고침 시 토큰 갱신 시도
+        }
+        initializeAuth();
     }, [dispatch]);
 
-    return null; // ✅ 렌더링하지 않는 컴포넌트
-};
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+    return children;
+}
 
 export default AuthInitializer;

@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
-import { loginApi } from "../../utils/api"; // ✅ 로그인 API 변경
+import { loginApi } from "../../utils/api"; // ✅ 로그인 API 가져오기
 import "./index.css";
 import logo from "../../assets/logo.png";
 
 import KakaoLogin from "./KakaoLogin";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ user_id: "", password: "" });
@@ -33,9 +34,8 @@ const Login = () => {
       // ✅ 로그인 API 요청 (withCredentials: true 적용)
       const { data } = await loginApi(formData);
 
-      // ✅ Access Token만 저장
+      // ✅ Access Token을 Redux에서만 관리 (localStorage 제거)
       dispatch(login(data.access_token));
-      localStorage.setItem("token", data.access_token);
 
       navigate("/main"); // 로그인 성공 후 이동
     } catch (error) {

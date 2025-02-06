@@ -1,4 +1,3 @@
-import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import {
     createBrowserRouter,
@@ -39,6 +38,7 @@ import CookingGame from "./features/wordgame/CookingGame";
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
 import Profile from "./features/user/Profile";
+import AuthInitializer from "./AuthInitializer.jsx";
 
 // 라우트 정의
 const router = createBrowserRouter(
@@ -96,7 +96,9 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")).render(
     //<React.StrictMode>
     <Provider store={store}>
-        <RouterProvider router={router} />
+        <AuthInitializer>
+            <RouterProvider router={router} />
+        </AuthInitializer>
     </Provider>
     //</React.StrictMode>
 );

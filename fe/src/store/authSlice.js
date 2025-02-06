@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    token: localStorage.getItem("token") || null,
-    isAuthenticated: !!localStorage.getItem("token"),
+    token: null,
+    isAuthenticated: false,
 };
 
 const authSlice = createSlice({
@@ -12,12 +12,10 @@ const authSlice = createSlice({
         login: (state, action) => {
             state.token = action.payload;
             state.isAuthenticated = true;
-            localStorage.setItem("token", action.payload);
         },
         logout: (state) => {
             state.token = null;
             state.isAuthenticated = false;
-            localStorage.removeItem("token"); // ✅ Access Token만 삭제
         },
     },
 });
