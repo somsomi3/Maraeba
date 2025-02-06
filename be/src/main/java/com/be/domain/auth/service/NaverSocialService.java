@@ -12,7 +12,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.be.domain.auth.dto.SocialUser;
+import com.be.domain.auth.dto.SocialUserDTO;
 import com.be.domain.auth.response.LoginResponse;
 
 @Service
@@ -50,7 +50,7 @@ public class NaverSocialService implements SocialService {
 	}
 
 	@Override
-	public SocialUser getUserInfo(String accessToken) {
+	public SocialUserDTO getUserInfo(String accessToken) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBearerAuth(accessToken);
 
@@ -59,7 +59,7 @@ public class NaverSocialService implements SocialService {
 
 		Map<String, Object> userInfo = (Map<String, Object>)response.getBody().get("response");
 
-		return new SocialUser(
+		return new SocialUserDTO(
 			"naver",
 			userInfo.get("id").toString(),
 			userInfo.get("email").toString(),
@@ -68,7 +68,7 @@ public class NaverSocialService implements SocialService {
 	}
 
 	@Override
-	public LoginResponse socialLogin(SocialUser socialUser) {
+	public LoginResponse socialLogin(SocialUserDTO socialUser) {
 		return new LoginResponse();
 	}
 }
