@@ -14,21 +14,33 @@ const springApi = axios.create({
 
 // 🔥 로그인 API (Refresh Token을 쿠키에 저장)
 export const loginApi = (credentials) =>
-    axios.post(`${import.meta.env.VITE_SPRING_API_URL}/auth/login`, credentials, {
-        withCredentials: true, // ✅ Refresh Token을 쿠키에 저장
-    });
+    axios.post(
+        `${import.meta.env.VITE_SPRING_API_URL}/auth/login`,
+        credentials,
+        {
+            withCredentials: true, // ✅ Refresh Token을 쿠키에 저장
+        }
+    );
 
 // 🔥 토큰 재발급 API (쿠키에서 자동으로 Refresh Token 전송)
 export const refreshTokenApi = () =>
-    axios.post(`${import.meta.env.VITE_SPRING_API_URL}/auth/token`, {}, {
-        withCredentials: true, // ✅ Refresh Token을 쿠키에서 자동 전송
-    });
+    axios.post(
+        `${import.meta.env.VITE_SPRING_API_URL}/auth/token`,
+        {},
+        {
+            withCredentials: true, // ✅ Refresh Token을 쿠키에서 자동 전송
+        }
+    );
 
 // 🔥 로그아웃 API (쿠키에서 Refresh Token 삭제)
 export const logoutApi = () =>
-    axios.post(`${import.meta.env.VITE_SPRING_API_URL}/auth/logout`, {}, {
-        withCredentials: true, // ✅ Refresh Token 삭제 (서버에서 쿠키 제거)
-    });
+    springApi.post(
+        "/auth/logout",
+        {},
+        {
+            withCredentials: true, // 쿠키 관련 옵션
+        }
+    );
 
 // ✅ 요청 인터셉터 (Access Token 자동 추가)
 const addAuthToken = (config) => {
@@ -39,14 +51,22 @@ const addAuthToken = (config) => {
     return config;
 };
 
-springApi.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
-flaskApi.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
+springApi.interceptors.request.use(addAuthToken, (error) =>
+    Promise.reject(error)
+);
+flaskApi.interceptors.request.use(addAuthToken, (error) =>
+    Promise.reject(error)
+);
 
 // ✅ 응답 인터셉터 (토큰 재발급)
 const handleResponseError = async (error) => {
     const originalRequest = error.config;
 
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (
+        error.response &&
+        error.response.status === 401 &&
+        !originalRequest._retry
+    ) {
         originalRequest._retry = true;
 
         try {
@@ -69,7 +89,10 @@ const handleResponseError = async (error) => {
     return Promise.reject(error);
 };
 
-springApi.interceptors.response.use((response) => response, handleResponseError);
+springApi.interceptors.response.use(
+    (response) => response,
+    handleResponseError
+);
 flaskApi.interceptors.response.use((response) => response, handleResponseError);
 
 export { flaskApi, springApi };

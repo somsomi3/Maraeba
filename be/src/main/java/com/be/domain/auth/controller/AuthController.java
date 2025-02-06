@@ -153,7 +153,7 @@ public class AuthController {
 	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(@RequestBody Map<String, String> requestBody) {
 		String code = requestBody.get("code");
 
-		if (code == null) {
+		if (code == null || code.isBlank()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(KakaoLoginErrorResponse.of("인가코드가 없습니다.", "invalid_code"));
 		}
 
