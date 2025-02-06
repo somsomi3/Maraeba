@@ -69,6 +69,12 @@ const CookingGame = () => {
         console.warn("🚨 오디오 파일이 없습니다. 음성 데이터를 포함하지 않고 전송합니다.");
       }
 
+      // ✅ FormData 내부 확인
+      console.log("📤 전송할 FormData:");
+      for (let pair of formData.entries()) {
+          console.log(`${pair[0]}:`, pair[1]);
+      }
+
       console.log("📤 전송할 FormData:", {
         foodName: gameData.foodName,
         item1: gameData.item1,
