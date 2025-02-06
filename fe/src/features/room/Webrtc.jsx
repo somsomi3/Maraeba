@@ -50,20 +50,32 @@ const Webrtc = () => {
 
     // ✅ JWT 토큰 가져오기
     const getToken = () => localStorage.getItem("token");
+    const getUserId = () => {
+        const token = localStorage.getItem("token");
+        if (!token) return null;
+
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1])); // ✅ JWT 디코딩
+            return payload.sub; // ✅ userId 반환
+        } catch (e) {
+            console.error("❌ 토큰 파싱 오류:", e);
+            return null;
+        }
+    };
 
     // ✅ WebSocket 연결
-    const connectWebSocket = (token, roomId) => {
+    const connectWebSocket = (token) => {
         if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
             console.warn("⚠️ WebSocket이 이미 연결되어 있음");
             return;
         }
 
         webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}` // ✅ 방 ID 추가
+            `ws://localhost:8081/WebRTC/signaling?token=${token}`
         );
 
         webSocketRef.current.onopen = () => {
-            console.log(`✅ WebSocket 연결됨 (방 ID: ${roomId})`);
+            console.log("✅ WebSocket 연결됨 (Signaling)");
         };
 
         webSocketRef.current.onclose = () => {
@@ -74,16 +86,28 @@ const Webrtc = () => {
     // ✅ 메시지 전송
     const sendMessage = () => {
         if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-            const messageObject = { sender: "나", text: message };
+            const userId = getUserId(); // ✅ 현재 로그인한 사용자 ID 가져오기
+            if (!userId) {
+                console.error("❌ 사용자 ID 없음");
+                return;
+            }
+
+            const messageObject = {
+                senderId: userId, // ✅ ID 추가
+                sender: `User ${userId}`, // ✅ sender 정보
+                text: message,
+            };
+
             console.log("📡 메시지 전송:", messageObject);
             webSocketRef.current.send(JSON.stringify(messageObject));
 
-            setMessages((prev) => [...prev, messageObject]);
+            setMessages((prev) => [...prev, messageObject]); // ✅ UI 업데이트
             setMessage("");
         } else {
             console.error("❌ WebSocket 연결이 닫혀 있음!");
         }
     };
+
 
     // ✅ 카메라 & 마이크 접근 및 로컬 스트림 설정
     const startMedia = async () => {
@@ -104,12 +128,7 @@ const Webrtc = () => {
     // ✅ WebRTC 연결 초기화
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
-            iceServers: [{
-                urls: "turn:3.39.252.223:3478?transport=tcp",
-                
-                username: `${import.meta.env.VITE_USERNAME_URL}`,
-                credential: `${import.meta.env.VITE_PASSWORD_URL}`,
-            }],
+            iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
         });
 
         peerConnectionRef.current.onicecandidate = (event) => {
@@ -202,11 +221,12 @@ const Webrtc = () => {
             <h3>💬 채팅</h3>
             <div style={styles.chatBox}>
                 {messages.map((msg, idx) => (
-                    <div key={idx} style={msg.sender === "나" ? styles.myMessage : styles.otherMessage}>
+                    <div key={idx} style={msg.senderId === getUserId() ? styles.myMessage : styles.otherMessage}>
                         <strong>{msg.sender}:</strong> {msg.text}
                     </div>
                 ))}
             </div>
+
             <div style={styles.inputContainer}>
                 <input
                     type="text"
@@ -233,10 +253,104 @@ const Webrtc = () => {
 // ✅ 스타일 추가
 const styles = {
     container: { textAlign: "center", padding: "20px" },
-    videoContainer: { display: "flex", justifyContent: "center", gap: "10px" },
-    video: { width: "300px", height: "200px", border: "1px solid #ccc", background: "black" },
+
+    /** ✅ 채팅 박스 스타일 */
+    chatBox: {
+        width: "80%",
+        maxHeight: "300px",  // ✅ 높이 제한 설정 (스크롤 가능하게)
+        overflowY: "auto",   // ✅ 스크롤 가능하게
+        background: "#f9f9f9",
+        padding: "10px",
+        borderRadius: "10px",
+        border: "1px solid #ddd",
+        margin: "10px auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start"
+    },
+
+    /** ✅ 채팅 메시지 스타일 */
+    myMessage: {
+        alignSelf: "flex-end",
+        background: "#007BFF",
+        color: "white",
+        padding: "8px 12px",
+        borderRadius: "12px",
+        margin: "5px",
+        maxWidth: "60%",
+        wordBreak: "break-word",
+        animation: "fadeIn 0.3s ease-in-out"
+    },
+
+    otherMessage: {
+        alignSelf: "flex-start",
+        background: "#e0e0e0",
+        color: "black",
+        padding: "8px 12px",
+        borderRadius: "12px",
+        margin: "5px",
+        maxWidth: "60%",
+        wordBreak: "break-word",
+        animation: "fadeIn 0.3s ease-in-out"
+    },
+
+    /** ✅ 채팅 입력창 & 버튼 스타일 */
+    inputContainer: {
+        display: "flex",
+        alignItems: "center",
+        width: "80%",
+        margin: "10px auto"
+    },
+
+    input: {
+        flex: "1",
+        padding: "10px",
+        borderRadius: "20px",
+        border: "1px solid #ccc",
+        outline: "none",
+        marginRight: "10px",
+        fontSize: "14px"
+    },
+
+    sendButton: {
+        padding: "10px 15px",
+        borderRadius: "20px",
+        background: "#007BFF",
+        color: "white",
+        border: "none",
+        cursor: "pointer",
+        transition: "background 0.2s",
+    },
+
+    sendButtonHover: {
+        background: "#0056b3",
+    },
+
+    /** ✅ 비디오 스타일 */
+    videoContainer: {
+        display: "flex",
+        justifyContent: "center",
+        gap: "10px"
+    },
+
+    video: {
+        width: "300px",
+        height: "200px",
+        border: "1px solid #ccc",
+        background: "black",
+    },
+
     buttonContainer: { marginTop: "10px" },
-    button: { padding: "10px", margin: "5px", background: "#007BFF", color: "white", borderRadius: "5px", cursor: "pointer" },
+
+    button: {
+        padding: "10px",
+        margin: "5px",
+        background: "#007BFF",
+        color: "white",
+        borderRadius: "5px",
+        cursor: "pointer",
+        transition: "background 0.2s",
+    },
 };
 
 export default Webrtc;
