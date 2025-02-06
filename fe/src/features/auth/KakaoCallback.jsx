@@ -11,14 +11,22 @@ const KakaoCallback = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code"); // ✅ 카카오에서 받은 인가코드 가져오기
-
+        console.log("현재 환경:", process.env.NODE_ENV);
         if (code) {
             console.log("✅ 카카오 인가코드:", code);
 
             // ✅ 인가코드를 백엔드로 전송
-            springApi.post("/auth/kakao/callback", { code })
+            springApi
+                .post(
+                    "/auth/kakao/callback",
+                    { code },
+                    { withCredentials: true }
+                )
                 .then(({ data }) => {
-                    console.log("✅ 로그인 성공, 받은 Access Token:", data.access_token);
+                    console.log(
+                        "✅ 로그인 성공, 받은 Access Token:",
+                        data.access_token
+                    );
 
                     // Redux 상태 업데이트
                     dispatch(login(data.access_token));
