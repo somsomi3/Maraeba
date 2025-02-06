@@ -5,6 +5,7 @@ import com.be.db.repository.FoodGameRepository;
 import com.be.db.repository.FoodItemRepository;
 import com.be.domain.wgames.AiTest;
 import com.be.domain.wgames.AudioConverter;
+import com.be.domain.wgames.cooks.common.service.SpeechService;
 import com.be.domain.wgames.cooks.request.AnswerCorrectRequest;
 import com.be.domain.wgames.cooks.response.FoodAnswerResponse;
 import com.be.domain.wgames.cooks.response.FoodResponse;
@@ -28,11 +29,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FoodGameServiceImpl implements FoodGameService {
 
-//    private final ClovaSpeechClient speechClient;
-    private final AudioConverter convertWebMToWav;
     private final FoodGameRepository foodGameRepository;
     private final FoodItemRepository foodItemRepository;
     private final AiTest aiTest;
+    private final SpeechService speechService;
 
     @Override
     public FoodResponse pickFood() throws IOException {
@@ -71,51 +71,9 @@ public class FoodGameServiceImpl implements FoodGameService {
         FoodAnswerResponse answerResponse = new FoodAnswerResponse();
         MultipartFile audio = request.getAudio();
         String item1 = request.getItem1();
-        String item2 = request.getItem2();
 
-        // 저장 경로 및 파일 이름 설정
-        String uploadDir = "C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\";
-        String fileName = audio.getOriginalFilename(); // 원본 파일명 가져오기
-
-        // 파일 저장 경로 설정
-        String fullPathName = uploadDir + fileName;
-
-        // 파일을 바이너리 형식으로 저장
-        byte[] bytes = audio.getBytes();
-        File destFile = new File(fullPathName + ".webm");
-
-        try (FileOutputStream fos = new FileOutputStream(destFile)) {
-            fos.write(bytes);
-        }
-
-        //webm에서 wav로 인코딩
-        convertWebMToWav.convertWebMToWav(fullPathName + ".webm", fullPathName + ".wav");
-        String text = aiTest.speechToText(new FileSystemResource(fullPathName + ".wav"));
-
-//        // 저장된 파일을 다시 File 객체로 불러오기
-//        File audioFile = new File(fullPathName + ".wav");
-//
-//        // ClovaSpeechClient 사용하여 처리
-//        ClovaSpeechClient.Diarization diarization = new ClovaSpeechClient.Diarization();
-//        diarization.setEnable(false); // 화자 감지 활성화 (안하면 오류남)
-//        ClovaSpeechClient.NestRequestEntity nestRequestEntity = new ClovaSpeechClient.NestRequestEntity();
-//        nestRequestEntity.setDiarization(diarization);
-//        String result = speechClient.upload2(audioFile, nestRequestEntity);
-//        log.info("Clova Speech API 결과: {}", result);
-
-        //장문 API
-//        // JSON 파싱 및 "text" 필드 추출
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        JsonNode rootNode = objectMapper.readTree(result); // JSON 문자열 파싱
-//        String text = rootNode.path("segments").get(0).path("text").asText(); // 첫 번째 segment의 "text"
-
-//        //단문 API
-//        // JSON 파싱 및 "text" 필드 추출
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        JsonNode rootNode = objectMapper.readTree(result); // JSON 문자열 파싱
-//        String text = rootNode.path("text").asText(); // "text" 필드 추출
-//
-        log.info("입력된 음성: {}", text);
+        //음성인식 결과
+        String text = speechService.SpeechToText(audio);
 
         FoodGame food = foodGameRepository.findByResultName(request.getFoodName());
         String answerItem1 = food.getFoodItem1().getIngredientName();
