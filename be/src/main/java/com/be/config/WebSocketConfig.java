@@ -1,5 +1,6 @@
 package com.be.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -11,7 +12,7 @@ import com.be.domain.rooms.AudioWebSocketHandler;
 import com.be.common.auth.WebSocketAuthInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
-
+@RequiredArgsConstructor
 @Slf4j
 @Configuration
 @EnableWebSocket
@@ -21,12 +22,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	private final AudioWebSocketHandler audioWebSocketHandler;
 	private final TokenService tokenService; // 🔥 JWT 인증을 위한 서비스 추가
 
-	// ✅ Spring에서 의존성 주입 받도록 변경
-	public WebSocketConfig(SignalingHandler signalingHandler, AudioWebSocketHandler audioWebSocketHandler, TokenService tokenService) {
-		this.signalingHandler = signalingHandler;
-		this.audioWebSocketHandler = audioWebSocketHandler;
-		this.tokenService = tokenService;
-	}
+//	// ✅ Spring에서 의존성 주입 받도록 변경
+//	public WebSocketConfig(SignalingHandler signalingHandler, AudioWebSocketHandler audioWebSocketHandler, TokenService tokenService) {
+//		this.signalingHandler = signalingHandler;
+//		this.audioWebSocketHandler = audioWebSocketHandler;
+//		this.tokenService = tokenService;
+//	}
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

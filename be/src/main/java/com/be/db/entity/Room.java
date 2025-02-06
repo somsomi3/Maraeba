@@ -34,7 +34,7 @@ public class Room {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
-    @Column(name = "room_password")
+    @Column(name = "room_password", nullable = true)
     private String roomPassword;
 
     // owner_id를 User의 기본키와 연결
