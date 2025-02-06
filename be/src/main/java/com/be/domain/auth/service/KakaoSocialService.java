@@ -16,6 +16,9 @@ import org.springframework.web.client.RestTemplate;
 
 import com.be.common.auth.TokenType;
 import com.be.common.auth.service.TokenService;
+import com.be.common.exception.AccessTokenException;
+import com.be.common.exception.KakaoUserInfoException;
+import com.be.common.exception.SocialLoginException;
 import com.be.db.entity.RefreshToken;
 import com.be.db.entity.User;
 import com.be.db.repository.RefreshTokenRepository;
@@ -65,85 +68,106 @@ public class KakaoSocialService implements SocialService {
 
 	@Override
 	public String getAccessToken(String code) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("grant_type", "authorization_code");
-		params.add("client_id", CLIENT_ID);
-		params.add("client_secret", CLIENT_SECRET);
-		params.add("redirect_uri", REDIRECT_URI);
-		params.add("code", code);
+			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+			params.add("grant_type", "authorization_code");
+			params.add("client_id", CLIENT_ID);
+			params.add("client_secret", CLIENT_SECRET);
+			params.add("redirect_uri", REDIRECT_URI);
+			params.add("code", code);
 
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-		ResponseEntity<Map> response = restTemplate.postForEntity(KAKAO_TOKEN_URL, request, Map.class);
+			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+			ResponseEntity<Map> response = restTemplate.postForEntity(KAKAO_TOKEN_URL, request, Map.class);
 
-		return response.getBody().get("access_token").toString();
+			if (response.getBody() == null || !response.getBody().containsKey("access_token")) {
+				throw new AccessTokenException();
+			}
+			return response.getBody().get("access_token").toString();
+		} catch (Exception e) {
+			throw new AccessTokenException(e.getMessage());
+		}
 	}
 
 	@Override
 	public SocialUser getUserInfo(String accessToken) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setBearerAuth(accessToken);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			headers.setBearerAuth(accessToken);
 
-		HttpEntity<Void> request = new HttpEntity<>(headers);
-		ResponseEntity<Map> response = restTemplate.exchange(KAKAO_USER_INFO_URL, HttpMethod.GET, request, Map.class);
+			HttpEntity<Void> request = new HttpEntity<>(headers);
+			ResponseEntity<Map> response = restTemplate.exchange(KAKAO_USER_INFO_URL, HttpMethod.GET, request, Map.class);
 
-		Map<String, Object> userInfo = response.getBody();
-		Map<String, Object> kakaoAccount = (Map<String, Object>)userInfo.get("kakao_account");
-		Map<String, Object> profile = (Map<String, Object>)kakaoAccount.get("profile");
+			Map<String, Object> userInfo = response.getBody();
+			if (userInfo == null || !userInfo.containsKey("kakao_account")) {
+				throw new KakaoUserInfoException("Kakao account information is missing");
+			}
+			Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
+			if (kakaoAccount == null || !kakaoAccount.containsKey("profile")) {
+				throw new KakaoUserInfoException("Kakao profile information is missing");
+			}
+			Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-		return new SocialUser(
-			"kakao",
-			userInfo.get("id").toString(),
-			kakaoAccount.get("email").toString(),
-			profile.get("nickname").toString()
-		);
+			// 추가로 각 필드에 대한 null 체크를 할 수 있음
+			if (userInfo.get("id") == null || kakaoAccount.get("email") == null || profile.get("nickname") == null) {
+				throw new KakaoUserInfoException();
+			}
+
+			return new SocialUser(
+				"kakao",
+				userInfo.get("id").toString(),
+				kakaoAccount.get("email").toString(),
+				profile.get("nickname").toString()
+			);
+		} catch (Exception e) {
+			throw new KakaoUserInfoException(e.getMessage());
+		}
 	}
 
 	@Override
 	public LoginResponse socialLogin(SocialUser socialUser) {
-		String userId = socialUser.getProvider()+"_"+socialUser.getProviderId();
-		User user = userRepository.findByUserId(userId)
-			.orElseGet(()->{
-				User newUser = new User();
-				newUser.setUserId(userId);
-				newUser.setEmail(socialUser.getEmail());
-				newUser.setUsername(socialUser.getNickname());
-				newUser.setProvider(socialUser.getProvider());
-				newUser.setProviderId(socialUser.getProviderId());
-				userRepository.save(newUser);
-				return newUser;
-			});
+		try {
+			String userId = socialUser.getProvider() + "_" + socialUser.getProviderId();
+			User user = userRepository.findByUserId(userId)
+				.orElseGet(() -> {
+					User newUser = new User();
+					newUser.setUserId(userId);
+					newUser.setEmail(socialUser.getEmail());
+					newUser.setUsername(socialUser.getNickname());
+					newUser.setProvider(socialUser.getProvider());
+					newUser.setProviderId(socialUser.getProviderId());
+					return userRepository.save(newUser);
+				});
 
-		//accessToken 및 refreshToken 발급
-		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
-		log.info("토큰 발급");
-		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
-			user.getId(), TokenType.REFRESH_TOKEN);
+			String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
+			log.info("토큰 발급");
+			TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
+				user.getId(), TokenType.REFRESH_TOKEN);
 
-		// 기존 Refresh Token이 있는지 확인
-		RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
+			RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
-		if (refreshToken != null) {
-			// 기존 객체의 토큰 값을 변경하고 업데이트
-			refreshToken.setToken(refreshTokenWithExpiration.getToken());
-			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
-				.toInstant()
-				.atZone(ZoneId.systemDefault())
-				.toLocalDateTime());
-		} else {
-			//refreshToken DB 저장
-			refreshToken = new RefreshToken();
-			refreshToken.setUser(user);
-			refreshToken.setToken(refreshTokenWithExpiration.getToken());
-			refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
-				.toInstant()
-				.atZone(ZoneId.systemDefault())
-				.toLocalDateTime());
-			refreshTokenRepository.save(refreshToken);
+			if (refreshToken != null) {
+				refreshToken.setToken(refreshTokenWithExpiration.getToken());
+				refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
+					.toInstant()
+					.atZone(ZoneId.systemDefault())
+					.toLocalDateTime());
+			} else {
+				refreshToken = new RefreshToken();
+				refreshToken.setUser(user);
+				refreshToken.setToken(refreshTokenWithExpiration.getToken());
+				refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
+					.toInstant()
+					.atZone(ZoneId.systemDefault())
+					.toLocalDateTime());
+				refreshTokenRepository.save(refreshToken);
+			}
+			log.info("accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
+			return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
+		} catch (Exception e) {
+			throw new SocialLoginException(e.getMessage());
 		}
-		log.info("accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
-		return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
 	}
 }
