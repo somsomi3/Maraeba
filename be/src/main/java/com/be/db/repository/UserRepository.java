@@ -1,5 +1,6 @@
 package com.be.db.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,11 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByUserId(String userId);
 
-	Optional<User> findByEmail(String email);
-
-	Optional<User> findUserById(Long userId);
-
-	Optional<User> findByProviderId(String providerId);
-
 	Optional<User> findByProviderAndProviderId(String provider, String providerId);
+
+	List<User> findByEmail(String email);
 }

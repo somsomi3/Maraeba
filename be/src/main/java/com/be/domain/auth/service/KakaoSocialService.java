@@ -23,7 +23,7 @@ import com.be.db.entity.RefreshToken;
 import com.be.db.entity.User;
 import com.be.db.repository.RefreshTokenRepository;
 import com.be.db.repository.UserRepository;
-import com.be.domain.auth.dto.SocialUser;
+import com.be.domain.auth.dto.SocialUserDTO;
 import com.be.domain.auth.response.LoginResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -92,7 +92,7 @@ public class KakaoSocialService implements SocialService {
 	}
 
 	@Override
-	public SocialUser getUserInfo(String accessToken) {
+	public SocialUserDTO getUserInfo(String accessToken) {
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setBearerAuth(accessToken);
@@ -115,7 +115,7 @@ public class KakaoSocialService implements SocialService {
 				throw new KakaoUserInfoException();
 			}
 
-			return new SocialUser(
+			return new SocialUserDTO(
 				"kakao",
 				userInfo.get("id").toString(),
 				kakaoAccount.get("email").toString(),
@@ -127,7 +127,7 @@ public class KakaoSocialService implements SocialService {
 	}
 
 	@Override
-	public LoginResponse socialLogin(SocialUser socialUser) {
+	public LoginResponse socialLogin(SocialUserDTO socialUser) {
 		try {
 			String userId = socialUser.getProvider() + "_" + socialUser.getProviderId();
 			User user = userRepository.findByUserId(userId)
