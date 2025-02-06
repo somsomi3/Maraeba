@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Webrtc from "./Webrtc";
-// import ChatBox from "./ChatBox";
+import ChatBox from "./ChatBox";
 
 import { springApi } from "../../utils/api.js";
 
@@ -68,7 +68,7 @@ function RoomPage() {
 
             {/* ✅ WebRTC 추가 */}
             <Webrtc roomId={roomId} />
-            {/*<ChatBox roomId={roomId} />*/}
+            <ChatBox roomId={roomId} />
 
             {/* ✅ 게임 시작 버튼 */}
             {!isGameStarted ? (

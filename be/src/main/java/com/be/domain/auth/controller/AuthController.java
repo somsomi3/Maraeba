@@ -1,6 +1,7 @@
 package com.be.domain.auth.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -17,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.be.common.auth.service.TokenService;
 import com.be.common.model.response.BaseResponseBody;
-import com.be.domain.auth.dto.SocialUser;
+import com.be.domain.auth.dto.SocialUserDTO;
+import com.be.domain.auth.dto.UserIdResponseDto;
 import com.be.domain.auth.request.LoginRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.AccessTokenResponse;
-import com.be.domain.auth.response.CheckEmailResponse;
 import com.be.domain.auth.response.CheckUserIdResponse;
+import com.be.domain.auth.response.FindUserIdsResponse;
 import com.be.domain.auth.response.GetAuthUrlResponse;
 import com.be.domain.auth.response.KakaoLoginErrorResponse;
 import com.be.domain.auth.response.LoginResponse;
@@ -75,15 +77,15 @@ public class AuthController {
 		return ResponseEntity.status(response.getStatusCode()).body(response);
 	}
 
-	@Operation(summary = "이메일 중복 검사", description = "사용자의 이메일 중복 여부를 확인합니다.")
-	@GetMapping("/check-email")
-	@Deprecated
-	public ResponseEntity<? extends BaseResponseBody> checkEmail(
-		@RequestParam @Parameter(description = "중복 확인할 이메일", required = true)
-		String email) {
-		CheckEmailResponse response = authService.checkEmail(email);
-		return ResponseEntity.status(response.getStatusCode()).body(response);
-	}
+	// @Operation(summary = "이메일 중복 검사", description = "사용자의 이메일 중복 여부를 확인합니다.")
+	// @GetMapping("/check-email")
+	// @Deprecated
+	// public ResponseEntity<? extends BaseResponseBody> checkEmail(
+	// 	@RequestParam @Parameter(description = "중복 확인할 이메일", required = true)
+	// 	String email) {
+	// 	CheckEmailResponse response = authService.checkEmail(email);
+	// 	return ResponseEntity.status(response.getStatusCode()).body(response);
+	// }
 
 	@Operation(summary = "로그인", description = "사용자의 로그인 요청을 처리합니다.")
 	@PostMapping("/login")
@@ -153,12 +155,12 @@ public class AuthController {
 	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(@RequestBody Map<String, String> requestBody) {
 		String code = requestBody.get("code");
 
-		if (code == null) {
+		if (code == null || code.isBlank()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(KakaoLoginErrorResponse.of("인가코드가 없습니다.", "invalid_code"));
 		}
 
 		String accessToken = kakaoSocialService.getAccessToken(code);
-		SocialUser userInfo = kakaoSocialService.getUserInfo(accessToken);
+		SocialUserDTO userInfo = kakaoSocialService.getUserInfo(accessToken);
 		LoginResponse response = kakaoSocialService.socialLogin(userInfo);
 
 		ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
@@ -207,10 +209,10 @@ public class AuthController {
 
 	@Operation(summary = "네이버 로그인 콜백", description = "네이버 로그인 후 콜백을 처리합니다.")
 	@GetMapping("/naver/callback")
-	public ResponseEntity<SocialUser> naverLogin(@RequestParam("code") String code) {
+	public ResponseEntity<? extends BaseResponseBody> naverLogin(@RequestParam("code") String code) {
 		String accessToken = naverSocialService.getAccessToken(code);
-		SocialUser userInfo = naverSocialService.getUserInfo(accessToken);
-		return ResponseEntity.ok(userInfo);
+		SocialUserDTO userInfo = naverSocialService.getUserInfo(accessToken);
+		return null;
 	}
 
 	/**
@@ -236,6 +238,15 @@ public class AuthController {
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of("토큰이 존재하지 않거나 올바르지 않습니다.", 401));
 		}
+	}
+
+	@GetMapping("/find-id")
+	public ResponseEntity<? extends BaseResponseBody> findUserIds(@RequestParam String email) {
+		List<UserIdResponseDto> userIds = authService.findUserIdsByEmail(email);
+		if (userIds.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponseBody.of("해당 이메일의 유저가 업습니다",404));
+		}
+		return ResponseEntity.ok(FindUserIdsResponse.of("유저 아이디 발견",200, userIds));
 	}
 
 }

@@ -107,7 +107,7 @@ public class PronsServiceImpl implements PronsService {
 		// 세션을 찾았다면 정보 저장
 		if (session != null) {
 			// 사용자 객체
-			User user = userRepository.findUserById(session.getUserId())
+			User user = userRepository.findById(session.getUserId())
 				.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
 			// 수업 객체
