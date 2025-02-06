@@ -74,7 +74,7 @@ public class FoodGameServiceImpl implements FoodGameService {
         String item2 = request.getItem2();
 
         // 저장 경로 및 파일 이름 설정
-        String uploadDir = "C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\";
+        String uploadDir = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources\\audio";
         String fileName = audio.getOriginalFilename(); // 원본 파일명 가져오기
 
         // 파일 저장 경로 설정

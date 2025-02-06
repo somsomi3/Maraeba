@@ -43,7 +43,9 @@ export default defineConfig(({ mode }) => {
           globPatterns: ["**/*.{js,css,html,png,svg,ico,json}"],
           runtimeCaching: [
             {
-              urlPattern: new RegExp(`^(${env.VITE_SPRING_API_URL}|${env.VITE_FLASK_API_URL})/`), // ✅ 올바른 환경 변수 적용
+              urlPattern: new RegExp(
+                `^(${env.VITE_SPRING_API_URL}|${env.VITE_FLASK_API_URL})/`
+              ), // ✅ 올바른 환경 변수 적용
               handler: "NetworkFirst",
               options: {
                 cacheName: "api-cache",
@@ -55,7 +57,10 @@ export default defineConfig(({ mode }) => {
               handler: "CacheFirst",
               options: {
                 cacheName: "image-cache",
-                expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 7 },
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 7,
+                },
               },
             },
           ],
@@ -63,5 +68,8 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ],
+    server: {
+      host: "0.0.0.0", // 또는 true
+    },
   };
 });
