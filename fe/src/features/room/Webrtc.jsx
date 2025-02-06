@@ -71,7 +71,7 @@ const Webrtc = () => {
         }
 
         webSocketRef.current = new WebSocket(
-            `ws://localhost:8081/WebRTC/signaling?token=${token}`
+            `wss://i12e104.p.ssafy.io/WebRTC/signaling?token=${token}`
         );
 
         webSocketRef.current.onopen = () => {
@@ -128,7 +128,11 @@ const Webrtc = () => {
     // ✅ WebRTC 연결 초기화
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
-            iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+            iceServers: [{
+                urls: "turn:3.39.252.223?:transport=tcp",
+                username: `${import.meta.env.VITE_USERNAME_URL}`,
+                credential: `${import.meta.env.VITE_PASSWORD_URL}`,
+            },],
         });
 
         peerConnectionRef.current.onicecandidate = (event) => {
