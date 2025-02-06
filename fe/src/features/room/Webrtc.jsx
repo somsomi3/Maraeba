@@ -71,7 +71,7 @@ const Webrtc = () => {
         }
 
         webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io/WebRTC/signaling?token=${token}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`
         );
 
         webSocketRef.current.onopen = () => {

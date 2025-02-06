@@ -35,7 +35,7 @@ const ChatBox = ({ roomId }) => {
             return;
         }
 
-        webSocketRef.current = new WebSocket(`wss://i12e104.p.ssafy.io/WebRTC/signaling?token=${token}`);
+        webSocketRef.current = new WebSocket(`wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`);
 
         webSocketRef.current.onopen = () => {
             console.log("✅ WebSocket 연결 성공");
