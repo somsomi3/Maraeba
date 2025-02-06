@@ -26,7 +26,7 @@
     height: 40px;
   }
   
-  /* 게임 콘텐츠 정렬 */
+  /* 게임 콘텐츠 정렬  */
   .game-content {
     display: flex;
     gap: 30px;
