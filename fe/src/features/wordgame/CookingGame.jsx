@@ -2,34 +2,257 @@ import { useState, useRef, useEffect } from "react";
 import "./CookingGame.css";
 import backgroundImage from "../../assets/images/CookingGame_Bg.png";
 import foodNamePlaceholder from "../../assets/images/strawberryCake.png";
-import GameRecordBtn from "../../components/button/RecordButton";
+import GameRecordBtn from "./GameRecordBtn";
 import PausePopup from "../../components/popup/PausePopup";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api"; // API 인스턴스 사용
 
 const CookingGame = () => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [isTimerActive, setIsTimerActive] = useState(true);
+  const [isRecording, setIsRecording] = useState(false); // 녹음 중인지 여부
+  const [audioURL, setAudioURL] = useState(''); // 서버에서 반환받은 외부 오디오 URL
+  const [timeLeft, setTimeLeft] = useState(60); // 타이머 초
+  const [isTimerActive, setIsTimerActive] = useState(true); // 타이머 활성화 여부
   const [gameData, setGameData] = useState({
-    foodName: "",
+    foodName: '',
     item1: null,
     item2: null,
     itemList: [],
-    imageData: "", // pickFood()에서 받아온 음식 이미지의 Blob URL
+    imageData: '', //이미지 파일
   });
   const [foodImg, setFoodImg] = useState({
-    food: "",
-    item1: "",
-    item2: "",
+    food: '',
+    item1: '',
+    item2: '',
   });
-
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
-  const recordingTimeoutRef = useRef(null);
+  const mediaRecorderRef = useRef(null); // MediaRecorder 참조
+  const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
+  const recordingTimeoutRef = useRef(null); // 녹음 타임아웃 관리
   const navigate = useNavigate();
+  const handleAccuracyUpdate = ({ recognizedText, accuracy }) => {
+    console.log("🎯 AI 분석 결과:", accuracy);
+    console.log("🎯 AI 인식 결과 반영:", recognizedText);
 
-  // Base64 문자열을 Blob으로 변환하는 도우미 함수
+    // 기존 선택된 item1이 없으면 item1에 할당, 이미 있으면 item2로 설정
+    setGameData((prevState) => ({
+        ...prevState,
+        item1: prevState.item1 || recognizedText,
+        item2: prevState.item1 ? recognizedText : prevState.item2,
+    }));
+};
+
+  // 녹음 시작
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      const mediaRecorder = new MediaRecorder(stream);
+
+      // 녹음 데이터 수집
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+
+      // 녹음 종료 후 서버로 데이터 전송
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: 'audio/webm',
+        });
+        audioChunksRef.current = []; // 데이터 초기화
+        await sendAudioToServer(audioBlob);
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start(); // 녹음 시작
+      setIsRecording(true);
+
+      // 10초 후에 자동으로 녹음 종료
+      recordingTimeoutRef.current = setTimeout(() => {
+        stopRecording();
+      }, 10000); // 10초 후에 자동 종료
+    } catch (error) {
+      console.error('마이크 권한 요청 실패:', error);
+    }
+  };
+
+  // 녹음 종료
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      clearTimeout(recordingTimeoutRef.current); // 타임아웃 취소
+    }
+  };
+
+  // 서버에 오디오 데이터 전송
+  const updateGameData = (newItem) => {
+    setGameData((prevState) => {
+        let updatedState;
+
+        if (!prevState.item1) {
+            updatedState = { ...prevState, item1: newItem };
+        } else if (!prevState.item2) {
+            updatedState = { ...prevState, item2: newItem };
+        } else {
+            updatedState = prevState; // item1, item2가 이미 채워져 있으면 변경 없음
+        }
+
+        console.log("🛠 업데이트된 gameData:", updatedState);
+        return updatedState;
+    });
+};
+
+const cleanItemText = (item) => {
+    if (!item) {
+        console.log("🧐 cleanItemText: item이 null 또는 undefined입니다.");
+        return ""; // item이 없을 경우 빈 문자열 반환
+    }
+    const halfLength = Math.ceil(item.length / 2);
+    const cleanedText = item.substring(0, halfLength);
+    console.log(`🧼 cleanItemText 변환: 원본="${item}", 변환 결과="${cleanedText}"`);
+    return cleanedText;
+};
+
+const sendAudioToServer = async (audioBlob) => {
+    console.log("🎤 STT 변환을 위해 오디오 데이터 전송...");
+
+    const formData = new FormData();
+    formData.append("audio", new File([audioBlob], "recorded-audio.webm", { type: "audio/webm" }));
+
+    console.log("📤 최종 전송할 FormData:", [...formData.entries()]);
+
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
+
+        // 백엔드로 전송하여 STT 변환된 결과 받기
+        const response = await springApi.post("/cook-game/is-correct", formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+            withCredentials: true,
+        });
+
+        const result = response.data;
+        console.log("🎯 백엔드 응답 데이터 (STT 변환 결과 포함):", result);
+
+        if (result.item) {
+            console.log("✅ STT 변환 결과 반영:", result.item);
+
+            // gameData를 백엔드 응답을 기반으로 업데이트
+            setGameData((prevState) => {
+                const updatedState = { 
+                    ...prevState,
+                    item1: prevState.item1 ? prevState.item1 : result.item,
+                    item2: prevState.item1 ? result.item : prevState.item2
+                };
+                console.log("🛠 업데이트된 gameData:", updatedState);
+                return updatedState;
+            });
+        }
+    } catch (error) {
+        console.error("❌ STT 변환 실패:", error);
+        if (error.response) {
+            console.error("📢 서버 응답 데이터:", error.response.data);
+        }
+    }
+};
+
+
+
+
+
+  // 게임 시작 POST 요청
+  const newFood = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
+
+        const response = await springApi.post(
+            "/cook-game/start-game",
+            {},
+            {
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+            }
+        );
+
+        const result = response.data; // ✅ Fix: Axios returns data directly
+
+        console.log(
+            'Base64 데이터: ',
+            result.image_data.substring(0, 30) + '...'
+        );
+
+        const blob = base64ToBlob(result.image_data, 'image/png');
+        const url = URL.createObjectURL(blob);
+
+        setGameData({
+            foodName: result.food_name || '',
+            item1: null,
+            item2: null,
+            itemList: result.food_items,
+            imageData: url,
+        });
+
+        setFoodImg({
+            food: url,
+        });
+    } catch (error) {
+        console.log('게임 시작 데이터 로드 실패:', error);
+    }
+};
+
+
+  // 타이머 설정
+  useEffect(() => {
+    if (isTimerActive && timeLeft > 0) {
+      const timerId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1); // 1초 감소
+      }, 1000);
+
+      return () => clearInterval(timerId); // 정리
+    } else if (timeLeft === 0) {
+      setIsTimerActive(false); // 타이머 종료
+      stopRecording(); // 녹음 종료
+    }
+  }, [isTimerActive, timeLeft]);
+
+  // 초기 게임 시작 (한 번만 실행)
+  useEffect(() => {
+    newFood();
+  }, []);
+
+  // 다음 음식
+  useEffect(() => {
+    if (gameData.item2 !== null) {
+      const timeoutId = setTimeout(() => {
+        newFood();
+      }, 1000); // 1초 후에 newFood() 실행
+
+      // 컴포넌트가 언마운트되거나 item2가 null로 변경되면 타이머 클리어
+      return () => clearTimeout(timeoutId);
+    }
+  }, [gameData.item2]);
+
+  // 게임 재시작
+  const restart = () => {
+    setTimeLeft(60); // 타이머 초기화
+    setAudioURL('');
+    setIsTimerActive(true); // 타이머 활성화
+    newFood(); // 게임 다시 시작
+  };
+
+  // 재료 글씨 색 변경
+  const getItemStyle = (item) => {
+    if (item === gameData.item1 || item === gameData.item2) {
+      return { color: 'red' }; // item1 또는 item2에 해당하는 재료는 빨간색
+    }
+    return {};
+  };
+
+  // Base64 → Blob 변환 함수
   const base64ToBlob = (base64, mimeType) => {
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
@@ -40,226 +263,7 @@ const CookingGame = () => {
     return new Blob([byteArray], { type: mimeType });
   };
 
-  // 백엔드의 pickFood() 메서드 호출: 음식 이름, 재료 목록, 그리고 이미지 데이터를 가져옴
-  const fetchGameData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
 
-      const response = await springApi.post(
-        "/cook-game/start-game",
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      );
-
-      if (!response.data) throw new Error("응답 데이터가 없습니다.");
-      console.log("서버 응답 데이터:", response.data);
-
-      // 백엔드에서는 FoodResponse의 image_data 필드에 byte[] 데이터가
-      // Jackson에 의해 Base64 문자열로 전송됩니다.
-      const base64Image = response.data.image_data;
-      const blob = base64ToBlob(base64Image, "image/png");
-      const url = URL.createObjectURL(blob);
-
-      setGameData({
-        foodName: response.data.food_name || "",
-        item1: null,
-        item2: null,
-        itemList: response.data.food_items,
-        imageData: url,
-      });
-      setFoodImg({
-        food: url,
-        item1: "",
-        item2: "",
-      });
-    } catch (error) {
-      console.error("게임 시작 데이터 로드 실패:", error);
-    }
-  };
-
-  // 음성 녹음 시작
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-
-      mediaRecorder.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data);
-      };
-
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        audioChunksRef.current = [];
-        await sendAudioToServer(audioBlob);
-      };
-
-      mediaRecorderRef.current = mediaRecorder;
-      mediaRecorder.start();
-      setIsRecording(true);
-
-      recordingTimeoutRef.current = setTimeout(() => {
-        stopRecording();
-      }, 10000);
-    } catch (error) {
-      console.error("마이크 권한 요청 실패:", error);
-    }
-  };
-
-  // 음성 녹음 종료
-  const stopRecording = () => {
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      clearTimeout(recordingTimeoutRef.current);
-    }
-  };
-
-  // 서버에 음성 데이터 전송 후 인식된 단어로 자동 선택
-  const sendAudioToServer = async (audioBlob) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
-
-      const formData = new FormData();
-      formData.append("audio", audioBlob, "recording.wav"); // 파일명 지정
-  
-      const response = await springApi.post("/cook-game/is-correct", formData, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-  
-      if (response.data) {
-        console.log("✅ AI 분석 응답:", response.data);
-  
-        // 백엔드에서 반환된 음성 인식 결과
-        const recognizedText = response.data.recognized_text;
-  
-        if (recognizedText) {
-          // 현재 게임의 아이템 목록에서 인식된 단어가 존재하는지 확인
-          const matchedItem = gameData.itemList.find((item) => item === recognizedText);
-  
-          if (matchedItem) {
-            console.log(`🎯 '${matchedItem}' 자동 선택됨`);
-            handleSelectItem(matchedItem); // 자동 선택 처리
-          } else {
-            console.log(`❌ '${recognizedText}'이(가) 현재 아이템 목록에 없음`);
-          }
-        }
-  
-        // 이미지 데이터 처리 (정답에 따른 이미지 업데이트)
-        if (response.data.image_data) {
-          const blob = base64ToBlob(response.data.image_data, "image/png");
-          const url = URL.createObjectURL(blob);
-  
-          if (response.data.cnt === 1) {
-            setGameData((prevState) => ({
-              ...prevState,
-              item1: response.data.item,
-            }));
-            setFoodImg((prevState) => ({
-              ...prevState,
-              item1: url,
-            }));
-          } else {
-            setGameData((prevState) => ({
-              ...prevState,
-              item2: response.data.item,
-            }));
-            setFoodImg((prevState) => ({
-              ...prevState,
-              item2: url,
-            }));
-          }
-        }
-      }
-    } catch (error) {
-      console.error("오디오 업로드 오류:", error);
-    }
-  };
-
-  // 선택한 아이템에 해당하는 이미지를 가져옴
-  const handleSelectItem = async (item) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
-
-      // 여기서 아이템 이미지 요청 엔드포인트로 "/cook-game/start-game"을 사용 (설계상 맞다고 가정)
-      const response = await springApi.post(
-        "/cook-game/start-game",
-        { item_name: item },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-
-      if (!response.data || !response.data.image_data) {
-        throw new Error("이미지 데이터를 불러오지 못했습니다.");
-      }
-      console.log(`아이템 이미지 데이터 (${item}):`, response.data);
-
-      // 받은 Base64 문자열을 Blob URL로 변환
-      const blob = base64ToBlob(response.data.image_data, "image/png");
-      const url = URL.createObjectURL(blob);
-
-      // 아직 item1이 없으면 item1로, 그렇지 않으면 item2로 저장
-      if (!gameData.item1) {
-        setGameData((prevState) => ({
-          ...prevState,
-          item1: item,
-        }));
-        setFoodImg((prevState) => ({
-          ...prevState,
-          item1: url,
-        }));
-      } else if (!gameData.item2) {
-        setGameData((prevState) => ({
-          ...prevState,
-          item2: item,
-        }));
-        setFoodImg((prevState) => ({
-          ...prevState,
-          item2: url,
-        }));
-      }
-    } catch (error) {
-      console.error("아이템 이미지 불러오기 실패:", error);
-    }
-  };
-
-  // 컴포넌트 마운트 시 게임 데이터 로드 (pickFood() 호출)
-  useEffect(() => {
-    fetchGameData();
-  }, []);
-
-  // 두 재료 모두 선택되면 1초 후에 새로운 음식 데이터를 로드
-  useEffect(() => {
-    if (gameData.item2 !== null) {
-      setTimeout(() => {
-        fetchGameData();
-      }, 1000);
-    }
-  }, [gameData.item2]);
-
-  // 타이머 설정: 시간이 0이 되면 타이머 중지 및 녹음 종료
-  useEffect(() => {
-    if (isTimerActive && timeLeft > 0) {
-      const timerId = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      }, 1000);
-      return () => clearInterval(timerId);
-    } else if (timeLeft === 0) {
-      setIsTimerActive(false);
-      stopRecording();
-    }
-  }, [isTimerActive, timeLeft]);
 
   return (
     <div
@@ -284,15 +288,19 @@ const CookingGame = () => {
         </div>
         <div className="item-selection">
           {gameData.itemList.map((item, index) => (
-            <button key={index} onClick={() => handleSelectItem(item)}>
+            <button key={index}>
               {item}
             </button>
           ))}
         </div>
-        <GameRecordBtn onClick={isRecording ? stopRecording : startRecording} />
+        <GameRecordBtn 
+        onClick={isRecording ? stopRecording : startRecording}
+        onAccuracyUpdate={handleAccuracyUpdate}
+        pronunciation={gameData.foodName}   />
       </div>
     </div>
   );
 };
 
 export default CookingGame;
+

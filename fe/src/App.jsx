@@ -3,7 +3,7 @@ import { Login } from './features/auth';
 
 function App() {
   return (
-    <div> 
+    <div className="app-container"> 
       <Login />
     </div>
   );

@@ -18,8 +18,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  height: 100%;
+  /* box-sizing: border-box; */
+  /* height: 100vh; */
 }
 
 /* 페이지 전체를 채우는 기본 스타일 */
@@ -28,9 +28,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 300px;
-  min-height: 100vh;
-  
+
 }
 
 

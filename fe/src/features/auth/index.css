@@ -11,6 +11,7 @@
     border-radius: 12px;
     width: 380px;
     text-align: center;
+    margin-top: 20%;
 }
 
 /* 입력 그룹 */
@@ -108,5 +109,6 @@
     margin: 10px auto; /* 중앙 정렬 */
     box-shadow: inset;
   }
+
 
 
