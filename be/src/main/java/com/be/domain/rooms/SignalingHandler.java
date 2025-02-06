@@ -1,9 +1,7 @@
 package com.be.domain.rooms;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -20,83 +18,88 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class SignalingHandler extends TextWebSocketHandler {
 
-	private final Map<Long, Set<WebSocketSession>> rooms = new ConcurrentHashMap<>();
+	private final Map<Long, WebSocketSession> rooms = new ConcurrentHashMap<>();
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		// ✅ 방 ID 가져오기
+		// ✅ WebSocketAuthInterceptor에서 설정한 userId 가져오기
 		Long userId = (Long) session.getAttributes().get("user");
-		Long roomId = (Long) session.getAttributes().get("roomId");
 
-		if (userId != null && roomId != null) {
-			// ✅ 방이 없으면 새로 생성
-			rooms.putIfAbsent(roomId, new CopyOnWriteArraySet<>());
-			rooms.get(roomId).add(session); // ✅ 해당 방에 WebSocket 세션 추가
-
-			log.info("✅ WebRTC WebSocket 연결됨 - 사용자 ID: {} / 방 ID: {}", userId, roomId);
+		if (userId != null) {
+			rooms.put(userId, session);
+			log.info("✅ WebRTC WebSocket 연결됨 - 사용자 ID: {}", userId);
+			// ✅ 사용자 ID를 WebSocket 메시지로 클라이언트에게 전송
+			String userIdMessage = "{\"type\": \"userId\", \"userId\": " + userId + "}";
+			session.sendMessage(new TextMessage(userIdMessage));
 		} else {
-			log.info("❌ WebRTC 연결 실패 - 사용자 ID 또는 방 ID 없음");
+			log.info("❌ WebRTC 연결 실패 - 사용자 ID 없음");
 			session.close(CloseStatus.NOT_ACCEPTABLE);
 		}
 	}
 
 	@Override
-	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+	protected void handleTextMessage(WebSocketSession room, TextMessage message) throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonMessage = objectMapper.readTree(message.getPayload());
-		Long roomId = (Long) session.getAttributes().get("roomId"); // ✅ 방 ID 가져오기
 
-		if (roomId == null) {
-			log.warn("❌ 방 ID 없음 - 메시지 전송 불가");
-			return;
-		}
+		// ✅ JSON 필드 유효성 검사
+		String sender = jsonMessage.has("sender") ? jsonMessage.get("sender").asText() : "Unknown";
+		String text = jsonMessage.has("text") ? jsonMessage.get("text").asText() : "";
 
-		log.info("📩 받은 메시지: 방 ID {} - {}", roomId, jsonMessage);
+		log.info("📩 받은 메시지: {} → {}", sender, text);
 
-		Set<WebSocketSession> sessions = rooms.get(roomId);
-		if (sessions != null) {
-			for (WebSocketSession s : sessions) {
-				if (s.isOpen() && !s.equals(session)) { // ✅ 같은 방이면서 본인 제외
-					s.sendMessage(message);
-				}
+		for (WebSocketSession s : rooms.values()) {
+			if (s != null && s.isOpen() && !s.getId().equals(room.getId())) {
+				s.sendMessage(message);
 			}
 		}
+
+		// // ✅ 빈 메시지 또는 유효하지 않은 sender는 처리하지 않음
+		// if ("Unknown".equals(sender) || text.isBlank()) {
+		// 	log.info("⚠️ 메시지 전송 취소 - sender 또는 text가 유효하지 않음");
+		// 	return;
+		// }
+		//
+		// // ✅ 모든 WebSocket 세션에 메시지 전송 (본인 제외)
+		// for (WebSocketSession s : rooms.values()) {
+		// 	if (s != null && s.isOpen() && !s.equals(session)) {
+		// 		s.sendMessage(message);
+		// 	}
+		// }
 	}
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		Long userId = (Long) session.getAttributes().get("user");
-		Long roomId = (Long) session.getAttributes().get("roomId");
 
-		if (roomId != null) {
-			Set<WebSocketSession> sessions = rooms.get(roomId);
-			if (sessions != null) {
-				sessions.remove(session);
-				if (sessions.isEmpty()) { // ✅ 방에 사람이 없으면 삭제
-					rooms.remove(roomId);
-				}
-			}
+		if (userId != null) {
+			rooms.remove(userId);
+			log.info("🔴 WebRTC WebSocket 연결 종료 - 사용자 ID: {}", userId);
+		} else {
+			log.info("🔴 WebRTC WebSocket 연결 종료 - ID 없음");
 		}
-
-		log.info("🔴 WebRTC WebSocket 연결 종료 - 사용자 ID: {} / 방 ID: {}", userId, roomId);
 	}
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		Long userId = (Long) session.getAttributes().get("user");
-		Long roomId = (Long) session.getAttributes().get("roomId");
 
-		if (roomId != null) {
-			Set<WebSocketSession> sessions = rooms.get(roomId);
-			if (sessions != null) {
-				sessions.remove(session);
-				if (sessions.isEmpty()) {
-					rooms.remove(roomId);
-				}
-			}
+		if (userId != null) {
+			rooms.remove(userId);
+			log.info("❌ WebSocket 오류 발생 - 사용자 ID: {} / 오류: {}", userId, exception.getMessage());
+		} else {
+			log.info("❌ WebSocket 오류 발생 - 사용자 ID 없음 / 오류: {}", exception.getMessage());
 		}
 
-		log.info("❌ WebSocket 오류 발생 - 사용자 ID: {} / 방 ID: {} / 오류: {}", userId, roomId, exception.getMessage());
 		session.close(CloseStatus.SERVER_ERROR);
 	}
+
+	private void sendMessage(WebSocketSession session, JsonNode message) throws Exception {
+		if (session.isOpen()) {
+			session.sendMessage(new TextMessage(message.toString()));
+		}
+	}
+
+
 }
