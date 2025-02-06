@@ -17,30 +17,38 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class SpeechServiceImpl implements SpeechService{
-
+    private final AudioConverter audioConverter; // AudioConverter 의존성 추가
     private final AudioConverter convertWebMToWav;
     private final AiTest aiTest;
 
     @Override
     public String EncodingFile(MultipartFile audio) throws IOException {
         // 저장 경로 및 파일 이름 설정
-        String uploadDir = "C:\\SSAFY\\S12P11E104\\be\\src\\main\\resources\\audio\\";
+        String uploadDir = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources\\audio";
         String fileName = UUID.randomUUID().toString();
 
         //파일 저장 경로 설정
-        String fullPathName = uploadDir + fileName;
+        String fullPathName = uploadDir + fileName + ".webm";
 
         //파일을 바이너리 형식으로 저장
         byte[] bytes = audio.getBytes();
-        File destFile = new File (fullPathName + "webm");
+        File destFile = new File(fullPathName);
 
         try (FileOutputStream fos = new FileOutputStream(destFile)) {
             fos.write(bytes);
+            fos.flush();
+        }   catch (IOException e) {
+            throw new IOException("❌ 음성 파일 저장 실패: " + fullPathName, e);
         }
 
         //webm에서 wav로 인코딩
-        convertWebMToWav.convertWebMToWav(fullPathName + ".webm", fullPathName + ".wav");
-        return fullPathName + ".wav";
+//        convertWebMToWav.convertWebMToWav(fullPathName + ".webm", fullPathName + ".wav");
+//        return fullPathName + ".wav";
+        // 🔴 convertWebMToWav 메서드 수정
+        String wavPath = uploadDir + fileName + ".wav";
+        audioConverter.convertWebMToWav(fullPathName, wavPath); // AudioConverter 메서드 호출
+
+        return wavPath;
     }
 
     @Override
