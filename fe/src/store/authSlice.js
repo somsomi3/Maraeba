@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    token: localStorage.getItem("token") || null,
-    isAuthenticated: !!localStorage.getItem("token"),
+    token: null,
+    userId: null, // ✅ userId 추가
+    isAuthenticated: false,
 };
 
 const authSlice = createSlice({
@@ -10,14 +11,22 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            state.token = action.payload;
+            const token = action.payload;
+            state.token = token;
             state.isAuthenticated = true;
-            localStorage.setItem("token", action.payload);
+
+            try {
+                const payload = JSON.parse(atob(token.split(".")[1])); // ✅ JWT 디코딩
+                state.userId = payload.sub; // ✅ userId 저장
+            } catch (e) {
+                console.error("❌ 토큰 파싱 오류:", e);
+                state.userId = null;
+            }
         },
         logout: (state) => {
             state.token = null;
+            state.userId = null; // ✅ 로그아웃 시 userId도 초기화
             state.isAuthenticated = false;
-            localStorage.removeItem("token"); // ✅ Access Token만 삭제
         },
     },
 });

@@ -12,7 +12,7 @@ const Register = () => {
     username: '',
   });
   const [isUserIdChecked, setIsUserIdChecked] = useState(false);
-  const [isEmailChecked, setIsEmailChecked] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -23,7 +23,6 @@ const Register = () => {
       [name]: value,
     }));
     if (name === 'user_id') setIsUserIdChecked(false);
-    if (name === 'email') setIsEmailChecked(false);
   };
 
   const checkUserId = () => {
@@ -41,24 +40,24 @@ const Register = () => {
       });
   };
 
-  const checkEmail = () => {
-    if (!formData.email) {
-      alert('이메일을 입력해주세요.');
-      return;
-    }
-    springApi.get(`/auth/check-email?email=${encodeURIComponent(formData.email)}`)
-      .then((response) => {
-        alert(response.data.message || '사용 가능한 이메일입니다.');
-        setIsEmailChecked(true);
-      })
-      .catch((error) => {
-        alert(error.response?.data.message || '사용할 수 없는 이메일입니다.');
-      });
-  };
+//   const checkEmail = () => {
+//     if (!formData.email) {
+//       alert('이메일을 입력해주세요.');
+//       return;
+//     }
+//     springApi.get(`/auth/check-email?email=${encodeURIComponent(formData.email)}`)
+//       .then((response) => {
+//         alert(response.data.message || '사용 가능한 이메일입니다.');
+//         setIsEmailChecked(true);
+//       })
+//       .catch((error) => {
+//         alert(error.response?.data.message || '사용할 수 없는 이메일입니다.');
+//       });
+//   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.user_id || !formData.password || !formData.confirmPassword || !formData.email || !formData.username) {
+    if (!formData.user_id || !formData.password || !formData.confirmPassword || !formData.username) {
       alert('모든 필드를 입력해주세요.');
       return;
     }

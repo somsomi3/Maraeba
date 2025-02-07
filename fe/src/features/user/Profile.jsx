@@ -1,51 +1,47 @@
 import { useState, useEffect } from "react";
-import "./Profile.css";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../store/authSlice"; // ✅ Redux logout 액션 추가
 import { springApi } from "../../utils/api";
 import HomeButton from "../../components/button/HomeButton";
 import PausePopup from "../../components/popup/PausePopup";
 
 const Profile = () => {
-  const [username, setUsername] = useState("사용자"); // 기본값 설정
+  const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+  const userId = useSelector((state) => state.auth.userId); // ✅ Redux에서 userId 가져오기
+  const [username, setUsername] = useState("사용자");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch(); // ✅ Redux 액션 디스패치
 
-  // 백엔드에서 사용자 정보를 가져오는 함수
   useEffect(() => {
     const fetchUserInfo = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) throw new Error("토큰이 없습니다. 로그인하세요.");
-    
-            // 토큰이 제대로 들어갔는지 확인하는 로그 추가
-            console.log("사용자 토큰:", token);
-    
-            const response = await springApi.get("/users/me", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-    
-            setUsername(response.data.username);
-        } catch (error) {
-            console.error("사용자 정보를 불러오는 중 오류 발생:", error);
-    
-            // 401 (Unauthorized) 발생 시 자동으로 재로그인 처리
-            if (error.response && error.response.status === 401) {
-                console.warn("토큰이 만료되었거나 인증되지 않음. 로그인 페이지로 이동합니다.");
-                localStorage.removeItem("token");
-                // window.location.href = "/login"; // 로그인 페이지로 이동
-            } else {
-                setError("사용자 정보를 불러올 수 없습니다.");
-            }
-        } finally {
-            setLoading(false);
+      try {
+        if (!token) throw new Error("토큰이 없습니다. 로그인하세요.");
+        
+        console.log("📌 userId:", userId);
+
+        // ✅ 사용자 정보 요청
+        const response = await springApi.get(`/users/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setUsername(response.data.username);
+      } catch (error) {
+        console.error("❌ 사용자 정보를 불러오는 중 오류 발생:", error);
+
+        if (error.response && error.response.status === 401) {
+          console.warn("⏳ 토큰이 만료됨. 로그아웃 처리 중...");
+          dispatch(logout()); // ✅ Redux에서 로그아웃 처리
+        } else {
+          setError("사용자 정보를 불러올 수 없습니다.");
         }
+      } finally {
+        setLoading(false);
+      }
     };
-    
-      
 
     fetchUserInfo();
-  }, []);
+  }, [token, userId, dispatch]); // ✅ token이 변경될 때마다 실행
 
   return (
     <div className="profile-container">
@@ -67,7 +63,6 @@ const Profile = () => {
 
       {/* 메인 컨텐츠 */}
       <div className="profile-content">
-        {/* 레벨 프로그래스 바 */}
         <div className="level-container">
           <h1>레벨 1 🌱</h1>
           <div className="progress-bar">
@@ -76,7 +71,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* 통계 박스 */}
         <div className="profile-stats">
           <div className="stat-box red">
             <div className="stat-icon">🎁</div>
@@ -95,7 +89,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* 관심 분야 */}
         <h2>나의 관심사 📚</h2>
         <div className="interest-list">
           <div className="interest-item">
@@ -116,7 +109,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* 배지 */}
         <h2>받은 칭찬 ✨</h2>
         <div className="badges-list">
           <div className="badge-item glow">
