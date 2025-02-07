@@ -2,14 +2,18 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login, logout } from "./store/authSlice"; 
 import { refreshTokenApi } from "./utils/api";
+import { useSelector } from "react-redux";
+
 
 function AuthInitializer({ children }) {
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     useEffect(() => {
         async function initializeAuth() {
-            if (window.location.pathname === "/login") {
+            // ✅ 이미 로그인된 경우 추가적인 로그인 시도 방지
+            if (isAuthenticated) {
                 setLoading(false);
                 return;
             }
@@ -24,9 +28,6 @@ function AuthInitializer({ children }) {
             } catch (err) {
                 console.error("❌ Silent refresh 실패:", err);
                 dispatch(logout());
-
-                // ✅ `navigate()` 대신 `window.location.href` 사용
-                window.location.href = "/login";
             } finally {
                 console.log("✅ AuthInitializer 로딩 완료");
                 setLoading(false);
@@ -34,7 +35,7 @@ function AuthInitializer({ children }) {
         }
 
         initializeAuth();
-    }, [dispatch]);
+    }, [dispatch, isAuthenticated]);
 
     if (loading) {
         return <div>Loading...</div>;
