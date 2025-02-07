@@ -104,6 +104,50 @@ def stt_single_endpoint():
     except Exception as e:
         logging.error(f"Error processing audio: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+# 한 글자 음성 텍스트 비교
+@api_bp.route('/compare', methods=['POST'])
+def compare():
+
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    if "text" not in request.form:
+        return jsonify({"error": "No text provided"}), 400
+
+    file = request.files["file"]
+    text = request.form["text"].strip()  # 입력받은 텍스트
+    if file.filename == "":
+        return jsonify({"error": "Empty file name"}), 400
+
+    decoding_method = "modified_beam_search"
+    num_active_paths = 15
+
+    # 임시 파일로 저장
+    with tempfile.NamedTemporaryFile(delete=False) as temp:
+        temp.write(file.read())
+        temp_path = temp.name
+
+    try:
+        result = process_audio(decoding_method, num_active_paths, temp_path)
+        os.remove(temp_path)  # 처리 후 임시 파일 삭제
+
+        # 인식된 글자
+        recognized_text = "".join(re.findall(r"[가-힣]", result.get("text", "")))
+
+        # 제시된 글자
+        clean_text = "".join(re.findall(r"[가-힣]", text))
+
+        # 동일 여부
+        is_match = recognized_text == clean_text
+        
+        return jsonify({
+            "recognized_text": recognized_text,
+            "match": is_match
+        })
+    except Exception as e:
+        logging.error(f"Error processing audio: {str(e)}")
+        return jsonify({"error": str(e)}), 500
     
 @torch.no_grad()
 def process_audio(decoding_method: str, num_active_paths: int, in_filename: str):
