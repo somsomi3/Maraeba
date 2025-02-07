@@ -1,10 +1,15 @@
 import os
 from flask import Blueprint, request, jsonify, send_file
 from flask_cors import CORS
-from stt import recognize_speech_from_file, recognize_en
+from stt import recognize_speech_from_file
 from tts import text_to_speech
-from ipa import word_to_ipa
-from similarity import calculate_similarities
+
+import tempfile
+import time
+import torch
+import torchaudio
+import logging
+from model import decode, get_pretrained_model
 
 api_bp = Blueprint('api', __name__)
 CORS(api_bp)
@@ -12,44 +17,11 @@ CORS(api_bp)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# 음성 유사도 비교
-@api_bp.route('/compare', methods=['POST'])
-def compare_endpoint():
-
-    # request 누락시
-    if 'file' not in request.files or 'text' not in request.form:
-        return jsonify({"error": "File or text missing from request"}), 400
-
-    file = request.files['file']
-    correct_text = "".join(request.form['text'].split())
-
-    if file.filename == '' or not correct_text:
-        return jsonify({"error": "Empty file or text provided"}), 400
-
-    try:
-        # 음성파일 임시 저장
-        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(file_path)
-
-        # 함수 호출
-        recognized_text = recognize_speech_from_file(file_path)
-        
-        # 임시 음성파일 삭제
-        os.remove(file_path)
-
-        # 변환된 텍스트와 정답 텍스트를 IPA 기호로 각각 변환하기
-        recognized_ipa = word_to_ipa(recognized_text)
-        correct_ipa = word_to_ipa(correct_text)
-
-        # 변환한 IPA 기호의 유사도를 계산하고 반환하기
-        similarities = calculate_similarities(recognized_ipa, correct_ipa)
-        
-        return jsonify({
-            "recognized_text": recognized_text,
-            "similarities": similarities 
-        })
-    except Exception as e:
-        return jsonify({"error": f"Error during comparison: {str(e)}"}), 500
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
+torch._C._jit_set_profiling_executor(False)
+torch._C._jit_set_profiling_mode(False)
+torch._C._set_graph_executor_optimize(False)
 
 # 텍스트 -> 음성 변환 요청
 @api_bp.route('/tts', methods=['POST'])
@@ -103,39 +75,72 @@ def stt_endpoint():
 
         return jsonify({"recognized_text": recognized_text})
     
-# 한 음절 비교
-@api_bp.route('/compare/short', methods=['POST'])
-def compare_short():
+# 한 글자 stt
+@api_bp.route('/stt/single', methods=['POST'])
+def stt_single_endpoint():
 
-    # request 누락시
-    if 'file' not in request.files or 'text' not in request.form:
-        return jsonify({"error": "File or text missing from request"}), 400
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
 
-    file = request.files['file']
-    correct_text = "".join(request.form['text'].split())
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "Empty file name"}), 400
 
-    if file.filename == '' or not correct_text:
-        return jsonify({"error": "Empty file or text provided"}), 400
+    decoding_method = "modified_beam_search"
+    num_active_paths = 15
+
+    # 임시 파일로 저장
+    with tempfile.NamedTemporaryFile(delete=False) as temp:
+        temp.write(file.read())
+        temp_path = temp.name
 
     try:
-        # 음성파일 임시 저장
-        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(file_path)
-
-        # 인식된 영어
-        recognized_text = recognize_en(file_path)
-
-        # 제시된 한글에 대한 영어랑 비교가 필요함
-
-        answer = False
-        if(recognized_text == correct_text):
-            answer = True
-        
-        # 임시 음성파일 삭제
-        os.remove(file_path)
-        
-        return jsonify({
-            "correct": recognized_text
-        })
+        result = process_audio(decoding_method, num_active_paths, temp_path)
+        os.remove(temp_path)  # 처리 후 임시 파일 삭제
+        return jsonify(result.get("text"))
     except Exception as e:
-        return jsonify({"error": f"Error during comparison: {str(e)}"}), 500
+        logging.error(f"Error processing audio: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+    
+@torch.no_grad()
+def process_audio(decoding_method: str, num_active_paths: int, in_filename: str):
+    """음성 파일을 처리하고 텍스트로 변환"""
+    logging.info(f"Processing file: {in_filename}")
+
+    # WAV 변환
+    filename = convert_to_wav(in_filename)
+
+    start_time = time.time()
+
+    # 사전 학습된 한국어 모델 가져오기
+    recognizer = get_pretrained_model(
+        repo_id="k2-fsa/sherpa-onnx-zipformer-korean-2024-06-24",
+        decoding_method=decoding_method,
+        num_active_paths=num_active_paths,
+    )
+
+    # 음성 인식 수행
+    text = decode(recognizer, filename)
+
+    end_time = time.time()
+
+    # 음성 길이 및 처리 시간 계산
+    metadata = torchaudio.info(filename)
+    duration = metadata.num_frames / 16000
+    processing_time = end_time - start_time
+
+    # 결과 반환
+    return {
+        "text": text,
+        "duration": round(duration, 3),
+        "processing_time": round(processing_time, 3),
+        "rtf": round(processing_time / duration, 3),
+    }
+    
+def convert_to_wav(in_filename: str) -> str:
+    """음성 파일을 16kHz 모노 WAV 파일로 변환"""
+    out_filename = f"{in_filename}.wav"
+    os.system(
+        f"ffmpeg -hide_banner -loglevel error -i '{in_filename}' -ar 16000 -ac 1 '{out_filename}' -y"
+    )
+    return out_filename
