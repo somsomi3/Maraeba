@@ -12,7 +12,6 @@ function AuthInitializer({ children }) {
         async function initializeAuth() {
             try {
                 const res = await refreshTokenApi();
-                // res.data.token이 올바르게 전달되는지 확인하세요.
                 const newToken = res.data.access_token;
                 dispatch(login(newToken));
             } catch (err) {

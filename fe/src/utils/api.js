@@ -73,7 +73,7 @@ const handleResponseError = async (error) => {
 
         try {
             const res = await refreshTokenApi();
-            const newAccessToken = res.data.token;
+            const newAccessToken = res.data.access_token;
 
             // Redux 스토어에 새 토큰 저장
             store.dispatch(login(newAccessToken));

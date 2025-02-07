@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig(({ mode }) => {
-  // 현재 모드(dev, production)에 맞는 환경 변수 로드
   const env = loadEnv(mode, process.cwd(), "VITE");
 
   return {
@@ -17,7 +16,7 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: "autoUpdate",
         devOptions: {
-          enabled: true,
+          enabled: false,
         },
         manifest: {
           name: "My PWA App",
@@ -40,12 +39,16 @@ export default defineConfig(({ mode }) => {
           ],
         },
         workbox: {
-          globPatterns: ["**/*.{js,css,html,png,svg,ico,json}"],
+          cleanupOutdatedCaches: true, // ✅ 오래된 캐시 자동 삭제
+          globPatterns: [
+            "**/*.{js,css,html,png,svg,ico,json}", // ✅ public & dist 내부 파일만 포함
+            "public/**/*.{png,svg,jpg,jpeg,gif,css}" // ✅ public 폴더 내 파일 포함
+          ],
           runtimeCaching: [
             {
               urlPattern: new RegExp(
                 `^(${env.VITE_SPRING_API_URL}|${env.VITE_FLASK_API_URL})/`
-              ), // ✅ 올바른 환경 변수 적용
+              ), // ✅ API 요청 캐싱 (NetworkFirst)
               handler: "NetworkFirst",
               options: {
                 cacheName: "api-cache",
@@ -53,23 +56,23 @@ export default defineConfig(({ mode }) => {
               },
             },
             {
-              urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/i,
               handler: "CacheFirst",
               options: {
                 cacheName: "image-cache",
                 expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 60 * 60 * 24 * 7,
+                  maxEntries: 50, // ✅ 캐시 항목 수 제한 (100 → 50)
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // ✅ 7일 유지
                 },
               },
             },
           ],
-          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB로 설정
+          maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // ✅ 5MB 제한
         },
       }),
     ],
     server: {
-      host: "0.0.0.0", // 또는 true
+      host: "0.0.0.0",
     },
   };
 });
