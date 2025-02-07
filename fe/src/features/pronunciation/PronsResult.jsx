@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
-import HomeButton from "../../components/button/HomeButton";
+import pororo from "../../assets/images/pororo.png"
 import "./PronsResult.css";
 
 const PronsResult = () => {
@@ -104,7 +104,9 @@ const PronsResult = () => {
       {/* ✅ 최근 학습 결과 */}
       {latestRecord && (
         <div className="current-session-result">
-          <div className="profile-image"></div> {/* 둥근 이미지 자리 */}
+          <div className="profile-image">
+                <img src={pororo} alt="" />
+            </div> {/* 둥근 이미지 자리 */}
           <div className="session-info">
             <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>
             <p className="session-score">유사도: {(latestRecord.average_similarity).toFixed(2)}점</p>

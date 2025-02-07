@@ -1,22 +1,23 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:8081";
-
 const ChatBox = ({ roomId }) => {
+    const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+    const userId = useSelector((state) => state.auth.userId); // ✅ Redux에서 userId 가져오기
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const webSocketRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = getToken();
-        if (token) {
-            connectWebSocket(token);
-        } else {
+        if (!token || !userId) {
             console.error("❌ JWT 토큰 없음: 로그인 필요");
             navigate("/login");
+            return;
         }
+
+        connectWebSocket();
 
         return () => {
             if (webSocketRef.current) {
@@ -24,18 +25,16 @@ const ChatBox = ({ roomId }) => {
                 console.log("🔴 WebSocket 연결 종료 및 정리 완료");
             }
         };
-    }, []);
+    }, [token, userId]); // ✅ token이나 userId가 변경될 때만 실행
 
-    const getToken = () => localStorage.getItem("token");
-
-    // ✅ WebSocket 연결
-    const connectWebSocket = (token) => {
+    // ✅ WebSocket 연결 함수
+    const connectWebSocket = () => {
         if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
             console.warn("⚠️ WebSocket이 이미 연결되어 있음");
             return;
         }
 
-        webSocketRef.current = new WebSocket(`wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`);
+        webSocketRef.current = new WebSocket(`wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?userId=${userId}`);
 
         webSocketRef.current.onopen = () => {
             console.log("✅ WebSocket 연결 성공");
@@ -55,22 +54,30 @@ const ChatBox = ({ roomId }) => {
         };
 
         webSocketRef.current.onclose = () => {
-            console.log("🔴 WebSocket 연결 종료");
+            console.log("🔴 WebSocket 연결 종료. 재연결 시도...");
+            setTimeout(() => connectWebSocket(), 3000); // 🔄 3초 후 자동 재연결
         };
     };
 
     // ✅ 메시지 전송
     const sendMessage = () => {
-        if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-            const messageObject = { sender: "나", text: message };
-            console.log("📡 메시지 전송:", messageObject);
-            webSocketRef.current.send(JSON.stringify(messageObject));
-
-            setMessages((prev) => [...prev, messageObject]);
-            setMessage("");
-        } else {
+        if (!message.trim()) return;
+        if (!webSocketRef.current || webSocketRef.current.readyState !== WebSocket.OPEN) {
             console.error("❌ WebSocket 연결이 닫혀 있음!");
+            return;
         }
+
+        if (!userId) {
+            console.error("❌ 사용자 ID 없음");
+            return;
+        }
+
+        const messageObject = { senderId: userId, sender: `User ${userId}`, text: message };
+        console.log("📡 메시지 전송:", messageObject);
+        webSocketRef.current.send(JSON.stringify(messageObject));
+
+        setMessages((prev) => [...prev, messageObject]);
+        setMessage("");
     };
 
     return (
@@ -78,7 +85,7 @@ const ChatBox = ({ roomId }) => {
             <h3>💬 채팅</h3>
             <div style={styles.chatBox}>
                 {messages.map((msg, idx) => (
-                    <div key={idx} style={msg.sender === "나" ? styles.myMessage : styles.otherMessage}>
+                    <div key={idx} style={msg.senderId === userId ? styles.myMessage : styles.otherMessage}>
                         <strong>{msg.sender}:</strong> {msg.text}
                     </div>
                 ))}

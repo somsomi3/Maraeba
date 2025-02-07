@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ useNavigate 사용
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+// import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:8081";
 
 const Webrtc = () => {
     const [localStream, setLocalStream] = useState(null);
@@ -12,15 +12,31 @@ const Webrtc = () => {
     const webSocketRef = useRef(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
+    const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+    const [userId, setUserId] = useState(null); // ✅ userId 상태 추가
 
     useEffect(() => {
-        const token = getToken();
         if (token) {
+            const decodedUserId = getUserIdFromToken(token);
+            setUserId(decodedUserId); // ✅ 상태에 저장
             connectWebSocket(token);
         } else {
             console.error("❌ JWT 토큰 없음: 로그인 필요");
         }
-    }, []);
+    }, [token]); // ✅ Redux의 토큰 값이 변경될 때마다 실행
+
+
+    // ✅ JWT에서 userId 추출하는 함수
+    const getUserIdFromToken = (token) => {
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1])); // ✅ JWT 디코딩
+            return payload.sub; // ✅ userId 반환
+        } catch (e) {
+            console.error("❌ 토큰 파싱 오류:", e);
+            return null;
+        }
+    };
+
 
     // ✅ WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -48,21 +64,6 @@ const Webrtc = () => {
         };
     }, []);
 
-    // ✅ JWT 토큰 가져오기
-    const getToken = () => localStorage.getItem("token");
-    const getUserId = () => {
-        const token = localStorage.getItem("token");
-        if (!token) return null;
-
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1])); // ✅ JWT 디코딩
-            return payload.sub; // ✅ userId 반환
-        } catch (e) {
-            console.error("❌ 토큰 파싱 오류:", e);
-            return null;
-        }
-    };
-
     // ✅ WebSocket 연결
     const connectWebSocket = (token) => {
         if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
@@ -86,7 +87,6 @@ const Webrtc = () => {
     // ✅ 메시지 전송
     const sendMessage = () => {
         if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-            const userId = getUserId(); // ✅ 현재 로그인한 사용자 ID 가져오기
             if (!userId) {
                 console.error("❌ 사용자 ID 없음");
                 return;
@@ -225,7 +225,7 @@ const Webrtc = () => {
             <h3>💬 채팅</h3>
             <div style={styles.chatBox}>
                 {messages.map((msg, idx) => (
-                    <div key={idx} style={msg.senderId === getUserId() ? styles.myMessage : styles.otherMessage}>
+                    <div key={idx} style={msg.senderId === userId ? styles.myMessage : styles.otherMessage}>
                         <strong>{msg.sender}:</strong> {msg.text}
                     </div>
                 ))}

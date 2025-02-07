@@ -5,6 +5,7 @@ import "./PronsMain.css";
 import pronstitle from "../../assets/images/pronstitle.png";
 import HomeButton from "../../components/button/HomeButton";
 
+
 const PronsMain = () => {
   const navigate = useNavigate();
   const [classData, setClassData] = useState([]); // 초기값을 빈 배열로 설정

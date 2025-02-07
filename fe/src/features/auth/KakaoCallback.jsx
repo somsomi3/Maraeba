@@ -30,10 +30,7 @@ const KakaoCallback = () => {
 
                     // Redux 상태 업데이트
                     dispatch(login(data.access_token));
-
-                    // localStorage에 Access Token 저장
-                    localStorage.setItem("token", data.access_token);
-
+        
                     // 메인 페이지로 이동
                     navigate("/main");
                 })
