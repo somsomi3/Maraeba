@@ -69,7 +69,10 @@ const Register = () => {
       alert('아이디 중복 검사를 완료해주세요.');
       return;
     }
-
+    // if (!isEmailChecked) {
+    //   alert('이메일 중복 검사를 완료해주세요.');
+    //   return;
+    // }
     springApi.post('/auth/register', formData)
       .then((response) => {
         alert(response.data.message);
@@ -128,6 +131,7 @@ const Register = () => {
             onChange={handleChange}
             required
           />
+          <button type="button" className="small-button" >이메일 중복검사</button>
         </div>
         <div className="input-group">
           <input
