@@ -13,7 +13,6 @@ const Register = () => {
   });
   const [isUserIdChecked, setIsUserIdChecked] = useState(false);
 
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -40,21 +39,6 @@ const Register = () => {
       });
   };
 
-//   const checkEmail = () => {
-//     if (!formData.email) {
-//       alert('이메일을 입력해주세요.');
-//       return;
-//     }
-//     springApi.get(`/auth/check-email?email=${encodeURIComponent(formData.email)}`)
-//       .then((response) => {
-//         alert(response.data.message || '사용 가능한 이메일입니다.');
-//         setIsEmailChecked(true);
-//       })
-//       .catch((error) => {
-//         alert(error.response?.data.message || '사용할 수 없는 이메일입니다.');
-//       });
-//   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.user_id || !formData.password || !formData.confirmPassword || !formData.username) {
@@ -69,10 +53,7 @@ const Register = () => {
       alert('아이디 중복 검사를 완료해주세요.');
       return;
     }
-    // if (!isEmailChecked) {
-    //   alert('이메일 중복 검사를 완료해주세요.');
-    //   return;
-    // }
+
     springApi.post('/auth/register', formData)
       .then((response) => {
         alert(response.data.message);
@@ -121,7 +102,7 @@ const Register = () => {
             required
           />
         </div>
-        <div className="input-group inline-group">
+        <div className="input-group">
           <input
             className="input"
             type="email"
@@ -131,7 +112,6 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-          <button type="button" className="small-button" >이메일 중복검사</button>
         </div>
         <div className="input-group">
           <input
