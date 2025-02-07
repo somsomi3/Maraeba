@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.ValueOperations;
 
 import com.be.common.exception.CustomException;
 import com.be.db.repository.PronunciationClassRepository;
@@ -27,7 +26,6 @@ import com.be.db.repository.UserRepository;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
-import com.be.domain.prons.dto.PronunciationSessionDTO;
 import com.be.domain.prons.dto.PronunciationStatDTO;
 import com.be.domain.prons.service.PronsServiceImpl;
 
@@ -44,19 +42,15 @@ class PronsServiceImplTest {
 	private PronunciationHistoryRepository pronunciationHistoryRepository;
 	@Mock
 	private PronunciationStatRepository pronunciationStatRepository;
-	@Mock
-	private ValueOperations<String, PronunciationSessionDTO> valueOperations;
 
 	@InjectMocks
 	private PronsServiceImpl pronsService;
 
-	private PronunciationSessionDTO mockSession;
 	private PronunciationClassDTO mockClassDTO;
 	private PronunciationDataDTO mockDataDTO;
 
 	@BeforeEach
 	void setup() {
-		mockSession = new PronunciationSessionDTO("session1", 1L, 1L, 0);
 		mockClassDTO = new PronunciationClassDTO(1L, "수업1", "설명1");
 		mockDataDTO = new PronunciationDataDTO("발음1", "설명1", 1, "url", "url");
 	}
@@ -128,6 +122,6 @@ class PronsServiceImplTest {
 		List<PronunciationStatDTO> result = pronsService.getStats(1L);
 
 		assertEquals(1, result.size());
-		assertEquals(0.1f, result.get(0).getAverageSimilarity());
+		assertEquals(0.1f, result.get(0).getAverageCorrectRate());
 	}
 }

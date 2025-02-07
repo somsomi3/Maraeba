@@ -52,11 +52,11 @@ public interface PronsService {
 	void deleteSession(String id);
 
 	/**
-	 * 발음 유사도 저장
+	 * 발음 정답 여부 저장
 	 * @param id
-	 * @param similarity
+	 * @param isCorrect
 	 */
-	void savePronunciationSimilarity(String id, double similarity);
+	void savePronunciationSimilarity(String id, Integer isCorrect);
 
 	/**
 	 * 히스토리 저장

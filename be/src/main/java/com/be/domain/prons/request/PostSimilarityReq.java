@@ -11,5 +11,5 @@ public class PostSimilarityReq {
 	@NotBlank
 	private String sessionId;
 	@NotNull
-	private Double similarity;
+	private Integer isCorrect;
 }
