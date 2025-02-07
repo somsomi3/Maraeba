@@ -1,4 +1,4 @@
-package com.be.domain.wgames.cooks.common.service;
+package com.be.domain.wgames.common.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

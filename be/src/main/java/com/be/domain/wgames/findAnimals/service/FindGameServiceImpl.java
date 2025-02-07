@@ -3,25 +3,22 @@ package com.be.domain.wgames.findAnimals.service;
 import com.be.db.entity.AnimalGame;
 import com.be.db.repository.AnimalCorrectRepository;
 import com.be.db.repository.AnimalGameRepository;
-import com.be.domain.wgames.AiTest;
-import com.be.domain.wgames.AudioConverter;
-import com.be.domain.wgames.cooks.common.service.SpeechService;
+import com.be.domain.wgames.common.service.SpeechService;
 import com.be.domain.wgames.findAnimals.request.AnimalCorrectRequest;
 import com.be.domain.wgames.findAnimals.response.AnimalAnswerResponse;
 import com.be.domain.wgames.findAnimals.response.AnimalResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -58,47 +55,34 @@ public class FindGameServiceImpl implements FindGameService {
         MultipartFile audio = request.getAudio();
         int imageNumber = request.getImageNumber();
         List<String> answerList = request.getAnswerList();    //이미 맞춘 정답
-
-        log.info("이미 맞춘 정답 리스트");
-        if (answerList != null) {
-            for (String s : answerList) {
-                log.info("{}", s);
-
-            }
-        } else log.info("비었음");
-
+        answerList.replaceAll(s -> s.replaceAll(" ", ""));
         //음성인식 결과
         String text = speechService.SpeechToText(audio);
 
         //이미 정답을 맞춘 경우 (중복)
-        if (answerList != null && answerList.contains(text)) {
+        if (answerList.contains(text)) {
             response.setDuplication(true);
             return response;
         }
 
         //정답을 맞춘 경우
+        //해당 게임의 정답 리스트 불러옴
         List<String> list = animalCorrectRepository.findAnimalNamesByGameId(imageNumber);
-        log.info("사이즈: {}", list.size());
-        for (String s : list) {
-            log.info("{}", s);
-        }
-        if (list.contains(text)) {
+
+        if (list.stream().map(s -> s.replaceAll(" ", ""))
+                .toList().contains(text)) {
             response.setIfCorrect(true);
             response.setAnimalName(text);
             List<Object[]> location = animalCorrectRepository.findLocationByAnimalNameAndGameId(text, imageNumber);
             response.setX((Integer) location.get(0)[0]);
             response.setY((Integer) location.get(0)[1]);
 
-            if (answerList != null) {
-                response.setCnt(answerList.size() + 1);
-            } else response.setCnt(1);
-            return response;
+            response.setCnt(answerList.size() + 1);
         }
-
         //정답에 없는 경우
         else {
             response.setIfCorrect(false);
-            return response;
         }
+        return response;
     }
 }

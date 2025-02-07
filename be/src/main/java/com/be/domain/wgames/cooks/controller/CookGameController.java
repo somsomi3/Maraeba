@@ -25,19 +25,12 @@ public class CookGameController {
 
     @PostMapping("/start-game")
     public ResponseEntity<FoodResponse> startGame() throws IOException {
-        log.info("게임 시작 요청 도착");
         FoodResponse foodResponse = foodGameService.pickFood();
-        log.info("선택된 음식: {}", foodResponse.getFoodName());
-        log.info("아이템 목록: {}", foodResponse.getFoodItems());
         return ResponseEntity.ok(foodResponse);
     }
 
     @PostMapping("/is-correct")
     public ResponseEntity<FoodAnswerResponse> isCorrect(@ModelAttribute AnswerCorrectRequest request) throws IOException {
-        log.info("여기 왔음!");
-        log.info("Food Name: {}", request.getFoodName());
-        log.info("Item1: {}", request.getItem1());
-        log.info("Item2: {}", request.getItem2());
 
         FoodAnswerResponse answerResponse = foodGameService.isCorrect(request);
         return ResponseEntity.ok(answerResponse);

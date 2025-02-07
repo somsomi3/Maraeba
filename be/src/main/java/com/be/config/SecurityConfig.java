@@ -79,7 +79,10 @@ public class SecurityConfig {
 					"/rooms/**",
 					"/game/**",
 					"/prons/**",
-					"/session/**"
+					"/session/**",
+
+						//임시 테스트용
+						"/cook-game/**"
 				).permitAll()
 				.requestMatchers("/error", "/favicon.ico").permitAll()
 				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
