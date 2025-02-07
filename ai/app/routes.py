@@ -9,6 +9,7 @@ import time
 import torch
 import torchaudio
 import logging
+import re
 from model import decode, get_pretrained_model
 
 api_bp = Blueprint('api', __name__)
@@ -97,7 +98,9 @@ def stt_single_endpoint():
     try:
         result = process_audio(decoding_method, num_active_paths, temp_path)
         os.remove(temp_path)  # 처리 후 임시 파일 삭제
-        return jsonify(result.get("text"))
+
+        recognized_text = "".join(re.findall(r"[가-힣]", result.get("text", "")))
+        return jsonify({"recognized_text": recognized_text})
     except Exception as e:
         logging.error(f"Error processing audio: {str(e)}")
         return jsonify({"error": str(e)}), 500
