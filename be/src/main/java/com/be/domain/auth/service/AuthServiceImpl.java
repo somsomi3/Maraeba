@@ -15,8 +15,10 @@ import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.PasswordMismatchException;
 import com.be.common.exception.UserNotFoundException;
 import com.be.common.util.PasswordGenerator;
+import com.be.db.entity.PasswordResetToken;
 import com.be.db.entity.RefreshToken;
 import com.be.db.entity.User;
+import com.be.db.repository.PasswordResetTokenRepository;
 import com.be.db.repository.RefreshTokenRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.auth.dto.UserIdResponseDto;
@@ -42,6 +44,7 @@ public class AuthServiceImpl implements AuthService {
 	private final PasswordEncoder passwordEncoder;
 	private final TokenService tokenService;
 	private final EmailService emailService;
+	private final PasswordResetTokenRepository passwordResetTokenRepository;
 
 	/**
 	 * 회원가입
@@ -237,6 +240,30 @@ public class AuthServiceImpl implements AuthService {
 		String subject = "임시 비밀번호 안내";
 		String message = "임시 비밀번호는 다음과 같습니다: " + tempPassword +
 			"\n로그인 후 비밀번호를 변경하세요.";
+
+		emailService.sendEmail(user.getEmail(), subject, message);
+	}
+
+	public void sendPasswordResetLink(ForgotPasswordRequest request) {
+		Optional<User> userOpt = userRepository.findByUserIdAndEmail(request.getUserId(), request.getEmail());
+
+		if (userOpt.isEmpty()) {
+			throw new RuntimeException("아이디 또는 이메일이 일치하는 사용자가 없습니다.");
+		}
+
+		User user = userOpt.get();
+
+		// 1. 비밀번호 변경 토큰 생성
+		PasswordResetToken resetToken = new PasswordResetToken(user);
+		passwordResetTokenRepository.save(resetToken);
+
+		// 2. 비밀번호 변경 링크 생성
+		String resetLink = "https://yourdomain.com/reset-password?token=" + resetToken.getToken();
+
+		// 3. 이메일로 링크 전송
+		String subject = "비밀번호 재설정 안내";
+		String message = "비밀번호를 변경하려면 아래 링크를 클릭하세요:\n" + resetLink +
+			"\n이 링크는 1시간 후 만료됩니다.";
 
 		emailService.sendEmail(user.getEmail(), subject, message);
 	}
