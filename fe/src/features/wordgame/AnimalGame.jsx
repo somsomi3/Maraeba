@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { springApi } from "../../utils/api"; // API 인스턴스 사용
-import GameRecordBtn from "./GameRecordBtn";
+// import GameRecordBtn from "./GameRecordBtn";
 import HomeButton from "../../components/button/HomeButton";
 import "./AnimalGame.css";
 
@@ -214,7 +214,7 @@ const startGame = async () => {
 
 
       {/* 🎤 마이크 버튼 */}
-      <GameRecordBtn onClick={isRecording ? stopRecording : startRecording} />
+      {/* <GameRecordBtn onClick={isRecording ? stopRecording : startRecording} /> */}
     </div>
   );
 };
