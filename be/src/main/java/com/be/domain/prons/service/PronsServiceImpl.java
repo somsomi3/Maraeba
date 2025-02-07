@@ -131,7 +131,7 @@ public class PronsServiceImpl implements PronsService {
 				PronunciationStat newStat = new PronunciationStat();
 				newStat.setUser(user);
 				newStat.setPronunciationClass(pronunciationClass);
-				newStat.setAverageSimilarity(0f); // 첫 값 설정
+				newStat.setAverageCorrectRate(0f); // 첫 값 설정
 				newStat.setCount(0);
 				pronunciationStatRepository.save(newStat);
 			}
@@ -140,8 +140,8 @@ public class PronsServiceImpl implements PronsService {
 			PronunciationStat stat = pronunciationStatRepository.findByUser_IdAndPronunciationClass_Id(
 				session.getUserId(),
 				session.getClassId()).orElseThrow(() -> new CustomException(ErrorCode.STAT_NOT_FOUND));
-			stat.setAverageSimilarity(
-				(float)(stat.getAverageSimilarity() + (avgSimilarity - stat.getAverageSimilarity()) / (stat.getCount()
+			stat.setAverageCorrectRate(
+				(float)(stat.getAverageCorrectRate() + (avgSimilarity - stat.getAverageCorrectRate()) / (stat.getCount()
 					+ 1)));
 			stat.setCount(stat.getCount() + 1);
 			pronunciationStatRepository.save(stat);

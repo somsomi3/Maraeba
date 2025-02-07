@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PronunciationStatDTO {
 	private Long classId;
-	private Float averageSimilarity;
+	private Float averageCorrectRate;
 	private Integer count;
 }
