@@ -40,9 +40,6 @@ import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
 import Profile from "./features/user/Profile";
 
-//테스트용으로 임시 파일 import
-import WordGame1 from "./features/wordgame/WordGame/index"
-
 // 라우트 정의
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -90,8 +87,6 @@ const router = createBrowserRouter(
                 <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
                 <Route path="/animal-game/start-game" element={<AnimalGame />} />
                 <Route path="/profile" element={<Profile />} />
-
-                <Route path="/game-test" element={<WordGame1 />} />
             </Route>
         </>
     )
