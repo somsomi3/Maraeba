@@ -73,6 +73,8 @@ def stt_endpoint():
         # 함수 호출
         recognized_text = recognize_speech_from_file(file_path)
 
+        os.remove(temp_path)  # 처리 후 임시 파일 삭제
+
         return jsonify({"recognized_text": recognized_text})
     
 # 한 글자 stt
