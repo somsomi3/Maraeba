@@ -5,7 +5,14 @@ import logging
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]}})
+    
+    # CORS 설정
+    CORS(app, resources={r"/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        "allow_headers": "*",
+        "supports_credentials": True  # 쿠키 등 인증 정보 포함 가능
+    }})
 
     # 라우트 등록
     from app.routes import api_bp
