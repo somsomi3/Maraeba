@@ -15,8 +15,7 @@ const PronsFirst = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [audioSrc, setAudioSrc] = useState(null);
-    const [isPlaying, setIsPlaying] = useState(false);
-  
+    
     useEffect(() => {
       const fetchPronunciationData = async () => {
         try {
