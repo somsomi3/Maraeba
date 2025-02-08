@@ -4,21 +4,35 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.be.common.auth.TokenType;
 import com.be.common.auth.service.TokenService;
+import com.be.common.exception.CustomException;
 import com.be.common.exception.DuplicateUserIDException;
+import com.be.common.exception.ErrorCode;
+import com.be.common.exception.InvalidRefreshTokenException;
 import com.be.common.exception.PasswordMismatchException;
+import com.be.common.exception.PasswordTokenExpiredException;
+import com.be.common.exception.PasswordTokenNotFoundException;
+import com.be.common.exception.RefreshTokenExpiredException;
+import com.be.common.exception.RefreshTokenMismatchException;
+import com.be.common.exception.RefreshTokenNotFoundException;
 import com.be.common.exception.UserNotFoundException;
+import com.be.db.entity.PasswordResetToken;
 import com.be.db.entity.RefreshToken;
 import com.be.db.entity.User;
+import com.be.db.repository.PasswordResetTokenRepository;
 import com.be.db.repository.RefreshTokenRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.auth.dto.UserIdResponseDto;
+import com.be.domain.auth.request.FindUserIdRequest;
+import com.be.domain.auth.request.ForgotPasswordRequest;
 import com.be.domain.auth.request.LoginRequest;
+import com.be.domain.auth.request.PasswordResetRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.CheckUserIdResponse;
 import com.be.domain.auth.response.LoginResponse;
@@ -33,10 +47,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+	@Value("${password.reset.base-url}")
+	private String passwordResetBaseUrl;
+
 	private final UserRepository userRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenService tokenService;
+	private final EmailService emailService;
+	private final PasswordResetTokenRepository passwordResetTokenRepository;
 
 	/**
 	 * 회원가입
@@ -106,7 +125,6 @@ public class AuthServiceImpl implements AuthService {
 
 		//accessToken 및 refreshToken 발급
 		String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
-		log.info("토큰 발급");
 		TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
 			user.getId(), TokenType.REFRESH_TOKEN);
 
@@ -141,27 +159,30 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public TokenRefreshResponse tokenRefresh(String refreshToken) {
 		//refreshToken 으로 user 고유번호 추출
-		long id = tokenService.extractUserIdFromToken(refreshToken);
-
+		long id;
+		try {
+			id = tokenService.extractUserIdFromToken(refreshToken);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidRefreshTokenException("tokenRefresh에서 id 추출 에러 : "+e.getMessage());
+		}
 		//DB에 refreshToken이 있는지 확인
 		RefreshToken dbRefreshToken = refreshTokenRepository.findByUserId(id)
-			.orElseThrow(() -> new IllegalArgumentException("Refresh token does not exist. Please log in again."));
+			.orElseThrow(() -> new RefreshTokenNotFoundException("DB에 해당 리프레시 토큰이 존재하지 않습니다."));
 
 		//DB의 refreshToken과 비교
 		if (!refreshToken.equals(dbRefreshToken.getToken())) {
-			throw new IllegalArgumentException("Refresh token does not match.");
+			throw new RefreshTokenMismatchException("리프레시 토큰이 일치하지 않음");
 		}
-
 		//받은 refreshToken이 만료된 것인지 확인
 		if (!tokenService.validateToken(refreshToken)) {
 			refreshTokenRepository.delete(dbRefreshToken);
-			throw new IllegalArgumentException("Refresh token expired.");
+			throw new RefreshTokenExpiredException("이미 만료된 리프레시 토큰");
 		}
 
 		//새로운 token 생성
 		String newAccessToken = tokenService.generateToken(id, TokenType.ACCESS_TOKEN);
-		TokenService.TokenWithExpiration newRefreshTokenWithExpiration = tokenService.generateTokenWithExpiration(id,
-			TokenType.REFRESH_TOKEN);
+		TokenService.TokenWithExpiration newRefreshTokenWithExpiration =
+			tokenService.generateTokenWithExpiration(id, TokenType.REFRESH_TOKEN);
 
 		//기존의 refreshToken 교체
 		dbRefreshToken.setToken(newRefreshTokenWithExpiration.getToken());
@@ -200,8 +221,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public List<UserIdResponseDto> findUserIdsByEmail(String email) {
-		List<User> users = userRepository.findByEmail(email);
+	public List<UserIdResponseDto> findUserIdsByEmail(FindUserIdRequest request) {
+		List<User> users = userRepository.findByEmail(request.getEmail());
 
 		return users.stream()
 			.map(user -> new UserIdResponseDto(
@@ -210,5 +231,52 @@ public class AuthServiceImpl implements AuthService {
 				user.getProvider()
 			))
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public void resetPassword(PasswordResetRequest request) {
+		// 1. 토큰으로 PasswordResetToken 조회
+		PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken())
+			.orElseThrow(() -> new PasswordTokenNotFoundException("유효하지 않은 토큰입니다."));
+
+		// 2. 토큰 만료 여부 확인
+		if (resetToken.isExpired()) {
+			passwordResetTokenRepository.delete(resetToken); // 만료된 토큰 삭제
+			throw new PasswordTokenExpiredException("비밀번호 재설정 링크가 만료되었습니다.");
+		}
+
+		// 3. 해당 사용자의 비밀번호 변경
+		User user = resetToken.getUser();
+		user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+		userRepository.save(user);
+
+		// 4. 사용된 토큰 삭제 (보안 강화를 위해)
+		passwordResetTokenRepository.delete(resetToken);
+	}
+
+	@Override
+	public void sendPasswordResetLink(ForgotPasswordRequest request) {
+		User user = userRepository.findByUserIdAndEmail(request.getUserId(), request.getEmail())
+			.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		// 1. 기존 토큰 삭제 (보안 강화)
+		passwordResetTokenRepository.findByUserId(user.getId())
+			.ifPresent(passwordResetTokenRepository::delete);
+
+		// 2. 비밀번호 변경 토큰 생성 및 저장
+		PasswordResetToken resetToken = new PasswordResetToken(user);
+		passwordResetTokenRepository.save(resetToken);
+
+		// 3. 비밀번호 변경 링크 생성 (yml에서 설정 값 불러오기)
+		String resetLink = passwordResetBaseUrl + "?token=" + resetToken.getToken();
+
+		// 4. 이메일로 링크 전송
+		String subject = "비밀번호 재설정 안내";
+		String message = String.format(
+			"안녕하세요, %s님\n\n비밀번호를 변경하려면 아래 링크를 클릭하세요:\n%s\n\n이 링크는 1시간 후 만료됩니다.",
+			user.getUsername(), resetLink
+		);
+
+		emailService.sendEmail(user.getEmail(), subject, message);
 	}
 }

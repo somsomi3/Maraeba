@@ -74,6 +74,8 @@ public class SecurityConfig {
 					"/auth/token",
 					"/auth/kakao/callback",
 					"/auth/find-id",
+					"/auth/forgot-password",
+					"/auth/reset-password",
 					"/WebRTC/**",
 					"/webrtc/**",
 					"/rooms/**",
