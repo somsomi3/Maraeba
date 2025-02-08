@@ -4,6 +4,7 @@ import { logout } from "../../store/authSlice"; // ✅ Redux logout 액션 추�
 import { springApi } from "../../utils/api";
 import HomeButton from "../../components/button/HomeButton";
 import PausePopup from "../../components/popup/PausePopup";
+import './profile.css'
 
 const Profile = () => {
   const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기

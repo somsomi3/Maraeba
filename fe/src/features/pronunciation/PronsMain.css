@@ -2,14 +2,18 @@
   text-align: center;
   display: flex;
   flex-direction: column;
+  height: 100vh; /* ✅ 전체 화면을 채우도록 설정 */
   justify-content: flex-start; /* 수직 가운데 정렬 */
   align-items: center; /* 수평 가운데 정렬 */
+  margin-top: -120px; /* ✅ 제목을 위로 이동 */
   
 }
   .card{
     font-family: Dovemayo_gothic;
     font-size: 1.5rem;
     margin-bottom: 3%;
+    width: 45vh;
+    height: 68vh;
   }
   
   .card-slider {
@@ -17,6 +21,7 @@
     gap: 20px;
     flex-wrap: wrap;
     box-sizing: border-box;
+    margin-top: -5px; /* ✅ 카드 전체를 위로 이동 */
   }
 
   .card:nth-child(1) {
@@ -69,11 +74,4 @@
     max-width: 600px;
     margin: 1rem auto;
     display: block;
-  }
-  
-  .record-button-container {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
   }
