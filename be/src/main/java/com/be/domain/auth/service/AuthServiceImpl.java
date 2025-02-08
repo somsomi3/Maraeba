@@ -14,9 +14,13 @@ import com.be.common.auth.service.TokenService;
 import com.be.common.exception.CustomException;
 import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.ErrorCode;
+import com.be.common.exception.InvalidRefreshTokenException;
 import com.be.common.exception.PasswordMismatchException;
 import com.be.common.exception.PasswordTokenExpiredException;
 import com.be.common.exception.PasswordTokenNotFoundException;
+import com.be.common.exception.RefreshTokenExpiredException;
+import com.be.common.exception.RefreshTokenMismatchException;
+import com.be.common.exception.RefreshTokenNotFoundException;
 import com.be.common.exception.UserNotFoundException;
 import com.be.db.entity.PasswordResetToken;
 import com.be.db.entity.RefreshToken;
@@ -155,25 +159,30 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public TokenRefreshResponse tokenRefresh(String refreshToken) {
 		//refreshToken 으로 user 고유번호 추출
-		long id = tokenService.extractUserIdFromToken(refreshToken);
-
+		long id;
+		try {
+			id = tokenService.extractUserIdFromToken(refreshToken);
+		} catch (IllegalArgumentException e) {
+			throw new InvalidRefreshTokenException("tokenRefresh에서 id 추출 에러 : "+e.getMessage());
+		}
 		//DB에 refreshToken이 있는지 확인
 		RefreshToken dbRefreshToken = refreshTokenRepository.findByUserId(id)
-			.orElseThrow(() -> new IllegalArgumentException("Refresh token does not exist. Please log in again."));
+			.orElseThrow(() -> new RefreshTokenNotFoundException("DB에 해당 리프레시 토큰이 존재하지 않습니다."));
+
 		//DB의 refreshToken과 비교
 		if (!refreshToken.equals(dbRefreshToken.getToken())) {
-			throw new IllegalArgumentException("Refresh token does not match.");
+			throw new RefreshTokenMismatchException("리프레시 토큰이 일치하지 않음");
 		}
 		//받은 refreshToken이 만료된 것인지 확인
 		if (!tokenService.validateToken(refreshToken)) {
 			refreshTokenRepository.delete(dbRefreshToken);
-			throw new IllegalArgumentException("Refresh token expired.");
+			throw new RefreshTokenExpiredException("이미 만료된 리프레시 토큰");
 		}
 
 		//새로운 token 생성
 		String newAccessToken = tokenService.generateToken(id, TokenType.ACCESS_TOKEN);
-		TokenService.TokenWithExpiration newRefreshTokenWithExpiration = tokenService.generateTokenWithExpiration(id,
-			TokenType.REFRESH_TOKEN);
+		TokenService.TokenWithExpiration newRefreshTokenWithExpiration =
+			tokenService.generateTokenWithExpiration(id, TokenType.REFRESH_TOKEN);
 
 		//기존의 refreshToken 교체
 		dbRefreshToken.setToken(newRefreshTokenWithExpiration.getToken());
