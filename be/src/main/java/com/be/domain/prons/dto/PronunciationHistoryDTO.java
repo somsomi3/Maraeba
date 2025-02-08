@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PronunciationHistoryDTO {
 	private Long classId;
-	private Double averageSimilarity;
+	private Double averageCorrectRate;
 	private LocalDateTime createdAt;
 }

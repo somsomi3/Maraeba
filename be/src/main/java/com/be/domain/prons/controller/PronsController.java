@@ -82,7 +82,7 @@ public class PronsController {
 		@PathVariable("class_id") Long classId) {
 		String id = UUID.randomUUID().toString(); // 세션 ID 생성
 		PronunciationSessionDTO session = new PronunciationSessionDTO(id, Long.parseLong(userDetails.getUsername()),
-			classId, 0);
+			classId);
 		pronsService.saveSession(session);
 		return new PostSessionRes("Success", HttpStatus.CREATED, id); // 클라이언트가 세션 ID를 저장
 	}
@@ -106,12 +106,12 @@ public class PronsController {
 		return new BaseResponseBody("Session ended", HttpStatus.NO_CONTENT);
 	}
 
-	// 발음 유사도 저장
-	@Operation(summary = "발음 유사도 저장", description = "발음 유사도를 저장합니다.")
-	@PostMapping("/session/similarity")
+	// 정답 여부 저장
+	@Operation(summary = "발음 정답 여부 저장", description = "발음 정답 여부를 저장합니다.")
+	@PostMapping("/session/correct")
 	public BaseResponseBody savePronunciationSimilarity(@Validated @RequestBody PostSimilarityReq request) {
-		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getSimilarity());
-		return new BaseResponseBody("Similarity saved", HttpStatus.CREATED);
+		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getIsCorrect());
+		return new BaseResponseBody("Correct saved", HttpStatus.CREATED);
 	}
 
 	// 히스토리 및 통계 저장

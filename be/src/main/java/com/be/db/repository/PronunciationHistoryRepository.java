@@ -11,6 +11,6 @@ import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import io.lettuce.core.dynamic.annotation.Param;
 
 public interface PronunciationHistoryRepository extends JpaRepository<PronunciationHistory, Long> {
-	@Query("SELECT new com.be.domain.prons.dto.PronunciationHistoryDTO(ph.pronunciationClass.id, ph.averageSimilarity, ph.createdAt) FROM PronunciationHistory ph WHERE ph.user.id = :userId")
+	@Query("SELECT new com.be.domain.prons.dto.PronunciationHistoryDTO(ph.pronunciationClass.id, ph.averageCorrectRate, ph.createdAt) FROM PronunciationHistory ph WHERE ph.user.id = :userId")
 	Page<PronunciationHistoryDTO> findByUser_Id(@Param("userId") Long userId, Pageable pageable);
 }
