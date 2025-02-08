@@ -1,0 +1,51 @@
+.profile-info-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.info-box {
+    margin-bottom: 15px;
+}
+
+.info-box label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.info-box input {
+    width: 25%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 0.5%;
+}
+
+.profile-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 7px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.change-password-btn {
+   background: none;
+   border: none;
+   cursor: pointer;
+   padding: 10px 5px;
+   margin: 1px;
+   
+}
+
+.delete-account-btn {
+   background: none;
+   border: none;
+   cursor: pointer;
+   padding: 10px 5px;
+   margin: 1px;
+}
