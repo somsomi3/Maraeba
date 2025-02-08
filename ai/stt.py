@@ -23,9 +23,7 @@ def recognize_speech_from_file(audio_file_path):
 
         # Google STT
         google_text = recognizer.recognize_google(audio, language="ko-KR")
-        google_result = "".join(google_text.split())  # 모든 공백 제거
-        print(google_result)
-        text = google_result[:(len(google_result)//2)]
+        text = google_text[:(len(google_text)//2)]
     except sr.UnknownValueError:
         text = "오디오를 이해하지 못했습니다."
     except sr.RequestError as e:
