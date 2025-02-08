@@ -5,6 +5,7 @@
     align-items: center;
     min-height: 100vh; /* 화면 중앙 정렬 */
     background-color: #ffe0b1; /* 기존 배경색 유지 */
+    
 }
 
 /* 카드 컨테이너 */
@@ -106,6 +107,24 @@
     margin-right: 10%;
     width: 38rem;
     bottom: -2px;
+}
+
+.profile-image {
+    position: absolute; /* 절대 위치 설정 */
+    top: 20px; /* 상단에서 20px 떨어지도록 */
+    left: 20px; /* 왼쪽에서 20px 떨어지도록 */
+    border-radius: 50%; /* 동그랗게 만들기 */
+    cursor: pointer; /* 클릭 가능하도록 */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
+    transition: transform 0.2s ease-in-out;
+    width: 50px !important;
+    height: 50px !important;
+
+}
+
+
+.profile-image:hover {
+    transform: scale(1.1); /* 마우스 올리면 약간 확대 */
 }
 
 /* 반응형 디자인 */

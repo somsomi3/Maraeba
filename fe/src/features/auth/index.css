@@ -110,5 +110,29 @@
     box-shadow: inset;
   }
 
+  .result-box {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .result-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .result-box li {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+
 
 

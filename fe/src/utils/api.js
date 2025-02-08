@@ -50,7 +50,7 @@ const isTokenExpired = (token) => {
 // ✅ 요청 인터셉터: Redux에서 토큰 가져와 헤더에 자동 추가
 const addAuthToken = async (config) => {
     // ✅ 인증이 필요 없는 요청이면 `Authorization` 헤더 추가 X
-    const publicEndpoints = ["/auth/register", "/auth/check-user-id", "/auth/kakao/callback"];
+    const publicEndpoints = ["/auth/register", "/auth/check-user-id", "/auth/kakao/callback", "/auth/find-id", "/auth/forgot-password"];
     if (publicEndpoints.some(endpoint => config.url.includes(endpoint))) {
         return config;
     }
