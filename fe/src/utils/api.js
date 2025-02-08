@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode"; // ✅ JWT 디코딩 라이브러리 추
 const flaskApi = axios.create({
     baseURL: import.meta.env.VITE_FLASK_API_URL,
     headers: { "Content-Type": "application/json" },
-    withCredentials: true, // ✅ 쿠키 자동 포함 (RefreshToken)
+
 });
 
 // 🔥 Spring API 인스턴스

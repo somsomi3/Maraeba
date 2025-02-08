@@ -21,7 +21,6 @@ function AuthInitializer({ children }) {
                 dispatch(login(newToken));
             } catch (err) {
                 console.error("❌ Silent refresh 실패:", err);
-                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                 // ✅ 새로고침 실패 시 강제 로그아웃
                 dispatch(logout());
             } finally {
