@@ -15,9 +15,6 @@ from model import decode, get_pretrained_model
 api_bp = Blueprint('api', __name__)
 CORS(api_bp)
 
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
 torch.set_num_threads(1)
 torch.set_num_interop_threads(1)
 torch._C._jit_set_profiling_executor(False)
@@ -64,15 +61,19 @@ def stt_endpoint():
         return jsonify({"error": "No selected file"}), 400
 
     if file:
-        # 음성파일 임시 저장
-        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(file_path)
+
+        # 임시 파일로 저장
+        with tempfile.NamedTemporaryFile(delete=False) as temp:
+            temp.write(file.read())
+            temp_path = temp.name
+        
+        # WAV 변환
+        file_path = convert_to_wav(temp_path)
 
         # 함수 호출
         recognized_text = recognize_speech_from_file(file_path)
 
-        # 임시 음성파일 삭제
-        os.remove(file_path)
+        os.remove(temp_path)  # 처리 후 임시 파일 삭제
 
         return jsonify({"recognized_text": recognized_text})
     
