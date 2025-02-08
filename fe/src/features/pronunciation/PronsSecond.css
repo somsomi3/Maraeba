@@ -103,3 +103,11 @@
     font-weight: bold;
     color: #000000;
 }
+
+  
+.record-button-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }

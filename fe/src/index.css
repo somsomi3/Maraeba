@@ -19,7 +19,8 @@ body {
   margin: 0;
   padding: 0;
   /* box-sizing: border-box; */
-  /* height: 100vh; */
+  height: 100vh;
+  overflow: hidden; /* ✅ 스크롤바 제거 */
 }
 
 /* 페이지 전체를 채우는 기본 스타일 */
