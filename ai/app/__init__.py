@@ -6,12 +6,12 @@ import logging
 def create_app():
     app = Flask(__name__)
     
-    # CORS 설정
+    # CORS 설정: 특정 Origin만 허용 (ex. http://localhost:5173)
     CORS(app, resources={r"/*": {
-        "origins": "*",
+        "origins": ["http://localhost:5173"],  # 프론트엔드 주소 명확히 지정
         "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-        "allow_headers": "*",
-        "supports_credentials": True  # 쿠키 등 인증 정보 포함 가능
+        "allow_headers": ["Content-Type", "Authorization"],  # 필요한 헤더 명시
+        "supports_credentials": True  # 쿠키, 인증 정보 포함 허용
     }})
 
     # 라우트 등록
