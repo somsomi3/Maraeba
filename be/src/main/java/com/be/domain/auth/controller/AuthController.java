@@ -1,6 +1,5 @@
 package com.be.domain.auth.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +23,7 @@ import com.be.domain.auth.dto.UserIdResponseDto;
 import com.be.domain.auth.request.FindUserIdRequest;
 import com.be.domain.auth.request.ForgotPasswordRequest;
 import com.be.domain.auth.request.LoginRequest;
+import com.be.domain.auth.request.PasswordResetRequest;
 import com.be.domain.auth.request.RegisterRequest;
 import com.be.domain.auth.response.AccessTokenResponse;
 import com.be.domain.auth.response.CheckUserIdResponse;
@@ -109,7 +110,7 @@ public class AuthController {
 
 		if (refreshToken == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-				.body(BaseResponseBody.of("Refresh Token is missing", HttpStatus.UNAUTHORIZED.value()));
+				.body(BaseResponseBody.of("refreshToken이 null로 들어옴", HttpStatus.UNAUTHORIZED.value()));
 		}
 
 		TokenRefreshResponse response = authService.tokenRefresh(refreshToken);
@@ -118,6 +119,22 @@ public class AuthController {
 			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
 			.body(AccessTokenResponse.from(response));
 	}
+
+	@Operation(summary = "비밀번호 재설정", description = "비밀번호 재설정 링크를 통해 새 비밀번호를 설정합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "비밀번호 변경 성공",
+			content = @Content(schema = @Schema(implementation = BaseResponseBody.class))),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+		@ApiResponse(responseCode = "404", description = "토큰이 유효하지 않거나 만료됨")
+	})
+	@PatchMapping("/reset-password")
+	public ResponseEntity<BaseResponseBody> resetPassword(
+		@Valid @RequestBody PasswordResetRequest request) {
+
+		authService.resetPassword(request);
+		return ResponseEntity.ok(BaseResponseBody.of("비밀번호가 성공적으로 변경되었습니다.", HttpStatus.OK));
+	}
+
 
 	@Operation(summary = "로그아웃", description = "사용자의 로그아웃을 처리합니다.")
 	@PostMapping("/logout")
@@ -134,18 +151,6 @@ public class AuthController {
 			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
 			.body(BaseResponseBody.of("Logout successfully", 200));
 	}
-
-	// @Operation(summary = "카카오 로그인 요청", description = "카카오 소셜 로그인 URL을 반환합니다.")
-	// @ApiResponses(value = {
-	// 	@ApiResponse(responseCode = "200", description = "카카오 로그인 URL 반환 성공",
-	// 		content = @Content(schema = @Schema(implementation = GetAuthUrlResponse.class)))
-	// })
-	// @Deprecated
-	// @GetMapping("/kakao")
-	// public ResponseEntity<? extends BaseResponseBody> getKakaoAuthUrl() {
-	// 	String kakaoAuthUrl = kakaoSocialService.getAuthorizationUrl();
-	// 	return ResponseEntity.ok(GetAuthUrlResponse.of(kakaoAuthUrl));
-	// }
 
 	@Operation(summary = "카카오 로그인 처리", description = "프론트에서 받은 인가코드를 사용해 카카오 로그인 처리")
 	@ApiResponses(value = {
@@ -172,39 +177,9 @@ public class AuthController {
 			.body(AccessTokenResponse.from(response)); // Access Token은 JSON으로 전달
 	}
 
-
-	// @Operation(summary = "카카오 로그인 콜백", description = "카카오 로그인 후 콜백을 처리합니다.")
-	// @ApiResponses(value = {
-	// 	@ApiResponse(responseCode = "200", description = "로그인 성공",
-	// 		content = @Content(schema = @Schema(implementation = AccessTokenResponse.class))),
-	// 	@ApiResponse(responseCode = "401", description = "로그인 실패 (인가 거부 등)",
-	// 		content = @Content(schema = @Schema(implementation = KakaoLoginErrorResponse.class)))
-	// })
-	// @GetMapping("/kakao/callback")
-	// public ResponseEntity<? extends BaseResponseBody> kakaoLogin(
-	// 	@RequestParam(required = false) String code,
-	// 	@RequestParam(required = false) String error,
-	// 	@RequestParam(required = false) String error_description
-	// ) {
-	// 	if (error != null) {
-	// 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	// 			.body(KakaoLoginErrorResponse.of(error_description, error));
-	// 	}
-	//
-	// 	String accessToken = kakaoSocialService.getAccessToken(code);
-	// 	SocialUser userInfo = kakaoSocialService.getUserInfo(accessToken);
-	// 	LoginResponse response = kakaoSocialService.socialLogin(userInfo);
-	//
-	// 	ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
-	//
-	// 	return ResponseEntity.ok()
-	// 		.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
-	// 		.body(AccessTokenResponse.from(response));
-	// }
-
 	@Operation(summary = "네이버 로그인 요청", description = "네이버 소셜 로그인 URL을 반환합니다.")
 	@GetMapping("/naver")
-	public ResponseEntity<? extends BaseResponseBody> getNaverAuthUrl() throws IOException {
+	public ResponseEntity<? extends BaseResponseBody> getNaverAuthUrl() {
 		String naverAuthUrl = naverSocialService.getAuthorizationUrl();
 		return ResponseEntity.ok(GetAuthUrlResponse.of(naverAuthUrl));
 	}
@@ -265,19 +240,19 @@ public class AuthController {
 	}
 
 	@PostMapping("/forgot-password")
-	@Operation(summary = "비밀번호 찾기", description = "사용자의 아이디와 이메일을 입력하여 임시 비밀번호를 발급받습니다.")
+	@Operation(summary = "비밀번호 찾기", description = "사용자의 아이디와 이메일을 입력하여 비밀번호 변경 주소를 발급받습니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "임시 비밀번호 전송 완료",
+		@ApiResponse(responseCode = "200", description = "비밀번호 변경 주소 전송 완료",
 			content = @Content(schema = @Schema(implementation = BaseResponseBody.class))),
 		@ApiResponse(responseCode = "404", description = "아이디 또는 이메일이 일치하는 사용자가 없습니다",
 			content = @Content(schema = @Schema(implementation = BaseResponseBody.class)))
 	})
-	public ResponseEntity<BaseResponseBody> forgotPassword(
-		@RequestBody @Parameter(description = "비밀번호 찾기 요청 데이터", required = true)
+	public ResponseEntity<? extends BaseResponseBody> forgotPassword(
+		@RequestBody @Valid @Parameter(description = "비밀번호 찾기 요청 데이터", required = true)
 		ForgotPasswordRequest request) {
 
-		authService.sendTemporaryPassword(request);
-		return ResponseEntity.ok(BaseResponseBody.of("임시 비밀번호를 이메일로 전송했습니다.", 200));
+		authService.sendPasswordResetLink(request);
+		return ResponseEntity.ok(BaseResponseBody.of("비밀번호 변경 주소를 이메일로 전송했습니다.", 200));
 	}
 
 }

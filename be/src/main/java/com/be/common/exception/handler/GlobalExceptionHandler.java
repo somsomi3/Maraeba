@@ -14,6 +14,8 @@ import com.be.common.exception.DuplicateUserIDException;
 import com.be.common.exception.CustomException;
 import com.be.common.exception.KakaoUserInfoException;
 import com.be.common.exception.PasswordMismatchException;
+import com.be.common.exception.PasswordTokenExpiredException;
+import com.be.common.exception.PasswordTokenNotFoundException;
 import com.be.common.exception.SocialLoginException;
 import com.be.common.exception.UserNotFoundException;
 import com.be.common.model.response.BaseResponseBody;
@@ -76,6 +78,20 @@ public class GlobalExceptionHandler {
 		return ResponseEntity
 			.status(HttpStatus.FORBIDDEN) // 403 Forbidden
 			.body(BaseResponseBody.of(e.getMessage(), HttpStatus.FORBIDDEN.value()));
+	}
+
+	@ExceptionHandler(PasswordTokenNotFoundException.class)
+	public ResponseEntity<BaseResponseBody> handlePasswordTokenNotFoundException(PasswordTokenNotFoundException e) {
+		return ResponseEntity
+			.status(HttpStatus.NOT_FOUND) // 403 Not_Found
+			.body(BaseResponseBody.of(e.getMessage(), HttpStatus.NOT_FOUND.value()));
+	}
+
+	@ExceptionHandler(PasswordTokenExpiredException.class)
+	public ResponseEntity<BaseResponseBody> handlePasswordTokenExpiredException(PasswordTokenExpiredException e) {
+		return ResponseEntity
+			.status(HttpStatus.GONE) // 410 Gone
+			.body(BaseResponseBody.of(e.getMessage(), HttpStatus.GONE.value()));
 	}
 
 	@ExceptionHandler(CustomException.class)
