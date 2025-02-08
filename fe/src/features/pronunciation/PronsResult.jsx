@@ -14,6 +14,8 @@ const PronsResult = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const token = useSelector((state) => state.auth.token);
+
   useEffect(() => {
     // 🟢 PronsMain에서 저장된 제목을 localStorage에서 가져와 classTitleMap에 저장
     const fetchClassTitles = async () => {
@@ -36,9 +38,10 @@ const PronsResult = () => {
       try {
         const response = await springApi.get(`/prons/history?page=${page}&size=10`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`, // ✅ Redux에서 가져온 토큰 사용
           },
         });
+
 
         console.log("✅ API 응답 데이터:", response.data);
 
@@ -109,7 +112,7 @@ const PronsResult = () => {
             </div> {/* 둥근 이미지 자리 */}
           <div className="session-info">
             <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>
-            <p className="session-score">유사도: {(latestRecord.average_similarity).toFixed(2)}점</p>
+            <p className="session-score">유사도: {(latestRecord.average_correct_rate).toFixed(2)}점</p>
             <div className="session-buttons">
               <button onClick={handleRestart}>다시하기</button>
               <button onClick={() => navigate("/prons")}>학습 끝내기</button>
@@ -137,7 +140,7 @@ const PronsResult = () => {
             {history.map((record, index) => (
               <tr key={index}>
                 <td>{classTitleMap[record.class_id] || `Class ${record.class_id}`}</td>
-                <td>{(record.average_similarity).toFixed(2)}점</td>
+                <td>{(record.average_correct_rate).toFixed(2)}점</td>
                 <td>{formatDate(record.created_at)}</td>
               </tr>
             ))}

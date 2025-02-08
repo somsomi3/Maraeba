@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "./store/authSlice"; 
 import { refreshTokenApi } from "./utils/api";
-import { useSelector } from "react-redux";
-
 
 function AuthInitializer({ children }) {
     const [loading, setLoading] = useState(true);
@@ -12,14 +10,10 @@ function AuthInitializer({ children }) {
 
     useEffect(() => {
         async function initializeAuth() {
-            // ✅ 이미 로그인된 경우 추가적인 로그인 시도 방지
-            if (isAuthenticated) {
-                setLoading(false);
-                return;
-            }
-
             try {
                 console.log("🔄 자동 로그인 시도 (Silent Refresh)");
+
+                // ✅ 새로고침 시 AccessToken 갱신
                 const res = await refreshTokenApi();
                 const newToken = res.data.access_token;
 
@@ -27,6 +21,8 @@ function AuthInitializer({ children }) {
                 dispatch(login(newToken));
             } catch (err) {
                 console.error("❌ Silent refresh 실패:", err);
+                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                // ✅ 새로고침 실패 시 강제 로그아웃
                 dispatch(logout());
             } finally {
                 console.log("✅ AuthInitializer 로딩 완료");
@@ -34,7 +30,12 @@ function AuthInitializer({ children }) {
             }
         }
 
-        initializeAuth();
+        // ✅ 로그아웃한 상태가 아니라면 실행
+        if (!isAuthenticated) {
+            initializeAuth();
+        } else {
+            setLoading(false);
+        }
     }, [dispatch, isAuthenticated]);
 
     if (loading) {

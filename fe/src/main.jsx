@@ -31,13 +31,12 @@ import {
     Webrtc,
     WaitingRoom,
     CreateRoom,
-    RoomPage,
     RoomList,
 } from "./features/room";
 import CookingGame from "./features/wordgame/CookingGame";
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
-import Profile from "./features/user/Profile";
+import { Profile, ProfileInfo, ChangePassword } from "./features/user";
 import AuthInitializer from "./AuthInitializer.jsx";
 
 // 라우트 정의
@@ -90,6 +89,9 @@ const router = createBrowserRouter(
                     element={<AnimalGame />}
                 />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/profile-info" element={<ProfileInfo />} />
+                <Route path="/change-password" element={<ChangePassword />} />
+
             </Route>
         </>
     )

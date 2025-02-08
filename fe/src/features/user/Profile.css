@@ -4,8 +4,9 @@
     width: 100vw;
     height: 100vh;
     background-color: #ffe0b1;
+    overflow-y: auto;
   }
-  
+
 /* 사이드바 */
 /* 사이드바 (sticky + 전체 높이 유지) */
 /* 사이드바 (sticky + 전체 높이 유지 + 최소 높이 추가) */
@@ -25,7 +26,24 @@
     border-right: 2px solid rgba(0, 0, 0, 0.1);
   }
   
-  
+  .info-box input[type="password"] {
+    width: 25%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+  .pw-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 7px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 15%;
+  }
   
   .profile-avatar {
     width: 80px;
@@ -164,7 +182,7 @@
   .glow {
     animation: badge-glow 2s infinite alternate;
   }
-  
+
   @keyframes badge-glow {
     from {
       filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));

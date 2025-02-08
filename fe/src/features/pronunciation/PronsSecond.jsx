@@ -19,10 +19,11 @@ const PronsSecond = () => {
   const navigate = useNavigate();
   const { class_id, seq_id } = useParams();
   const videoRef = useRef(null);
-  const [accuracy, setAccuracy] = useState([null, null, null]); // 🔹 정확도 저장
+ 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isMatch, setIsMatch] = useState(null); 
 
   useEffect(() => { 
     const fetchData = async () => {
@@ -85,27 +86,27 @@ const PronsSecond = () => {
     }
   };
 
-  // ✅ "다음으로" 버튼을 눌렀을 때 유사도 저장 후 학습 완료 시 세션 종료
-  const handleSaveSimilarityAndNext = async () => {
+  // ✅ "다음으로" 버튼을 눌렀을 때 정답 여부 저장 후 학습 완료 시 세션 종료
+  const handleSaveCorrectAndNext = async () => {
     const session_id = localStorage.getItem("session_id");
     if (!session_id) {
       alert("세션 ID가 존재하지 않습니다. 다시 시작해주세요.");
       return;
     }
 
-    if (accuracy[0] === null) {
+    if (isMatch === null) {
       alert("녹음을 먼저 진행해주세요.");
       return;
     }
 
     try {
-      console.log("📡 유사도 저장 요청:", { session_id, similarity: accuracy[0] });
-      await springApi.post("/prons/session/similarity", {
+      console.log("📡 정답 여부 저장 요청:", { session_id, is_correct: isMatch ? 1 : 0 });
+      await springApi.post("/prons/session/correct", {
         session_id,
-        similarity: accuracy[0], // 🔹 정확도를 서버에 저장
+        is_correct: isMatch ? 1 : 0, // 🔹 match 값에 따라 1(정답) 또는 0(오답) 저장
       });
 
-      console.log("✅ 유사도 저장 완료");
+      console.log("✅ 정답 여부 저장 완료");
 
       // ✅ 만약 마지막 수업이면 세션 종료 및 통계 업데이트
       const nextSeqId = parseInt(seq_id) + 1;
@@ -117,8 +118,8 @@ const PronsSecond = () => {
         navigate(`/prons/class/${class_id}/seq/${nextSeqId}`);
       }
     } catch (error) {
-      console.error("❌ 유사도 저장 실패:", error);
-      alert("유사도를 저장하는 중 오류가 발생했습니다.");
+      console.error("❌ 정답 여부 저장 실패:", error);
+      alert("정답 여부를 저장하는 중 오류가 발생했습니다.");
     }
   };
 
@@ -141,7 +142,10 @@ const PronsSecond = () => {
                 <video ref={videoRef} autoPlay playsInline className="camera-video"></video>
               </div>
               <div className="accuracy">
-                정확도: {accuracy[0] !== null ? `${accuracy[0]}%` : "녹음 후 정확도가 표시됩니다."}
+                <div className="match-result">
+                  {isMatch === null ? "녹음 후 결과가 표시됩니다." : 
+                  isMatch ? "정확해요! ✅" : "발음이 달라요 😞"}
+                </div>
               </div>
             </div>
           </div>
@@ -152,23 +156,10 @@ const PronsSecond = () => {
               {data.pronunciation}
             </div>
           )}
-
-          {/* ✅ 녹음 버튼 - AI 분석 후 정확도 저장 (서버로는 X) */}
-          <div className="record-button-container">
-            <RecordButton onAccuracyUpdate={(levenshtein, jaro, custom) => {
-              setAccuracy([levenshtein, jaro, custom]); // 🔹 정확도만 저장 (서버 전송 X)
-            }} pronunciation={data?.pronunciation} />
-          </div>
-
-          {/* ✅ 정확도 표시 */}
-          <div className="accuracy-box">
-            <h3>정확도</h3>
-            <p>lev: {accuracy[0] !== null ? `${accuracy[0]}%` : "-"}</p>
-            <p>jaro: {accuracy[1] !== null ? `${accuracy[1]}%` : "-"}</p>
-            <p>custom: {accuracy[2] !== null ? `${accuracy[2]}%` : "-"}</p>
-          </div>
-
-          <button className="next-button" onClick={handleSaveSimilarityAndNext}>
+            <div className="record-button-container">
+          <RecordButton onMatchUpdate={setIsMatch} pronunciation={data?.pronunciation} />
+            </div>
+          <button className="next-button" onClick={handleSaveCorrectAndNext}>
             {parseInt(seq_id) === classMaxSeqMap[class_id] ? "학습 끝내기" : "다음으로"}
           </button>
         </>
