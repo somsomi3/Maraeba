@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
 import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
+import { useSelector } from "react-redux";  // ✅ Redux에서 state 가져오기
+
+
 
 const CookingGame = () => {
   const [isRecording, setIsRecording] = useState(false); // 녹음 중인지 여부
@@ -28,6 +31,7 @@ const CookingGame = () => {
   const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
   const recordingTimeoutRef = useRef(null); // 녹음 타임아웃 관리
   const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.token); // ✅ Redux에서 Token 가져오기
   
   // 녹음 시작
   const startRecording = async () => {
@@ -83,7 +87,7 @@ const CookingGame = () => {
     if (gameData.item1) formData.append('item1', gameData.item1);
     if (gameData.item2) formData.append('item2', gameData.item2);
     try {
-        const token = localStorage.getItem("token");
+        // const token = localStorage.getItem("token");
         if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
 
         const response = await springApi.post("/cook-game/is-correct", formData, {
@@ -137,15 +141,10 @@ const CookingGame = () => {
   // 게임 시작 POST 요청
   const newFood = async () => {
     try {
-      const response = await springApi.post(
-        'cook-game/start-game',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await springApi.post("/cook-game/start-game", {}, {
+        headers: { Authorization: `Bearer ${token}` }, // ✅ Redux Token 사용
+        withCredentials: true,
+      });
       const result = response.data;
 
       console.log(

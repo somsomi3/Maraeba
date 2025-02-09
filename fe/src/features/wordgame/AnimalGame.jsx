@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { springApi } from "../../utils/api"; // API 인스턴스 사용
 // import GameRecordBtn from "./GameRecordBtn";
+import { useSelector } from 'react-redux'; // ✅ Redux에서 토큰 가져오기
 import HomeButton from "../../components/button/HomeButton";
 import "./AnimalGame.css";
+import recordIcon from "../../assets/icons/record.png";
+import stopIcon from "../../assets/icons/pause.png";
 
 const AnimalGame = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -15,7 +18,7 @@ const AnimalGame = () => {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const recordingTimeoutRef = useRef(null);
-  
+  const token = useSelector((state) => state.auth.token);
 
   const base64ToBlob = (base64, mimeType) => {
     try {
@@ -45,9 +48,12 @@ const AnimalGame = () => {
 
 const startGame = async () => {
     try {
-        const response = await springApi.post('/wgames/find-animal/start-game', {}, {
-            withCredentials: true, // ✅ 쿠키 인증 활성화
-          });
+      const response = await springApi.post('/wgames/find-animal/start-game', {}, {
+          headers: {
+              Authorization: `Bearer ${token}`, // ✅ Redux에서 가져온 토큰 사용
+          },
+          withCredentials: true, 
+      });
         console.log("🔍 Response 객체:", response);  
         const data = response.data;
         console.log("응답 데이터:", data);
@@ -119,7 +125,7 @@ const startGame = async () => {
         console.log("🎤 음성 데이터를 백엔드로 전송 중...");
 
         // 1️⃣ Access Token 가져오기
-        const token = localStorage.getItem("token");
+        // const token = localStorage.getItem("token");
         if (!token) {
             throw new Error("❌ Access Token이 없습니다. 로그인하세요.");
         }
@@ -190,8 +196,26 @@ const startGame = async () => {
       {/* ✅ 게임 UI 레이아웃 */}
       <div className="game-content">
         {/* 🎨 동물 찾기 이미지 */}
-        <div className="image-container">
+        <div className="image-container" style={{ position: "relative" }}>
           {gameData.imageData && <img src={gameData.imageData} alt="Game Image" className="game-image" />}
+          
+          {/* ✅ 동그라미 위치 표시 (circleData가 undefined이면 빈 배열) */}
+          {(gameData.circleData || []).map((circle, index) => (
+            <div
+              key={index}
+              className="circle-marker"
+              style={{
+                position: "absolute",
+                top: `${circle.y}px`,
+                left: `${circle.x}px`,
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                border: "3px solid red",
+                backgroundColor: "transparent",
+              }}
+            ></div>
+          ))}
         </div>
 
     {/* 📝 동물 리스트 */}
@@ -213,8 +237,12 @@ const startGame = async () => {
       </div>
 
 
-      {/* 🎤 마이크 버튼 */}
-      {/* <GameRecordBtn onClick={isRecording ? stopRecording : startRecording} /> */}
+      <button
+              className="record-button"
+              onClick={isRecording ? stopRecording : startRecording}
+            >
+              <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
+            </button>
     </div>
   );
 };
