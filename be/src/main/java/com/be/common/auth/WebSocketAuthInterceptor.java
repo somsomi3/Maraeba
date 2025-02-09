@@ -8,6 +8,8 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import java.util.Map;
 
 import com.be.common.auth.service.TokenService;
+import com.be.common.exception.CustomTokenException;
+import com.be.common.exception.TokenErrorCode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,12 +40,16 @@ public class WebSocketAuthInterceptor implements HandshakeInterceptor {
 		}
 
 		try {
-			Long userId = tokenService.extractUserIdFromToken(token);
+			Long userId = tokenService.extractUserIdFromToken(token)
+				.orElseThrow(() -> new CustomTokenException(TokenErrorCode.INVALID_ACCESS_TOKEN));
 			attributes.put("user", userId); // 세션에 사용자 ID 저장
 			log.info("✅ WebSocket 인증 성공, 사용자 ID: {}", userId);
 			return true;
+		} catch (CustomTokenException e) {
+			log.info("❌ WebSocket 인증 실패: 사용자 ID 추출 실패 - {}", e.getMessage());
+			return false;
 		} catch (Exception e) {
-			log.info("❌ WebSocket 인증 실패: 사용자 ID 추출 중 오류 발생 - {}", e.getMessage());
+			log.info("❌ WebSocket 인증 실패: 알 수 없는 오류 발생 - {}", e.getMessage());
 			return false;
 		}
 	}
