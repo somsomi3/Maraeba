@@ -3,8 +3,8 @@ package com.be.domain.users.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.be.common.exception.PasswordMismatchException;
-import com.be.common.exception.UserNotFoundException;
+import com.be.common.exception.CustomException;
+import com.be.common.exception.ErrorCode;
 import com.be.db.entity.User;
 import com.be.db.repository.UserRepository;
 import com.be.domain.users.request.PasswordRequest;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
 	private User findUserById(long id) {
 		log.info("id : {}", id);
-		return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+		return userRepository.findById(id).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 	public void updatePassword(Long id, PasswordUpdateRequest request) {
 		User user = findUserById(id);
 		if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-			throw new PasswordMismatchException();
+			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
 		}
 		user.setPassword(passwordEncoder.encode(request.getNewPassword()));
 		userRepository.save(user);
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 	public void deleteUser(Long id, PasswordRequest request) {
 		User user = findUserById(id);
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-			throw new PasswordMismatchException();
+			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
 		}
 		userRepository.delete(user);
 	}

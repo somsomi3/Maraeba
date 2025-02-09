@@ -12,7 +12,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import com.be.common.auth.TokenType;
-import com.be.common.exception.BlackTokenException;
+import com.be.common.exception.CustomTokenException;
+import com.be.common.exception.TokenErrorCode;
 import com.be.db.entity.AccessTokenBlacklist;
 import com.be.db.repository.AccessTokenBlacklistRepository;
 
@@ -113,7 +114,7 @@ public class TokenService {
 	 */
 	public boolean validateToken(String token) {
 		if (isBlacklisted(token)) {
-			throw new BlackTokenException();
+			throw new CustomTokenException(TokenErrorCode.ACCESS_TOKEN_BLACK);
 		}
 		try {
 			Jwts.parser()

@@ -16,9 +16,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.be.common.auth.TokenType;
 import com.be.common.auth.service.TokenService;
-import com.be.common.exception.AccessTokenException;
-import com.be.common.exception.KakaoUserInfoException;
-import com.be.common.exception.SocialLoginException;
+import com.be.common.exception.CustomException;
+import com.be.common.exception.CustomTokenException;
+import com.be.common.exception.ErrorCode;
+import com.be.common.exception.TokenErrorCode;
 import com.be.db.entity.RefreshToken;
 import com.be.db.entity.User;
 import com.be.db.repository.RefreshTokenRepository;
@@ -83,11 +84,11 @@ public class KakaoSocialService implements SocialService {
 			ResponseEntity<Map> response = restTemplate.postForEntity(KAKAO_TOKEN_URL, request, Map.class);
 
 			if (response.getBody() == null || !response.getBody().containsKey("access_token")) {
-				throw new AccessTokenException();
+				throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_EXIST);
 			}
 			return response.getBody().get("access_token").toString();
 		} catch (Exception e) {
-			throw new AccessTokenException(e.getMessage());
+			throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_EXIST, e.getMessage());
 		}
 	}
 
@@ -102,17 +103,17 @@ public class KakaoSocialService implements SocialService {
 
 			Map<String, Object> userInfo = response.getBody();
 			if (userInfo == null || !userInfo.containsKey("kakao_account")) {
-				throw new KakaoUserInfoException("Kakao account information is missing");
+				throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST,"Kakao account information is missing");
 			}
 			Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
 			if (kakaoAccount == null || !kakaoAccount.containsKey("profile")) {
-				throw new KakaoUserInfoException("Kakao profile information is missing");
+				throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST,"Kakao profile information is missing");
 			}
 			Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
 			// 추가로 각 필드에 대한 null 체크를 할 수 있음
 			if (userInfo.get("id") == null || kakaoAccount.get("email") == null || profile.get("nickname") == null) {
-				throw new KakaoUserInfoException();
+				throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST, "필수 항목에 null값 존재");
 			}
 
 			return new SocialUserDTO(
@@ -122,7 +123,7 @@ public class KakaoSocialService implements SocialService {
 				profile.get("nickname").toString()
 			);
 		} catch (Exception e) {
-			throw new KakaoUserInfoException(e.getMessage());
+			throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST, e.getMessage());
 		}
 	}
 
@@ -167,7 +168,7 @@ public class KakaoSocialService implements SocialService {
 			log.info("accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
 			return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
 		} catch (Exception e) {
-			throw new SocialLoginException(e.getMessage());
+			throw new CustomException(ErrorCode.SOCIAL_LOGIN_FAILED);
 		}
 	}
 }

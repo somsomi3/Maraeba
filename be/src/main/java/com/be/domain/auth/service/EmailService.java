@@ -5,7 +5,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.be.common.exception.CustomEmailException;
+import com.be.common.exception.CustomException;
+import com.be.common.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class EmailService {
             log.info("✅ 이메일 전송 성공: 수신자 = {}", to);
         } catch (MailException e) {
             log.error("❌ 이메일 전송 실패: {}", e.getMessage());
-            throw new CustomEmailException("이메일 전송 실패: " + e.getMessage()); // ✅ Custom Exception 던짐
+            throw new CustomException(ErrorCode.EMAIL_SEND_FAIL,e.getMessage());
         }
     }
 }
