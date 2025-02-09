@@ -12,7 +12,6 @@ public enum ErrorCode {
 	STAT_NOT_FOUND("Stat Not Found", HttpStatus.NOT_FOUND),
 	PASSWORD_MISMATCH("Password Mismatch", HttpStatus.BAD_REQUEST),
 	SOCIAL_LOGIN_FAILED("Social Login Failed", HttpStatus.FORBIDDEN),
-	KAKAO_USER_INFO_NOT_EXIST("Kakao User Info Not Exist", HttpStatus.FORBIDDEN),
 	EMAIL_SEND_FAIL("Send Email Failed", HttpStatus.CONFLICT),
 	DATABASE_ERROR("Database Error", HttpStatus.INTERNAL_SERVER_ERROR);
 

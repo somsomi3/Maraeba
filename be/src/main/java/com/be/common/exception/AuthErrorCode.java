@@ -12,7 +12,8 @@ public enum AuthErrorCode {
 	INVALID_EMAIL("Email Not Valid.", HttpStatus.BAD_REQUEST),
 	USER_NOT_FOUND("User Not Found.", HttpStatus.NOT_FOUND),
 	PASSWORD_MISMATCH("Incorrect Password.", HttpStatus.UNAUTHORIZED),
-	LOGIN_FAILED("Login Failed Due To Invalid Credentials.", HttpStatus.UNAUTHORIZED);
+	LOGIN_FAILED("Login Failed Due To Invalid Credentials.", HttpStatus.UNAUTHORIZED),
+	SOCIAL_USER_INFO_INVALID("Social user info is missing or invalid.", HttpStatus.BAD_REQUEST);
 
 	private final String message;
 	private final HttpStatus status;

@@ -140,7 +140,8 @@ public class AuthController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그인 성공",
 			content = @Content(schema = @Schema(implementation = AccessTokenResponse.class))),
-		@ApiResponse(responseCode = "401", description = "로그인 실패")
+		@ApiResponse(responseCode = "400", description = "잘못된 요청 (인가코드 누락)"),
+		@ApiResponse(responseCode = "401", description = "카카오 로그인 실패")
 	})
 	@PostMapping("/kakao/callback")
 	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(@RequestBody Map<String, String> requestBody) {

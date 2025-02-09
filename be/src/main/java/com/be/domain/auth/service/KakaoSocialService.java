@@ -12,10 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.be.common.auth.TokenType;
 import com.be.common.auth.service.TokenService;
+import com.be.common.exception.AuthErrorCode;
+import com.be.common.exception.CustomAuthException;
 import com.be.common.exception.CustomException;
 import com.be.common.exception.CustomTokenException;
 import com.be.common.exception.ErrorCode;
@@ -54,25 +57,14 @@ public class KakaoSocialService implements SocialService {
 	@Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
 	private String REDIRECT_URI;
 
-	@Value("${spring.security.oauth2.client.provider.kakao.authorization-uri}")
-	private String AUTHORIZATION_URI;
-
 	private final RestTemplate restTemplate = new RestTemplate();
 
 	@Override
-	public String getAuthorizationUrl() {
-		return AUTHORIZATION_URI
-			+ "?client_id=" + CLIENT_ID
-			+ "&redirect_uri=" + REDIRECT_URI
-			+ "&response_type=code";
-	}
-
-	@Override
 	public String getAccessToken(String code) {
-		//TODO code가 null이거나 blank 인 경우 예외 처리
-		// if (code == null || code.isBlank()) {
-		// 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(KakaoLoginErrorResponse.of("인가코드가 없습니다.", "invalid_code"));
-		// 	}
+		// 1. 인가 코드 검증
+		if (code == null || code.isBlank()) {
+			throw new CustomTokenException(TokenErrorCode.KAKAO_AUTH_CODE_NOT_EXIST);
+		}
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -91,13 +83,18 @@ public class KakaoSocialService implements SocialService {
 				throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_EXIST);
 			}
 			return response.getBody().get("access_token").toString();
-		} catch (Exception e) {
-			throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_EXIST, e.getMessage());
+		} catch (RestClientException e) {
+			throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_REQUEST_FAILED, e.getMessage());
 		}
 	}
 
 	@Override
 	public SocialUserDTO getUserInfo(String accessToken) {
+		// 1. Access Token 검증
+		if (accessToken == null || accessToken.isBlank()) {
+			throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_PROVIDED);
+		}
+
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setBearerAuth(accessToken);
@@ -105,19 +102,22 @@ public class KakaoSocialService implements SocialService {
 			HttpEntity<Void> request = new HttpEntity<>(headers);
 			ResponseEntity<Map> response = restTemplate.exchange(KAKAO_USER_INFO_URL, HttpMethod.GET, request, Map.class);
 
+			// 2. 응답 데이터 검증
 			Map<String, Object> userInfo = response.getBody();
 			if (userInfo == null || !userInfo.containsKey("kakao_account")) {
-				throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST,"Kakao account information is missing");
+				throw new CustomTokenException(TokenErrorCode.KAKAO_USER_INFO_NOT_EXIST);
 			}
+
 			Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
 			if (kakaoAccount == null || !kakaoAccount.containsKey("profile")) {
-				throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST,"Kakao profile information is missing");
+				throw new CustomTokenException(TokenErrorCode.KAKAO_USER_INFO_NOT_EXIST);
 			}
+
 			Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
-			// 추가로 각 필드에 대한 null 체크를 할 수 있음
+			// 3. 필수 필드 검증
 			if (userInfo.get("id") == null || kakaoAccount.get("email") == null || profile.get("nickname") == null) {
-				throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST, "필수 항목에 null값 존재");
+				throw new CustomTokenException(TokenErrorCode.KAKAO_USER_INFO_INCOMPLETE);
 			}
 
 			return new SocialUserDTO(
@@ -126,13 +126,19 @@ public class KakaoSocialService implements SocialService {
 				kakaoAccount.get("email").toString(),
 				profile.get("nickname").toString()
 			);
-		} catch (Exception e) {
-			throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_EXIST, e.getMessage());
+		} catch (RestClientException e) {
+			throw new CustomTokenException(TokenErrorCode.KAKAO_USER_INFO_REQUEST_FAILED, e.getMessage());
 		}
 	}
 
 	@Override
 	public LoginResponse socialLogin(SocialUserDTO socialUser) {
+		// 1. 입력값 검증
+		if (socialUser == null || socialUser.getProvider() == null || socialUser.getProviderId() == null
+			|| socialUser.getEmail() == null || socialUser.getNickname() == null) {
+			throw new CustomAuthException(AuthErrorCode.SOCIAL_USER_INFO_INVALID);
+		}
+
 		try {
 			String userId = socialUser.getProvider() + "_" + socialUser.getProviderId();
 			User user = userRepository.findByUserId(userId)
@@ -147,11 +153,11 @@ public class KakaoSocialService implements SocialService {
 				});
 
 			String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN)
-				.orElseThrow(() -> new CustomTokenException(TokenErrorCode.TOKEN_GENERATION_FAILED));
+				.orElseThrow(() -> new CustomTokenException(TokenErrorCode.TOKEN_GENERATION_FAILED,"소셜 로그인 액세스 토큰 생성 실패"));
 
 			TokenService.TokenWithExpiration refreshTokenWithExpiration =
 				tokenService.generateTokenWithExpiration(user.getId(), TokenType.REFRESH_TOKEN)
-					.orElseThrow(() -> new CustomTokenException(TokenErrorCode.TOKEN_GENERATION_FAILED));
+					.orElseThrow(() -> new CustomTokenException(TokenErrorCode.TOKEN_GENERATION_FAILED,"소셜 로그인 리프레시 토큰 생성 실패"));
 
 			RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
@@ -171,9 +177,13 @@ public class KakaoSocialService implements SocialService {
 					.toLocalDateTime());
 				refreshTokenRepository.save(refreshToken);
 			}
-			log.info("accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
+			log.info("✅ 소셜 로그인 성공 - accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
 			return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
+		} catch (CustomTokenException e) {
+			log.error("❌ 토큰 생성 실패: {}", e.getMessage());
+			throw e;
 		} catch (Exception e) {
+			log.error("❌ 소셜 로그인 처리 실패: {}", e.getMessage(), e);
 			throw new CustomException(ErrorCode.SOCIAL_LOGIN_FAILED, e.getMessage());
 		}
 	}

@@ -26,7 +26,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -97,26 +99,38 @@ public class TokenService {
 	 * Refresh Token을 담은 쿠키 생성
 	 */
 	public ResponseCookie createRefreshTokenCookie(String refreshToken) {
-		return ResponseCookie.from("refreshToken", refreshToken)
-			.httpOnly(true)
-			.secure(false) // HTTPS 환경에서만 전송
-			.path("/") // 모든 경로에서 사용 가능
-			.maxAge(refreshTokenValiditySeconds) // application.yml의 유효기간을 사용
-			.sameSite("Strict") // CSRF 방지
-			.build();
+		if (refreshToken == null || refreshToken.trim().isEmpty()) {
+			throw new CustomTokenException(TokenErrorCode.REFRESH_TOKEN_NOT_PROVIDED);
+		}
+
+		try {
+			return ResponseCookie.from("refreshToken", refreshToken)
+				.httpOnly(true)
+				.secure(false) // HTTPS 환경에서만 전송
+				.path("/") // 모든 경로에서 사용 가능
+				.maxAge(refreshTokenValiditySeconds) // application.yml의 유효기간을 사용
+				.sameSite("Strict") // CSRF 방지
+				.build();
+		} catch (Exception e) {
+			throw new CustomTokenException(TokenErrorCode.COOKIE_CREATION_FAILED, e.getMessage());
+		}
 	}
 
 	/**
 	 * Refresh Token을 담은 쿠키 제거
 	 */
 	public ResponseCookie deleteRefreshTokenCookie() {
-		return ResponseCookie.from("refreshToken", "")
-			.httpOnly(true)
-			.secure(false) // HTTPS 환경에서만 전송
-			.path("/") // 모든 경로에서 사용 가능
-			.maxAge(0) // application.yml의 유효기간을 사용
-			.sameSite("Strict") // CSRF 방지
-			.build();
+		try {
+			return ResponseCookie.from("refreshToken", "")
+				.httpOnly(true)
+				.secure(false) // HTTPS 환경에서만 전송
+				.path("/") // 모든 경로에서 사용 가능
+				.maxAge(0) // application.yml의 유효기간을 사용
+				.sameSite("Strict") // CSRF 방지
+				.build();
+		} catch (Exception e) {
+			throw new CustomTokenException(TokenErrorCode.COOKIE_CREATION_FAILED, e.getMessage());
+		}
 	}
 
 	/**
@@ -143,12 +157,26 @@ public class TokenService {
 	 * Access Token 블랙리스트 추가
 	 */
 	public void addToBlacklist(String token) {
-		Date expiration = getExpirationDate(token);
-		if (expiration != null) {
-			AccessTokenBlacklist accessTokenBlacklist = new AccessTokenBlacklist();
-			accessTokenBlacklist.setToken(token);
-			accessTokenBlacklist.setExpiryDate(expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-			accessTokenBlacklistRepository.save(accessTokenBlacklist);
+		// 1. Access Token 검증
+		if (token == null || token.trim().isEmpty()) {
+			throw new CustomTokenException(TokenErrorCode.ACCESS_TOKEN_NOT_PROVIDED);
+		}
+
+		try {
+			Date expiration = getExpirationDate(token);
+			if (expiration != null) {
+				AccessTokenBlacklist accessTokenBlacklist = new AccessTokenBlacklist();
+				accessTokenBlacklist.setToken(token);
+				accessTokenBlacklist.setExpiryDate(expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+
+				accessTokenBlacklistRepository.save(accessTokenBlacklist);
+				log.info("✅ Access Token 블랙리스트 등록 완료: {}", token);
+			} else {
+				log.info("✅ 이미 만료된 Access Token: {}", token);
+			}
+		} catch (Exception e) {
+			log.error("❌ Access Token 블랙리스트 저장 실패: {}", e.getMessage(), e);
+			throw new CustomTokenException(TokenErrorCode.BLACKLIST_SAVE_FAILED, e.getMessage());
 		}
 	}
 
