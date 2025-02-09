@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
@@ -130,7 +131,7 @@ public class KakaoSocialService implements SocialService {
 			throw new CustomTokenException(TokenErrorCode.KAKAO_USER_INFO_REQUEST_FAILED, e.getMessage());
 		}
 	}
-
+	@Transactional
 	@Override
 	public LoginResponse socialLogin(SocialUserDTO socialUser) {
 		// 1. 입력값 검증
@@ -162,20 +163,27 @@ public class KakaoSocialService implements SocialService {
 			RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
 			if (refreshToken != null) {
-				refreshToken.setToken(refreshTokenWithExpiration.getToken());
-				refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
-					.toInstant()
-					.atZone(ZoneId.systemDefault())
-					.toLocalDateTime());
-			} else {
-				refreshToken = new RefreshToken();
-				refreshToken.setUser(user);
+				log.info("해당 유저 고유 번호의 리프레시 토큰이 존재함");
 				refreshToken.setToken(refreshTokenWithExpiration.getToken());
 				refreshToken.setExpiryDate(refreshTokenWithExpiration.getExpiration()
 					.toInstant()
 					.atZone(ZoneId.systemDefault())
 					.toLocalDateTime());
 				refreshTokenRepository.save(refreshToken);
+			} else {
+				log.info("해당 유저 고유 번호의 리프레시 토큰이 존재하지 않음");
+				// 5. refreshToken DB 저장
+				try {
+					refreshToken = new RefreshToken();
+					refreshToken.setUser(user);
+					refreshToken.setToken(refreshTokenWithExpiration.getToken());
+					refreshToken.setExpiryDate(
+						refreshTokenWithExpiration.getExpiration().toInstant()
+							.atZone(ZoneId.systemDefault()).toLocalDateTime());
+					refreshTokenRepository.save(refreshToken);
+				} catch (Exception e) {
+					throw new CustomException(ErrorCode.DATABASE_ERROR, "Refresh Token DB 저장 에러 "+e.getMessage());
+				}
 			}
 			log.info("✅ 소셜 로그인 성공 - accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
 			return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());

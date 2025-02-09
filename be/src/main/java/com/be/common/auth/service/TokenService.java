@@ -109,7 +109,7 @@ public class TokenService {
 				.secure(false) // HTTPS 환경에서만 전송
 				.path("/") // 모든 경로에서 사용 가능
 				.maxAge(refreshTokenValiditySeconds) // application.yml의 유효기간을 사용
-				.sameSite("Strict") // CSRF 방지
+				.sameSite("Lax") // CSRF 방지
 				.build();
 		} catch (Exception e) {
 			throw new CustomTokenException(TokenErrorCode.COOKIE_CREATION_FAILED, e.getMessage());
@@ -126,7 +126,7 @@ public class TokenService {
 				.secure(false) // HTTPS 환경에서만 전송
 				.path("/") // 모든 경로에서 사용 가능
 				.maxAge(0) // application.yml의 유효기간을 사용
-				.sameSite("Strict") // CSRF 방지
+				.sameSite("Lax") // CSRF 방지
 				.build();
 		} catch (Exception e) {
 			throw new CustomTokenException(TokenErrorCode.COOKIE_CREATION_FAILED, e.getMessage());

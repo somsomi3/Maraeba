@@ -134,6 +134,7 @@ public class AuthServiceImpl implements AuthService {
 		RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
 		if (refreshToken != null) {
+			log.info("해당 유저 고유 번호의 리프레시 토큰이 존재함");
 			// 기존 객체의 토큰 값을 변경하고 업데이트
 			refreshToken.setToken(refreshTokenWithExpiration.getToken());
 			refreshToken.setExpiryDate(
@@ -142,6 +143,7 @@ public class AuthServiceImpl implements AuthService {
 				.atZone(ZoneId.systemDefault())
 				.toLocalDateTime());
 		} else {
+			log.info("해당 유저 고유 번호의 리프레시 토큰이 존재하지 않음");
 			// 5. refreshToken DB 저장
 			try {
 				refreshToken = new RefreshToken();

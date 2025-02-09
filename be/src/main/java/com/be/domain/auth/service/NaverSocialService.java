@@ -27,11 +27,6 @@ public class NaverSocialService implements SocialService {
 	private final RestTemplate restTemplate = new RestTemplate();
 
 	@Override
-	public String getAuthorizationUrl() {
-		return "";
-	}
-
-	@Override
 	public String getAccessToken(String code) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
