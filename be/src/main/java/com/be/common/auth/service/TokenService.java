@@ -3,6 +3,7 @@ package com.be.common.auth.service;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -58,29 +59,38 @@ public class TokenService {
 	/**
 	 * 토큰 생성
 	 */
-	public String generateToken(Long id, TokenType type) {
-		long expirationTime = selectExpirationTime(type);
-		return Jwts.builder()
-			.subject(String.valueOf(id))
-			.issuedAt(new Date())
-			.expiration(new Date(System.currentTimeMillis() + expirationTime))
-			.signWith(key)
-			.compact();
+	public Optional<String> generateToken(Long id, TokenType type) {
+		try {
+			long expirationTime = selectExpirationTime(type);
+			String token = Jwts.builder()
+				.subject(String.valueOf(id))
+				.issuedAt(new Date())
+				.expiration(new Date(System.currentTimeMillis() + expirationTime))
+				.signWith(key)
+				.compact();
+			return Optional.of(token);
+		} catch (Exception e) {
+			return Optional.empty(); // 예외를 던지지 않고 Optional.empty() 반환
+		}
 	}
 
 	/**
 	 * 토큰 생성 (만료일 포함)
 	 */
-	public TokenWithExpiration generateTokenWithExpiration(Long id, TokenType type) {
-		long expirationTime = selectExpirationTime(type);
-		Date expiration = new Date(System.currentTimeMillis() + expirationTime);
-		String token = Jwts.builder()
-			.subject(String.valueOf(id))
-			.issuedAt(new Date())
-			.expiration(expiration)
-			.signWith(key)
-			.compact();
-		return new TokenWithExpiration(token, expiration);
+	public Optional<TokenWithExpiration> generateTokenWithExpiration(Long id, TokenType type) {
+		try {
+			long expirationTime = selectExpirationTime(type);
+			Date expiration = new Date(System.currentTimeMillis() + expirationTime);
+			String token = Jwts.builder()
+				.subject(String.valueOf(id))
+				.issuedAt(new Date())
+				.expiration(expiration)
+				.signWith(key)
+				.compact();
+			return Optional.of(new TokenWithExpiration(token, expiration));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	/**
@@ -150,20 +160,20 @@ public class TokenService {
 	}
 
 	/**
-	 * 토큰에서 유저고유번호 추출
+	 * 토큰에서 유저 고유번호 추출
 	 */
-	public Long extractUserIdFromToken(String token) {
+	public Optional<Long> extractUserIdFromToken(String token) {
 		try {
-			return Long.parseLong(Jwts.parser()
+			return Optional.of(Long.parseLong(Jwts.parser()
 				.verifyWith(key)
 				.build()
 				.parseSignedClaims(token)
 				.getPayload()
-				.getSubject());
+				.getSubject()));
 		} catch (ExpiredJwtException e) {
-			return Long.parseLong(e.getClaims().getSubject());
+			return Optional.of(Long.parseLong(e.getClaims().getSubject()));
 		} catch (JwtException e) {
-			throw new IllegalArgumentException("Invalid token", e);
+			return Optional.empty(); // 예외를 던지지 않고 Optional.empty() 반환
 		}
 	}
 
@@ -188,7 +198,7 @@ public class TokenService {
 		} catch (ExpiredJwtException e) {
 			return e.getClaims().getExpiration();
 		} catch (JwtException e) {
-			throw new IllegalArgumentException("Invalid token", e);
+			throw new CustomTokenException(TokenErrorCode.INVALID_ACCESS_TOKEN, "Invalid token format");
 		}
 	}
 
@@ -200,7 +210,6 @@ public class TokenService {
 
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			return authorizationHeader.substring(7); // "Bearer " 이후의 값 추출
-		}
-		throw new IllegalArgumentException("Access Token is missing or invalid");
+		} else return null;
 	}
 }

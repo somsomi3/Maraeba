@@ -69,6 +69,10 @@ public class KakaoSocialService implements SocialService {
 
 	@Override
 	public String getAccessToken(String code) {
+		//TODO code가 null이거나 blank 인 경우 예외 처리
+		// if (code == null || code.isBlank()) {
+		// 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(KakaoLoginErrorResponse.of("인가코드가 없습니다.", "invalid_code"));
+		// 	}
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -142,10 +146,12 @@ public class KakaoSocialService implements SocialService {
 					return userRepository.save(newUser);
 				});
 
-			String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN);
-			log.info("토큰 발급");
-			TokenService.TokenWithExpiration refreshTokenWithExpiration = tokenService.generateTokenWithExpiration(
-				user.getId(), TokenType.REFRESH_TOKEN);
+			String accessToken = tokenService.generateToken(user.getId(), TokenType.ACCESS_TOKEN)
+				.orElseThrow(() -> new CustomTokenException(TokenErrorCode.TOKEN_GENERATION_FAILED));
+
+			TokenService.TokenWithExpiration refreshTokenWithExpiration =
+				tokenService.generateTokenWithExpiration(user.getId(), TokenType.REFRESH_TOKEN)
+					.orElseThrow(() -> new CustomTokenException(TokenErrorCode.TOKEN_GENERATION_FAILED));
 
 			RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
 
@@ -168,7 +174,7 @@ public class KakaoSocialService implements SocialService {
 			log.info("accessToken: {}, refreshToken: {}", accessToken, refreshToken.getToken());
 			return LoginResponse.of(accessToken, refreshTokenWithExpiration.getToken());
 		} catch (Exception e) {
-			throw new CustomException(ErrorCode.SOCIAL_LOGIN_FAILED);
+			throw new CustomException(ErrorCode.SOCIAL_LOGIN_FAILED, e.getMessage());
 		}
 	}
 }

@@ -10,6 +10,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.be.common.auth.model.CustomUserDetails;
 import com.be.common.auth.service.TokenService;
+import com.be.common.exception.CustomTokenException;
+import com.be.common.exception.TokenErrorCode;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,7 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// WebSocket Handshake 요청(`/WebRTC/signaling`)은 필터에서 제외
 		if (requestURI.startsWith("/WebRTC/signaling")) {
 			log.info("WebSocket Handshake 요청 - JWT 필터 제외");
-
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -75,7 +76,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			log.info("Extracted Token: {}", token);
 
 			if (token != null && tokenService.validateToken(token)) {
-				Long id = tokenService.extractUserIdFromToken(token);
+				Long id = tokenService.extractUserIdFromToken(token)
+					.orElseThrow(() -> new CustomTokenException(TokenErrorCode.INVALID_ACCESS_TOKEN));
 				log.info("User ID from Token: {}", id);
 
 				// UserDetails 가져오기
@@ -87,10 +89,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
+		} catch (CustomTokenException e) {
+			log.warn("JWT Filter - Invalid Token: {}", e.getMessage());
 		} catch (Exception e) {
 			// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
-			log.info("JWT Filter Exception: {}", e.getMessage());
-			// logger.error("Could not set user authentication in security context", e);
+			log.error("JWT Filter Exception: {}", e.getMessage(), e);
 		}
 		// 다음 필터로 진행
 		filterChain.doFilter(request, response);

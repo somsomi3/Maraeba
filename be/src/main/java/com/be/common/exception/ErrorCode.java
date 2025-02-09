@@ -13,8 +13,8 @@ public enum ErrorCode {
 	PASSWORD_MISMATCH("Password Mismatch", HttpStatus.BAD_REQUEST),
 	SOCIAL_LOGIN_FAILED("Social Login Failed", HttpStatus.FORBIDDEN),
 	KAKAO_USER_INFO_NOT_EXIST("Kakao User Info Not Exist", HttpStatus.FORBIDDEN),
-	USER_ID_DUPLICATE("User ID Already Exists.", HttpStatus.CONFLICT),
-	EMAIL_SEND_FAIL("Send Email Failed", HttpStatus.CONFLICT);
+	EMAIL_SEND_FAIL("Send Email Failed", HttpStatus.CONFLICT),
+	DATABASE_ERROR("Database Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
 	private final String message;
 	private final HttpStatus status;
