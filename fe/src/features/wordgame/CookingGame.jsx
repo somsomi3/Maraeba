@@ -28,7 +28,7 @@ const CookingGame = () => {
   const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
   const recordingTimeoutRef = useRef(null); // 녹음 타임아웃 관리
   const navigate = useNavigate();
-
+  
   // 녹음 시작
   const startRecording = async () => {
     try {

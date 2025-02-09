@@ -5,6 +5,7 @@ import { springApi } from "../../utils/api";
 import HomeButton from "../../components/button/HomeButton";
 import { useNavigate } from "react-router-dom"; // ✅ 로그인 페이지 리디렉션
 import pororo from "../../assets/images/pororo.png"
+import PronunciationHistoryChart from "../../components/popup/PronunciationHistoryChart";
 import "./Profile.css";
 
 const Profile = () => {
@@ -72,14 +73,14 @@ const Profile = () => {
             {/* 메인 컨텐츠 */}
             <div className="profile-content">
                 <div className="level-container">
-                    <h1>레벨 1 🌱</h1>
-                    <div className="progress-bar">
+                    <h1>마이페이지</h1>
+                    {/* <div className="progress-bar">
                         <div className="progress" style={{ width: "30%" }}></div>
                         <span className="progress-text">다음 레벨까지 70%</span>
-                    </div>
+                    </div> */}
                 </div>
 
-                <div className="profile-stats">
+                {/* <div className="profile-stats">
                     <div className="stat-box red">
                         <div className="stat-icon">🎁</div>
                         <p>모은 보물</p>
@@ -95,29 +96,12 @@ const Profile = () => {
                         <p>즐겁게 놀았던 시간</p>
                         <h2>0시간 0분</h2>
                     </div>
-                </div>
+                </div> */}
 
-                <h2>나의 관심사 📚</h2>
-                <div className="interest-list">
-                    <div className="interest-item">
-                        <span>사람</span>
-                        <div className="interest-progress" style={{ width: "45%" }}></div>
-                    </div>
-                    <div className="interest-item">
-                        <span>자연</span>
-                        <div className="interest-progress" style={{ width: "60%" }}></div>
-                    </div>
-                    <div className="interest-item">
-                        <span>여행</span>
-                        <div className="interest-progress" style={{ width: "30%" }}></div>
-                    </div>
-                    <div className="interest-item">
-                        <span>과학</span>
-                        <div className="interest-progress" style={{ width: "75%" }}></div>
-                    </div>
-                </div>
+                <h2>📊 발음 학습 기록</h2>
+                <PronunciationHistoryChart />
 
-                <h2>받은 칭찬 ✨</h2>
+                {/* <h2>받은 칭찬 ✨</h2>
                 <div className="badges-list">
                     <div className="badge-item glow">
                         <img src="/assets/badge1.png" alt="탐험가 배지" />
@@ -135,8 +119,10 @@ const Profile = () => {
                         <img src="/assets/badge4.png" alt="꾸준함 배지" />
                         <div className="badge-tooltip">30일 연속 학습! 💪</div>
                     </div>
-                </div>
+                </div> */}
             </div>
+
+            
             <HomeButton />
         </div>
     );
