@@ -4,10 +4,9 @@ import './Conversation.css';
 import conversationTitle from '../../assets/images/conversation.png'; 
 import HomeButton from '../../components/button/HomeButton';
 
-
 const Conversation = () => {
   const navigate = useNavigate();
-  const [selectedSituation, setSelectedSituation] = useState(null);
+  const [selectedSituation, setSelectedSituation] = useState('');
   const [formData, setFormData] = useState({
     otherRole: '',
     myRole: '',
@@ -41,7 +40,7 @@ const Conversation = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedSituation && !formData.situation.trim()) return;
+    if (!formData.situation.trim()) return;
     navigate('/conversation/start');
   };
 
@@ -65,9 +64,7 @@ const Conversation = () => {
               {predefinedSituations.map((situation, index) => (
                 <button
                   key={index}
-                  className={`situation-card ${
-                    selectedSituation === situation ? 'selected' : ''
-                  }`}
+                  className={`situation-card ${selectedSituation === situation ? 'selected' : ''}`}
                   onClick={() => setSelectedSituation(situation)}
                 >
                   {situation}
@@ -122,16 +119,14 @@ const Conversation = () => {
           <button
             className="primary-button"
             onClick={handleSubmit}
-            disabled={!selectedSituation && !formData.situation.trim()}
+            disabled={!formData.situation.trim()}
           >
             시작하기
           </button>
         </div>
       </div>
 
-
       <HomeButton />
-
     </>
   );
 };

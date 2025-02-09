@@ -9,7 +9,7 @@
   
 }
   .card{
-    font-family: Dovemayo_gothic;
+    font-family: SDSamliphopang;
     font-size: 1.5rem;
     margin-bottom: 3%;
     width: 45vh;
@@ -54,13 +54,14 @@
   }
 
   .start-button {
-    padding: 10px 20px;
-    font-size: 1rem;
-    font-family: Dovemayo_gothic;
+    font-size: 2rem;
+    font-family: SDSamliphopang;
     background-color: #f5b041;
+    width: 30%;
+    height: 10%;
     color: #fff;
     border: none;
-    border-radius: 5rem;
+    border-radius: 10rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
