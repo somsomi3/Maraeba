@@ -1,7 +1,6 @@
 package com.be.db.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,7 +45,7 @@ public class Room {
     // 세션에 저장된 메시지들 (OneToMany)
     @OneToMany(mappedBy = "room")
     @JsonIgnore // ✅ messages 필드를 직렬화(응답)에서 제외하여 Lazy Loading 문제 방지
-    private List<WebsocketMessage> messages = new ArrayList<>();
+    private List<WebrtcMessage> messages = new ArrayList<>();
 
     // ✅ 생성자 추가
     public Room(String title, String roomPassword, User host) {

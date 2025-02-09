@@ -2,6 +2,9 @@ package com.be.domain.rooms.controller;
 
 import java.util.List;
 
+import com.be.common.model.response.BaseResponseBody;
+import com.be.domain.rooms.request.SaveCallLogRequest;
+import com.be.domain.rooms.service.WebRTCLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.be.db.entity.WebRTCLog;
 import com.be.db.repository.WebRTCLogRepository;
-import com.be.domain.rooms.WebRTCLogDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,21 +28,23 @@ import lombok.extern.slf4j.Slf4j;
 public class WebRTCLogController {
 
 	private final WebRTCLogRepository webRTCLogRepository;
+	private final WebRTCLogService webRTCLogService;
+
 
 	// ✅ 모든 로그 조회 (GET 요청 허용)
 	@GetMapping("/logs")
 	public ResponseEntity<List<WebRTCLog>> getAllCallLogs(
 		@RequestParam(required = false) Long userId,
-		@RequestParam(required = false) String callId) { // ✅ 쿼리 파라미터 추가
+		@RequestParam(required = false) String roomId) { // ✅ 쿼리 파라미터 추가
 
 		log.info("📌 요청된 userId: {}", userId);
-		log.info("📌 요청된 callId: {}", callId);
+		log.info("📌 요청된 roomId: {}", roomId);
+
 
 		List<WebRTCLog> logs;
 		if (userId != null) {
 			logs = webRTCLogRepository.findByUserId((userId)); // ✅ 특정 유저 로그 조회
-		} else if (callId != null) {
-			logs = webRTCLogRepository.findByCallId(callId); // ✅ 특정 통화 로그 조회
+
 		} else {
 			logs = webRTCLogRepository.findAll(); // ✅ 모든 로그 조회
 		}
@@ -49,31 +53,16 @@ public class WebRTCLogController {
 	}
 
 	@PostMapping("/logs")
-	public ResponseEntity<String> saveCallLog(@RequestBody(required = false) WebRTCLogDto logDto,
-		@AuthenticationPrincipal UserDetails userDetails) {
-		if (logDto == null) {
-			return ResponseEntity.badRequest().body("❌ 잘못된 요청: 요청 본문이 없음");
+	public ResponseEntity<? extends BaseResponseBody> saveCallLog(@RequestBody(required = false)SaveCallLogRequest request,
+																  @AuthenticationPrincipal UserDetails userDetails) {
+		if (request == null) {
+			return ResponseEntity.badRequest().body(BaseResponseBody.of("❌ 잘못된 요청: 요청 본문이 없음",400));
 		}
-
-		// ✅ 로그인한 경우 userId 설정, 로그인 안 한 경우 null
+		log.info("Received WebRTC Log: {}", request);
 		Long userId = (userDetails != null) ? Long.parseLong(userDetails.getUsername()) : null;
-
-		// ✅ WebRTCLog 객체 생성
-		WebRTCLog log = new WebRTCLog(
-			logDto.getCallId(),
-			userId,  // 로그인한 경우 userId 저장, 비로그인 사용자는 null
-			logDto.getStartTime(),
-			logDto.getEndTime(),
-			logDto.getPacketLoss(),
-			logDto.getJitter(),
-			logDto.getLatency(),
-			logDto.getBitrate()
-		);
-
-		// ✅ 로그 저장
-		webRTCLogRepository.save(log);
-
-		return ResponseEntity.ok("✅ 로그 저장 완료 (비로그인 허용)");
+		request.setUserId(userId);
+		webRTCLogService.saveCallLog(request);
+		return ResponseEntity.ok().body(BaseResponseBody.of("✅ 로그 저장 완료 (비로그인 허용)",200));
 	}
 
 }

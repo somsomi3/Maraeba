@@ -78,6 +78,7 @@ public class GlobalExceptionHandler {
 			.body(BaseResponseBody.of(e.getMessage(), HttpStatus.FORBIDDEN.value()));
 	}
 
+
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<BaseResponseBody> handleCustomException(CustomException ex) {
 		return ResponseEntity

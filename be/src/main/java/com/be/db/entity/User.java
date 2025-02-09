@@ -40,4 +40,10 @@ public class User extends BaseEntity {
 
 	@OneToMany(mappedBy = "user")
 	private List<PronunciationStat> pronunciationStats;
+
+	@OneToMany(mappedBy = "user")
+	private List<WebRTCLog> webRTCLogs;
+
+	@OneToMany(mappedBy = "user")
+	private List<WebrtcMessage> websocketMessages;
 }
