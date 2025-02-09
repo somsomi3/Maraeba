@@ -65,12 +65,14 @@
     }
   
   .card-title {
-    font-size: 1.8rem; /* 제목 크기 키움 */
+    font-family: SDSamliphopang;
+    font-size: 2.5rem; /* 제목 크기 키움 */
     font-weight: bold;
     margin-bottom: 15px;
   }
   
   .card-description {
+    font-family: SDSamliphopang;
     font-size: 1.2rem; /* 설명 크기 키움 */
     line-height: 1.6;
   }

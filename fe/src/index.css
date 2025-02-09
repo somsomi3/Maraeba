@@ -46,6 +46,11 @@ body {
     src: url('./assets/fonts/DXChildsdrawing-KSCpc-EUC-H.ttf');
 }
 
+@font-face {
+    font-family: 'SDSamliphopang';
+    src: url('./assets/fonts/SDSamliphopangcheTTFBasic.ttf');
+}
+
 .next-button {
     margin-top: 16px; 
     padding: 10px 22px;

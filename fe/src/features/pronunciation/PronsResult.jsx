@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
 import pororo from "../../assets/images/pororo.png"
 import "./PronsResult.css";
+import { useSelector } from "react-redux";
 
 const PronsResult = () => {
   const navigate = useNavigate();
@@ -107,12 +108,12 @@ const PronsResult = () => {
       {/* ✅ 최근 학습 결과 */}
       {latestRecord && (
         <div className="current-session-result">
-          <div className="profile-image">
+          <div className="profile">
                 <img src={pororo} alt="" />
             </div> {/* 둥근 이미지 자리 */}
           <div className="session-info">
             <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>
-            <p className="session-score">유사도: {(latestRecord.average_correct_rate).toFixed(2)}점</p>
+            <p className="session-score">유사도: {(latestRecord.average_correct_rate*100).toFixed(0)}점</p>
             <div className="session-buttons">
               <button onClick={handleRestart}>다시하기</button>
               <button onClick={() => navigate("/prons")}>학습 끝내기</button>
@@ -140,7 +141,7 @@ const PronsResult = () => {
             {history.map((record, index) => (
               <tr key={index}>
                 <td>{classTitleMap[record.class_id] || `Class ${record.class_id}`}</td>
-                <td>{(record.average_correct_rate).toFixed(2)}점</td>
+                <td>{(record.average_correct_rate*100).toFixed(0)}점</td>
                 <td>{formatDate(record.created_at)}</td>
               </tr>
             ))}
