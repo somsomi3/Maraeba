@@ -20,8 +20,9 @@ public interface AuthService {
 	// CheckEmailResponse checkEmail(String email);
 	LoginResponse login(LoginRequest request);
 	TokenRefreshResponse tokenRefresh(String refreshToken);
-	void logout(HttpServletRequest httpServletRequest);
+	void logout(String refreshToken, HttpServletRequest httpServletRequest);
 	List<UserIdResponseDto> findUserIdsByEmail(FindUserIdRequest request);
 	void sendPasswordResetLink(ForgotPasswordRequest request);
 	void resetPassword(PasswordResetRequest request);
+	void validateToken(HttpServletRequest request);
 }

@@ -3,6 +3,7 @@ package com.be.common.auth.service;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -12,7 +13,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import com.be.common.auth.TokenType;
-import com.be.common.exception.BlackTokenException;
+import com.be.common.exception.CustomTokenException;
+import com.be.common.exception.TokenErrorCode;
 import com.be.db.entity.AccessTokenBlacklist;
 import com.be.db.repository.AccessTokenBlacklistRepository;
 
@@ -24,7 +26,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -57,55 +61,76 @@ public class TokenService {
 	/**
 	 * 토큰 생성
 	 */
-	public String generateToken(Long id, TokenType type) {
-		long expirationTime = selectExpirationTime(type);
-		return Jwts.builder()
-			.subject(String.valueOf(id))
-			.issuedAt(new Date())
-			.expiration(new Date(System.currentTimeMillis() + expirationTime))
-			.signWith(key)
-			.compact();
+	public Optional<String> generateToken(Long id, TokenType type) {
+		try {
+			long expirationTime = selectExpirationTime(type);
+			String token = Jwts.builder()
+				.subject(String.valueOf(id))
+				.issuedAt(new Date())
+				.expiration(new Date(System.currentTimeMillis() + expirationTime))
+				.signWith(key)
+				.compact();
+			return Optional.of(token);
+		} catch (Exception e) {
+			return Optional.empty(); // 예외를 던지지 않고 Optional.empty() 반환
+		}
 	}
 
 	/**
 	 * 토큰 생성 (만료일 포함)
 	 */
-	public TokenWithExpiration generateTokenWithExpiration(Long id, TokenType type) {
-		long expirationTime = selectExpirationTime(type);
-		Date expiration = new Date(System.currentTimeMillis() + expirationTime);
-		String token = Jwts.builder()
-			.subject(String.valueOf(id))
-			.issuedAt(new Date())
-			.expiration(expiration)
-			.signWith(key)
-			.compact();
-		return new TokenWithExpiration(token, expiration);
+	public Optional<TokenWithExpiration> generateTokenWithExpiration(Long id, TokenType type) {
+		try {
+			long expirationTime = selectExpirationTime(type);
+			Date expiration = new Date(System.currentTimeMillis() + expirationTime);
+			String token = Jwts.builder()
+				.subject(String.valueOf(id))
+				.issuedAt(new Date())
+				.expiration(expiration)
+				.signWith(key)
+				.compact();
+			return Optional.of(new TokenWithExpiration(token, expiration));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	/**
 	 * Refresh Token을 담은 쿠키 생성
 	 */
 	public ResponseCookie createRefreshTokenCookie(String refreshToken) {
-		return ResponseCookie.from("refreshToken", refreshToken)
-			.httpOnly(true)
-			.secure(false) // HTTPS 환경에서만 전송
-			.path("/") // 모든 경로에서 사용 가능
-			.maxAge(refreshTokenValiditySeconds) // application.yml의 유효기간을 사용
-			.sameSite("Strict") // CSRF 방지
-			.build();
+		if (refreshToken == null || refreshToken.trim().isEmpty()) {
+			throw new CustomTokenException(TokenErrorCode.REFRESH_TOKEN_NOT_PROVIDED);
+		}
+
+		try {
+			return ResponseCookie.from("refreshToken", refreshToken)
+				.httpOnly(true)
+				.secure(false) // HTTPS 환경에서만 전송
+				.path("/") // 모든 경로에서 사용 가능
+				.maxAge(refreshTokenValiditySeconds) // application.yml의 유효기간을 사용
+				.sameSite("Lax") // CSRF 방지
+				.build();
+		} catch (Exception e) {
+			throw new CustomTokenException(TokenErrorCode.COOKIE_CREATION_FAILED, e.getMessage());
+		}
 	}
 
 	/**
 	 * Refresh Token을 담은 쿠키 제거
 	 */
 	public ResponseCookie deleteRefreshTokenCookie() {
-		return ResponseCookie.from("refreshToken", "")
-			.httpOnly(true)
-			.secure(false) // HTTPS 환경에서만 전송
-			.path("/") // 모든 경로에서 사용 가능
-			.maxAge(0) // application.yml의 유효기간을 사용
-			.sameSite("Strict") // CSRF 방지
-			.build();
+		try {
+			return ResponseCookie.from("refreshToken", "")
+				.httpOnly(true)
+				.secure(false) // HTTPS 환경에서만 전송
+				.path("/") // 모든 경로에서 사용 가능
+				.maxAge(0) // application.yml의 유효기간을 사용
+				.sameSite("Lax") // CSRF 방지
+				.build();
+		} catch (Exception e) {
+			throw new CustomTokenException(TokenErrorCode.COOKIE_CREATION_FAILED, e.getMessage());
+		}
 	}
 
 	/**
@@ -113,7 +138,7 @@ public class TokenService {
 	 */
 	public boolean validateToken(String token) {
 		if (isBlacklisted(token)) {
-			throw new BlackTokenException();
+			throw new CustomTokenException(TokenErrorCode.ACCESS_TOKEN_BLACK);
 		}
 		try {
 			Jwts.parser()
@@ -132,12 +157,26 @@ public class TokenService {
 	 * Access Token 블랙리스트 추가
 	 */
 	public void addToBlacklist(String token) {
-		Date expiration = getExpirationDate(token);
-		if (expiration != null) {
-			AccessTokenBlacklist accessTokenBlacklist = new AccessTokenBlacklist();
-			accessTokenBlacklist.setToken(token);
-			accessTokenBlacklist.setExpiryDate(expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-			accessTokenBlacklistRepository.save(accessTokenBlacklist);
+		// 1. Access Token 검증
+		if (token == null || token.trim().isEmpty()) {
+			throw new CustomTokenException(TokenErrorCode.ACCESS_TOKEN_NOT_PROVIDED);
+		}
+
+		try {
+			Date expiration = getExpirationDate(token);
+			if (expiration != null) {
+				AccessTokenBlacklist accessTokenBlacklist = new AccessTokenBlacklist();
+				accessTokenBlacklist.setToken(token);
+				accessTokenBlacklist.setExpiryDate(expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+
+				accessTokenBlacklistRepository.save(accessTokenBlacklist);
+				log.info("✅ Access Token 블랙리스트 등록 완료: {}", token);
+			} else {
+				log.info("✅ 이미 만료된 Access Token: {}", token);
+			}
+		} catch (Exception e) {
+			log.error("❌ Access Token 블랙리스트 저장 실패: {}", e.getMessage(), e);
+			throw new CustomTokenException(TokenErrorCode.BLACKLIST_SAVE_FAILED, e.getMessage());
 		}
 	}
 
@@ -149,20 +188,20 @@ public class TokenService {
 	}
 
 	/**
-	 * 토큰에서 유저고유번호 추출
+	 * 토큰에서 유저 고유번호 추출
 	 */
-	public Long extractUserIdFromToken(String token) {
+	public Optional<Long> extractUserIdFromToken(String token) {
 		try {
-			return Long.parseLong(Jwts.parser()
+			return Optional.of(Long.parseLong(Jwts.parser()
 				.verifyWith(key)
 				.build()
 				.parseSignedClaims(token)
 				.getPayload()
-				.getSubject());
+				.getSubject()));
 		} catch (ExpiredJwtException e) {
-			return Long.parseLong(e.getClaims().getSubject());
+			return Optional.of(Long.parseLong(e.getClaims().getSubject()));
 		} catch (JwtException e) {
-			throw new IllegalArgumentException("Invalid token", e);
+			return Optional.empty(); // 예외를 던지지 않고 Optional.empty() 반환
 		}
 	}
 
@@ -187,7 +226,7 @@ public class TokenService {
 		} catch (ExpiredJwtException e) {
 			return e.getClaims().getExpiration();
 		} catch (JwtException e) {
-			throw new IllegalArgumentException("Invalid token", e);
+			throw new CustomTokenException(TokenErrorCode.INVALID_ACCESS_TOKEN, "Invalid token format");
 		}
 	}
 
@@ -199,7 +238,6 @@ public class TokenService {
 
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			return authorizationHeader.substring(7); // "Bearer " 이후의 값 추출
-		}
-		throw new IllegalArgumentException("Access Token is missing or invalid");
+		} else return null;
 	}
 }
