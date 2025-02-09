@@ -26,6 +26,7 @@ public class SpeechServiceImpl implements SpeechService{
     public String EncodingFile(MultipartFile audio) throws IOException {
         // 저장 경로 및 파일 이름 설정
         String uploadDir = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources\\audio\\";
+//        String uploadDir = "C:\\Users\\lsh95\\Desktop\\S12P11E104\\be\\src\\main\\resources\\audio\\";
         String fileName = UUID.randomUUID().toString();
 
         //파일 저장 경로 설정

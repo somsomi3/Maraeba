@@ -26,6 +26,7 @@ public class FoodDataLoader {
         log.info("데이터 저장!");
 
         String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
+//        String url = "C:\\Users\\lsh95\\Desktop\\S12P11E104\\be\\src\\main\\resources";
 
         if (foodItemRepository.count() == 0) {
             foodItemRepository.save(FoodItem.builder()

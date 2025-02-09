@@ -106,17 +106,20 @@
     font-size: 1rem;
   }
   
-  /* 마이크 버튼 */
-  .mic-button {
-    position: absolute;
-    bottom: 20px;
+  /* 녹음 버튼  */
+  .record-button {
     background: none;
     border: none;
     cursor: pointer;
+    outline: none;
+    transition: transform 0.2s ease-in-out;
   }
   
-  .mic-button img {
-    width: 50px;
+  .record-button img {
+    width: 50px; /* 버튼 크기 */
     height: 50px;
   }
   
+  .record-button:active {
+    transform: scale(0.9);
+  }

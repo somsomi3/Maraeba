@@ -25,6 +25,8 @@ public class AnimalDataLoader {
     public void init() {
 
         String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
+//        String url = "C:\\Users\\lsh95\\Desktop\\S12P11E104\\be\\src\\main\\resources";
+
         log.info(" 데이터 저장!");
 
         // 1️⃣ animal_game 테이블에 ID=1인 데이터 추가
