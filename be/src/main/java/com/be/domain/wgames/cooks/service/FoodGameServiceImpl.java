@@ -116,7 +116,7 @@ public class FoodGameServiceImpl implements FoodGameService {
                 answerResponse.setDuplication(true);
             }
             //중복 아니고 정답 맞음.
-            else if (textBlank.contains(answerItem1.replaceAll(" ", "")) || text.contains(answerItem2.replaceAll(" ", ""))) {
+            else if (textBlank.contains(answerItem1.replaceAll(" ", "")) || textBlank.contains(answerItem2.replaceAll(" ", ""))) {
                 answerResponse.setIfCorrect(true);
                 String answer = textBlank.contains(answerItem1.replaceAll(" ", "")) ? answerItem1 : answerItem2;
                 answerResponse.setItem(answer);
@@ -125,6 +125,12 @@ public class FoodGameServiceImpl implements FoodGameService {
                 File imageFile = new File(foodItemRepository.findByIngredientName(answer).getFoodImage());
                 byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
                 answerResponse.setImageData(imageBytes);
+            }
+            //정답이 아닌 경우
+            else {
+                answerResponse.setItem(text);
+                answerResponse.setIfCorrect(false);
+                answerResponse.setDuplication(false);
             }
         }
 

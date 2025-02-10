@@ -22,26 +22,27 @@ public class ChatServiceImpl implements ChatService{
         String historyKey = "user:" + sessionId + ":history";
         String summaryKey = "user:" + sessionId + ":summary";
 
-        // 1️⃣ Redis에서 기존 대화 내역 가져오기
+        // Redis에서 기존 대화 내역 가져오기
         List<String> chatHistory = redisTemplate.opsForList().range(historyKey, 0, -1);
         if (chatHistory == null) {
             chatHistory = new ArrayList<>();
         }
 
-        // 2️⃣ OpenAI API 호출 (이전 대화 포함)
+        // OpenAI API 호출 (이전 대화 포함)
         String response = openAiClient.getResponse(chatHistory, userMessage);
 
-        // 3️⃣ Redis에 새 대화 저장
+        // Redis에 새 대화 저장
         redisTemplate.opsForList().rightPush(historyKey, "User: " + userMessage);
         redisTemplate.opsForList().rightPush(historyKey, "AI: " + response);
 
-        // 4️⃣ 대화 길이 제한 → 초과하면 앞에서 삭제
-        while (Boolean.TRUE.equals(redisTemplate.opsForList().size(historyKey) > MAX_HISTORY)) {
+
+        // 대화 길이 제한 → 초과하면 앞에서 삭제
+        while (redisTemplate.opsForList().size(historyKey) > MAX_HISTORY) {
             redisTemplate.opsForList().leftPop(historyKey);
         }
 
-        // 5️⃣ 오래된 대화 요약 후 저장
-        if (Boolean.TRUE.equals(redisTemplate.opsForList().size(historyKey) > MAX_HISTORY / 2)) {
+        // 오래된 대화 요약 후 저장
+        if (redisTemplate.opsForList().size(historyKey) > MAX_HISTORY / 2) {
             String summary = generateSummary(chatHistory);
             redisTemplate.opsForValue().set(summaryKey, summary);
         }

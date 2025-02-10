@@ -20,9 +20,11 @@ public class ChatBotController {
 
     private final ChatService chatService;
 
+
     @PostMapping
     public String chat(@RequestBody Map<String, String> request) throws JsonProcessingException {
         String userMessage = request.get("message");
-        return chatService.chat("1234", userMessage);
+        String sessionId = request.get("session_id");
+        return chatService.chat(sessionId, userMessage);
     }
 }

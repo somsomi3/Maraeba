@@ -45,7 +45,7 @@ public class OpenAiClient {
 
         // OpenAI API에 요청할 데이터 생성 (JSON)
         String jsonPayload = objectMapper.writeValueAsString(Map.of(
-                "model", "gpt-3.5-turbo",
+                "model", "gpt-4o-mini",
                 "messages", messages
         ));
 
