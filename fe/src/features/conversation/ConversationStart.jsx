@@ -5,21 +5,18 @@ import { useNavigate } from 'react-router-dom'; // useNavigate 추가
 import './ConversationStart.css';
 import catAvatar from '../../assets/images/aiCat.png';
 import smileAvatar from '../../assets/images/smile.png';
-import micIcon from '../../assets/images/mic.png';
-import stopIcon from '../../assets/images/stop.png';
 import bunnyImage from '../../assets/images/bunny.png'; // 팝업 이미지 추가
-import HomeButton from '../../components/button/HomeButton';
+
+// ✅ 컴포넌트 교체
+import PausePopup from "../../components/popup/PausePopup";
+import RecordButton from "../../components/button/RecordButton";
+import GoBackButton from "../../components/button/GoBackButton";
 
 const ConversationStart = () => {
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태
   const [recordingTime, setRecordingTime] = useState(0); // 녹음 시간
   const [showExitPopup, setShowExitPopup] = useState(false); // 종료 팝업 상태
   const navigate = useNavigate(); // useNavigate 사용
-
-  const handleMicClick = () => {
-    setIsRecording(true); // 녹음 시작
-    setRecordingTime(0); // 녹음 시간 초기화
-  };
 
   const handleStopClick = () => {
     setShowExitPopup(true); // 종료 팝업 띄우기
@@ -76,26 +73,11 @@ const ConversationStart = () => {
 
       {/* 하단 버튼 */}
       <div className="footer">
-        <button className="mic-button" onClick={handleMicClick}>
-          <img src={micIcon} alt="마이크" />
-        </button>
+        <RecordButton />
       </div>
 
       {/* 정지 버튼 */}
-      <button className="stop-button" onClick={handleStopClick}>
-        <img src={stopIcon} alt="정지" />
-      </button>
-
-      {/* 녹음중 팝업 */}
-      {isRecording && (
-        <div className="popup">
-          <p>녹음중...</p>
-          <p>녹음 시간: {formatTime(recordingTime)}</p>
-          <button className="popup-stop-button" onClick={() => setIsRecording(false)}>
-            <img src={stopIcon} alt="정지" />
-          </button>
-        </div>
-      )}
+      <PausePopup onExit={() => navigate("/main")} />
 
       {/* 종료 확인 팝업 */}
       {showExitPopup && (
@@ -112,7 +94,8 @@ const ConversationStart = () => {
           </div>
         </div>
       )}
-      <HomeButton />
+      
+      <GoBackButton />
     </div>
   );
 };

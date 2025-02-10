@@ -12,7 +12,7 @@
 
 
 /* 게임 오버레이 */
-.game-overlay {
+.cooking-game-overlay {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,7 +38,7 @@
   } */
 
 /* 게임 제목 */
-.game-title {
+.cooking-game-title {
     font-family: 'Gamja Flower', sans-serif;
     font-size: 2rem;
     font-weight: bold;
@@ -123,7 +123,7 @@
 
     /* 반응형 디자인 */
     @media (max-width: 768px) {
-        .game-title {
+        .cooking-game-title {
             font-size: 1.8rem;
         }
 
