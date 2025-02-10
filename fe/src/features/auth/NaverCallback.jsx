@@ -11,7 +11,6 @@ const NaverCallback = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
-        const state = urlParams.get("state");
         const error = urlParams.get("error"); // ✅ 네이버 로그인 실패 시 포함됨
         const errorDescription = urlParams.get("error_description");
 
@@ -24,10 +23,9 @@ const NaverCallback = () => {
 
         if (code) {
             console.log("✅ 네이버 인가코드:", code);
-            console.log("✅ 네이버 state 값:", state);
 
             springApi
-                .post("/auth/naver/callback", { code, state }) 
+                .post("/auth/naver/callback", { code }) 
                 .then(({ data }) => {
                     console.log("✅ 백엔드 응답:", data);
 

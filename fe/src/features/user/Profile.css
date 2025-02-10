@@ -7,6 +7,10 @@
     overflow-y: auto;
   }
 
+.childname {
+    text-align: center;
+}
+
 /* 사이드바 */
 /* 사이드바 (sticky + 전체 높이 유지) */
 /* 사이드바 (sticky + 전체 높이 유지 + 최소 높이 추가) */
@@ -145,7 +149,7 @@
   }
   
   /* 배지 */
-  .badges-list {
+  /* .badges-list {
     display: flex;
     gap: 10px;
     margin-top: 20px;
@@ -174,10 +178,10 @@
   
   .badge-item:hover .badge-tooltip {
     visibility: visible;
-  }
+  } */
   
   /* 배지 반짝이 효과 */
-  .glow {
+  /* .glow {
     animation: badge-glow 2s infinite alternate;
   }
 
@@ -188,5 +192,5 @@
     to {
       filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
     }
-  }
+  } */
   
