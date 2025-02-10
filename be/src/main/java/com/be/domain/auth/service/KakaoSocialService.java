@@ -63,12 +63,13 @@ public class KakaoSocialService implements SocialService {
 
 	@Override
 	public String getAccessToken(String code) {
-		log.info("[Service]getAccessToken 메서드 들어옴");
+		log.info("[Service] getAccessToken 호출됨, 받은 인가 코드: {}", code);
 		// 1. 인가 코드 검증
 		if (code == null || code.isBlank()) {
+			log.error("❌ getAccessToken - 전달된 인가 코드가 없음!");
 			throw new CustomTokenException(TokenErrorCode.KAKAO_AUTH_CODE_NOT_EXIST);
 		}
-		log.info("[Service]getAccessToken 인가 코드 검증 통과, CODE : {}", code);
+
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -80,12 +81,16 @@ public class KakaoSocialService implements SocialService {
 			params.add("redirect_uri", REDIRECT_URI);
 			params.add("code", code);
 
+			log.info("[Service] 액세스 토큰 요청 데이터: {}", params);
+
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-			log.info("[Service]getAccessToken 액세스 토큰 요청 전, KAKAO_TOKEN_URL : {}", KAKAO_TOKEN_URL);
+
+			log.info("[Service] getAccessToken - 액세스 토큰 요청 전, KAKAO_TOKEN_URL: {}", KAKAO_TOKEN_URL);
 			ResponseEntity<Map> response = restTemplate.postForEntity(KAKAO_TOKEN_URL, request, Map.class);
-			log.info("[Service]getAccessToken 액세스 토큰 요청 후");
+			log.info("[Service] getAccessToken - 액세스 토큰 요청 후 응답: {}", response.getBody());
 			// 2. 응답 값 검증
 			if (response.getBody() == null) {
+				log.error("❌ getAccessToken - 카카오 응답이 비어 있음!");
 				throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_EXIST, "카카오 응답이 비어 있습니다.");
 			}
 
@@ -94,12 +99,14 @@ public class KakaoSocialService implements SocialService {
 					String errorMessage = Optional.ofNullable(response.getBody().get("error_description"))
 						.map(Object::toString)
 						.orElse("카카오에서 오류가 발생했습니다.");
+					log.error("❌ getAccessToken - 카카오 액세스 토큰 요청 오류: {}", errorMessage);
 					throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_EXIST, errorMessage);
 				}
 				throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_NOT_EXIST);
 			}
 			return response.getBody().get("access_token").toString();
 		} catch (RestClientException e) {
+			log.error("❌ getAccessToken - 카카오 액세스 토큰 요청 실패: {}", e.getMessage(), e);
 			throw new CustomTokenException(TokenErrorCode.KAKAO_ACCESS_TOKEN_REQUEST_FAILED, e.getMessage());
 		}
 	}
