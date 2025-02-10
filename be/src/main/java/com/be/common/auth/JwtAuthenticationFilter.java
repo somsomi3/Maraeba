@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// WebSocket Handshake 요청(`/WebRTC/signaling`)은 필터에서 제외
 		if (requestURI.startsWith("/WebRTC/signaling")) {
-			log.info("WebSocket Handshake 요청 - JWT 필터 제외");
+			// log.info("WebSocket Handshake 요청 - JWT 필터 제외");
 			filterChain.doFilter(request, response);
 			return;
 		}
