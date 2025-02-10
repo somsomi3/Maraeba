@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { springApi } from "../../utils/api"; // API 인스턴스 사용
-// import GameRecordBtn from "./GameRecordBtn";
+import backgroundImage from "../../assets/background/animal_bg.png";
 import { useSelector } from 'react-redux'; // ✅ Redux에서 토큰 가져오기
 import HomeButton from "../../components/button/HomeButton";
 import "./AnimalGame.css";
@@ -198,62 +198,71 @@ const startGame = async () => {
   }, []);
 
   return (
-    <div className="animal-game-container">
+    <div className="animal-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      
       {/* ✅ 홈 버튼 */}
       <HomeButton />
-
-      {/* ✅ 게임 UI 레이아웃 */}
-      <div className="game-content">
-        {/* 🎨 동물 찾기 이미지 */}
-        <div className="image-container" style={{ position: "relative" }}>
-          {gameData.imageData && <img src={gameData.imageData} alt="Game Image" className="game-image" />}
-          
-          {/* ✅ 동그라미 위치 표시 (circleData가 undefined이면 빈 배열) */}
-          {(gameData.circleData || []).map((circle, index) => (
-            <div
-              key={index}
-              className="circle-marker"
-              style={{
-                position: "absolute",
-                top: `${circle.y}px`,
-                left: `${circle.x}px`,
-                width: "30px",
-                height: "30px",
-                borderRadius: "50%",
-                border: "3px solid red",
-                backgroundColor: "transparent",
-              }}
-            ></div>
-          ))}
+  
+      {/* ✅ 게임 오버레이 추가 */}
+      <div className="animal-game-overlay">
+        
+        {/* 🎯 게임 제목 */}
+        <h1 className="animal-game-title">어떤 동물이 있을까?</h1>
+  
+        {/* ✅ 이미지 & 동물 리스트를 가로 정렬 (3:1 비율) */}
+        <div className="animal-game-content">
+          {/* 🎨 동물 찾기 이미지 */}
+          <div className="image-container">
+            {gameData.imageData && <img src={gameData.imageData} alt="Game Image" className="animal-game-image" />}
+            {(gameData.circleData || []).map((circle, index) => (
+              <div
+                key={index}
+                className="circle-marker"
+                style={{
+                  position: "absolute",
+                  top: `${circle.y}px`,
+                  left: `${circle.x}px`,
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "50%",
+                  border: "3px solid red",
+                  backgroundColor: "transparent",
+                }}
+              ></div>
+            ))}
+          </div>
+  
+          {/* 📝 동물 리스트 */}
+          <div className="animal-list">
+            <h3>음성으로 동물을 맞춰보세요! 🎤</h3>
+            <ul>
+              {(gameData.answerList || []).length > 0 ? (
+                gameData.answerList.map((animal, index) => (
+                  <li key={index}>
+                    <span className="animal-icon">🐾</span>
+                    <span className="animal-name">{animal}</span>
+                  </li>
+                ))
+              ) : (
+                <p>아직 맞춘 동물이 없습니다.</p>
+              )}
+            </ul>
+          </div>
         </div>
-
-    {/* 📝 동물 리스트 */}
-    <div className="animal-list">
-          <h3>어떤 동물이 있을까?</h3>
-          <ul>
-            { (gameData.answerList || []).length > 0 ? ( // ✅ answerList가 undefined일 경우 빈 배열로 처리
-              gameData.answerList.map((animal, index) => (
-                <li key={index}>
-                  <span className="animal-icon">🐾</span>
-                  <span className="animal-name">{animal}</span>
-                </li>
-              ))
-            ) : (
-              <p>음성으로 동물을 맞춰보세요! 🎤</p> // ✅ 초기에는 아무것도 표시 X
-            )}
-          </ul>
-        </div>
-      </div>
-
-
-      <button
-              className="record-button"
-              onClick={isRecording ? stopRecording : startRecording}
-            >
-              <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
-            </button>
+  
+        {/* 🎤 녹음 버튼 */}
+        <button
+          className="record-button"
+          onClick={isRecording ? stopRecording : startRecording}
+        >
+          <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
+        </button>
+        
+      </div> {/* game-overlay 끝 */}
     </div>
   );
+  
+  
 };
 
 export default AnimalGame;
