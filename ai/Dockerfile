@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 5000
 
 # Gunicorn으로 Flask 서버 실행
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "run:app"]
+CMD ["gunicorn", "--preload", "-w", "4", "-b", "0.0.0.0:5000", "run:app"]

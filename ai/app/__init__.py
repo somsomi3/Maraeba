@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from model import get_pretrained_model
 import logging
+from logger import logger
 
 def create_app():
     app = Flask(__name__)
@@ -18,8 +19,8 @@ def create_app():
     from app.routes import api_bp
     app.register_blueprint(api_bp, url_prefix='/ai')
 
-    # ✅ 모델 로딩 시작 로그
-    logging.info("Loading pre-trained STT model...")
+    # 모델 로딩 시작 로그
+    logger.info("Loading pre-trained STT model...")
 
     try:
         get_pretrained_model(
@@ -27,9 +28,9 @@ def create_app():
             decoding_method="modified_beam_search",
             num_active_paths=15,
         )
-        # ✅ 모델 로딩 완료 로그
-        logging.info("Pre-trained STT model loaded successfully!")
+        # 모델 로딩 완료 로그
+        logger.info("Pre-trained STT model loaded successfully!")
     except Exception as e:
-        logging.error(f"Error loading STT model: {str(e)}")
+        logger.error(f"Error loading STT model: {str(e)}")
 
     return app
