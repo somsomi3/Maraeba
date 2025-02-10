@@ -11,21 +11,31 @@ const NaverCallback = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
-        const error = urlParams.get("error"); // ✅ 네이버 로그인 실패 시 포함됨
+        console.log("✅ 네이버 인가코드:", code);
+        const error = urlParams.get("error");
+        console.log("❌ 네이버 에러코드:", error);
         const errorDescription = urlParams.get("error_description");
 
-        if (error) {
-            console.error("❌ 네이버 로그인 실패:", error, errorDescription);
-            alert(`네이버 로그인 실패: ${errorDescription || "알 수 없는 오류 발생"}`);
-            navigate("/");
-            return;
-        }
+        // if (error) {
+        //     console.error(
+        //         "❌ error 코드 존재, 네이버 로그인 실패:",
+        //         error,
+        //         errorDescription
+        //     );
+        //     alert(
+        //         `error 코드 존재, 네이버 로그인 실패: ${
+        //             errorDescription || "알 수 없는 오류 발생"
+        //         }`
+        //     );
+        //     navigate("/");
+        //     return;
+        // }
 
         if (code) {
             console.log("✅ 네이버 인가코드:", code);
 
             springApi
-                .post("/auth/naver/callback", { code }) 
+                .post("/auth/naver/callback", { code })
                 .then(({ data }) => {
                     console.log("✅ 백엔드 응답:", data);
 
@@ -39,8 +49,11 @@ const NaverCallback = () => {
                     }
                 })
                 .catch((error) => {
-                    console.error("❌ 네이버 로그인 실패:", error);
-                    alert("네이버 로그인에 실패했습니다.");
+                    console.error(
+                        "❌ 백엔드 요청 실패, 네이버 로그인 실패:",
+                        error
+                    );
+                    alert("백엔드 요청 실패, 네이버 로그인에 실패했습니다.");
                     navigate("/");
                 });
         } else {
