@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.be.common.exception.CustomAuthException;
 import com.be.common.exception.CustomTokenException;
 import com.be.common.exception.CustomException;
 import com.be.common.model.response.BaseResponseBody;
@@ -13,6 +14,13 @@ import com.be.common.model.response.BaseResponseBody;
 @Order(1)
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+	@ExceptionHandler(CustomAuthException.class)
+	public ResponseEntity<BaseResponseBody> handleCustomAuthException(CustomAuthException ex) {
+		return ResponseEntity
+			.status(ex.getAuthErrorCode().getStatus())
+			.body(BaseResponseBody.of(ex.getAuthErrorCode().getMessage(), ex.getAuthErrorCode().getStatus()));
+	}
 
 	@ExceptionHandler(CustomTokenException.class)
 	public ResponseEntity<BaseResponseBody> handleCustomTokenException(CustomTokenException ex) {

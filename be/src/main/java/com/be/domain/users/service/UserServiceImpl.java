@@ -2,6 +2,7 @@ package com.be.domain.users.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
@@ -52,11 +53,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteUser(Long id, PasswordRequest request) {
 		User user = findUserById(id);
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
 		}
 		userRepository.delete(user);
+		userRepository.flush();
 	}
 }
