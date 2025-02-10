@@ -6,14 +6,6 @@ import lombok.Getter;
 
 @Getter
 public enum TokenErrorCode {
-	KAKAO_ACCESS_TOKEN_NOT_EXIST("카카오 액세스 토큰을 찾을 수 없음", HttpStatus.FORBIDDEN),
-	KAKAO_AUTH_CODE_NOT_EXIST("Authorization Code is missing.", HttpStatus.BAD_REQUEST),
-	KAKAO_ACCESS_TOKEN_REQUEST_FAILED("Failed to retrieve Access Token from Kakao.", HttpStatus.UNAUTHORIZED),
-	KAKAO_ACCESS_TOKEN_NOT_PROVIDED("Access Token is missing.", HttpStatus.BAD_REQUEST),
-	KAKAO_USER_INFO_NOT_EXIST("User Info not received from Kakao.", HttpStatus.UNAUTHORIZED),
-	KAKAO_USER_INFO_INCOMPLETE("Essential user info is missing.", HttpStatus.UNAUTHORIZED),
-	KAKAO_USER_INFO_REQUEST_FAILED("Failed to retrieve user info from Kakao.", HttpStatus.UNAUTHORIZED),
-
 
 	ACCESS_TOKEN_NOT_EXIST("Bearer 액세스 토큰을 찾을 수 없음", HttpStatus.UNAUTHORIZED),
 	ACCESS_TOKEN_EXPIRED("액세스 토큰 만료", HttpStatus.UNAUTHORIZED),
@@ -36,7 +28,23 @@ public enum TokenErrorCode {
 	COOKIE_CREATION_FAILED("Failed to create cookie.", HttpStatus.INTERNAL_SERVER_ERROR),
 	BLACKLIST_SAVE_FAILED("Failed to add Access Token to blacklist.", HttpStatus.INTERNAL_SERVER_ERROR),
 
-	TOKEN_GENERATION_FAILED("Token Generation Failed.", HttpStatus.INTERNAL_SERVER_ERROR);
+	TOKEN_GENERATION_FAILED("Token Generation Failed.", HttpStatus.INTERNAL_SERVER_ERROR),
+
+	KAKAO_ACCESS_TOKEN_NOT_EXIST("카카오 액세스 토큰을 찾을 수 없음", HttpStatus.FORBIDDEN),
+	KAKAO_AUTH_CODE_NOT_EXIST("Authorization Code is missing.", HttpStatus.BAD_REQUEST),
+	KAKAO_ACCESS_TOKEN_REQUEST_FAILED("Failed to retrieve Access Token from Kakao.", HttpStatus.UNAUTHORIZED),
+	KAKAO_ACCESS_TOKEN_NOT_PROVIDED("Access Token is missing.", HttpStatus.BAD_REQUEST),
+	KAKAO_USER_INFO_NOT_EXIST("User Info not received from Kakao.", HttpStatus.UNAUTHORIZED),
+	KAKAO_USER_INFO_INCOMPLETE("Essential user info is missing.", HttpStatus.UNAUTHORIZED),
+	KAKAO_USER_INFO_REQUEST_FAILED("Failed to retrieve user info from Kakao.", HttpStatus.UNAUTHORIZED),
+
+	NAVER_ACCESS_TOKEN_NOT_EXIST("카카오 액세스 토큰을 찾을 수 없음", HttpStatus.FORBIDDEN),
+	NAVER_AUTH_CODE_NOT_EXIST("Authorization Code is missing.", HttpStatus.BAD_REQUEST),
+	NAVER_ACCESS_TOKEN_REQUEST_FAILED("Failed to retrieve Access Token from Kakao.", HttpStatus.UNAUTHORIZED),
+	NAVER_ACCESS_TOKEN_NOT_PROVIDED("Access Token is missing.", HttpStatus.BAD_REQUEST),
+	NAVER_USER_INFO_NOT_EXIST("User Info not received from Kakao.", HttpStatus.UNAUTHORIZED),
+	NAVER_USER_INFO_INCOMPLETE("Essential user info is missing.", HttpStatus.UNAUTHORIZED),
+	NAVER_USER_INFO_REQUEST_FAILED("Failed to retrieve user info from Kakao.", HttpStatus.UNAUTHORIZED);
 
 	private final String message;
 	private final HttpStatus status;
