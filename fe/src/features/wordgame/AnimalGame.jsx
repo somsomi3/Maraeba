@@ -130,11 +130,14 @@ const startGame = async () => {
             throw new Error("❌ Access Token이 없습니다. 로그인하세요.");
         }
 
+        // ✅ gameData.answerList가 undefined/null일 경우 빈 배열로 초기화
+        const currentAnswerList = gameData.answerList || [];
+
         // 2️⃣ FormData 객체 생성
         const formData = new FormData();
         formData.append("audio", new File([audioBlob], "recorded-audio.webm", { type: "audio/webm" })); // ✅ 파일명 추가
         formData.append("imageNumber", gameData.imageNumber);
-        formData.append("answerList", JSON.stringify(gameData.answerList)); // ✅ JSON 문자열 변환
+        formData.append("answerList", JSON.stringify(currentAnswerList)); // ✅ JSON 문자열 변환
 
         console.log("📤 최종 전송할 FormData:", [...formData.entries()]);
 
@@ -152,18 +155,24 @@ const startGame = async () => {
         console.log("✅ 백엔드 응답 데이터:", result);
 
         if (result.duplication) {
-            console.warn("⚠️ 이미 맞춘 정답입니다:", result.animalName);
+            console.warn("⚠️ 이미 맞춘 정답입니다:", result.animal_name);
             return; // 중복 정답이면 처리 중단
         }
 
-        if (result.ifCorrect) {
-            console.log("🎯 정답 확인! 추가된 동물:", result.animalName);
+        // ✅ 이미 존재하는 정답인지 프론트에서도 중복 체크 (추가적인 보안)
+        if (currentAnswerList.includes(result.animal_name)) {
+            alert(`⚠️ 이미 맞춘 정답입니다: ${result.animal_name}`);
+            return;
+        }
+
+        if (result.if_correct) {
+            console.log("🎯 정답 확인! 추가된 동물:", result.animal_name);
 
             // 5️⃣ 정답 리스트 & 동그라미 위치 업데이트
             setGameData((prevState) => ({
                 ...prevState,
-                answerList: [...prevState.answerList, result.animalName],
-                circleData: [...prevState.circleData, { x: result.x, y: result.y }],
+                answerList: [...(prevState.answerList || []), result.animal_name],
+                circleData: [...(prevState.circleData || []), { x: result.x, y: result.y }],
             }));
 
             // 6️⃣ 모든 정답을 맞추면 게임 재시작
