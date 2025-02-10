@@ -27,42 +27,42 @@ const ChatBox = ({ roomId }) => {
         };
     }, [token, userId]); // ✅ token이나 userId가 변경될 때만 실행
 
-    // ✅ WebSocket 연결 함수
-    const connectWebSocket = () => {
-        if (
-            webSocketRef.current &&
-            webSocketRef.current.readyState === WebSocket.OPEN
-        ) {
-            console.warn("⚠️ WebSocket이 이미 연결되어 있음");
-            return;
-        }
+    // // ✅ WebSocket 연결 함수
+    // const connectWebSocket = () => {
+    //     if (
+    //         webSocketRef.current &&
+    //         webSocketRef.current.readyState === WebSocket.OPEN
+    //     ) {
+    //         console.warn("⚠️ WebSocket이 이미 연결되어 있음");
+    //         return;
+    //     }
 
-        webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?userId=${userId}`
-        );
+    //     webSocketRef.current = new WebSocket(
+    //         `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?userId=${userId}`
+    //     );
 
-        webSocketRef.current.onopen = () => {
-            console.log("✅ WebSocket 연결 성공");
-        };
+    //     webSocketRef.current.onopen = () => {
+    //         console.log("✅ WebSocket 연결 성공");
+    //     };
 
-        webSocketRef.current.onmessage = (event) => {
-            try {
-                const receivedMessage = JSON.parse(event.data);
-                setMessages((prev) => [...prev, receivedMessage]);
-            } catch (e) {
-                console.error("📩 JSON 파싱 오류:", e);
-            }
-        };
+    //     webSocketRef.current.onmessage = (event) => {
+    //         try {
+    //             const receivedMessage = JSON.parse(event.data);
+    //             setMessages((prev) => [...prev, receivedMessage]);
+    //         } catch (e) {
+    //             console.error("📩 JSON 파싱 오류:", e);
+    //         }
+    //     };
 
-        webSocketRef.current.onerror = (error) => {
-            console.error("❌ WebSocket 오류:", error);
-        };
+    //     webSocketRef.current.onerror = (error) => {
+    //         console.error("❌ WebSocket 오류:", error);
+    //     };
 
-        webSocketRef.current.onclose = () => {
-            console.log("🔴 WebSocket 연결 종료. 재연결 시도...");
-            setTimeout(() => connectWebSocket(), 3000); // 🔄 3초 후 자동 재연결
-        };
-    };
+    //     webSocketRef.current.onclose = () => {
+    //         console.log("🔴 WebSocket 연결 종료. 재연결 시도...");
+    //         setTimeout(() => connectWebSocket(), 3000); // 🔄 3초 후 자동 재연결
+    //     };
+    // };
 
     // ✅ 메시지 전송
     const sendMessage = () => {
