@@ -68,7 +68,7 @@ public class KakaoSocialService implements SocialService {
 		if (code == null || code.isBlank()) {
 			throw new CustomTokenException(TokenErrorCode.KAKAO_AUTH_CODE_NOT_EXIST);
 		}
-		log.info("[Service]getAccessToken 인가 코드 검증 통과");
+		log.info("[Service]getAccessToken 인가 코드 검증 통과, CODE : {}", code);
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -81,7 +81,7 @@ public class KakaoSocialService implements SocialService {
 			params.add("code", code);
 
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-			log.info("[Service]getAccessToken 액세스 토큰 요청 전");
+			log.info("[Service]getAccessToken 액세스 토큰 요청 전, KAKAO_TOKEN_URL : {}", KAKAO_TOKEN_URL);
 			ResponseEntity<Map> response = restTemplate.postForEntity(KAKAO_TOKEN_URL, request, Map.class);
 			log.info("[Service]getAccessToken 액세스 토큰 요청 후");
 			// 2. 응답 값 검증
