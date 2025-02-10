@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.be.common.auth.model.CustomUserDetails;
 import com.be.common.auth.service.TokenService;
-import com.be.common.exception.CustomTokenException;
+import com.be.common.exception.JwtFilterException;
 import com.be.common.exception.TokenErrorCode;
 
 import jakarta.servlet.FilterChain;
@@ -75,40 +75,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			String token = tokenService.extractAccessToken(request);
 			log.info("Extracted Token: {}", token);
 
-			// 토큰이 없을 경우 AuthenticationEntryPoint로 전달
-			if (token == null) {
-				log.warn("AccessToken이 존재하지 않음 - 401 Unauthorized 반환");
-				throw new CustomTokenException(TokenErrorCode.INVALID_ACCESS_TOKEN);
+			if (token != null && tokenService.validateToken(token)) {
+				Long id = tokenService.extractUserIdFromToken(token)
+					.orElseThrow(() -> new JwtFilterException(TokenErrorCode.INVALID_ACCESS_TOKEN));
+
+				log.info("User ID from Token: {}", id);
+
+				// UserDetails 가져오기
+				CustomUserDetails userDetails = new CustomUserDetails(id);
+
+				// 인증 객체 생성 및 Security Context에 저장
+				UsernamePasswordAuthenticationToken authentication =
+					new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+
+				// 다음 필터로 진행
+				filterChain.doFilter(request, response);
 			}
-
-			// 토큰 검증
-			// 토큰 검증
-			if (!tokenService.validateToken(token)) {
-				log.warn("AccessToken 검증 실패 - 401 Unauthorized 반환");
-				throw new CustomTokenException(TokenErrorCode.INVALID_ACCESS_TOKEN);
-			}
-
-			Long id = tokenService.extractUserIdFromToken(token)
-				.orElseThrow(() -> new CustomTokenException(TokenErrorCode.INVALID_ACCESS_TOKEN));
-			log.info("User ID from Token: {}", id);
-
-			// UserDetails 가져오기
-			CustomUserDetails userDetails = new CustomUserDetails(id);
-
-			// 인증 객체 생성 및 Security Context에 저장
-			UsernamePasswordAuthenticationToken authentication =
-				new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		} catch (CustomTokenException e) {
-			log.warn("JWT Filter - Invalid Token: {}", e.getMessage());
 		} catch (Exception e) {
-			// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
-			log.error("JWT Filter Exception: {}", e.getMessage(), e);
-		}
-		// 다음 필터로 진행
-		filterChain.doFilter(request, response);
-
+				// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
+				log.info("JWT Filter Exception: {}", e.getMessage());
+				// logger.error("Could not set user authentication in security context", e);
+			}
 	}
 }
