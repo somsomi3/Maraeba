@@ -14,7 +14,7 @@ const FindId = () => {
     e.preventDefault();
     setUserIds([]);
     setErrorMessage("");
-
+    
     try {
         const response = await springApi.post(
             "/auth/find-id",
@@ -22,6 +22,7 @@ const FindId = () => {
         );
 
         if (response.status === 200) {
+            
             setUserIds(response.data.user_ids);
         }
     } catch (error) {
@@ -58,14 +59,16 @@ const FindId = () => {
       {/* 🔹 결과 출력 */}
       {userIds.length > 0 && (
         <div className="result-box">
-          <h3>🔎 찾은 아이디 목록</h3>
+          <h3>🔎 찾은 아이디</h3>
           <ul>
             {userIds.map((user, index) => (
-              <li key={index}>
-                <strong>{user.userId}</strong> ({user.provider}) - {new Date(user.createdAt).toLocaleDateString()}
-              </li>
+                <li key={index}>
+                <strong>{user.user_id}</strong> 
+                {user.created_at && ` - 생성 날짜 : ${new Date(user.created_at).toLocaleDateString("ko-KR")}`}
+                </li>
             ))}
-          </ul>
+            </ul>
+
         </div>
       )}
 
