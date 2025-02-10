@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import './CookingGame.css';
 import backgroundImage from "../../assets/images/CookingGame_Bg.png";
 import PausePopup from "../../components/popup/PausePopup";
+import HomeButton from "../../components/button/HomeButton";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
 import recordIcon from "../../assets/icons/record.png";
@@ -231,13 +232,17 @@ const CookingGame = () => {
   };
 
   return (
+    
     <div className="cooking-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
-      <div className="game-overlay">
+      
+      <HomeButton />
+      
+      <div className="cooking-game-overlay">
       <button className="pause-button">
         <PausePopup onExit={() => navigate("/wgame")}/>
       </button>
 
-      <h1 className="game-title">{gameData.foodName || "요리 만들기"}</h1>
+      <h1 className="cooking-game-title">{gameData.foodName || "요리 만들기"}</h1>
       <div>남은 시간: {timeLeft}초</div>
       <div className="combination">
 
