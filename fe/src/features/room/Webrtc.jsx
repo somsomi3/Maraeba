@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 
-
 const Webrtc = () => {
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
@@ -19,12 +18,11 @@ const Webrtc = () => {
         if (token) {
             const decodedUserId = getUserIdFromToken(token);
             setUserId(decodedUserId); // ✅ 상태에 저장
-            connectWebSocket(token);
+            // connectWebSocket(token); // 디버깅을 위한 주석처리
         } else {
             console.error("❌ JWT 토큰 없음: 로그인 필요");
         }
     }, [token]); // ✅ Redux의 토큰 값이 변경될 때마다 실행
-
 
     // ✅ JWT에서 userId 추출하는 함수
     const getUserIdFromToken = (token) => {
@@ -36,7 +34,6 @@ const Webrtc = () => {
             return null;
         }
     };
-
 
     // ✅ WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -55,7 +52,10 @@ const Webrtc = () => {
                     await handleCandidate(receivedMessage);
                 } else {
                     // ✅ 메시지 상태 업데이트 (새로운 배열 생성)
-                    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+                    setMessages((prevMessages) => [
+                        ...prevMessages,
+                        receivedMessage,
+                    ]);
                     console.log("📝 업데이트된 메시지 상태:", messages);
                 }
             } catch (e) {
@@ -66,7 +66,10 @@ const Webrtc = () => {
 
     // ✅ WebSocket 연결
     const connectWebSocket = (token) => {
-        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+        if (
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
             console.warn("⚠️ WebSocket이 이미 연결되어 있음");
             return;
         }
@@ -86,7 +89,11 @@ const Webrtc = () => {
 
     // ✅ 메시지 전송
     const sendMessage = () => {
-        if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+        if (
+            message.trim() &&
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
             if (!userId) {
                 console.error("❌ 사용자 ID 없음");
                 return;
@@ -108,7 +115,6 @@ const Webrtc = () => {
         }
     };
 
-
     // ✅ 카메라 & 마이크 접근 및 로컬 스트림 설정
     const startMedia = async () => {
         try {
@@ -128,11 +134,13 @@ const Webrtc = () => {
     // ✅ WebRTC 연결 초기화
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
-            iceServers: [{
-                urls: "turn:3.39.252.223:3478?transport=tcp",
-                username: `${import.meta.env.VITE_USERNAME_URL}`,
-                credential: `${import.meta.env.VITE_PASSWORD_URL}`,
-            },],
+            iceServers: [
+                {
+                    urls: "turn:3.39.252.223:3478?transport=tcp",
+                    username: `${import.meta.env.VITE_USERNAME_URL}`,
+                    credential: `${import.meta.env.VITE_PASSWORD_URL}`,
+                },
+            ],
         });
 
         peerConnectionRef.current.onicecandidate = (event) => {
@@ -213,10 +221,16 @@ const Webrtc = () => {
 
     // ✅ WebSocket 메시지 전송
     const sendToServer = (message) => {
-        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+        if (
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
             webSocketRef.current.send(JSON.stringify(message));
         } else {
-            console.error("❌ WebSocket이 연결되지 않음, 메시지 전송 실패:", message);
+            console.error(
+                "❌ WebSocket이 연결되지 않음, 메시지 전송 실패:",
+                message
+            );
         }
     };
 
@@ -225,7 +239,14 @@ const Webrtc = () => {
             <h3>💬 채팅</h3>
             <div style={styles.chatBox}>
                 {messages.map((msg, idx) => (
-                    <div key={idx} style={msg.senderId === userId ? styles.myMessage : styles.otherMessage}>
+                    <div
+                        key={idx}
+                        style={
+                            msg.senderId === userId
+                                ? styles.myMessage
+                                : styles.otherMessage
+                        }
+                    >
                         <strong>{msg.sender}:</strong> {msg.text}
                     </div>
                 ))}
@@ -239,16 +260,33 @@ const Webrtc = () => {
                     placeholder="메시지 입력..."
                     style={styles.input}
                 />
-                <button onClick={sendMessage} style={styles.sendButton}>전송</button>
+                <button onClick={sendMessage} style={styles.sendButton}>
+                    전송
+                </button>
             </div>
             <h3>WebRTC 테스트</h3>
             <div style={styles.videoContainer}>
-                <video ref={localVideoRef} autoPlay playsInline muted style={styles.video} />
-                <video ref={remoteVideoRef} autoPlay playsInline style={styles.video} />
+                <video
+                    ref={localVideoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    style={styles.video}
+                />
+                <video
+                    ref={remoteVideoRef}
+                    autoPlay
+                    playsInline
+                    style={styles.video}
+                />
             </div>
             <div style={styles.buttonContainer}>
-                <button onClick={startMedia} style={styles.button}>🎥 미디어 시작</button>
-                <button onClick={createOffer} style={styles.button}>📡 연결 요청 (Offer)</button>
+                <button onClick={startMedia} style={styles.button}>
+                    🎥 미디어 시작
+                </button>
+                <button onClick={createOffer} style={styles.button}>
+                    📡 연결 요청 (Offer)
+                </button>
             </div>
         </div>
     );
@@ -261,8 +299,8 @@ const styles = {
     /** ✅ 채팅 박스 스타일 */
     chatBox: {
         width: "80%",
-        maxHeight: "300px",  // ✅ 높이 제한 설정 (스크롤 가능하게)
-        overflowY: "auto",   // ✅ 스크롤 가능하게
+        maxHeight: "300px", // ✅ 높이 제한 설정 (스크롤 가능하게)
+        overflowY: "auto", // ✅ 스크롤 가능하게
         background: "#f9f9f9",
         padding: "10px",
         borderRadius: "10px",
@@ -270,7 +308,7 @@ const styles = {
         margin: "10px auto",
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-start"
+        alignItems: "flex-start",
     },
 
     /** ✅ 채팅 메시지 스타일 */
@@ -283,7 +321,7 @@ const styles = {
         margin: "5px",
         maxWidth: "60%",
         wordBreak: "break-word",
-        animation: "fadeIn 0.3s ease-in-out"
+        animation: "fadeIn 0.3s ease-in-out",
     },
 
     otherMessage: {
@@ -295,7 +333,7 @@ const styles = {
         margin: "5px",
         maxWidth: "60%",
         wordBreak: "break-word",
-        animation: "fadeIn 0.3s ease-in-out"
+        animation: "fadeIn 0.3s ease-in-out",
     },
 
     /** ✅ 채팅 입력창 & 버튼 스타일 */
@@ -303,7 +341,7 @@ const styles = {
         display: "flex",
         alignItems: "center",
         width: "80%",
-        margin: "10px auto"
+        margin: "10px auto",
     },
 
     input: {
@@ -313,7 +351,7 @@ const styles = {
         border: "1px solid #ccc",
         outline: "none",
         marginRight: "10px",
-        fontSize: "14px"
+        fontSize: "14px",
     },
 
     sendButton: {
@@ -334,7 +372,7 @@ const styles = {
     videoContainer: {
         display: "flex",
         justifyContent: "center",
-        gap: "10px"
+        gap: "10px",
     },
 
     video: {
