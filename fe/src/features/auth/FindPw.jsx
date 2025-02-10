@@ -20,10 +20,9 @@ const FindPw = () => {
     try {
         const response = await springApi.post(
             "/auth/forgot-password", 
-            { userId, email },
+            { user_id: userId, email },
             { headers: { Authorization: "" } } // ✅ 인증 헤더 제거
         );
-
         if (response.status === 200) {
             setMessage("✅ 임시 비밀번호가 이메일로 전송되었습니다.");
         }
