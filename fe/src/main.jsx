@@ -16,6 +16,7 @@ import {
     Login,
     Register,
     KakaoCallback,
+    NaverCallback
 } from "./features/auth";
 import { Main, MultiMain, SingleMain } from "./features/mainpage";
 import {
@@ -45,6 +46,7 @@ const router = createBrowserRouter(
         <>
             <Route path="/" element={<App />} />
             <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
+            <Route path="/auth/naver/callback" element={<NaverCallback />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/find-id" element={<FindId />} />
