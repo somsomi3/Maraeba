@@ -79,10 +79,9 @@ public class SecurityConfig {
 					"/auth/reset-password",
 					"/WebRTC/**",
 					"/webrtc/**",
-					"/rooms/**",
-					"/game/**",
-					"/prons/**",
-					"/session/**",
+					// "/rooms/**",
+					// "/game/**",
+					// "/session/**",
 
 						//임시 테스트용
 						"/cook-game/**",
