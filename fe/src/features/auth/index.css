@@ -151,6 +151,21 @@
     margin-top: 10px;
   }
   
+  /* ✅ 이모티콘 공통 스타일 */
+.main-emoji {
+    position: absolute;
+    width: 120px; /* 이모티콘 크기 조정 */
+    height: auto;
+}
 
+/* ✅ 왼쪽 이모티콘 (yaho.png) */
+.emoji-left {
+    top: 15%; /* 원하는 위치 조정 */
+    right: 32%;
+}
 
-
+/* ✅ 오른쪽 이모티콘 (smile.png) */
+.emoji-right {
+    top: 10%;
+    left: 32%;
+}
