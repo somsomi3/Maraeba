@@ -30,6 +30,7 @@ import com.be.domain.auth.response.LoginResponse;
 import com.be.domain.auth.response.TokenRefreshResponse;
 import com.be.domain.auth.service.AuthService;
 import com.be.domain.auth.service.KakaoSocialService;
+import com.be.domain.auth.service.NaverSocialService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,7 +50,7 @@ public class AuthController {
 	private final AuthService authService;
 	private final TokenService tokenService;
 	private final KakaoSocialService kakaoSocialService;
-	// private final NaverSocialService naverSocialService;
+	private final NaverSocialService naverSocialService;
 
 	@Operation(summary = "회원가입", description = "새로운 사용자를 등록합니다.")
 	@ApiResponses(value = {
@@ -147,10 +148,44 @@ public class AuthController {
 	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(@RequestBody Map<String, String> requestBody) {
 		String code = requestBody.get("code");
 
+		// 1. 카카오 Access Token 요청
 		String accessToken = kakaoSocialService.getAccessToken(code);
+
+		// 2. 카카오 사용자 정보 요청
 		SocialUserDTO userInfo = kakaoSocialService.getUserInfo(accessToken);
+
+		// 3. 로그인 처리 및 JWT 발급
 		LoginResponse response = kakaoSocialService.socialLogin(userInfo);
 
+		// 4. Refresh Token을 쿠키에 저장
+		ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
+
+		return ResponseEntity.ok()
+			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString()) // Refresh Token은 쿠키에 저장
+			.body(AccessTokenResponse.from(response)); // Access Token은 JSON으로 전달
+	}
+
+	@Operation(summary = "네이버 로그인 처리", description = "프론트에서 받은 인가코드를 사용해 네이버 로그인 처리")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "로그인 성공",
+			content = @Content(schema = @Schema(implementation = AccessTokenResponse.class))),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청 (인가코드 누락)"),
+		@ApiResponse(responseCode = "401", description = "네이버 로그인 실패")
+	})
+	@PostMapping("/naver/callback")
+	public ResponseEntity<? extends BaseResponseBody> naverLogin(@RequestBody Map<String, String> requestBody) {
+		String code = requestBody.get("code");
+
+		// 1. 네이버 Access Token 요청
+		String accessToken = naverSocialService.getAccessToken(code);
+
+		// 2. 네이버 사용자 정보 요청
+		SocialUserDTO userInfo = naverSocialService.getUserInfo(accessToken);
+
+		// 3. 로그인 처리 및 JWT 발급
+		LoginResponse response = naverSocialService.socialLogin(userInfo);
+
+		// 4. Refresh Token을 쿠키에 저장
 		ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
 
 		return ResponseEntity.ok()
@@ -206,18 +241,4 @@ public class AuthController {
 		return ResponseEntity.ok(BaseResponseBody.of("비밀번호 변경 주소를 이메일로 전송했습니다.", 200));
 	}
 
-	// @Operation(summary = "네이버 로그인 요청", description = "네이버 소셜 로그인 URL을 반환합니다.")
-	// @GetMapping("/naver")
-	// public ResponseEntity<? extends BaseResponseBody> getNaverAuthUrl() {
-	// 	String naverAuthUrl = naverSocialService.getAuthorizationUrl();
-	// 	return ResponseEntity.ok(GetAuthUrlResponse.of(naverAuthUrl));
-	// }
-	//
-	// @Operation(summary = "네이버 로그인 콜백", description = "네이버 로그인 후 콜백을 처리합니다.")
-	// @GetMapping("/naver/callback")
-	// public ResponseEntity<? extends BaseResponseBody> naverLogin(@RequestParam("code") String code) {
-	// 	String accessToken = naverSocialService.getAccessToken(code);
-	// 	SocialUserDTO userInfo = naverSocialService.getUserInfo(accessToken);
-	// 	return null;
-	// }
 }

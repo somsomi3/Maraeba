@@ -11,21 +11,27 @@ const NaverCallback = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
-        const state = urlParams.get("state"); // 네이버는 state 값도 함께 보냄
+        const error = urlParams.get("error"); // ✅ 네이버 로그인 실패 시 포함됨
+        const errorDescription = urlParams.get("error_description");
+
+        if (error) {
+            console.error("❌ 네이버 로그인 실패:", error, errorDescription);
+            alert(`네이버 로그인 실패: ${errorDescription || "알 수 없는 오류 발생"}`);
+            navigate("/");
+            return;
+        }
 
         if (code) {
             console.log("✅ 네이버 인가코드:", code);
-            console.log("✅ 네이버 state 값:", state);
 
-            // ✅ 백엔드로 인가 코드 전송 (springApi 사용)
             springApi
-                .post("/auth/naver/callback", { code, state }) // 🔹 state 값도 같이 전송
+                .post("/auth/naver/callback", { code }) 
                 .then(({ data }) => {
                     console.log("✅ 백엔드 응답:", data);
 
                     if (data.access_token) {
-                        dispatch(login(data.access_token)); // ✅ Redux에 토큰 저장
-                        navigate("/main"); // ✅ 메인 페이지로 이동
+                        dispatch(login(data.access_token));
+                        navigate("/main");
                     } else {
                         console.error("❌ 토큰 없음, 로그인 실패");
                         alert("로그인 실패: 토큰을 받을 수 없습니다.");

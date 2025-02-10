@@ -57,7 +57,7 @@ const Profile = () => {
                         alt="프로필"
                         className="profile-avatar"
                     />
-                    <h2>
+                    <h2 className="childname">
                         {loading ? "로딩 중..." : error ? "오류 발생" : username}
                     </h2>
                 </div>
