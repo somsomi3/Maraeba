@@ -18,7 +18,7 @@ const Webrtc = () => {
         if (token) {
             const decodedUserId = getUserIdFromToken(token);
             setUserId(decodedUserId); // ✅ 상태에 저장
-            // connectWebSocket(token); // 디버깅을 위한 주석처리
+            connectWebSocket(token);
         } else {
             console.error("❌ JWT 토큰 없음: 로그인 필요");
         }
@@ -65,27 +65,27 @@ const Webrtc = () => {
     }, []);
 
     // // ✅ WebSocket 연결
-    // const connectWebSocket = (token) => {
-    //     if (
-    //         webSocketRef.current &&
-    //         webSocketRef.current.readyState === WebSocket.OPEN
-    //     ) {
-    //         console.warn("⚠️ WebSocket이 이미 연결되어 있음");
-    //         return;
-    //     }
+    const connectWebSocket = (token) => {
+        if (
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            console.warn("⚠️ WebSocket이 이미 연결되어 있음");
+            return;
+        }
 
-    //     webSocketRef.current = new WebSocket(
-    //         `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`
-    //     );
+        webSocketRef.current = new WebSocket(
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`
+        );
 
-    //     webSocketRef.current.onopen = () => {
-    //         console.log("✅ WebSocket 연결됨 (Signaling)");
-    //     };
+        webSocketRef.current.onopen = () => {
+            console.log("✅ WebSocket 연결됨 (Signaling)");
+        };
 
-    //     webSocketRef.current.onclose = () => {
-    //         console.log("🔴 WebSocket 연결 종료");
-    //     };
-    // };
+        webSocketRef.current.onclose = () => {
+            console.log("🔴 WebSocket 연결 종료");
+        };
+    };
 
     // ✅ 메시지 전송
     const sendMessage = () => {
