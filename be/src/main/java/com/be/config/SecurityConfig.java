@@ -85,7 +85,8 @@ public class SecurityConfig {
 					"/session/**",
 
 						//임시 테스트용
-						"/cook-game/**"
+						"/cook-game/**",
+						"/chat/**"
 				).permitAll()
 				.requestMatchers("/error", "/favicon.ico").permitAll()
 				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
