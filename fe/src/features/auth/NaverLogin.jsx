@@ -4,7 +4,7 @@ const NaverLogin = () => {
 
   const handleNaverLogin = () => {
 
-    const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${import.meta.env.VITE_NAVER_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_NAVER_REDIRECT_URI}&state=randomState`;
+    const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${import.meta.env.VITE_NAVER_CLIENT_ID}&state=${import.meta.env.VITE_NAVER_STATE_STRING}&redirect_uri=${import.meta.env.VITE_NAVER_REDIRECT_URI}`;
 
     window.location.href = NAVER_AUTH_URL;
 };
