@@ -7,7 +7,6 @@ import { jwtDecode } from "jwt-decode"; // ✅ JWT 디코딩 라이브러리 추
 const flaskApi = axios.create({
     baseURL: import.meta.env.VITE_FLASK_API_URL,
     headers: { "Content-Type": "application/json" },
-
 });
 
 // 🔥 Spring API 인스턴스
@@ -50,13 +49,20 @@ const isTokenExpired = (token) => {
 // ✅ 요청 인터셉터: Redux에서 토큰 가져와 헤더에 자동 추가
 const addAuthToken = async (config) => {
     // ✅ 인증이 필요 없는 요청이면 `Authorization` 헤더 추가 X
-    const publicEndpoints = ["/auth/register", "/auth/check-user-id", "/auth/kakao/callback", "/auth/find-id", "/auth/forgot-password"];
-    if (publicEndpoints.some(endpoint => config.url.includes(endpoint))) {
+    const publicEndpoints = [
+        "/auth/register",
+        "/auth/check-user-id",
+        "/auth/kakao/callback",
+        "/auth/naver/callback",
+        "/auth/find-id",
+        "/auth/forgot-password",
+    ];
+    if (publicEndpoints.some((endpoint) => config.url.includes(endpoint))) {
         return config;
     }
 
     let token = store.getState().auth.token;
-    
+
     if (!token || isTokenExpired(token)) {
         try {
             const res = await refreshTokenApi();
@@ -73,23 +79,36 @@ const addAuthToken = async (config) => {
     return config;
 };
 
-springApi.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
-flaskApi.interceptors.request.use(addAuthToken, (error) => Promise.reject(error));
+springApi.interceptors.request.use(addAuthToken, (error) =>
+    Promise.reject(error)
+);
+flaskApi.interceptors.request.use(addAuthToken, (error) =>
+    Promise.reject(error)
+);
 
 // ✅ 응답 인터셉터: 401 발생 시 토큰 재발급 후 재요청
 const handleResponseError = async (error) => {
     const originalRequest = error.config;
 
-    // ✅ 카카오 로그인 콜백 요청이면 401 에러 무시 (토큰 갱신 X)
-    if (originalRequest.url.includes("/auth/kakao/callback")) {
+    // ✅ 카카오 & 네이버 로그인 콜백 요청이면 401 에러 무시 (토큰 갱신 X)
+    if (
+        originalRequest.url.includes("/auth/kakao/callback") ||
+        originalRequest.url.includes("/auth/naver/callback")
+    ) {
         return Promise.reject(error);
     }
 
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (
+        error.response &&
+        error.response.status === 401 &&
+        !originalRequest._retry
+    ) {
         originalRequest._retry = true;
 
         try {
-            console.warn("🔄 AccessToken 만료됨. RefreshToken으로 재발급 시도...");
+            console.warn(
+                "🔄 AccessToken 만료됨. RefreshToken으로 재발급 시도..."
+            );
             const res = await refreshTokenApi();
             const newAccessToken = res.data.access_token;
 
@@ -114,9 +133,6 @@ springApi.interceptors.response.use(
     (response) => response,
     handleResponseError
 );
-flaskApi.interceptors.response.use(
-    (response) => response,
-    handleResponseError
-);
+flaskApi.interceptors.response.use((response) => response, handleResponseError);
 
 export { flaskApi, springApi };
