@@ -7,6 +7,7 @@ import "./index.css";
 import logo from "../../assets/logo.png";
 
 import KakaoLogin from "./KakaoLogin";
+import NaverLogin from "./NaverLogin";
 
 
 const Login = () => {
@@ -76,6 +77,7 @@ const Login = () => {
       </form>
     
       <KakaoLogin />
+      <NaverLogin />
       <div className="secondary-button">
         <span onClick={() => navigate("/find-id")}>아이디 찾기</span> |{" "}
         <span onClick={() => navigate("/find-pw")}>비밀번호 찾기</span>
