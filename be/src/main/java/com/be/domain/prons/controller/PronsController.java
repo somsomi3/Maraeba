@@ -22,12 +22,14 @@ import com.be.common.exception.ErrorCode;
 import com.be.common.model.response.BaseResponseBody;
 import com.be.common.model.response.PageResponse;
 import com.be.domain.prons.dto.PronunciationClassDTO;
+import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 import com.be.domain.prons.dto.PronunciationStatDTO;
 import com.be.domain.prons.request.PostSimilarityReq;
 import com.be.domain.prons.response.GetClassDataRes;
+import com.be.domain.prons.response.GetClassHistoryRes;
 import com.be.domain.prons.response.GetClassesRes;
 import com.be.domain.prons.response.GetHistoriesRes;
 import com.be.domain.prons.response.GetSessionRes;
@@ -153,5 +155,16 @@ public class PronsController {
 		Long id = Long.parseLong(userDetails.getUsername());
 		List<PronunciationStatDTO> statsDTOs = pronsService.getStats(id);
 		return new GetStatsRes("Success", HttpStatus.OK, statsDTOs);
+	}
+
+	// 특정 클래스 최신 히스토리 10개 조회
+	@Operation(summary = "특정 클래스 최신 히스토리 10개 조회", description = "특정 클래스 최신 히스토리 10개 조회")
+	@GetMapping("/history/class/{class_id}")
+	public GetClassHistoryRes getClassHistories(@AuthenticationPrincipal UserDetails userDetails,
+		@PathVariable("class_id") Long classId) {
+		Long id = Long.parseLong(userDetails.getUsername());
+
+		List<PronunciationClassHistoryDTO> response = pronsService.getClassHistory(id, classId);
+		return new GetClassHistoryRes("Success", HttpStatus.OK, response);
 	}
 }
