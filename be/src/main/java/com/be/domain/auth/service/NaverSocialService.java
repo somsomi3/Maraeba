@@ -66,10 +66,12 @@ public class NaverSocialService implements SocialService {
 
 	@Override
 	public String getAccessToken(String code) {
+		log.info("[Service]getAccessToken 메서드 들어옴");
 		// 1. 인가 코드 검증
 		if (code == null || code.isBlank()) {
 			throw new CustomTokenException(TokenErrorCode.NAVER_AUTH_CODE_NOT_EXIST);
 		}
+		log.info("[Service]getAccessToken 인가 코드 검증 통과");
 		try {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -83,8 +85,9 @@ public class NaverSocialService implements SocialService {
 			params.add("state", STATE_STRING);
 
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+			log.info("[Service]getAccessToken 액세스 토큰 요청 전");
 			ResponseEntity<Map> response = restTemplate.postForEntity(NAVER_TOKEN_URL, request, Map.class);
-
+			log.info("[Service]getAccessToken 액세스 토큰 요청 후");
 			// 2. 응답 값 검증
 			if (response.getBody() == null) {
 				throw new CustomTokenException(TokenErrorCode.NAVER_ACCESS_TOKEN_NOT_EXIST, "네이버 응답이 비어 있습니다.");
@@ -109,19 +112,21 @@ public class NaverSocialService implements SocialService {
 
 	@Override
 	public SocialUserDTO getUserInfo(String accessToken) {
+		log.info("[Service]getUserInfo 메서드 들어옴");
 		// 1. 액세스 토큰 검증
 		if (accessToken == null || accessToken.isBlank()) {
 			throw new CustomTokenException(TokenErrorCode.NAVER_ACCESS_TOKEN_NOT_PROVIDED);
 		}
-
+		log.info("[Service]getUserInfo 액세스 토큰 검증 통과");
 		try {
 			// 2. 요청 헤더 설정 (Bearer Token)
 			HttpHeaders headers = new HttpHeaders();
 			headers.setBearerAuth(accessToken);
 
 			HttpEntity<Void> request = new HttpEntity<>(headers);
+			log.info("[Service]getUserInfo 유저 정보 요청 전");
 			ResponseEntity<Map> response = restTemplate.exchange(NAVER_USER_INFO_URL, HttpMethod.GET, request, Map.class);
-
+			log.info("[Service]getUserInfo 유저 정보 요청 후");
 			// 3. 응답 값 검증
 			if (response.getBody() == null || !response.getBody().containsKey("response")) {
 				throw new CustomTokenException(TokenErrorCode.NAVER_USER_INFO_NOT_EXIST, "네이버 응답 데이터가 없습니다.");
@@ -148,12 +153,13 @@ public class NaverSocialService implements SocialService {
 	@Transactional
 	@Override
 	public LoginResponse socialLogin(SocialUserDTO socialUser) {
+		log.info("[Service]socialLogin 메서드 들어옴");
 		// 1. 입력값 검증
 		if (socialUser == null || socialUser.getProvider() == null || socialUser.getProviderId() == null
 			|| socialUser.getEmail() == null || socialUser.getName() == null) {
 			throw new CustomAuthException(AuthErrorCode.SOCIAL_USER_INFO_INVALID,"네이버 유저 정보 없음");
 		}
-
+		log.info("[Service]socialLogin 유저 정보 입력 값 검증");
 		try {
 			String userId = socialUser.getProvider() + "_" + socialUser.getProviderId();
 
@@ -199,7 +205,7 @@ public class NaverSocialService implements SocialService {
 					refreshToken.setToken(refreshTokenWithExpiration.getToken());
 					refreshToken.setExpiryDate(
 						refreshTokenWithExpiration.getExpiration().toInstant()
-						.atZone(ZoneId.systemDefault()).toLocalDateTime());
+							.atZone(ZoneId.systemDefault()).toLocalDateTime());
 					refreshTokenRepository.save(refreshToken);
 				} catch (Exception e) {
 					throw new CustomException(ErrorCode.DATABASE_ERROR, "Refresh Token DB 저장 에러 " + e.getMessage());

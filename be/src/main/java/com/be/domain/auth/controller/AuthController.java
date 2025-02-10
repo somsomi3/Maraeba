@@ -41,7 +41,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -148,6 +150,7 @@ public class AuthController {
 	public ResponseEntity<? extends BaseResponseBody> kakaoLogin(@RequestBody Map<String, String> requestBody) {
 		String code = requestBody.get("code");
 
+		log.info("[Controller]/kakao/callback요청에 들어옴");
 		// 1. 카카오 Access Token 요청
 		String accessToken = kakaoSocialService.getAccessToken(code);
 
@@ -159,7 +162,7 @@ public class AuthController {
 
 		// 4. Refresh Token을 쿠키에 저장
 		ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
-
+		log.info("[Controller]/kakao/callback요청 마무리");
 		return ResponseEntity.ok()
 			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString()) // Refresh Token은 쿠키에 저장
 			.body(AccessTokenResponse.from(response)); // Access Token은 JSON으로 전달
@@ -176,6 +179,8 @@ public class AuthController {
 	public ResponseEntity<? extends BaseResponseBody> naverLogin(@RequestBody Map<String, String> requestBody) {
 		String code = requestBody.get("code");
 
+		log.info("[Controller]/naver/callback요청에 들어옴");
+
 		// 1. 네이버 Access Token 요청
 		String accessToken = naverSocialService.getAccessToken(code);
 
@@ -187,7 +192,7 @@ public class AuthController {
 
 		// 4. Refresh Token을 쿠키에 저장
 		ResponseCookie refreshTokenCookie = tokenService.createRefreshTokenCookie(response.getRefreshToken());
-
+		log.info("[Controller]/naver/callback요청 마무리");
 		return ResponseEntity.ok()
 			.header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString()) // Refresh Token은 쿠키에 저장
 			.body(AccessTokenResponse.from(response)); // Access Token은 JSON으로 전달
