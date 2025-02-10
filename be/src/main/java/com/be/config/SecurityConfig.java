@@ -73,6 +73,7 @@ public class SecurityConfig {
 					"/auth/social",
 					"/auth/token",
 					"/auth/kakao/callback",
+					"/auth/naver/callback",
 					"/auth/find-id",
 					"/auth/forgot-password",
 					"/auth/reset-password",
