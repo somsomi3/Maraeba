@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { springApi } from "../../utils/api"; 
 import "./PronsSecond.css";
 import GoBackButton from "../../components/button/GoBackButton";
@@ -9,17 +10,21 @@ import RecordButton from "../../components/button/RecordButton";
 import lipshape from "../../assets/images/lipshape.png";
 import tongue from "../../assets/images/tongue.png";
 
+const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
+
 const classMaxSeqMap = {
-  1: 6, 
+  1: 8, 
   2: 9, 
-  3: 14, 
+  3: 13, 
 };
 
 const PronsSecond = () => {
   const navigate = useNavigate();
   const { class_id, seq_id } = useParams();
+  const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
   const videoRef = useRef(null);
- 
+  const [tongueImage, setTongueImage] = useState(null);
+  const [lipVideoSrc, setLipVideoSrc] = useState(null); // ✅ 비디오 Blob URL
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -30,7 +35,25 @@ const PronsSecond = () => {
       try {
         console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
-        setData(response.data.data || {});
+        console.log("✅ 가져온 데이터:", response.data.data);
+
+        // ✅ 혀 이미지 & 입모양 비디오 URL 가져오기
+        const { tongue_image_url, lip_video_url } = response.data.data;
+
+        // ✅ 혀 이미지 & 비디오 fetch 요청
+        if (tongue_image_url) {
+          fetchResource(`${STATIC_API_URL}${tongue_image_url}`, setTongueImage);
+        } else {
+          setTongueImage(null);
+        }
+
+        if (lip_video_url) {
+          fetchResource(`${STATIC_API_URL}${lip_video_url}`, setLipVideoSrc);
+        } else {
+          setLipVideoSrc(null);
+        }
+
+        setData(response.data.data);
         setError(false);
       } catch (error) {
         console.error("❌ 데이터 불러오기 실패:", error);
@@ -42,6 +65,27 @@ const PronsSecond = () => {
 
     fetchData();
   }, [class_id, seq_id]);
+
+  const fetchResource = async (url, setState) => {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ 토큰 포함하여 요청
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("리소스 로딩 실패");
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setState(blobUrl);
+    } catch (error) {
+      console.error(`❌ ${url} 가져오기 실패:`, error);
+      setState(null); // 실패하면 기본 이미지 또는 null
+    }
+  };
 
   useEffect(() => {
     const startCamera = async () => {
@@ -65,6 +109,25 @@ const PronsSecond = () => {
     };
   }, []);
 
+//   const saveSimilarity = async () => {
+//     const session_id = localStorage.getItem("session_id");
+//     if (!session_id) {
+//       alert("세션 ID가 없습니다. 다시 시작해주세요.");
+//       return;
+//     }
+
+//     try {
+//       console.log("📡 유사도 저장 요청:", { session_id, similarity });
+//       await springApi.post("/prons/session/similarity", {
+//         session_id,
+//         similarity,
+//       });
+//       console.log("✅ 유사도 저장 완료");
+//     } catch (error) {
+//       console.error("❌ 유사도 저장 실패:", error);
+//     }
+//   };
+
   // ✅ 학습 완료 후 세션 종료, 히스토리 저장, 통계 업데이트
   const handleEndSession = async () => {
     const session_id = localStorage.getItem("session_id");
@@ -72,7 +135,7 @@ const PronsSecond = () => {
       alert("세션 ID가 존재하지 않습니다. 다시 시작해주세요.");
       return;
     }
-
+    
     try {
       console.log("📡 히스토리 저장 요청:", session_id);
       await springApi.post(`/prons/session/history/${session_id}`);
@@ -133,9 +196,15 @@ const PronsSecond = () => {
       ) : (
         <>
           <div className="content-container">
-            <div className="image-section">
-              <img src={lipshape} alt="입모양" className="image-top" />
-              <img src={tongue} alt="혀 위치" className="image-bottom" />
+          <div className="image-section">
+              {lipVideoSrc ? (
+                <video className="lip-video" controls autoPlay loop>
+                  <source src={lipVideoSrc} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={lipshape} alt="입모양" className="image-top" />
+              )}
+              <img src={tongueImage ?? tongue} alt="구강 내부" className="image-bottom" />
             </div>
             <div className="camera-section">
               <div className="camera-frame">

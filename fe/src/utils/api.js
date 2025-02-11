@@ -16,6 +16,12 @@ const springApi = axios.create({
     withCredentials: true,
 });
 
+const staticApi = axios.create({
+    baseURL: import.meta.env.VITE_STATIC_API_URL,
+    headers: { "Content-Type": "application/json" },
+    withCredentials: false, // ✅ 인증 필요 없음
+})
+
 // ✅ 로그인 API (RefreshToken은 쿠키에 저장됨)
 export const loginApi = (credentials) =>
     axios.post(
