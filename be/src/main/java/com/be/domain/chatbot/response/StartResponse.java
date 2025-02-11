@@ -1,9 +1,11 @@
 package com.be.domain.chatbot.response;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class StartResponse {
-    String sessionId;
-    String answer;
+    private String sessionId;
+    private String answer;
 }

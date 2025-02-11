@@ -1,7 +1,9 @@
 package com.be.domain.chatbot.service;
 
 import com.be.db.entity.AISession;
+import com.be.db.entity.User;
 import com.be.db.repository.AISessionRepository;
+import com.be.db.repository.UserRepository;
 import com.be.domain.chatbot.request.StartRequest;
 import com.be.domain.chatbot.response.StartResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,7 +19,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService{
 
-    AISessionRepository aiSessionRepository;
+    private final AISessionRepository aiSessionRepository;
+    private final UserRepository userRepository;
 
     private final RedisTemplate<String, String> redisTemplate;
     private final OpenAiClient openAiClient;
@@ -28,10 +31,11 @@ public class ChatServiceImpl implements ChatService{
     public StartResponse chatStart(Long user_id, StartRequest request) throws JsonProcessingException {
         //UUID로 세션 ID 생성
         String sessionId = String.valueOf(UUID.randomUUID());
+        User user = userRepository.getReferenceById(user_id);
 
         //aiSession Entity 객체 생성 후 DB에 저장
         AISession aiSession = AISession.builder()
-                .id(user_id)
+                .user(user)
                 .sessionId(sessionId)
                 .build();
         aiSessionRepository.save(aiSession);
@@ -42,6 +46,7 @@ public class ChatServiceImpl implements ChatService{
                 + request.getSituation() + "이야. 알아들었다면 대화를 바로 시작할거야. 상대방에게 말할 적절한 너의 첫 마디를 말해줘.";
         String answer = chat(sessionId, message);
 
+        System.out.println("대답: " + answer);
         //클라이언트로 전송할 응답 객체 생성
         return StartResponse.builder()
                 .answer(answer)

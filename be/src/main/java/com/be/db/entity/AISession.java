@@ -6,7 +6,6 @@ import lombok.*;
 @Entity
 @Table(name = "ai_session")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -16,8 +15,9 @@ public class AISession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "session_id", nullable = false)
     private String sessionId;
