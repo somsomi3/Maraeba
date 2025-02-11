@@ -29,36 +29,43 @@
 }
 
   
-  .card {
-    width: 320px; /* 카드 너비 키움 */
-    height: 500px; /* 카드 높이 키움 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 25px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 0.5;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  .single-card {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    padding: 2rem;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: SDSamliphopang;
+    font-size: 1.2rem;
+    margin-bottom: 3%;
+    width: 18vw;
+    height: 63vh;
 }
   
-  .card:hover {
+  .single-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
   
   /* 카드 색상 구분 */
-  .card:nth-child(1) {
+  .single-card:nth-child(1) {
     background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 첫 번째 카드 그라데이션 */
     color: #fff;
     z-index: 10;
   }
-  .card:nth-child(2) {
+  .single-card:nth-child(2) {
       background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 두 번째 카드 그라데이션 */
       color: #fff;
       z-index: 10;
   }
-  .card:nth-child(3) {
+  .single-card:nth-child(3) {
       background: linear-gradient(135deg, #ffb88c, #ffd7a5); /* 세 번째 카드 그라데이션 */
       color: #fff;
       z-index: 10;

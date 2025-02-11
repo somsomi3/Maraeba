@@ -5,7 +5,7 @@ import { springApi } from "../../utils/api";
 import HomeButton from "../../components/button/HomeButton";
 import { useNavigate } from "react-router-dom"; // ✅ 로그인 페이지 리디렉션
 import pororo from "../../assets/images/pororo.png"
-import PronunciationHistoryChart from "../../components/popup/PronunciationHistoryChart";
+import PronunciationHistoryChart from "./PronunciationHistoryChart";
 import "./Profile.css";
 
 const Profile = () => {

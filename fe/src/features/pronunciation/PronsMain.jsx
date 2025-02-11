@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
 import "./PronsMain.css";
+
 import pronstitle from "../../assets/images/pronstitle.png";
 import HomeButton from "../../components/button/HomeButton";
 
@@ -73,7 +74,7 @@ const PronsMain = () => {
                 <div className="divider"></div>
                 <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>
                 <button
-                    className="start-button"
+                    className="start"
                     onClick={() => handleStart(item.id, item.title)} // 🔹 제목 데이터 추가
                     >
                     시작하기
