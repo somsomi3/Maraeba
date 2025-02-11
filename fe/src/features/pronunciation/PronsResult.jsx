@@ -104,30 +104,33 @@ const PronsResult = () => {
 
   return (
     <div className="prons-result-container">
-      <h1>📊 학습 결과</h1>
+  <h1>📊 학습 결과</h1>
 
-      {/* ✅ 최근 학습 결과 */}
-      {latestRecord && (
-        <div className="current-session-result">
-          <div className="profile">
-            <img src={pororo} alt="Profile" />
-          </div>
-          <div className="session-info">
-            <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>
-            <p className="session-score">
-              유사도: {(latestRecord.average_correct_rate * 100).toFixed(0)}점
-            </p>
-            <div className="session-buttons">
-              <button onClick={handleRestart} disabled={isRestarting}>
-                {isRestarting ? "🔄 다시 시작 중..." : "다시하기"}
-              </button>
-              <button onClick={() => navigate("/prons")}>학습 끝내기</button>
-            </div>
+  {/* ✅ 가로 정렬을 위한 새로운 div 추가 */}
+  <div className="result-wrapper">
+    {/* ✅ 최근 학습 결과 */}
+    {latestRecord && (
+      <div className="current-session-result">
+        <div className="profile">
+          <img src={pororo} alt="Profile" />
+        </div>
+        <div className="session-info">
+          <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>
+          <p className="session-score">
+            유사도: {(latestRecord.average_correct_rate * 100).toFixed(0)}점
+          </p>
+          <div className="session-buttons">
+            <button onClick={handleRestart} disabled={isRestarting}>
+              {isRestarting ? "🔄 다시 시작 중..." : "다시하기"}
+            </button>
+            <button onClick={() => navigate("/prons")}>학습 끝내기</button>
           </div>
         </div>
-      )}
+      </div>
+    )}
 
-      {/* ✅ 학습 기록 히스토리 */}
+    {/* ✅ 결과 히스토리 */}
+    <div className="history-container">
       <h2 className="history-title">결과 히스토리</h2>
       {loading ? (
         <p>🔄 학습 기록을 불러오는 중...</p>
@@ -156,6 +159,9 @@ const PronsResult = () => {
         <p>📢 학습 기록이 없습니다.</p>
       )}
     </div>
+  </div>
+</div>
+
   );
 };
 

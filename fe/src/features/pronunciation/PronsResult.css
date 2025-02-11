@@ -4,8 +4,7 @@
     max-width: 100%;
     margin: 0 auto;
     text-align: center;
-    min-height: 100vh; /* ✅ 화면이 아래로 스크롤 가능하도록 설정 */
-    
+    height: 100vh; /* ✅ 화면이 아래로 스크롤 가능하도록 설정 */
     
 }
 
@@ -50,7 +49,7 @@
 }
 
 .session-buttons button {
-    margin-right: 10px;
+    margin-right: 15px;
     padding: 8px 15px;
     border: none;
     background: #64b0b7;
@@ -151,4 +150,23 @@
         font-size: 14px;
         padding: 10px;
     }
+}
+
+.result-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3vw; /* 간격 조정 */
+}
+
+/* ✅ 학습 결과 스타일 */
+.current-session-result {
+    flex: 1; /* 히스토리와 동일한 크기 할당 */
+    max-width: 40vw; /* 최대 50% 너비 */
+}
+
+/* ✅ 결과 히스토리 스타일 */
+.history-container {
+    flex: 1;
+    max-width: 40vw;
 }
