@@ -66,7 +66,7 @@ const PronsFirst = () => {
 
             if (!response.ok) {
                 throw new Error("리소스 로딩 실패");
-            }
+            }   
 
             const blob = await response.blob();
             const blobUrl = URL.createObjectURL(blob);

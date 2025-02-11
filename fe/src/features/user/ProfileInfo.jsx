@@ -10,8 +10,6 @@ import "./ProfileInfo.css"; // ✅ 기존 CSS 유지
 const ProfileInfo = () => {
     const token = useSelector((state) => state.auth.token);
     const [userInfo, setUserInfo] = useState({ username: "", email: "" });
-    const [username, setUsername] = useState("사용자");
-    const [error, setError] = useState(null);
     const [newUsername, setNewUsername] = useState("");  
     const [newEmail, setNewEmail] = useState("");  
     const [loading, setLoading] = useState(true);
@@ -91,13 +89,8 @@ const ProfileInfo = () => {
             {/* ✅ 사이드바 */}
             <div className="sidebar">
                 <div className="profile-header">
-                    <img
-                        src={pororo}
-                        alt="프로필"
-                        className="profile-avatar"
-                    />
-                   
                     <h2>회원정보 수정</h2>
+                    
                 </div>
                 <nav className="profile-menu">
                     <ul>
@@ -135,10 +128,6 @@ const ProfileInfo = () => {
 
                         <button className="change-password-btn" onClick={handleChangePassword}>
                             비밀번호 변경
-                        </button>
-
-                        <button className="delete-account-btn" onClick={() => navigate('/profile-delete')}>
-                            회원 탈퇴
                         </button>
                     </>
                 )}

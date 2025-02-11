@@ -61,7 +61,9 @@ const RecordButton = ({ onMatchUpdate, pronunciation }) => {
             console.log("✅ AI 분석 응답:", response.data);
 
             const isMatch = response.data.match || false;
-            onMatchUpdate(isMatch);
+            const feedbackMsg = response.data.feedback || "잘했어요🙂";
+        
+            onMatchUpdate(isMatch, feedbackMsg);
         } catch (error) {
             console.error("❌ AI 요청 오류:", error.response ? error.response.data : error);
         }

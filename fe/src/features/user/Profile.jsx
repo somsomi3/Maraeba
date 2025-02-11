@@ -65,7 +65,7 @@ const Profile = () => {
                     <ul>
                         <li className="active">내 프로필</li>
                         <li onClick={() => navigate("/profile-info")}>회원정보 수정</li>
-                        <li>도움말</li>
+                        <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
                     </ul>
                 </nav>
             </div>
