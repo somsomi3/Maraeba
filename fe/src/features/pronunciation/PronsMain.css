@@ -70,7 +70,8 @@
   }
 
   .pronstitle-image {
-    width: 75%;
+    width: 60vw;
+    height: auto;
     max-width: 600px;
     margin: 1rem auto;
     display: block;
