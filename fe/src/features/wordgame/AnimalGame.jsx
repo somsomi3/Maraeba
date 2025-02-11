@@ -19,6 +19,7 @@ const AnimalGame = () => {
   const audioChunksRef = useRef([]);
   const recordingTimeoutRef = useRef(null);
   const token = useSelector((state) => state.auth.token);
+  const backendURL = import.meta.env.VITE_STATIC_API_URL;
 
   const base64ToBlob = (base64, mimeType) => {
     try {
@@ -46,35 +47,59 @@ const AnimalGame = () => {
     }
 };
 
-const startGame = async () => {
+
+   // ✅ 공통 fetch 함수 (Access Token 포함)
+   const fetchResource = async (url, setState) => {
     try {
-      const response = await springApi.post('/wgames/find-animal/start-game', {}, {
-          headers: {
-              Authorization: `Bearer ${token}`, // ✅ Redux에서 가져온 토큰 사용
-          },
-          withCredentials: true, 
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-        console.log("🔍 Response 객체:", response);  
+
+      if (!response.ok) {
+        throw new Error("이미지 로딩 실패");
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setState(blobUrl);
+    } catch (error) {
+      console.error(`❌ ${url} 가져오기 실패:`, error);
+      setState(null); // 실패하면 기본값 유지
+    }
+  };
+
+  const startGame = async () => {
+    try {
+        const response = await springApi.get('/wgames/find-animal/start-game', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true, 
+        });
+
+        console.log("🔍 Response 객체:", response);
         const data = response.data;
         console.log("응답 데이터:", data);
 
-        if (!data.image_data) {
-            throw new Error("imageData가 올바르지 않습니다.");
+        if (!data.image_url) {
+            throw new Error("❌ image_url이 올바르지 않습니다.");
         }
 
-        // 1️⃣ Base64 데이터 앞뒤 공백 제거
-        const cleanBase64 = data.image_data?.replace(/\s/g, "") || "";
+        const fullImageUrl = `${backendURL}${data.image_url}`; // 서버 경로 보정
+        console.log("🔍 최종 이미지 URL:", fullImageUrl);
 
-        // 2️⃣ 데이터 URL로 변환
-        const imageUrl = `data:image/png;base64,${cleanBase64}`;
-        console.log("생성된 이미지 URL:", imageUrl);
-
-        setGameData({
-            imageNumber: data.image_number,
-            imageData: imageUrl,
+        // ✅ `fetchResource` 사용하여 이미지 로드
+        fetchResource(fullImageUrl, (blobUrl) => {
+            setGameData({
+                imageNumber: data.image_number,
+                imageData: blobUrl,
+            });
         });
+
     } catch (error) {
-        console.error("게임 시작 오류:", error);
+        console.error("❌ 게임 시작 오류:", error);
     }
 };
 
