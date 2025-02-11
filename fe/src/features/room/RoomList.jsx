@@ -2,29 +2,19 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api.js";
 import "./WaitingRoom.css";
+import { useSelector } from "react-redux";
 
 const RoomList = () => {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+    const userId = useSelector((state) => state.auth.userId);
+    
 
     // ✅ JWT 토큰에서 사용자 정보 추출하는 함수
-    const getUserInfo = () => {
-        const token = localStorage.getItem("token");
-        if (!token) return null;
 
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1])); // JWT 디코딩
-            return {
-                host_id: payload.sub,  // 사용자 ID
-                username: payload.username,  // 사용자 이름 (예시로 사용)
-            };
-        } catch (e) {
-            console.error("토큰 파싱 오류:", e);
-            return null;
-        }
-    };
 
     // 방 목록 가져오기
     const fetchRooms = async () => {
@@ -57,8 +47,7 @@ const RoomList = () => {
         }
 
         // getUserInfo()에서 이미 토큰을 확인하고 사용자 정보를 가져오기 때문에
-        const userInfo = getUserInfo();
-        if (!userInfo) {
+        if (!userId) {
             alert("사용자 정보가 없습니다. 로그인 후 다시 시도하세요.");
             return;
         }
@@ -75,7 +64,7 @@ const RoomList = () => {
         try {
             // 방 입장 API 요청
             const response = await springApi.post(`/rooms/join/${room.id}`, {
-                user: userInfo.host_id,
+                user: userId,
                 room: room.id,
                 room_password: password || null,
             });

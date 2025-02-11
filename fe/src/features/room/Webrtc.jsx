@@ -1,15 +1,9 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import { useParams } from 'react-router-dom';
 import {springApi} from "../../utils/api.js";  // React Router에서 useParams를 사용
 
-const API_URL = "http://localhost:8081";
-
-import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-
 
 const Webrtc = () => {
     const [localStream, setLocalStream] = useState(null);
@@ -31,15 +25,15 @@ const Webrtc = () => {
     const [selectedItem, setSelectedItem] = useState(null);
 
     const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
-    const [userId, setUserId] = useState(null); // ✅ userId 상태 추가
+    const userId = useSelector((state) => state.auth.userId);
 
 
     const {roomId} = useParams();  // URL에서 roomId 가져오기
     const navigate = useNavigate();
     useEffect(() => {
         if (token) {
-            const decodedUserId = getUserIdFromToken(token);
-            setUserId(decodedUserId); // ✅ 상태에 저장
+            // const decodedUserId = getUserIdFromToken(token);
+        //     setUserId(decodedUserId); // ✅ 상태에 저장
             connectWebSocket(token);
         } else {
             console.error("JWT 토큰 없음: 로그인 필요");
@@ -62,17 +56,7 @@ const Webrtc = () => {
 
     }, [token]); // ✅ Redux의 토큰 값이 변경될 때마다 실행
 
-    // ✅ JWT에서 userId 추출하는 함수
-    const getUserIdFromToken = (token) => {
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1])); // ✅ JWT 디코딩
-            return payload.sub; // ✅ userId 반환
-        } catch (e) {
-            console.error("❌ 토큰 파싱 오류:", e);
-            return null;
-        }
-    };
-
+   
 
     // WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -152,20 +136,7 @@ const Webrtc = () => {
     }, []);
 
     // JWT 토큰 가져오기
-    const getToken = () => localStorage.getItem("token");
-    const getUserId = () => {
-        const token = localStorage.getItem("token");
-        if (!token) return null;
-
-        try {
-            const payload = JSON.parse(atob(token.split(".")[1])); // JWT 디코딩
-            console.log("JWT 페이로드:", payload); // user_id 포함 여부 확인
-            return payload.sub; // userId 반환
-        } catch (e) {
-            console.error("토큰 파싱 오류:", e);
-            return null;
-        }
-    };
+//날림! 로컬에서 가져오는거
 
     // WebSocket 연결
     const connectWebSocket = (token) => {
@@ -196,10 +167,6 @@ const Webrtc = () => {
     const sendMessage = () => {
 
         if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-            const userId = getUserId(); // 현재 로그인한 사용자 ID 가져오기
-            // const roomId = useParams().roomId; // 현재 방 ID 가져오기 (useParams로 방 ID를 받아옴)
-            // const senderId = "opponentId"; // 상대방 ID 설정 (상대방 ID 추적 후 사용)
-
 
             if (!userId) {
                 console.error("사용자 ID 없음");
@@ -247,9 +214,7 @@ const Webrtc = () => {
 
         try {
             const response = await springApi.post("/webrtc/messages", requestPayload, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token"),
-                },
+
             });
             console.log("메시지 저장 성공:", response.data);
         } catch (error) {
@@ -405,7 +370,6 @@ const Webrtc = () => {
 
 
     const saveWebRTCLog = async (startTime, endTime) => {
-        const userId = getUserId();
 
         console.log("저장할 사용자 ID:", userId); //user_id 값이 있는지 확인
 
@@ -443,7 +407,6 @@ const Webrtc = () => {
     };
     // 방 나가기 요청
     const handleLeaveRoom = async () => {
-        const userId = getUserId();  // getUserId() 함수를 사용하여 사용자 ID를 가져옵니다.
         if (!userId) {
             alert("사용자 정보가 없습니다. 로그인 후 다시 시도해주세요.");
             return;
@@ -465,7 +428,6 @@ const Webrtc = () => {
     };
 // 게임 시작
     const startGame = async () => {
-        const userId = getUserId();  // getUserId() 함수를 사용하여 사용자 ID를 가져옵니다.
         if (!userId) {
             alert("사용자 정보가 없습니다. 로그인 후 다시 시도해주세요.");
             return;
@@ -515,8 +477,8 @@ const Webrtc = () => {
 
                 {/* 버튼을 비디오 아래로 이동 */}
                 <div style={styles.buttonContainer}>
-                    <button onClick={startMedia} style={styles.button}>🎥 미디어 시작</button>
-                    <button onClick={createOffer} style={styles.button}>📡 연결 요청 (Offer)</button>
+                    <button onClick={startMedia} style={styles.button}>🎥 나의 화면 열기</button>
+                    <button onClick={createOffer} style={styles.button}>📡 나의 화면 보여주기(Offer)</button>
                     <button onClick={endMedia} style={styles.button}>🛑 종료</button>
                     <button onClick={toggleMute} style={styles.button}>{isMuted ? "🔇 음소거 해제" : "🎤 음소거"}</button>
                 </div>
@@ -530,7 +492,7 @@ const Webrtc = () => {
                     {messages.map((msg, idx) => (
                         <div
                             key={idx}
-                            style={msg.user_id === getUserId() ? styles.myMessage : styles.otherMessage} // 내 메시지는 오른쪽, 상대방은 왼쪽
+                            style={msg.user_id === userId ? styles.myMessage : styles.otherMessage} // 내 메시지는 오른쪽, 상대방은 왼쪽
                         >
                             <strong>user{msg.user_id}:</strong> {msg.message}
                         </div>
