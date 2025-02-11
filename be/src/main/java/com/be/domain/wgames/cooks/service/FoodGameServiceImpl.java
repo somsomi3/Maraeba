@@ -3,7 +3,6 @@ package com.be.domain.wgames.cooks.service;
 import com.be.db.entity.FoodGame;
 import com.be.db.repository.FoodGameRepository;
 import com.be.db.repository.FoodItemRepository;
-import com.be.domain.wgames.AiTest;
 import com.be.domain.wgames.common.service.SpeechService;
 import com.be.domain.wgames.cooks.request.AnswerCorrectRequest;
 import com.be.domain.wgames.cooks.response.FoodAnswerResponse;
@@ -14,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +25,6 @@ public class FoodGameServiceImpl implements FoodGameService {
 
     private final FoodGameRepository foodGameRepository;
     private final FoodItemRepository foodItemRepository;
-    private final AiTest aiTest;
     private final SpeechService speechService;
 
     @Override
