@@ -26,15 +26,16 @@ const ChangePassword = () => {
 
         try {
             setLoading(true);
-            await springApi.patch(
-                "/users/me/password",
-                { currentPassword, newPassword },
-                
-            );
+            await springApi.patch("/users/me/password", {
+                current_password: currentPassword,
+                new_password: newPassword,
+            });
 
-            alert("✅ 비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.");
-            dispatch(logout());  // ✅ 로그아웃 처리
-            navigate("/login");  // ✅ 로그인 페이지 이동
+            alert(
+                "✅ 비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요."
+            );
+            dispatch(logout()); // ✅ 로그아웃 처리
+            navigate("/login"); // ✅ 로그인 페이지 이동
         } catch (error) {
             console.error("❌ 비밀번호 변경 실패:", error);
             alert("비밀번호 변경 중 오류가 발생했습니다.");
@@ -53,7 +54,9 @@ const ChangePassword = () => {
                 <nav className="profile-menu">
                     <ul>
                         <li onClick={() => navigate("/profile")}>내 프로필</li>
-                        <li onClick={() => navigate("/profile-info")}>회원정보 수정</li>
+                        <li onClick={() => navigate("/profile-info")}>
+                            회원정보 수정
+                        </li>
                         <li className="active">비밀번호 변경</li>
                     </ul>
                 </nav>
@@ -91,14 +94,17 @@ const ChangePassword = () => {
                         />
                     </div>
 
-                    <button className="pw-button" type="submit" disabled={loading}>
+                    <button
+                        className="pw-button"
+                        type="submit"
+                        disabled={loading}
+                    >
                         {loading ? "변경 중..." : "비밀번호 변경"}
                     </button>
                 </form>
                 <HomeButton />
             </div>
         </div>
-       
     );
 };
 

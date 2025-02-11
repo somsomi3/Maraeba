@@ -1,14 +1,17 @@
 package com.be.domain.prons.response;
 
+import org.springframework.http.HttpStatus;
+
 import com.be.common.model.response.BaseResponseBody;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class GetSpecificDataRes extends BaseResponseBody {
 	private PronunciationDataDTO data;
 
