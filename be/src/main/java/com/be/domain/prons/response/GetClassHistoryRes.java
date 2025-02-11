@@ -9,9 +9,11 @@ import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class GetClassHistoryRes extends BaseResponseBody {
 
 	private List<PronunciationClassHistoryDTO> histories;
