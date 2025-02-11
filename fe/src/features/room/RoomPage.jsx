@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Webrtc from "./Webrtc";
 import ChatBox from "./ChatBox";
 
@@ -7,6 +7,7 @@ import { springApi } from "../../utils/api.js";
 
 function RoomPage() {
     const { roomId } = useParams();
+    const navigate = useNavigate(); // 페이지 이동을 위한 navigate 훅
     const [isGameStarted, setIsGameStarted] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [items, setItems] = useState([]);
@@ -62,6 +63,31 @@ function RoomPage() {
         }
     };
 
+    // ✅ 방 나가기 요청
+    const handleLeaveRoom = async () => {
+        try {
+            setLoading(true);
+            const response = await springApi.post(`/rooms/leave/${roomId}`, { userId });
+            if (response.status === 200) {
+                alert("방에서 나갔습니다.");
+                navigate("/rooms/list");  // 방 목록 화면으로 이동
+            }
+        } catch (error) {
+            console.error("❌ 방 나가기 실패:", error);
+            alert("방 나가기 실패!");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ✅ 컴포넌트 unmount 시 방 나가기 요청
+    useEffect(() => {
+        // 뒤로가기 버튼이나 브라우저를 떠날 때 방을 나가게 처리
+        return () => {
+            handleLeaveRoom(); // 페이지가 나갈 때 자동으로 방을 떠난다
+        };
+    }, [roomId]); // roomId가 변경될 때마다 실행
+
     return (
         <div>
             <h1>방 ID: {roomId}</h1>
@@ -100,6 +126,11 @@ function RoomPage() {
                     )}
                 </div>
             )}
+
+            {/* ✅ 방 나가기 버튼 */}
+            <button onClick={handleLeaveRoom} disabled={loading}>
+                {loading ? "나가는 중..." : "나가기"}
+            </button>
         </div>
     );
 }

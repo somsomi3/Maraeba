@@ -15,11 +15,12 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "webrtc_message")
 public class WebrtcMessage extends BaseEntity {
 
     // 메시지를 받는 사용자 (나 자신)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
@@ -36,9 +37,10 @@ public class WebrtcMessage extends BaseEntity {
     // 메시지 보낸 시간
     private LocalDateTime sentAt;
 
-    // 메시지를 보낸 상대방 (sender_id로 구분)
-    @ManyToOne
-    @JoinColumn(name = "sender_id", referencedColumnName = "id")  // `sender_id` 컬럼 추가
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User sender;  // 메시지를 보낸 사용자 (상대방)
+
+//    // 메시지를 보낸 상대방 (sender_id로 구분)
+//    @ManyToOne
+//    @JoinColumn(name = "sender_id", referencedColumnName = "id")  // `sender_id` 컬럼 추가
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private User sender;  // 메시지를 보낸 사용자 (상대방)
 }

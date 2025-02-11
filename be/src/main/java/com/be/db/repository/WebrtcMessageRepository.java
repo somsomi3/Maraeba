@@ -11,7 +11,7 @@ import java.util.List;
 public interface WebrtcMessageRepository extends JpaRepository<WebrtcMessage, Long> {
 
     // 특정 sender의 메시지 목록을 조회하는 메서드
-    List<WebrtcMessage> findBySender(User sender);
+//    List<WebrtcMessage> findBySender(User sender);
 
     // 특정 방(roomId)과 사용자(userId)의 메시지 조회
     List<WebrtcMessage> findByRoomIdAndUserId(Long roomId, Long userId);

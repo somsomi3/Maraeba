@@ -35,25 +35,6 @@ public class WebrtcMessageController {
         log.info("Received message_getmessage: {}", request.getMessage());
         log.info("Received message_getsentat: {}", request.getSentAt());
 
-
-//        Long userId = null;
-//        if (userDetails != null && userDetails.getUsername() != null) {
-//            try {
-//                userId = Long.parseLong(userDetails.getUsername());
-//            } catch (NumberFormatException e) {
-//                log.error("❌ 잘못된 userId 포맷: {}", userDetails.getUsername());
-//                return ResponseEntity.badRequest().body(BaseResponseBody.of("❌ 잘못된 사용자 ID", 400));
-//            }
-//        }
-//
-//        if (userId == null) {
-//            return ResponseEntity.badRequest().body(BaseResponseBody.of("❌ userId가 null입니다.", 400));
-//        }
-//
-//        request.setUserId(userId);  // 로그인된 사용자 ID를 설정
-//        if (request.getSenderId() == null) {
-//            throw new IllegalArgumentException("Sender ID is null");
-//        }
         // 메시지 저장
         webrtcMessageService.saveMessage(request);
         return ResponseEntity.ok().body(BaseResponseBody.of("✅ WebSocket 메시지 저장 성공", 200));
