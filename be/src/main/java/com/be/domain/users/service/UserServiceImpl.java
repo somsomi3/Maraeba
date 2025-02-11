@@ -34,12 +34,18 @@ public class UserServiceImpl implements UserService {
 		return GetCurrentUserResponse.from(findUserById(id));
 	}
 
+	@Transactional
 	@Override
 	public void updateUser(Long id, UserUpdateRequest request) {
 		User user = findUserById(id);
-		user.setEmail(request.getEmail());
-		user.setUsername(request.getUsername());
-		userRepository.save(user);
+		String newEmail = request.getEmail();
+		String newUsername = request.getUsername();
+		if (newEmail != null && !newEmail.isBlank()) {
+			user.setEmail(newEmail);
+		}
+		if(newUsername != null && !newUsername.isBlank()) {
+			user.setUsername(request.getUsername());
+		}
 	}
 
 	@Override

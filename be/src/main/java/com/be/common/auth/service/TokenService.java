@@ -68,6 +68,7 @@ public class TokenService {
 				.subject(String.valueOf(id))
 				.issuedAt(new Date())
 				.expiration(new Date(System.currentTimeMillis() + expirationTime))
+				.issuer("maraeba")
 				.signWith(key)
 				.compact();
 			return Optional.of(token);
@@ -87,6 +88,7 @@ public class TokenService {
 				.subject(String.valueOf(id))
 				.issuedAt(new Date())
 				.expiration(expiration)
+				.issuer("maraeba")
 				.signWith(key)
 				.compact();
 			return Optional.of(new TokenWithExpiration(token, expiration));
