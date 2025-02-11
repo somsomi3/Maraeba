@@ -292,6 +292,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 
+	@Transactional
 	@Override
 	public void sendPasswordResetLink(ForgotPasswordRequest request) {
 		// 1. 입력값 유효성 검사
@@ -327,6 +328,7 @@ public class AuthServiceImpl implements AuthService {
 		emailService.sendEmail(user.getEmail(), subject, message);
 	}
 
+	@Transactional
 	@Override
 	public void resetPassword(PasswordResetRequest request) {
 		// 1. 입력값 검증
