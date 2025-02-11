@@ -4,6 +4,7 @@ import { springApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice";
 import HomeButton from "../../components/button/HomeButton";
+import './Profile.css'
 
 const ChangePassword = () => {
     const token = useSelector((state) => state.auth.token);
