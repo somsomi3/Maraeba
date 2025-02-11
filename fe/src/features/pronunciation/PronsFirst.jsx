@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { springApi, flaskApi } from '../../utils/api';
 import './PronsFirst.css';
+import next from "../../assets/icons/next.png"
 import GoBackButton from '../../components/button/GoBackButton';
 import PausePopup from '../../components/popup/PausePopup';
-import { VscChevronRight } from 'react-icons/vsc';
 import lipshape from '../../assets/images/lipshape.png';
 import tongue from '../../assets/images/tongue.png';
 
@@ -84,11 +84,10 @@ const PronsFirst = () => {
                     🔊 음성 듣기
                 </button>
                 {audioSrc && <audio src={audioSrc} controls autoPlay />}
-                </div>
-  
+            </div>
 
-            <div className="next-arrow-container" onClick={goToPractice}>
-              <VscChevronRight className="next-arrow" />
+            <div className="next-button" onClick={goToPractice}>
+                다음으로
             </div>
           </>
         )}

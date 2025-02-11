@@ -98,7 +98,7 @@ const PronsResult = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleString();
+    return date.toLocaleString('ko-KR');
   };
 
   return (

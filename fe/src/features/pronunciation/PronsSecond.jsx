@@ -159,8 +159,9 @@ const PronsSecond = () => {
             <div className="record-button-container">
           <RecordButton onMatchUpdate={setIsMatch} pronunciation={data?.pronunciation} />
             </div>
+            
           <button className="next-button" onClick={handleSaveCorrectAndNext}>
-            {parseInt(seq_id) === classMaxSeqMap[class_id] ? "학습 끝내기" : "다음으로"}
+            {parseInt(seq_id) === classMaxSeqMap[class_id] ? "🔚학습 끝내기" : "다음으로"}
           </button>
         </>
       )}
