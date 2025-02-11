@@ -30,8 +30,8 @@ public class ChatBotController {
     }
 //    @AuthenticationPrincipal UserDetails user,
     @PostMapping("/start")
-    public StartResponse start(@AuthenticationPrincipal UserDetails user, @RequestBody StartRequest request) {
-        return chatService.chatStart(user.getUsername(), request);
+    public StartResponse start(@AuthenticationPrincipal UserDetails user, @RequestBody StartRequest request) throws JsonProcessingException {
+        return chatService.chatStart(Long.valueOf(user.getUsername()), request);
     }
 
 //    @PostMapping("/play")

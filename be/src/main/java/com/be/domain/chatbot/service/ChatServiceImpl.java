@@ -25,7 +25,7 @@ public class ChatServiceImpl implements ChatService{
     private static final int MAX_HISTORY = 10; // 최근 10개 대화만 유지
 
     @Override
-    public StartResponse chatStart(Integer user_id, StartRequest request) throws JsonProcessingException {
+    public StartResponse chatStart(Long user_id, StartRequest request) throws JsonProcessingException {
         //UUID로 세션 ID 생성
         String sessionId = String.valueOf(UUID.randomUUID());
 
