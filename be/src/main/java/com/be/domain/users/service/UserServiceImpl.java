@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	@Transactional
 	@Override
 	public void updatePassword(Long id, PasswordUpdateRequest request) {
 		User user = findUserById(id);
