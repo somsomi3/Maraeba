@@ -6,10 +6,7 @@ import com.be.domain.wgames.cooks.response.FoodResponse;
 import com.be.domain.wgames.cooks.service.FoodGameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -23,7 +20,7 @@ public class CookGameController {
     @Autowired
     private FoodGameService foodGameService;
 
-    @PostMapping("/start-game")
+    @GetMapping("/start-game")
     public ResponseEntity<FoodResponse> startGame() throws IOException {
         FoodResponse foodResponse = foodGameService.pickFood();
         return ResponseEntity.ok(foodResponse);
