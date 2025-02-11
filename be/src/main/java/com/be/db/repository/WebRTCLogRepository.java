@@ -10,5 +10,4 @@ import com.be.db.entity.WebRTCLog;
 @Repository
 public interface WebRTCLogRepository extends JpaRepository<WebRTCLog, Long> {
 	List<WebRTCLog> findByUserId(Long userId);
-	List<WebRTCLog> findByCallId(String callId);
 }

@@ -1,11 +1,17 @@
 package com.be.domain.rooms.service;
 
+import com.be.common.exception.CustomException;
+import com.be.common.exception.ErrorCode;
 import com.be.db.entity.Room;
 import com.be.db.entity.RoomUser;
 import com.be.db.entity.User;
 import com.be.db.repository.RoomRepository;
 import com.be.db.repository.RoomUserRepository;
 import com.be.db.repository.UserRepository;
+import com.be.domain.rooms.request.CreateRoomRequest;
+import com.be.domain.rooms.request.UserJoinRequest;
+import com.be.domain.rooms.request.UserLeaveRequest;
+import com.be.domain.rooms.response.RoomJoinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,45 +36,77 @@ public class RoomService {
     }
 
     // 🔹 방 생성
-    public Room createRoom(String title, String roomPassword, Long hostId) {
-        User host = userRepository.findById(hostId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        Room room = new Room();
-        room.setTitle(title);
-        room.setRoomPassword(roomPassword);
-        room.setHost(host);
-        room.setStartedAt(LocalDateTime.now());
-        room.setActive(true);
-
-        return roomRepository.save(room);
+    public void createRoom(CreateRoomRequest request) {
+        Room createRoom = new Room();
+        createRoom.setHost(userRepository.findById(request.getHostId()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND)));
+        createRoom.setRoomPassword(request.getRoomPassword());
+        createRoom.setStartedAt(LocalDateTime.now());
+        createRoom.setTitle(request.getTitle());
+        roomRepository.save(createRoom);
     }
 
     // 🔹 방 참가
-    public String joinRoom(Long userId, Long roomId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public RoomJoinResponse joinRoom(UserJoinRequest request) {
+        System.out.println("Room ID: " + request.getRoom());  // Room ID가 null인지 확인
+        System.out.println("User ID: " + request.getUser());  // User ID가 null인지 확인
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+        // 해당 방과 사용자 조회
+        Room room = roomRepository.findById(Long.valueOf(request.getRoom()))
+                .orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));  // 해당 방 조회
+        User user = userRepository.findById(request.getUser())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));  // 해당 사용자 조회
 
+        // 로그 추가: room의 host_id와 user_id 확인
+        System.out.println("!!!!!!!Room's host_id: " + room.getHost().getId());  // 방장의 ID
+        System.out.println("!!!!!!!User's user_id: " + user.getId());  // 사용자의 ID
+
+        // 방장 여부 확인 (roomUser에 방장 설정)
+        boolean isHost = (room.getHost().getId()).equals(user.getId());  // 방장의 ID와 사용자의 ID 비교
+        System.out.println("isHost: " + isHost); // 방장 여부 출력
+        // RoomUser 객체 생성 후 방장 여부 설정
         RoomUser roomUser = new RoomUser();
-        roomUser.setUser(user);
-        roomUser.setRoom(room);
-        roomUser.setJoinedAt(LocalDateTime.now());
+        roomUser.setRoom(room);  // 해당 방 설정
+        roomUser.setUser(user);  // 해당 사용자 설정
+        roomUser.setIsHost(isHost);  // 방장 여부 설정
 
+        // 방에 참가한 사용자 데이터 저장
         roomUserRepository.save(roomUser);
-        return "User " + userId + " joined room " + roomId;
+
+        // 방장 여부에 따른 메시지 반환
+//        if (isHost) {
+//            return "User " + roomUser.getUser().getUsername() + " joined as host in room " + roomUser.getRoom().getTitle();
+//        } else {
+//            return "User " + roomUser.getUser().getUsername() + " joined room " + roomUser.getRoom().getTitle();
+//        }
+        // 방장 여부와 메시지를 담은 응답 객체 생성
+
+        return RoomJoinResponse.of(200,isHost);
     }
 
+
     // 🔹 방 나가기
-    public String leaveRoom(Long userId, Long roomId) {
+// 🔹 방 나가기
+    public String leaveRoom(UserLeaveRequest request) {
+        Long roomId = Long.valueOf(request.getRoom());  // Room ID 받아오기
+        Long userId = request.getUser();  // User ID 받아오기
+
+        System.out.println("Room ID: " + roomId);  // Room ID가 null인지 확인
+        System.out.println("User ID: " + userId);  // User ID가 null인지 확인
+
+        // 방에서 해당 사용자가 있는지 확인
         Optional<RoomUser> roomUser = roomUserRepository.findByUserIdAndRoomId(userId, roomId);
+
         if (roomUser.isPresent()) {
+            // 방에서 해당 사용자 삭제
             roomUserRepository.delete(roomUser.get());
             return "User " + userId + " left room " + roomId;
         } else {
-            throw new RuntimeException("User is not in this room");
+            // 해당 사용자가 방에 없으면 예외 처리
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
     }
+
+
+
+
 }

@@ -61,7 +61,7 @@ define(['./workbox-9dc17825'], (function (workbox) { 'use strict';
     "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
     "url": "index.html",
-    "revision": "0.873dj8400pg"
+    "revision": "0.cpvg26a3s58"
   }], {});
 
   workbox.cleanupOutdatedCaches();

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserJoinRequest {
+public class UserLeaveRequest {
     private Long user;
-    private String room; // ✅ 방 비밀번호 필드 추가
+    private String room;
 }
