@@ -11,6 +11,7 @@ import torchaudio
 from logger import logger
 import re
 from model import decode, get_pretrained_model
+from gpt import generate_feedback
 
 api_bp = Blueprint('api', __name__)
 CORS(api_bp)
@@ -143,7 +144,15 @@ def compare():
 
         logger.info(f"[Compare] 비교 완료: {recognized_text} vs {clean_text} → {'✔ 일치' if is_match else '❌ 불일치'}")
 
-        return jsonify({"recognized_text": recognized_text, "match": is_match})
+        # 일치 한다면
+        if is_match:
+            return jsonify({"recognized_text": recognized_text, "match": is_match, "feedback": None})
+        # 아니라면 피드백 생성
+        else:
+            feedback = generate_feedback(recognized_text, clean_text)
+            logger.info(f"[Feedback] 피드백 생성 완료")
+            return jsonify({"recognized_text": recognized_text, "match": is_match, "feedback": feedback})
+
     except Exception as e:
         logger.error(f"[Compare] 처리 실패: {str(e)}")
         return jsonify({"error": str(e)}), 500

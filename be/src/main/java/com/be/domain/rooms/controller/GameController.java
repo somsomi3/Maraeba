@@ -9,16 +9,19 @@ import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.response.GameResult;
 import com.be.domain.rooms.response.GameStartResponse;
 import com.be.domain.rooms.service.GameService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/game")
 public class GameController {
-    @Autowired
+
     private GameService gameService;
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
     @GetMapping("/items")
     public ResponseEntity<List<String>> getGameItems() {
@@ -34,7 +37,7 @@ public class GameController {
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        boolean isHost = room.getHost().getId().equals(request.getUserId()); // 현재 사용자가 방장인지 확인
+        boolean isHost = room.getHost().getId().equals(request.getUser()); // 현재 사용자가 방장인지 확인
 
         return ResponseEntity.ok(new GameStartResponse(roomId, isHost));
     }
