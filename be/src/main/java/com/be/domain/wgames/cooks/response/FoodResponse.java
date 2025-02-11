@@ -10,5 +10,5 @@ import java.util.List;
 public class FoodResponse {
     private String foodName;
     private List<String> foodItems; // 랜덤으로 선택된 아이템 이름 목록
-    private byte[] imageData; //완성 이미지
+    private String imageUrl; //완성 이미지
 }

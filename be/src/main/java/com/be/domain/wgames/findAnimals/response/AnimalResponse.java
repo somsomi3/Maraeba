@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 public class AnimalResponse {
     private int imageNumber;
-    private String imageData; // ✅ Base64 문자열 저장 가능
+    private String imageUrl;
 }

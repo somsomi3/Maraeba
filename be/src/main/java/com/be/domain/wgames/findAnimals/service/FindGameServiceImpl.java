@@ -33,18 +33,10 @@ public class FindGameServiceImpl implements FindGameService {
     @Override
     public AnimalResponse pickAnimal() throws IOException {
         AnimalGame animalGame = animalGameRepository.findRandomAnimalGame();
-        File imageFile = new File(animalGame.getImage());
 
-        // 1️⃣ 파일을 읽고 바이트 배열로 변환
-        byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
-
-        // 2️⃣ Base64 인코딩 추가 (변경된 부분)
-        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-
-        // 3️⃣ Base64 인코딩된 데이터를 응답에 포함
         AnimalResponse animalResponse = new AnimalResponse();
         animalResponse.setImageNumber(animalGame.getId());
-        animalResponse.setImageData(base64Image); // Base64로 변환된 이미지 사용
+        animalResponse.setImageUrl(animalGame.getImage());
 
         return animalResponse;
     }
