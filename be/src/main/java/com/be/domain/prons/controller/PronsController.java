@@ -22,12 +22,14 @@ import com.be.common.exception.ErrorCode;
 import com.be.common.model.response.BaseResponseBody;
 import com.be.common.model.response.PageResponse;
 import com.be.domain.prons.dto.PronunciationClassDTO;
+import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 import com.be.domain.prons.dto.PronunciationStatDTO;
 import com.be.domain.prons.request.PostSimilarityReq;
 import com.be.domain.prons.response.GetClassDataRes;
+import com.be.domain.prons.response.GetClassHistoryRes;
 import com.be.domain.prons.response.GetClassesRes;
 import com.be.domain.prons.response.GetHistoriesRes;
 import com.be.domain.prons.response.GetSessionRes;
@@ -82,7 +84,7 @@ public class PronsController {
 		@PathVariable("class_id") Long classId) {
 		String id = UUID.randomUUID().toString(); // 세션 ID 생성
 		PronunciationSessionDTO session = new PronunciationSessionDTO(id, Long.parseLong(userDetails.getUsername()),
-			classId, 0);
+			classId);
 		pronsService.saveSession(session);
 		return new PostSessionRes("Success", HttpStatus.CREATED, id); // 클라이언트가 세션 ID를 저장
 	}
@@ -106,12 +108,12 @@ public class PronsController {
 		return new BaseResponseBody("Session ended", HttpStatus.NO_CONTENT);
 	}
 
-	// 발음 유사도 저장
-	@Operation(summary = "발음 유사도 저장", description = "발음 유사도를 저장합니다.")
-	@PostMapping("/session/similarity")
+	// 정답 여부 저장
+	@Operation(summary = "발음 정답 여부 저장", description = "발음 정답 여부를 저장합니다.")
+	@PostMapping("/session/correct")
 	public BaseResponseBody savePronunciationSimilarity(@Validated @RequestBody PostSimilarityReq request) {
-		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getSimilarity());
-		return new BaseResponseBody("Similarity saved", HttpStatus.CREATED);
+		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getIsCorrect());
+		return new BaseResponseBody("Correct saved", HttpStatus.CREATED);
 	}
 
 	// 히스토리 및 통계 저장
@@ -153,5 +155,16 @@ public class PronsController {
 		Long id = Long.parseLong(userDetails.getUsername());
 		List<PronunciationStatDTO> statsDTOs = pronsService.getStats(id);
 		return new GetStatsRes("Success", HttpStatus.OK, statsDTOs);
+	}
+
+	// 특정 클래스 최신 히스토리 10개 조회
+	@Operation(summary = "특정 클래스 최신 히스토리 10개 조회", description = "특정 클래스 최신 히스토리 10개 조회")
+	@GetMapping("/history/class/{class_id}")
+	public GetClassHistoryRes getClassHistories(@AuthenticationPrincipal UserDetails userDetails,
+		@PathVariable("class_id") Long classId) {
+		Long id = Long.parseLong(userDetails.getUsername());
+
+		List<PronunciationClassHistoryDTO> response = pronsService.getClassHistory(id, classId);
+		return new GetClassHistoryRes("Success", HttpStatus.OK, response);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.be.domain.prons.dto.PronunciationClassDTO;
+import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
@@ -52,11 +53,11 @@ public interface PronsService {
 	void deleteSession(String id);
 
 	/**
-	 * 발음 유사도 저장
+	 * 발음 정답 여부 저장
 	 * @param id
-	 * @param similarity
+	 * @param isCorrect
 	 */
-	void savePronunciationSimilarity(String id, double similarity);
+	void savePronunciationSimilarity(String id, Integer isCorrect);
 
 	/**
 	 * 히스토리 저장
@@ -77,4 +78,11 @@ public interface PronsService {
 	 * @return
 	 */
 	List<PronunciationStatDTO> getStats(Long id);
+
+	/**
+	 * 특정 클래스 최신 히스토리 10개 조회
+	 * @param classId
+	 * @return
+	 */
+	List<PronunciationClassHistoryDTO> getClassHistory(Long id, Long classId);
 }

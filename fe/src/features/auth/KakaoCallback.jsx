@@ -10,36 +10,31 @@ const KakaoCallback = () => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get("code"); // ✅ 카카오에서 받은 인가코드 가져오기
-        console.log("현재 환경:", process.env.NODE_ENV);
+        const code = urlParams.get("code");
+
         if (code) {
             console.log("✅ 카카오 인가코드:", code);
 
-            // ✅ 인가코드를 백엔드로 전송
             springApi
-                .post(
-                    "/auth/kakao/callback",
-                    { code },
-                    { withCredentials: true }
-                )
+                .post("/auth/kakao/callback", { code })
                 .then(({ data }) => {
-                    console.log(
-                        "✅ 로그인 성공, 받은 Access Token:",
-                        data.access_token
-                    );
+                    console.log("✅ 백엔드 응답:", data);
 
-                    // Redux 상태 업데이트
-                    dispatch(login(data.access_token));
-
-                    // localStorage에 Access Token 저장
-                    localStorage.setItem("token", data.access_token);
-
-                    // 메인 페이지로 이동
-                    navigate("/main");
+                    if (data.access_token) {
+                        dispatch(login(data.access_token));
+                        navigate("/main");
+                    } else {
+                        console.error("❌ 토큰 없음, 로그인 실패");
+                        alert("로그인 실패: 토큰을 받을 수 없습니다.");
+                        navigate("/");
+                    }
                 })
                 .catch((error) => {
-                    console.error("❌ 카카오 로그인 실패:", error);
-                    alert("카카오 로그인에 실패했습니다.");
+                    console.error(
+                        "❌ 백엔드 요청 실패, 카카오 로그인 실패:",
+                        error
+                    );
+                    alert("백엔드 요청 실패, 카카오 로그인에 실패했습니다.");
                     navigate("/");
                 });
         } else {

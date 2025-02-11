@@ -13,4 +13,5 @@ public interface FindGameService {
 
     //정답 검증
     AnimalAnswerResponse isCorrect(AnimalCorrectRequest request) throws IOException;
+
 }

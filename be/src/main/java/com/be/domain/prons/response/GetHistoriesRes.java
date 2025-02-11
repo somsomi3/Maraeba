@@ -8,9 +8,11 @@ import com.be.domain.prons.dto.PronunciationHistoryDTO;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class GetHistoriesRes extends BaseResponseBody {
 	private PageResponse<PronunciationHistoryDTO> histories;
 

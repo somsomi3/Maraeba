@@ -73,13 +73,19 @@ public class SecurityConfig {
 					"/auth/social",
 					"/auth/token",
 					"/auth/kakao/callback",
+					"/auth/naver/callback",
 					"/auth/find-id",
+					"/auth/forgot-password",
+					"/auth/reset-password",
 					"/WebRTC/**",
 					"/webrtc/**",
-					"/rooms/**",
-					"/game/**",
-					"/prons/**",
-					"/session/**"
+					// "/rooms/**",
+					// "/game/**",
+					// "/session/**",
+
+						//임시 테스트용
+						"/cook-game/**",
+						"/chat/**"
 				).permitAll()
 				.requestMatchers("/error", "/favicon.ico").permitAll()
 				.anyRequest().authenticated() // 나머지 요청은 전부 인증 요구
@@ -96,7 +102,7 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOriginPatterns(List.of("*")); // 임시로 모두 열어둠
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);
 

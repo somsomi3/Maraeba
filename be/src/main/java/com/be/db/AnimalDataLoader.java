@@ -24,13 +24,16 @@ public class AnimalDataLoader {
     @PostConstruct
     public void init() {
 
-        String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
+        String url = "/img";
+//        String url = "C:\\Users\\SSAFY\\Desktop\\S12P11E104\\be\\src\\main\\resources";
+//        String url = "C:\\Users\\lsh95\\Desktop\\S12P11E104\\be\\src\\main\\resources";
+
         log.info(" 데이터 저장!");
 
         // 1️⃣ animal_game 테이블에 ID=1인 데이터 추가
         AnimalGame animalGame = animalGameRepository.findById(1).orElseGet(() ->
                 animalGameRepository.save(AnimalGame.builder()
-                        .image(url + "\\img\\image.png")
+                        .image(url + "/image.png")
                         .build()));
 
         // 2️⃣ animal_list 테이블에 3개의 동물 추가

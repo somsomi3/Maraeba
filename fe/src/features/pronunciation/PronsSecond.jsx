@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { springApi } from "../../utils/api"; 
 import "./PronsSecond.css";
 import GoBackButton from "../../components/button/GoBackButton";
@@ -9,27 +10,50 @@ import RecordButton from "../../components/button/RecordButton";
 import lipshape from "../../assets/images/lipshape.png";
 import tongue from "../../assets/images/tongue.png";
 
+const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
+
 const classMaxSeqMap = {
-  1: 6, 
+  1: 8, 
   2: 9, 
-  3: 14, 
+  3: 13, 
 };
 
 const PronsSecond = () => {
   const navigate = useNavigate();
   const { class_id, seq_id } = useParams();
+  const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
   const videoRef = useRef(null);
-  const [accuracy, setAccuracy] = useState([null, null, null]); // 🔹 정확도 저장
+  const [tongueImage, setTongueImage] = useState(null);
+  const [lipVideoSrc, setLipVideoSrc] = useState(null); // ✅ 비디오 Blob URL
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isMatch, setIsMatch] = useState(null); 
 
   useEffect(() => { 
     const fetchData = async () => {
       try {
         console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
-        setData(response.data.data || {});
+        console.log("✅ 가져온 데이터:", response.data.data);
+
+        // ✅ 혀 이미지 & 입모양 비디오 URL 가져오기
+        const { tongue_image_url, lip_video_url } = response.data.data;
+
+        // ✅ 혀 이미지 & 비디오 fetch 요청
+        if (tongue_image_url) {
+          fetchResource(`${STATIC_API_URL}${tongue_image_url}`, setTongueImage);
+        } else {
+          setTongueImage(null);
+        }
+
+        if (lip_video_url) {
+          fetchResource(`${STATIC_API_URL}${lip_video_url}`, setLipVideoSrc);
+        } else {
+          setLipVideoSrc(null);
+        }
+
+        setData(response.data.data);
         setError(false);
       } catch (error) {
         console.error("❌ 데이터 불러오기 실패:", error);
@@ -41,6 +65,27 @@ const PronsSecond = () => {
 
     fetchData();
   }, [class_id, seq_id]);
+
+  const fetchResource = async (url, setState) => {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ 토큰 포함하여 요청
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("리소스 로딩 실패");
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setState(blobUrl);
+    } catch (error) {
+      console.error(`❌ ${url} 가져오기 실패:`, error);
+      setState(null); // 실패하면 기본 이미지 또는 null
+    }
+  };
 
   useEffect(() => {
     const startCamera = async () => {
@@ -64,6 +109,25 @@ const PronsSecond = () => {
     };
   }, []);
 
+//   const saveSimilarity = async () => {
+//     const session_id = localStorage.getItem("session_id");
+//     if (!session_id) {
+//       alert("세션 ID가 없습니다. 다시 시작해주세요.");
+//       return;
+//     }
+
+//     try {
+//       console.log("📡 유사도 저장 요청:", { session_id, similarity });
+//       await springApi.post("/prons/session/similarity", {
+//         session_id,
+//         similarity,
+//       });
+//       console.log("✅ 유사도 저장 완료");
+//     } catch (error) {
+//       console.error("❌ 유사도 저장 실패:", error);
+//     }
+//   };
+
   // ✅ 학습 완료 후 세션 종료, 히스토리 저장, 통계 업데이트
   const handleEndSession = async () => {
     const session_id = localStorage.getItem("session_id");
@@ -71,7 +135,7 @@ const PronsSecond = () => {
       alert("세션 ID가 존재하지 않습니다. 다시 시작해주세요.");
       return;
     }
-
+    
     try {
       console.log("📡 히스토리 저장 요청:", session_id);
       await springApi.post(`/prons/session/history/${session_id}`);
@@ -85,27 +149,27 @@ const PronsSecond = () => {
     }
   };
 
-  // ✅ "다음으로" 버튼을 눌렀을 때 유사도 저장 후 학습 완료 시 세션 종료
-  const handleSaveSimilarityAndNext = async () => {
+  // ✅ "다음으로" 버튼을 눌렀을 때 정답 여부 저장 후 학습 완료 시 세션 종료
+  const handleSaveCorrectAndNext = async () => {
     const session_id = localStorage.getItem("session_id");
     if (!session_id) {
       alert("세션 ID가 존재하지 않습니다. 다시 시작해주세요.");
       return;
     }
 
-    if (accuracy[0] === null) {
+    if (isMatch === null) {
       alert("녹음을 먼저 진행해주세요.");
       return;
     }
 
     try {
-      console.log("📡 유사도 저장 요청:", { session_id, similarity: accuracy[0] });
-      await springApi.post("/prons/session/similarity", {
+      console.log("📡 정답 여부 저장 요청:", { session_id, is_correct: isMatch ? 1 : 0 });
+      await springApi.post("/prons/session/correct", {
         session_id,
-        similarity: accuracy[0], // 🔹 정확도를 서버에 저장
+        is_correct: isMatch ? 1 : 0, // 🔹 match 값에 따라 1(정답) 또는 0(오답) 저장
       });
 
-      console.log("✅ 유사도 저장 완료");
+      console.log("✅ 정답 여부 저장 완료");
 
       // ✅ 만약 마지막 수업이면 세션 종료 및 통계 업데이트
       const nextSeqId = parseInt(seq_id) + 1;
@@ -117,8 +181,8 @@ const PronsSecond = () => {
         navigate(`/prons/class/${class_id}/seq/${nextSeqId}`);
       }
     } catch (error) {
-      console.error("❌ 유사도 저장 실패:", error);
-      alert("유사도를 저장하는 중 오류가 발생했습니다.");
+      console.error("❌ 정답 여부 저장 실패:", error);
+      alert("정답 여부를 저장하는 중 오류가 발생했습니다.");
     }
   };
 
@@ -132,16 +196,25 @@ const PronsSecond = () => {
       ) : (
         <>
           <div className="content-container">
-            <div className="image-section">
-              <img src={lipshape} alt="입모양" className="image-top" />
-              <img src={tongue} alt="혀 위치" className="image-bottom" />
+          <div className="image-section">
+              {lipVideoSrc ? (
+                <video className="lip-video" controls autoPlay loop>
+                  <source src={lipVideoSrc} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={lipshape} alt="입모양" className="image-top" />
+              )}
+              <img src={tongueImage ?? tongue} alt="구강 내부" className="image-bottom" />
             </div>
             <div className="camera-section">
               <div className="camera-frame">
                 <video ref={videoRef} autoPlay playsInline className="camera-video"></video>
               </div>
               <div className="accuracy">
-                정확도: {accuracy[0] !== null ? `${accuracy[0]}%` : "녹음 후 정확도가 표시됩니다."}
+                <div className="match-result">
+                  {isMatch === null ? "녹음 후 결과가 표시됩니다." : 
+                  isMatch ? "정확해요! ✅" : "발음이 달라요 😞"}
+                </div>
               </div>
             </div>
           </div>
@@ -152,24 +225,12 @@ const PronsSecond = () => {
               {data.pronunciation}
             </div>
           )}
-
-          {/* ✅ 녹음 버튼 - AI 분석 후 정확도 저장 (서버로는 X) */}
-          <div className="record-button-container">
-            <RecordButton onAccuracyUpdate={(levenshtein, jaro, custom) => {
-              setAccuracy([levenshtein, jaro, custom]); // 🔹 정확도만 저장 (서버 전송 X)
-            }} pronunciation={data?.pronunciation} />
-          </div>
-
-          {/* ✅ 정확도 표시 */}
-          <div className="accuracy-box">
-            <h3>정확도</h3>
-            <p>lev: {accuracy[0] !== null ? `${accuracy[0]}%` : "-"}</p>
-            <p>jaro: {accuracy[1] !== null ? `${accuracy[1]}%` : "-"}</p>
-            <p>custom: {accuracy[2] !== null ? `${accuracy[2]}%` : "-"}</p>
-          </div>
-
-          <button className="next-button" onClick={handleSaveSimilarityAndNext}>
-            {parseInt(seq_id) === classMaxSeqMap[class_id] ? "학습 끝내기" : "다음으로"}
+            <div className="record-button-container">
+          <RecordButton onMatchUpdate={setIsMatch} pronunciation={data?.pronunciation} />
+            </div>
+            
+          <button className="next-button" onClick={handleSaveCorrectAndNext}>
+            {parseInt(seq_id) === classMaxSeqMap[class_id] ? "🔚학습 끝내기" : "다음으로"}
           </button>
         </>
       )}

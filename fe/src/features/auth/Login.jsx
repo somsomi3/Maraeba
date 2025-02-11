@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/authSlice";
-import { loginApi } from "../../utils/api"; // ✅ 로그인 API 변경
+import { loginApi } from "../../utils/api"; // ✅ 로그인 API 가져오기
 import "./index.css";
 import logo from "../../assets/logo.png";
-
+import yaho from "../../assets/images/yaho.png";  // ✅ 이모티콘 추가
+import happy from "../../assets/images/happy.png";  // ✅ 이모티콘 추가
 import KakaoLogin from "./KakaoLogin";
+import NaverLogin from "./NaverLogin";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ user_id: "", password: "" });
@@ -33,9 +36,8 @@ const Login = () => {
       // ✅ 로그인 API 요청 (withCredentials: true 적용)
       const { data } = await loginApi(formData);
 
-      // ✅ Access Token만 저장
+      // ✅ Access Token을 Redux에서만 관리 (localStorage 제거)
       dispatch(login(data.access_token));
-      localStorage.setItem("token", data.access_token);
 
       navigate("/main"); // 로그인 성공 후 이동
     } catch (error) {
@@ -46,8 +48,11 @@ const Login = () => {
 
   return (
     <div className="form-container">
+      <img src={yaho} alt="yaho" className="main-emoji emoji-left" />
+      <img src={happy} alt="smile" className="main-emoji emoji-right" />
+
       <img src={logo} alt="마래바 로고" className="logo" />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mainform">
         <div className="input-group">
           <input
             className="input"
@@ -76,6 +81,7 @@ const Login = () => {
       </form>
     
       <KakaoLogin />
+      <NaverLogin />
       <div className="secondary-button">
         <span onClick={() => navigate("/find-id")}>아이디 찾기</span> |{" "}
         <span onClick={() => navigate("/find-pw")}>비밀번호 찾기</span>

@@ -34,6 +34,9 @@ public class User extends BaseEntity {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private RefreshToken refreshToken;
 
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private PasswordResetToken passwordResetToken;
+
 	// 관계
 	@OneToMany(mappedBy = "user")
 	private List<PronunciationHistory> pronunciationHistories;

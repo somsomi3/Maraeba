@@ -4,8 +4,13 @@
     width: 100vw;
     height: 100vh;
     background-color: #ffe0b1;
+    overflow-y: auto;
   }
-  
+
+.childname {
+    text-align: center;
+}
+
 /* 사이드바 */
 /* 사이드바 (sticky + 전체 높이 유지) */
 /* 사이드바 (sticky + 전체 높이 유지 + 최소 높이 추가) */
@@ -16,16 +21,31 @@
     min-height: 100vh; /* ✅ 최소 높이는 항상 100vh 유지 */
     position: sticky;
     top: 0;
-    background: linear-gradient(180deg, #68B9FF 0%, #C8F2FF 100%);
-    color: white;
+    background: #ffb9b1;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    border-right: 2px solid rgba(0, 0, 0, 0.1);
   }
   
-  
+  .info-box input[type="password"] {
+    width: 20vw;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+  .pw-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 7px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 20vw;
+  }
   
   .profile-avatar {
     width: 80px;
@@ -48,8 +68,8 @@
   
   .profile-menu li:hover,
   .profile-menu .active {
-    background-color: #2b6bb2;
-    border-radius: 10px;
+    background-color: #ef9e9e;
+    border-radius: 20px;
   }
   
   /* 메인 컨텐츠 */
@@ -129,7 +149,7 @@
   }
   
   /* 배지 */
-  .badges-list {
+  /* .badges-list {
     display: flex;
     gap: 10px;
     margin-top: 20px;
@@ -158,13 +178,13 @@
   
   .badge-item:hover .badge-tooltip {
     visibility: visible;
-  }
+  } */
   
   /* 배지 반짝이 효과 */
-  .glow {
+  /* .glow {
     animation: badge-glow 2s infinite alternate;
   }
-  
+
   @keyframes badge-glow {
     from {
       filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));
@@ -172,5 +192,19 @@
     to {
       filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
     }
-  }
+  } */
   
+  .delete-button {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 15vw;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}

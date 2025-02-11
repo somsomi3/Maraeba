@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
   line-height: 1.5;
   font-weight: 400;
 
@@ -19,7 +19,8 @@ body {
   margin: 0;
   padding: 0;
   /* box-sizing: border-box; */
-  /* height: 100vh; */
+  height: 100vh;
+  overflow: auto; /* ✅ 스크롤바 제거 */
 }
 
 /* 페이지 전체를 채우는 기본 스타일 */
@@ -30,7 +31,6 @@ body {
   justify-content: center;
 
 }
-
 
 
 @font-face {
@@ -45,15 +45,8 @@ body {
     src: url('./assets/fonts/DXChildsdrawing-KSCpc-EUC-H.ttf');
 }
 
-.next-button {
-    margin-top: 16px; 
-    padding: 10px 22px;
-    font-size: 16px;
-    background-color: #64d190;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+@font-face {
+    font-family: 'SDSamliphopang';
+    src: url('./assets/fonts/SDSamliphopangcheTTFBasic.ttf');
 }
+

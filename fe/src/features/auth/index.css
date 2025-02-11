@@ -1,7 +1,7 @@
 .logo {
     display: block;
-    margin: 0 auto 20px;
-    width: 300px;
+    margin: 0 auto 1vw;
+    width: 18vw;
     height: auto;
 }
 
@@ -9,14 +9,19 @@
 .form-container {
     padding: 10px;
     border-radius: 12px;
-    width: 380px;
+    width: 24vw;
     text-align: center;
-    margin-top: 20%;
+    margin-top: 0.6vw;
+}
+
+.mainform {
+    gap: 3px
 }
 
 /* 입력 그룹 */
 .input-group {
-    margin-bottom: 10px;
+
+    margin-bottom: 1vw;
     display: flex;
     flex-direction: column;
 }
@@ -33,9 +38,9 @@
 }
 
 .input {
-    width: 100%;
-    padding: 18px;
-    font-size: 18px;
+    width: 24vw;
+    padding: 1.2vw;
+    font-size: 1.2vw;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
@@ -44,10 +49,10 @@
 
 /* 버튼 */
 .auth-button {
-    width: 100%;
-    padding: 14px;
+    width: 24vw;
+    height: 3.5vw;
     margin-bottom: 1%;
-    font-size: 18px;
+    font-size: 1.2vw;
     background-color: #81bec5;
     color: white;
     border: none;
@@ -65,7 +70,7 @@
 /* 링크 버튼 */
 .secondary-button {
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 1vw;
     font-weight: bold;
     background: none;
     border: none;
@@ -99,16 +104,74 @@
     display: flex; /* 버튼 내 요소를 정렬 */
     justify-content: center; /* 가운데 정렬 */
     align-items: center; /* 세로 가운데 정렬 */
-    width: 100%; /* 버튼이 부모 요소의 전체 너비를 차지하도록 설정 */
+    width: 24vw; /* 버튼이 부모 요소의 전체 너비를 차지하도록 설정 */
+
+}
+  .naverbtn {
+    background-color: #03C75A;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    width: 24vw;
+    height: 3.5vw;
+    padding: 0;
+    border-radius: 3px;
   }
-  
   .kakao {
     width: 100%; /* 가이드에 맞춘 크기 */
     height: auto;
     display: block;
-    margin: 10px auto; /* 중앙 정렬 */
+    margin: 0.8vw auto; /* 중앙 정렬 */
     box-shadow: inset;
   }
 
+  .naver {
+    width: 50%; 
+    height: auto;
+    display: block;
+    margin: auto;
+    border-radius: 3%;
+    box-shadow: inset;
+  }
 
+  .result-box {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .result-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .result-box li {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  /* ✅ 이모티콘 공통 스타일 */
+.main-emoji {
+    position: absolute;
+    width: 7vw; /* 이모티콘 크기 조정 */
+    height: auto;
+}
 
+/* ✅ 왼쪽 이모티콘 (yaho.png) */
+.emoji-left {
+    top: 6vw; /* 원하는 위치 조정 */
+    right: 32vw;
+}
+
+/* ✅ 오른쪽 이모티콘 (smile.png) */
+.emoji-right {
+    top: 8vw;
+    left: 30vw;
+}

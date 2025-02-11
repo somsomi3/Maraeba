@@ -31,14 +31,14 @@ public class PronunciationHistory extends BaseEntity {
 	private PronunciationClass pronunciationClass;
 
 	@Column(nullable = false)
-	private double averageSimilarity;
+	private double averageCorrectRate;
 
 	public PronunciationHistory(String sessionId, User user, PronunciationClass pronunciationClass,
-		double averageSimilarity) {
+		double averageCorrectRate) {
 		this.sessionId = sessionId;
 		this.user = user;
 		this.pronunciationClass = pronunciationClass;
-		this.averageSimilarity = averageSimilarity;
+		this.averageCorrectRate = averageCorrectRate;
 	}
 }
 

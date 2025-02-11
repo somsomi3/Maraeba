@@ -4,12 +4,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class PostSimilarityReq {
 	@NotBlank
 	private String sessionId;
 	@NotNull
-	private Double similarity;
+	private Integer isCorrect;
 }

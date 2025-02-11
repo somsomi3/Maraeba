@@ -2,9 +2,10 @@ package com.be.domain.users.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.be.common.exception.PasswordMismatchException;
-import com.be.common.exception.UserNotFoundException;
+import com.be.common.exception.CustomException;
+import com.be.common.exception.ErrorCode;
 import com.be.db.entity.User;
 import com.be.db.repository.UserRepository;
 import com.be.domain.users.request.PasswordRequest;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
 	private User findUserById(long id) {
 		log.info("id : {}", id);
-		return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+		return userRepository.findById(id).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 	}
 
 	@Override
@@ -33,30 +34,39 @@ public class UserServiceImpl implements UserService {
 		return GetCurrentUserResponse.from(findUserById(id));
 	}
 
+	@Transactional
 	@Override
 	public void updateUser(Long id, UserUpdateRequest request) {
 		User user = findUserById(id);
-		user.setEmail(request.getEmail());
-		user.setUsername(request.getUsername());
-		userRepository.save(user);
+		String newEmail = request.getEmail();
+		String newUsername = request.getUsername();
+		if (newEmail != null && !newEmail.isBlank()) {
+			user.setEmail(newEmail);
+		}
+		if(newUsername != null && !newUsername.isBlank()) {
+			user.setUsername(request.getUsername());
+		}
 	}
 
+	@Transactional
 	@Override
 	public void updatePassword(Long id, PasswordUpdateRequest request) {
 		User user = findUserById(id);
 		if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-			throw new PasswordMismatchException();
+			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
 		}
 		user.setPassword(passwordEncoder.encode(request.getNewPassword()));
 		userRepository.save(user);
 	}
 
 	@Override
+	@Transactional
 	public void deleteUser(Long id, PasswordRequest request) {
 		User user = findUserById(id);
 		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-			throw new PasswordMismatchException();
+			throw new CustomException(ErrorCode.PASSWORD_MISMATCH);
 		}
 		userRepository.delete(user);
+		userRepository.flush();
 	}
 }

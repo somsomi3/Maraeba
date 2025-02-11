@@ -1,9 +1,15 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import { useParams } from 'react-router-dom';
 import {springApi} from "../../utils/api.js";  // React Router에서 useParams를 사용
 
 const API_URL = "http://localhost:8081";
+
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+
 
 const Webrtc = () => {
     const [localStream, setLocalStream] = useState(null);
@@ -14,6 +20,7 @@ const Webrtc = () => {
     const webSocketRef = useRef(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
+
     const chatBoxRef = useRef(null); // 채팅창을 참조하는 useRef 추가
     const [isMuted, setIsMuted] = useState(false); // 음소거 상태 추가
     const [startTime, setStartTime] = useState(null); // 통화 시작 시간 저장
@@ -23,15 +30,21 @@ const Webrtc = () => {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
 
+    const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+    const [userId, setUserId] = useState(null); // ✅ userId 상태 추가
+
+
     const {roomId} = useParams();  // URL에서 roomId 가져오기
     const navigate = useNavigate();
     useEffect(() => {
-        const token = getToken();
         if (token) {
+            const decodedUserId = getUserIdFromToken(token);
+            setUserId(decodedUserId); // ✅ 상태에 저장
             connectWebSocket(token);
         } else {
             console.error("JWT 토큰 없음: 로그인 필요");
         }
+
 
         // 뒤로가기 버튼 감지 및 방 나가기 처리
         const handleBackButton = () => {
@@ -45,7 +58,21 @@ const Webrtc = () => {
         return () => {
             window.onpopstate = null; // 클린업: 컴포넌트가 언마운트될 때
         };
-    }, []);
+    // }, []);
+
+    }, [token]); // ✅ Redux의 토큰 값이 변경될 때마다 실행
+
+    // ✅ JWT에서 userId 추출하는 함수
+    const getUserIdFromToken = (token) => {
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1])); // ✅ JWT 디코딩
+            return payload.sub; // ✅ userId 반환
+        } catch (e) {
+            console.error("❌ 토큰 파싱 오류:", e);
+            return null;
+        }
+    };
+
 
     // WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -68,9 +95,14 @@ const Webrtc = () => {
                 } else if (receivedMessage.type === "candidate") {
                     await handleCandidate(receivedMessage);
                 } else {
-                    // 전송된 메시지 저장 (DB에 저장)
-                    // saveMessageToDB(receivedMessage); // DB 저장
-                    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+
+                    // ✅ 메시지 상태 업데이트 (새로운 배열 생성)
+                    setMessages((prevMessages) => [
+                        ...prevMessages,
+                        receivedMessage,
+                    ]);
+                    console.log("📝 업데이트된 메시지 상태:", messages);
+
                 }
             } catch (e) {
                 console.error("JSON 파싱 오류:", e);
@@ -94,6 +126,7 @@ const Webrtc = () => {
             clearInterval(pingInterval); // 컴포넌트 언마운트 시 핑 메시지 중단
         };
     }, []);
+
 
     // 메시지가 변경될 때 실행되는 자동 스크롤 useEffect
     useEffect(() => {
@@ -138,6 +171,7 @@ const Webrtc = () => {
     const connectWebSocket = (token) => {
         if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
             console.warn("WebSocket이 이미 연결되어 있음");
+
             return;
         }
 
@@ -160,10 +194,12 @@ const Webrtc = () => {
 
     // 메시지 전송
     const sendMessage = () => {
+
         if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
             const userId = getUserId(); // 현재 로그인한 사용자 ID 가져오기
             // const roomId = useParams().roomId; // 현재 방 ID 가져오기 (useParams로 방 ID를 받아옴)
             // const senderId = "opponentId"; // 상대방 ID 설정 (상대방 ID 추적 후 사용)
+
 
             if (!userId) {
                 console.error("사용자 ID 없음");
@@ -223,7 +259,9 @@ const Webrtc = () => {
 
 
 
+
     // 카메라 & 마이크 접근 및 로컬 스트림 설정
+
     const startMedia = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -257,11 +295,13 @@ const Webrtc = () => {
     // WebRTC 연결 초기화
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
-            iceServers: [{
-                urls: "turn:3.39.252.223:3478?transport=tcp",
-                username: `${import.meta.env.VITE_USERNAME_URL}`,
-                credential: `${import.meta.env.VITE_PASSWORD_URL}`,
-            },],
+            iceServers: [
+                {
+                    urls: "turn:3.39.252.223:3478?transport=tcp",
+                    username: `${import.meta.env.VITE_USERNAME_URL}`,
+                    credential: `${import.meta.env.VITE_PASSWORD_URL}`,
+                },
+            ],
         });
 
         peerConnectionRef.current.onicecandidate = (event) => {
@@ -342,9 +382,13 @@ const Webrtc = () => {
 
     // WebSocket 메시지 전송
     const sendToServer = (message) => {
-        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+        if (
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
             webSocketRef.current.send(JSON.stringify(message));
         } else {
+
             console.error("WebSocket이 연결되지 않음, 메시지 전송 실패:", message);
         }
     };
@@ -355,6 +399,7 @@ const Webrtc = () => {
                 audioTrack.enabled = !audioTrack.enabled;
                 setIsMuted(!isMuted);
             }
+
         }
     };
 
@@ -457,6 +502,7 @@ const Webrtc = () => {
     };
     return (
         <div style={styles.container}>
+
             {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
             <div style={styles.videoContainer}>
                 <h3>WebRTC 테스트</h3>
@@ -506,6 +552,7 @@ const Webrtc = () => {
             {/* 방 나가기 버튼 추가 */}
             <div style={styles.leaveButtonContainer}>
                 <button onClick={handleLeaveRoom} style={styles.leaveButton}>방 나가기</button>
+
             </div>
             {/* 게임 시작 버튼 */}
             {!isGameStarted ? (
@@ -625,23 +672,28 @@ const styles = {
     },
 
     chatBox: {
+
         flex: "1",
         overflowY: "auto",
+
         background: "#f9f9f9",
         padding: "10px",
         borderRadius: "10px",
         border: "1px solid #ddd",
         display: "flex",
         flexDirection: "column",
+
         scrollBehavior: "smooth",
     },
 
     /** ✅ 입력창과 전송 버튼을 채팅 아래로 이동 */
+
     inputContainer: {
         display: "flex",
         width: "100%",
         gap: "10px",
         alignItems: "center",
+
     },
 
     input: {
@@ -650,6 +702,7 @@ const styles = {
         borderRadius: "20px",
         border: "1px solid #ccc",
         outline: "none",
+
         fontSize: "14px",
     },
 
@@ -686,6 +739,7 @@ const styles = {
         marginTop: "20px",
         display: "flex",
         justifyContent: "center",
+
     },
     leaveButton: {
         padding: "10px 20px",

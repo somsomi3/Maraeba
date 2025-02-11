@@ -17,7 +17,7 @@ public interface PronunciationStatRepository extends JpaRepository<Pronunciation
 	boolean existsByUser_IdAndPronunciationClass_Id(Long userId, Long classId);
 
 	@Query(
-		"SELECT new com.be.domain.prons.dto.PronunciationStatDTO(ps.pronunciationClass.id, ps.averageSimilarity, ps.count) "
+		"SELECT new com.be.domain.prons.dto.PronunciationStatDTO(ps.pronunciationClass.id, ps.averageCorrectRate, ps.count) "
 			+
 			"FROM PronunciationStat ps " +
 			"WHERE ps.user.id = :userId " +

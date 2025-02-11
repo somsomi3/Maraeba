@@ -23,6 +23,7 @@ import com.be.db.repository.PronunciationHistoryRepository;
 import com.be.db.repository.PronunciationStatRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.prons.dto.PronunciationClassDTO;
+import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
@@ -84,15 +85,15 @@ public class PronsServiceImpl implements PronsService {
 		redisTemplate.delete(id);
 	}
 
-	// 세션에 발음 유사도 저장
+	// 세션에 발음 정답 여부 저장
 	@Override
-	public void savePronunciationSimilarity(String id, double similarity) {
+	public void savePronunciationSimilarity(String id, Integer isCorrect) {
 		PronunciationSessionDTO session = redisTemplate.opsForValue().get(id);
 
-		// 세션을 찾았다면 유사도 저장하기
+		// 세션을 찾았다면
 		if (session != null) {
-			session.getSimilarities().add(similarity); // 유사도 저장
-			session.setProgress(session.getProgress() + 1); // 진행 개수 증가
+			session.setTryCount(session.getTryCount() + 1);    // 시도 횟수 1 증가
+			session.setCorrectCount(session.getCorrectCount() + isCorrect); // 정답 여부 저장
 			redisTemplate.opsForValue().set(id, session); // 업데이트
 		}
 	}
@@ -100,8 +101,8 @@ public class PronsServiceImpl implements PronsService {
 	// 히스토리 저장
 	@Override
 	public void saveSessionHistory(String id) {
-		// 평균 유사도 계산하기
-		double avgSimilarity = calculateAverageSimilarity(id);
+		// 평균 정확도 계산하기
+		double avgCorrectRate = calculateAverageCorrectRate(id);
 		PronunciationSessionDTO session = getSession(id);
 
 		// 세션을 찾았다면 정보 저장
@@ -119,7 +120,7 @@ public class PronsServiceImpl implements PronsService {
 				session.getId(),
 				user,
 				pronunciationClass,
-				avgSimilarity
+				avgCorrectRate
 			);
 
 			pronunciationHistoryRepository.save(history);
@@ -131,7 +132,7 @@ public class PronsServiceImpl implements PronsService {
 				PronunciationStat newStat = new PronunciationStat();
 				newStat.setUser(user);
 				newStat.setPronunciationClass(pronunciationClass);
-				newStat.setAverageSimilarity(0f); // 첫 값 설정
+				newStat.setAverageCorrectRate(0f); // 첫 값 설정
 				newStat.setCount(0);
 				pronunciationStatRepository.save(newStat);
 			}
@@ -140,9 +141,9 @@ public class PronsServiceImpl implements PronsService {
 			PronunciationStat stat = pronunciationStatRepository.findByUser_IdAndPronunciationClass_Id(
 				session.getUserId(),
 				session.getClassId()).orElseThrow(() -> new CustomException(ErrorCode.STAT_NOT_FOUND));
-			stat.setAverageSimilarity(
-				(float)(stat.getAverageSimilarity() + (avgSimilarity - stat.getAverageSimilarity()) / (stat.getCount()
-					+ 1)));
+			stat.setAverageCorrectRate(
+				(float)(stat.getAverageCorrectRate() + (avgCorrectRate - stat.getAverageCorrectRate()) / (
+					stat.getCount() + 1)));
 			stat.setCount(stat.getCount() + 1);
 			pronunciationStatRepository.save(stat);
 		}
@@ -162,14 +163,24 @@ public class PronsServiceImpl implements PronsService {
 		return statDTOs;
 	}
 
+	// 특정 클래스 최신 히스토리 10개 조회
+	@Override
+	public List<PronunciationClassHistoryDTO> getClassHistory(Long id, Long classId) {
+		return pronunciationHistoryRepository.findByClassId(id, classId)
+			.stream()
+			.limit(10)  // 최신 10개 제한
+			.toList();
+	}
+
 	// 평균 정확도 계산
-	public double calculateAverageSimilarity(String id) {
+	public double calculateAverageCorrectRate(String id) {
 		PronunciationSessionDTO session = redisTemplate.opsForValue().get(id);
 
-		if (session != null && !session.getSimilarities().isEmpty()) {
-			double sum = session.getSimilarities().stream().mapToDouble(Double::doubleValue).sum();
-			return sum / session.getSimilarities().size();
+		// 세션이 존재하고 시도 횟수가 0보다 크면
+		if (session != null && session.getTryCount() > 0) {
+			double sum = session.getCorrectCount();
+			return sum / session.getTryCount();
 		}
-		return 0.0; // 유사도 데이터가 없을 경우 0 반환
+		return 0.0; // 시도 횟수가 없을 경우 0 반환
 	}
 }

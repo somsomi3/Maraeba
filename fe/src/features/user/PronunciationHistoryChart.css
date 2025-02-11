@@ -1,0 +1,51 @@
+/* ✅ 전체 차트 컨테이너 */
+.chart-container {
+    background: #fff7eb;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 96%;
+    max-width: 90vw; /* ✅ 최대 너비 지정 */
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #ffe4c4;
+}
+
+/* ✅ 차트 그룹을 가로로 배치 */
+.chart-wrapper-container {
+    display: flex;
+    justify-content: center; /* ✅ 중앙 정렬 */
+    flex-wrap: wrap; /* ✅ 화면 크기에 따라 자동 줄바꿈 */
+    gap: 2vw; /* ✅ 일정한 간격 유지 */
+}
+
+/* ✅ 개별 차트 스타일 */
+.chart-wrapper {
+    width: 28%; /* ✅ 3개 가로 정렬 */
+    min-width: 250px; /* ✅ 너무 작아지지 않도록 설정 */
+    height: 320px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 15px;
+}
+
+/* ✅ 캔버스 크기 조정 */
+.chart-wrapper canvas {
+    width: 95% !important;
+    height: 82% !important;
+}
+
+/* ✅ 반응형 */
+@media (max-width: 1024px) {
+    .chart-wrapper {
+        width: 45%; /* ✅ 태블릿에서는 2개씩 정렬 */
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-wrapper {
+        width: 100%; /* ✅ 모바일에서는 1개씩 정렬 */
+    }
+}

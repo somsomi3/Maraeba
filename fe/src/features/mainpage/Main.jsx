@@ -2,18 +2,18 @@ import { useNavigate } from "react-router-dom";
 import "./Main.css";
 import pronsStuff from "../../assets/images/prons_stuff.png";
 import wordStuff from "../../assets/images/word_stuff.png";
-import LogoutButton from "../../components/button/LogoutButton"; // ✅ 로그아웃 버튼 추가
-
+import profile from "../../assets/icons/profile.png"
 const Main = () => {
     const navigate = useNavigate();
 
     return (
         <div className="main-page">
-            {/* 로그아웃 버튼 추가 */}
-            <div className="logout-container">
-                <LogoutButton />
-            </div>
-
+            <img
+                src={profile}
+                alt="프로필 이미지"
+                className="profile-image"
+                onClick={() => navigate("/profile")}
+            />
             <div className="card-container">
                 {/* 왼쪽 카드 */}
                 <div className="card single-mode" onClick={() => navigate("/single")}>
@@ -35,8 +35,11 @@ const Main = () => {
                         </p>
                     </div>
                     <img src={wordStuff} alt="단어 학습 관련 이미지" className="card-image multi-image" />
+                    
+            
                 </div>
             </div>
+            
         </div>
     );
 };

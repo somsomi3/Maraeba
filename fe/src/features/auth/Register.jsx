@@ -12,7 +12,6 @@ const Register = () => {
     username: '',
   });
   const [isUserIdChecked, setIsUserIdChecked] = useState(false);
-  const [isEmailChecked, setIsEmailChecked] = useState(false);
 
   const navigate = useNavigate();
 
@@ -23,7 +22,6 @@ const Register = () => {
       [name]: value,
     }));
     if (name === 'user_id') setIsUserIdChecked(false);
-    if (name === 'email') setIsEmailChecked(false);
   };
 
   const checkUserId = () => {
@@ -41,24 +39,9 @@ const Register = () => {
       });
   };
 
-  const checkEmail = () => {
-    if (!formData.email) {
-      alert('이메일을 입력해주세요.');
-      return;
-    }
-    springApi.get(`/auth/check-email?email=${encodeURIComponent(formData.email)}`)
-      .then((response) => {
-        alert(response.data.message || '사용 가능한 이메일입니다.');
-        setIsEmailChecked(true);
-      })
-      .catch((error) => {
-        alert(error.response?.data.message || '사용할 수 없는 이메일입니다.');
-      });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.user_id || !formData.password || !formData.confirmPassword || !formData.email || !formData.username) {
+    if (!formData.user_id || !formData.password || !formData.confirmPassword || !formData.username) {
       alert('모든 필드를 입력해주세요.');
       return;
     }
@@ -70,10 +53,7 @@ const Register = () => {
       alert('아이디 중복 검사를 완료해주세요.');
       return;
     }
-    if (!isEmailChecked) {
-      alert('이메일 중복 검사를 완료해주세요.');
-      return;
-    }
+
     springApi.post('/auth/register', formData)
       .then((response) => {
         alert(response.data.message);
@@ -122,7 +102,7 @@ const Register = () => {
             required
           />
         </div>
-        <div className="input-group inline-group">
+        <div className="input-group">
           <input
             className="input"
             type="email"
@@ -132,7 +112,6 @@ const Register = () => {
             onChange={handleChange}
             required
           />
-          <button type="button" className="small-button" onClick={checkEmail}>이메일 중복검사</button>
         </div>
         <div className="input-group">
           <input

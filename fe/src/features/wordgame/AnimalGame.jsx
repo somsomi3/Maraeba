@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { springApi } from "../../utils/api"; // API 인스턴스 사용
-import GameRecordBtn from "./GameRecordBtn";
+import backgroundImage from "../../assets/background/animal_bg.png";
+import { useSelector } from 'react-redux'; // ✅ Redux에서 토큰 가져오기
 import HomeButton from "../../components/button/HomeButton";
 import "./AnimalGame.css";
+import recordIcon from "../../assets/icons/record.png";
+import stopIcon from "../../assets/icons/pause.png";
 
 const AnimalGame = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -15,7 +18,7 @@ const AnimalGame = () => {
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const recordingTimeoutRef = useRef(null);
-  
+  const token = useSelector((state) => state.auth.token);
 
   const base64ToBlob = (base64, mimeType) => {
     try {
@@ -45,9 +48,12 @@ const AnimalGame = () => {
 
 const startGame = async () => {
     try {
-        const response = await springApi.post('/wgames/find-animal/start-game', {}, {
-            withCredentials: true, // ✅ 쿠키 인증 활성화
-          });
+      const response = await springApi.post('/wgames/find-animal/start-game', {}, {
+          headers: {
+              Authorization: `Bearer ${token}`, // ✅ Redux에서 가져온 토큰 사용
+          },
+          withCredentials: true, 
+      });
         console.log("🔍 Response 객체:", response);  
         const data = response.data;
         console.log("응답 데이터:", data);
@@ -119,16 +125,19 @@ const startGame = async () => {
         console.log("🎤 음성 데이터를 백엔드로 전송 중...");
 
         // 1️⃣ Access Token 가져오기
-        const token = localStorage.getItem("token");
+        // const token = localStorage.getItem("token");
         if (!token) {
             throw new Error("❌ Access Token이 없습니다. 로그인하세요.");
         }
+
+        // ✅ gameData.answerList가 undefined/null일 경우 빈 배열로 초기화
+        const currentAnswerList = gameData.answerList || [];
 
         // 2️⃣ FormData 객체 생성
         const formData = new FormData();
         formData.append("audio", new File([audioBlob], "recorded-audio.webm", { type: "audio/webm" })); // ✅ 파일명 추가
         formData.append("imageNumber", gameData.imageNumber);
-        formData.append("answerList", JSON.stringify(gameData.answerList)); // ✅ JSON 문자열 변환
+        formData.append("answerList", JSON.stringify(currentAnswerList)); // ✅ JSON 문자열 변환
 
         console.log("📤 최종 전송할 FormData:", [...formData.entries()]);
 
@@ -146,18 +155,24 @@ const startGame = async () => {
         console.log("✅ 백엔드 응답 데이터:", result);
 
         if (result.duplication) {
-            console.warn("⚠️ 이미 맞춘 정답입니다:", result.animalName);
+            console.warn("⚠️ 이미 맞춘 정답입니다:", result.animal_name);
             return; // 중복 정답이면 처리 중단
         }
 
-        if (result.ifCorrect) {
-            console.log("🎯 정답 확인! 추가된 동물:", result.animalName);
+        // ✅ 이미 존재하는 정답인지 프론트에서도 중복 체크 (추가적인 보안)
+        if (currentAnswerList.includes(result.animal_name)) {
+            alert(`⚠️ 이미 맞춘 정답입니다: ${result.animal_name}`);
+            return;
+        }
+
+        if (result.if_correct) {
+            console.log("🎯 정답 확인! 추가된 동물:", result.animal_name);
 
             // 5️⃣ 정답 리스트 & 동그라미 위치 업데이트
             setGameData((prevState) => ({
                 ...prevState,
-                answerList: [...prevState.answerList, result.animalName],
-                circleData: [...prevState.circleData, { x: result.x, y: result.y }],
+                answerList: [...(prevState.answerList || []), result.animal_name],
+                circleData: [...(prevState.circleData || []), { x: result.x, y: result.y }],
             }));
 
             // 6️⃣ 모든 정답을 맞추면 게임 재시작
@@ -183,40 +198,71 @@ const startGame = async () => {
   }, []);
 
   return (
-    <div className="animal-game-container">
+    <div className="animal-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      
       {/* ✅ 홈 버튼 */}
       <HomeButton />
-
-      {/* ✅ 게임 UI 레이아웃 */}
-      <div className="game-content">
-        {/* 🎨 동물 찾기 이미지 */}
-        <div className="image-container">
-          {gameData.imageData && <img src={gameData.imageData} alt="Game Image" className="game-image" />}
+  
+      {/* ✅ 게임 오버레이 추가 */}
+      <div className="animal-game-overlay">
+        
+        {/* 🎯 게임 제목 */}
+        <h1 className="animal-game-title">어떤 동물이 있을까?</h1>
+  
+        {/* ✅ 이미지 & 동물 리스트를 가로 정렬 (3:1 비율) */}
+        <div className="animal-game-content">
+          {/* 🎨 동물 찾기 이미지 */}
+          <div className="image-container">
+            {gameData.imageData && <img src={gameData.imageData} alt="Game Image" className="animal-game-image" />}
+            {(gameData.circleData || []).map((circle, index) => (
+              <div
+                key={index}
+                className="circle-marker"
+                style={{
+                  position: "absolute",
+                  top: `${circle.y}px`,
+                  left: `${circle.x}px`,
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "50%",
+                  border: "3px solid red",
+                  backgroundColor: "transparent",
+                }}
+              ></div>
+            ))}
+          </div>
+  
+          {/* 📝 동물 리스트 */}
+          <div className="animal-list">
+            <h3>음성으로 동물을 맞춰보세요! 🎤</h3>
+            <ul>
+              {(gameData.answerList || []).length > 0 ? (
+                gameData.answerList.map((animal, index) => (
+                  <li key={index}>
+                    <span className="animal-icon">🐾</span>
+                    <span className="animal-name">{animal}</span>
+                  </li>
+                ))
+              ) : (
+                <p>아직 맞춘 동물이 없습니다.</p>
+              )}
+            </ul>
+          </div>
         </div>
-
-    {/* 📝 동물 리스트 */}
-    <div className="animal-list">
-          <h3>어떤 동물이 있을까?</h3>
-          <ul>
-            { (gameData.answerList || []).length > 0 ? ( // ✅ answerList가 undefined일 경우 빈 배열로 처리
-              gameData.answerList.map((animal, index) => (
-                <li key={index}>
-                  <span className="animal-icon">🐾</span>
-                  <span className="animal-name">{animal}</span>
-                </li>
-              ))
-            ) : (
-              <p>음성으로 동물을 맞춰보세요! 🎤</p> // ✅ 초기에는 아무것도 표시 X
-            )}
-          </ul>
-        </div>
-      </div>
-
-
-      {/* 🎤 마이크 버튼 */}
-      <GameRecordBtn onClick={isRecording ? stopRecording : startRecording} />
+  
+        {/* 🎤 녹음 버튼 */}
+        <button
+          className="record-button"
+          onClick={isRecording ? stopRecording : startRecording}
+        >
+          <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
+        </button>
+        
+      </div> {/* game-overlay 끝 */}
     </div>
   );
+  
+  
 };
 
 export default AnimalGame;

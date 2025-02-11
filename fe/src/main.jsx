@@ -1,4 +1,3 @@
-import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import {
     createBrowserRouter,
@@ -17,6 +16,7 @@ import {
     Login,
     Register,
     KakaoCallback,
+    NaverCallback
 } from "./features/auth";
 import { Main, MultiMain, SingleMain } from "./features/mainpage";
 import {
@@ -32,13 +32,13 @@ import {
     Webrtc,
     WaitingRoom,
     CreateRoom,
-    RoomPage,
     RoomList,
 } from "./features/room";
 import CookingGame from "./features/wordgame/CookingGame";
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
-import Profile from "./features/user/Profile";
+import { Profile, ProfileInfo, ChangePassword, ProfileDelete } from "./features/user";
+import AuthInitializer from "./AuthInitializer.jsx";
 
 // 라우트 정의
 const router = createBrowserRouter(
@@ -46,6 +46,7 @@ const router = createBrowserRouter(
         <>
             <Route path="/" element={<App />} />
             <Route path="/auth/kakao/callback" element={<KakaoCallback />} />
+            <Route path="/auth/naver/callback" element={<NaverCallback />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/find-id" element={<FindId />} />
@@ -77,16 +78,22 @@ const router = createBrowserRouter(
                 <Route path="/room/waiting" element={<WaitingRoom />} />
                 <Route path="/room/create" element={<CreateRoom />} />
                 <Route path="/cooking-game" element={<CookingGame />} />
-                
                 {/*<Route path="/room/:roomId" element={<RoomPage />} /> /!* ✅ RoomPage 라우트 추가 *!/*/}
-                <Route path="/room/:roomId" element={<Webrtc />} /> {/* ✅ RoomPage 라우트 추가 */}
-                
-                
-                <Route path="/room/RoomList" element={<RoomList/>}/>
-
-                <Route path="/animal-game-theme" element={<AnimalGameTheme />} />
-                <Route path="/animal-game/start-game" element={<AnimalGame />} />
+                <Route path="/room/:roomId" element={<Webrtc />} />{" "}
+                {/* ✅ RoomPage 라우트 추가 */}
+                <Route path="/room/RoomList" element={<RoomList />} />
+                <Route
+                    path="/animal-game-theme"
+                    element={<AnimalGameTheme />}
+                />
+                <Route
+                    path="/animal-game/start-game"
+                    element={<AnimalGame />}
+                />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/profile-info" element={<ProfileInfo />} />
+                <Route path="/change-password" element={<ChangePassword />} />
+                <Route path="/profile-delete" element={<ProfileDelete />} />
             </Route>
         </>
     )
@@ -96,7 +103,9 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")).render(
     //<React.StrictMode>
     <Provider store={store}>
-        <RouterProvider router={router} />
+        <AuthInitializer>
+            <RouterProvider router={router} />
+        </AuthInitializer>
     </Provider>
     //</React.StrictMode>
 );
