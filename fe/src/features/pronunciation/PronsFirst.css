@@ -24,23 +24,28 @@
 /* 🔹 이미지 크기 키우기 */
 .lip-image,
 .mouth-image {
-    width: 70%; 
-    height: 80%;
+    width: 25vw; 
+    height: 20vw;
     border-radius: 1.2rem;
-    object-fit: cover;
+    /* object-fit: cover; */
+}
+
+.lips-video {
+    width: 25vw; 
+    height: 20vw;
+
 }
 
 /* 🔹 설명 컨테이너 크기 키우기 */
 .description-container {
     text-align: center;
     background-color: #e3f2fd;
-    padding: 5%; /* 기존보다 패딩 추가 */
+    padding: 2%;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 100%; /* 기존 80% → 85% */
-    max-width: 700px; /* 기존 600px → 700px */
+    width: 50vw;  
     margin-bottom: 25px;
-    font-size: 1rem; 
+    font-size: 1.25rem; 
     margin-left: -10px;
 }
 
@@ -93,16 +98,16 @@
 
 .next-button {
     margin-top: 16px; 
-    padding: 10px 22px;
+    padding: 10px 20px;
     font-size: 16px;
-    background-color: #2ec4a1;
+    background-color: #54c3c3;
     color: white;
-    border: none;
+    border: white 2px;
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     position: fixed;
-    right: 80px;
+    right: 30px;
     bottom: 20px;
     font-weight: bold;
 }

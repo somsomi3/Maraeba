@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api.js";
 import "./WaitingRoom.css";
 import { useSelector } from "react-redux";
+import CreateRoomPopup from "../room/CreatePopup";
 
 const RoomList = () => {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const navigate = useNavigate();
     const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
     const userId = useSelector((state) => state.auth.userId);
@@ -92,11 +94,12 @@ const RoomList = () => {
 
     return (
         <div className="waiting-room">
+             <CreateRoomPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
             <h1>방 목록</h1>
 
             {/* 방 만들기 & 입장 버튼 */}
             <div className="room-actions">
-                <button className="create-room-btn" onClick={() => navigate("/room/create")}>
+                <button className="create-room-btn" onClick={() => setIsPopupOpen(true)}>
                     방 만들기
                 </button>
                 <button

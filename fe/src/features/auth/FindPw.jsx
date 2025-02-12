@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { springApi } from "../../utils/api"; // ✅ API 요청을 위한 springApi 추가
+import { springApi } from "../../utils/api"; // API 요청을 위한 springApi
 import "./index.css";
 
 const FindPw = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
-  const [loading, setLoading] = useState(false); // 🔄 요청 중 상태
-  const [message, setMessage] = useState(""); // 🔹 성공 메시지
-  const [errorMessage, setErrorMessage] = useState(""); // ❌ 에러 메시지
+  const [loading, setLoading] = useState(false); 
+  const [message, setMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ const FindPw = () => {
         const response = await springApi.post(
             "/auth/forgot-password", 
             { user_id: userId, email },
-            { headers: { Authorization: "" } } // ✅ 인증 헤더 제거
+            { headers: { Authorization: "" } } 
         );
         if (response.status === 200) {
             setMessage("✅ 임시 비밀번호가 이메일로 전송되었습니다.");
@@ -72,13 +72,12 @@ const FindPw = () => {
         </button>
       </form>
 
-      {/* 🔹 성공 메시지 */}
+
       {message && <p className="success-message">{message}</p>}
 
-      {/* ❌ 에러 메시지 */}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-      <button className="secondary-button" onClick={() => navigate("/")}>
+      <button className="secondary-button" onClick={() => navigate("/login")}>
         돌아가기
       </button>
     </div>

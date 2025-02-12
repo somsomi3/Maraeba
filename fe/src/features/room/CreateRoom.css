@@ -1,4 +1,4 @@
-.create-room {
+/* .create-room {
     text-align: center;
     padding: 20px;
     display: flex;
@@ -6,10 +6,15 @@
     gap: 10px;
 }
 
-form {
+.room-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
 }
 
-
+.room-button, .cancel-btn {
+    background-color: rgb(254, 178, 119);
+    border: none;
+    border-radius: 10vw;
+} */

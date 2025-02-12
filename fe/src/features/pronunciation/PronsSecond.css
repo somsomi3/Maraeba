@@ -1,4 +1,3 @@
-/* FirstPrac.css */
 
 .prons-second-container {
     display: flex;
@@ -23,8 +22,6 @@
     gap: 1.5rem;
   }
   
-
-  
   .camera-section {
     display: flex;
     flex-direction: column;
@@ -34,7 +31,7 @@
     background-color: #fff;
     border: 2px solid #ccc;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
@@ -46,7 +43,8 @@
     width: 35vw;
     height: 55vh;
     background-color: #eef;
-    border: 2px dashed #aaa;
+    /* border: 2px #aaa; */
+    border: none;
     border-radius: 10px;
     font-size: 18px;
     color: #333;
@@ -60,6 +58,7 @@
         height: 100%;
         object-fit: cover;
         border-radius: 10px;
+        transform: scaleX(-1);
     }
 
   .accuracy {
@@ -90,13 +89,14 @@
 .pronunciation-box {
     position: absolute;
     top: 3%;  /* 화면 상단에 배치 */            
-    background-color: none;
-    padding: 10px 15px;
-    border-radius: 40px;
+    background-color: #FF9595; 
+    padding: 5px 15px;
+    border-radius: 100%;
     font-family: 'DXChildsdrawing';
-    font-size: 55px;
+    font-size: 66px;
     font-weight: bold;
-    color: #000000;
+    color: #ffffff;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
 }
 
   
@@ -107,7 +107,7 @@
     transform: translateX(-50%);
   }
 
-  .next-button {
+  /* .next-button {
     margin-top: 16px; 
     padding: 10px 22px;
     font-size: 16px;
@@ -121,7 +121,7 @@
     right: 80px;
     bottom: 20px;
     font-weight: bold;
-}
+} */
 
 .lip-video {
     width: 23vw;
@@ -130,11 +130,20 @@
 
 .image-top, .image-bottom {
     width: 23vw;
-    height: 33vh;
+    height: 32vh;
     border: none;
     border-radius: 10px;
   }
 
-.feedback-box{
-    
-} 
+  .feedback-box {
+    background-color: #f8f9fa;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    padding: 10px;
+    margin-top: 5px;
+    text-align: center;
+    width: 60vw;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}

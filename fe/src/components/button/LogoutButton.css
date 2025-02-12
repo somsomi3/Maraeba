@@ -1,17 +1,19 @@
 .logout-button {
-    position: fixed;  /* ✅ 화면에 고정 */
-    bottom: 15px;        /* 🔼 위에서 15px */
-    right: 20px;      /* 🔄 오른쪽에서 20px */
-    background: none; /* ✅ 배경색 제거 */
-    border: none;     /* ✅ 테두리 제거 */
-    cursor: pointer;  /* 🖱️ 클릭 가능 */
-    padding: 5px;     /* 🔳 내부 여백 추가 */
-    z-index: 1000;    /* 🥇 다른 요소 위에 표시 */
+    position: fixed;  
+    top: 18px;        
+    right: 20px;      
+    background: #54c3c3; 
+    opacity: 0.9;
+    border: none;
+    border-radius: 50%;     
+    cursor: pointer;  
+    padding: 6px;     
+    z-index: 1000;   
 }
 
 .logout-button img {
-    width: 40px;  /* ✅ 아이콘 크기 조절 */
-    height: 40px; /* ✅ 아이콘 크기 조절 */
+    height: 30px;
+    width: 30px;
     transition: transform 0.2s ease-in-out; /* 🎞️ 부드러운 애니메이션 */
 }
 

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import './Conversation.css';
 import conversationTitle from '../../assets/images/conversation.png'; 
 import HomeButton from '../../components/button/HomeButton';
+import { flaskApi } from '../../utils/api';
 
 const Conversation = () => {
   const navigate = useNavigate();
   const [selectedSituation, setSelectedSituation] = useState('');
   const [formData, setFormData] = useState({
-    otherRole: '',
-    myRole: '',
+    aiRole: '',
+    userRole: '',
     situation: ''
   });
 
@@ -38,25 +39,34 @@ const Conversation = () => {
     }
   }, [selectedSituation]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.situation.trim()) return;
-    navigate('/conversation/start');
+    if (!formData.situation.trim() || !formData.aiRole.trim() || !formData.userRole.trim()) return;
+
+    try {
+      const { data } = await flaskApi.post('/chat/start', {
+        is_default: false,
+        default_id: null,
+        ai_role: formData.aiRole,
+        user_role: formData.userRole,
+        situation: formData.situation
+      });
+
+      if (data.session_id) {
+        navigate('/conversation/start', { state: { sessionId: data.session_id } });
+      }
+    } catch (error) {
+      console.error('🚨 대화 시작 오류:', error);
+    }
   };
 
   return (
     <>
       <div className="conversation-container">
-        {/* 헤더 */}
         <div className="conversation-header">
-          <img
-            src={conversationTitle}
-            alt="이야기 나누기"
-            className="conversation-title-image"
-          />
+          <img src={conversationTitle} alt="이야기 나누기" className="conversation-title-image" />
         </div>
 
-        {/* 메인 컨텐츠 */}
         <div className="conversation-content">
           <div className="situation-section situation-select">
             <h2>상황 고르기</h2>
@@ -76,51 +86,26 @@ const Conversation = () => {
           <div className="situation-section situation-create">
             <h2>상황 만들기</h2>
             <form onSubmit={handleSubmit} className="creation-form">
-              {/* 상대방의 역할 */}
               <label>
-                상대방의 역할
-                <input
-                  type="text"
-                  name="otherRole"
-                  value={formData.otherRole}
-                  onChange={handleInputChange}
-                  placeholder="상대방의 역할을 입력해주세요."
-                />
+                AI 역할
+                <input type="text" name="aiRole" value={formData.aiRole} onChange={handleInputChange} placeholder="AI의 역할을 입력해주세요." />
               </label>
 
-              {/* 나의 역할 */}
               <label>
                 나의 역할
-                <input
-                  type="text"
-                  name="myRole"
-                  value={formData.myRole}
-                  onChange={handleInputChange}
-                  placeholder="자신의 역할을 입력해주세요."
-                />
+                <input type="text" name="userRole" value={formData.userRole} onChange={handleInputChange} placeholder="나의 역할을 입력해주세요." />
               </label>
 
-              {/* 상황 설명 */}
               <label className="situation-description">
                 상황
-                <textarea
-                  name="situation"
-                  value={formData.situation}
-                  onChange={handleInputChange}
-                  placeholder="상황을 간단하게 설명해주세요."
-                />
+                <textarea name="situation" value={formData.situation} onChange={handleInputChange} placeholder="상황을 설명해주세요." />
               </label>
             </form>
           </div>
         </div>
 
-        {/* 시작하기 버튼 */}
         <div className="action-footer">
-          <button
-            className="primary-button"
-            onClick={handleSubmit}
-            disabled={!formData.situation.trim()}
-          >
+          <button className="primary-button" onClick={handleSubmit} disabled={!formData.situation.trim() || !formData.aiRole.trim() || !formData.userRole.trim()}>
             시작하기
           </button>
         </div>

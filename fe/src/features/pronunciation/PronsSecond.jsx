@@ -132,7 +132,7 @@ const PronsSecond = () => {
         tracks.forEach((track) => track.stop());
       }
     };
-  }, []);
+  }, [navigate]);
 
 
   // ✅ 학습 완료 후 세션 종료, 히스토리 저장, 통계 업데이트
@@ -246,7 +246,7 @@ const PronsSecond = () => {
         {/* ✅ 피드백 표시 */}
           {feedback && (
             <div className="feedback-box">
-              <p>🧑‍🏫: {feedback}</p>
+              <p>{feedback}</p>
             </div>
           )}
 

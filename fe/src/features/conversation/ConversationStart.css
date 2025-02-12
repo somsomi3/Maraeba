@@ -91,7 +91,7 @@
 
 /* 정지 버튼 (화면 오른쪽 상단) */
 .stop-button {
-  width: 50px;
+  /* width: 50px;
   height: 50px;
   border: none;
   border-radius: 50%;
@@ -100,11 +100,9 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  position: fixed; /* 화면 전체 기준으로 위치를 고정 */
-  top: 40px; /* 상단에서 20px */
-  right: 40px; /* 오른쪽에서 20px */
-  z-index: 2000; /* 다른 요소 위에 위치 */
+  cursor: pointer; */
+  /* top: 40px; 
+  right: 40px;  */
 }
 
 .stop-button img {

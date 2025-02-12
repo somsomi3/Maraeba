@@ -15,7 +15,7 @@ const CreateRoom = () => {
     // ✅ JWT 토큰에서 사용자 정보 추출하는 함수
    
 
-    // ✅ 방 생성 요청 (POST /rooms/create)
+    // ✅ 방 생성 요청 (POST /room/create)
     const handleCreateRoom = async (e) => {
         e.preventDefault();
 
@@ -42,7 +42,7 @@ const CreateRoom = () => {
             });
 
             alert("방이 성공적으로 생성되었습니다!");
-            navigate("/rooms/list"); // ✅ 대기실 페이지로 이동
+            navigate("/rooms/Roomlist"); // ✅ 대기실 페이지로 이동
         } catch (error) {
             alert(error.response?.data?.message || "방 생성에 실패했습니다.");
         } finally {
@@ -54,7 +54,7 @@ const CreateRoom = () => {
     return (
         <div className="create-room">
             <h2>방 만들기</h2>
-            <form onSubmit={handleCreateRoom}>
+            <form className="room-form" onSubmit={handleCreateRoom}>
                 <input
                     className="room-input"
                     type="text"
@@ -69,7 +69,7 @@ const CreateRoom = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit" disabled={loading}>
+                <button className="room-button" type="submit" disabled={loading}>
                     {loading ? "생성 중..." : "방 만들기"}
                 </button>
             </form>
