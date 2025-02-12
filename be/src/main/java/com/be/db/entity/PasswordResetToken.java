@@ -3,12 +3,9 @@ package com.be.db.entity;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
@@ -23,9 +20,8 @@ public class PasswordResetToken extends BaseEntity {
     @Column(nullable = false, unique = true) // 토큰은 유일해야 함
     private String token;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne() // 이 테이블은 User하고만 쓰이며, 토큰이 존재하면 User를 무조건 불러와야 해서 EAGER가 적합
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @Column(nullable = false) // 만료일은 반드시 존재해야 함
