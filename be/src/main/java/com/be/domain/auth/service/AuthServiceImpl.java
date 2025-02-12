@@ -1,7 +1,9 @@
 package com.be.domain.auth.service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -307,16 +309,19 @@ public class AuthServiceImpl implements AuthService {
 		User user = userRepository.findByUserIdAndEmail(request.getUserId(), request.getEmail())
 			.orElseThrow(() -> new CustomAuthException(AuthErrorCode.USER_NOT_FOUND));
 
-		// 3. 기존 토큰 삭제
-		if (user.getPasswordResetToken() != null) {
-			passwordResetTokenRepository.delete(user.getPasswordResetToken());
-			passwordResetTokenRepository.flush(); // 즉시 반영
-			user.setPasswordResetToken(null); // Hibernate가 변경을 인식할 수 있도록 설정
+		// 3. 기존 PasswordResetToken 확인 후 값 변경
+		PasswordResetToken passwordResetToken = user.getPasswordResetToken();
+		if (passwordResetToken != null) {
+			// 기존 토큰을 새 값으로 업데이트
+			passwordResetToken.setToken(UUID.randomUUID().toString());
+			passwordResetToken.setExpiryDate(LocalDateTime.now().plusHours(1));
+		} else {
+			// 기존 토큰이 없으면 새로 생성
+			passwordResetToken = new PasswordResetToken(user);
+			user.setPasswordResetToken(passwordResetToken);
 		}
 
-		// 4. 새로운 비밀번호 변경 토큰 생성 및 저장
-		PasswordResetToken passwordResetToken = new PasswordResetToken(user);
-		user.setPasswordResetToken(passwordResetToken);
+		// 4. 변경된 토큰 저장
 		passwordResetTokenRepository.save(passwordResetToken);
 
 		// 5. 비밀번호 변경 링크 생성
