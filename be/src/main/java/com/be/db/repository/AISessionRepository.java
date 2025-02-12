@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AISessionRepository extends JpaRepository<AISession, Integer> {
+    void deleteBySessionId(String sessionId);
 }
