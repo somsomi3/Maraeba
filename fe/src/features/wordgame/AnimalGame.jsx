@@ -20,33 +20,11 @@ const AnimalGame = () => {
   const recordingTimeoutRef = useRef(null);
   const token = useSelector((state) => state.auth.token);
   const backendURL = import.meta.env.VITE_STATIC_API_URL;
-
-  const base64ToBlob = (base64, mimeType) => {
-    try {
-        // ✅ Base64  형식이 맞는지 확인
-        if (!base64 || typeof base64 !== "string") {
-            throw new Error("Base64 데이터가 올바르지 않습니다.");
-        }
-
-        // ✅ Base64 포맷 검사 및 공백 제거
-        base64 = base64.replace(/\s/g, ""); // 공백 제거
-        if (!/^data:image\/(png|jpeg|jpg);base64,/.test(base64)) {
-            base64 = `data:image/png;base64,${base64}`; // PNG 형식으로 변환
-        }
-
-        const byteCharacters = atob(base64.split(",")[1]); // ✅ atob() 적용
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], { type: mimeType });
-    } catch (error) {
-        console.error("Base64 디코딩 오류:", error);
-        return null;
-    }
-};
-
+  const imageContainerRef = useRef(null); // 이미지 컨테이너 참조
+  const imageRef = useRef(null); // 이미지 참조
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
    // ✅ 공통 fetch 함수 (Access Token 포함)
    const fetchResource = async (url, setState) => {
@@ -102,10 +80,6 @@ const AnimalGame = () => {
         console.error("❌ 게임 시작 오류:", error);
     }
 };
-
-
-
-
 
   // 녹음 시작
   const startRecording = async () => {
@@ -216,11 +190,62 @@ const AnimalGame = () => {
     }
 };
 
-
-
   useEffect(() => {
     startGame();
   }, []);
+
+  // ✅ 이미지 로드 시 크기 업데이트
+  const handleImageLoad = () => {
+    if (imageRef.current) {
+      setContainerSize({
+        width: imageRef.current.clientWidth,
+        height: imageRef.current.clientHeight,
+      });
+    }
+  };
+
+// ✅ 동그라미 좌표 비율 변환
+const calculateAdjustedPosition = (x, y) => {
+    const image = imageRef.current;
+    if (!image) return { x: "0%", y: "0%", size: "1vw" };
+  
+    const imgWidth = image.naturalWidth;
+    const imgHeight = image.naturalHeight;
+    const containerWidth = image.clientWidth;
+    const containerHeight = image.clientHeight;
+  
+    // ✅ 원본 이미지 좌표를 % 단위로 변환
+    let adjustedX = (x / imgWidth) * 100;
+    let adjustedY = (y / imgHeight) * 100;
+  
+    // ✅ 동그라미 크기 조정 (최소 2% 최대 4%)
+    const adjustedSize = Math.max((3 / 100) * containerWidth, (2 / 100) * window.innerWidth);
+  
+    return { 
+      x: `${adjustedX}%`, 
+      y: `${adjustedY}%`, 
+      size: `${adjustedSize}px` 
+    };
+  };
+  
+  
+  useEffect(() => {
+    const handleResize = () => {
+      if (imageRef.current) {
+        setGameData((prev) => ({
+          ...prev,
+          circleData: prev.circleData.map((circle) => {
+            const adjustedPos = calculateAdjustedPosition(parseFloat(circle.x), parseFloat(circle.y));
+            return { x: adjustedPos.x, y: adjustedPos.y };
+          }),
+        }));
+      }
+    };
+  
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   return (
     <div className="animal-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
@@ -236,25 +261,50 @@ const AnimalGame = () => {
   
         {/* ✅ 이미지 & 동물 리스트를 가로 정렬 (3:1 비율) */}
         <div className="animal-game-content">
+          
           {/* 🎨 동물 찾기 이미지 */}
-          <div className="image-container">
-            {gameData.imageData && <img src={gameData.imageData} alt="Game Image" className="animal-game-image" />}
-            {(gameData.circleData || []).map((circle, index) => (
-              <div
-                key={index}
-                className="circle-marker"
+          <div className="image-container" style={{ position: "relative", display: "inline-block" }}>
+            {gameData.imageData && (
+              <img
+                ref={imageRef}
+                src={gameData.imageData}
+                alt="Game Image"
+                className="animal-game-image"
+                onLoad={handleImageLoad} // ✅ 이미지 로드 시 크기 업데이트
                 style={{
-                  position: "absolute",
-                  top: `${circle.y}px`,
-                  left: `${circle.x}px`,
-                  width: "30px",
-                  height: "30px",
-                  borderRadius: "50%",
-                  border: "3px solid red",
-                  backgroundColor: "transparent",
+                  maxWidth: "100%",
+                  maxHeight: "80vh",
+                  width: "auto",
+                  height: "auto",
+                  objectFit: "contain",
+                  display: "block",
+                  margin: "0 auto",
                 }}
-              ></div>
-            ))}
+              />
+            )}
+  
+            {/* 🔴 동그라미 표시 (위치 및 크기 반응형 조정) */}
+            {Array.isArray(gameData.circleData) &&
+              gameData.circleData.map((circle, index) => {
+                const { x, y, size } = calculateAdjustedPosition(circle.x, circle.y);
+                return (
+                  <div
+                    key={index}
+                    className="circle-marker"
+                    style={{
+                      position: "absolute",
+                      top: y,  // ✅ % 단위 적용
+                      left: x, // ✅ % 단위 적용
+                      width: size,
+                      height: size,
+                      borderRadius: "50%",
+                      border: "3px solid red",
+                      backgroundColor: "transparent",
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  ></div>
+                );
+              })}
           </div>
   
           {/* 📝 동물 리스트 */}
@@ -286,6 +336,8 @@ const AnimalGame = () => {
       </div> {/* game-overlay 끝 */}
     </div>
   );
+  
+  
   
   
 };
