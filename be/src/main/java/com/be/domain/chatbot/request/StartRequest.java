@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class StartRequest {
     private boolean isDefault;
-    private Integer defaultId;
+    private Long defaultId;
     private String aiRole;
     private String userRole;
     private String situation;
