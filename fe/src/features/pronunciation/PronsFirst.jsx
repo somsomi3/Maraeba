@@ -66,7 +66,7 @@ const PronsFirst = () => {
 
             if (!response.ok) {
                 throw new Error("리소스 로딩 실패");
-            }
+            }   
 
             const blob = await response.blob();
             const blobUrl = URL.createObjectURL(blob);
@@ -114,7 +114,7 @@ const PronsFirst = () => {
                     <div className="image-container">
                         {/* ✅ 입모양 비디오 가져오기 */}
                         {lipVideoSrc ? (
-                            <video className="lip-video" controls autoPlay loop>
+                            <video className="lip-video" controls autoPlay loop muted>
                                 <source src={lipVideoSrc} type="video/mp4" />
                                 지원되지 않는 브라우저입니다.
                             </video>

@@ -23,13 +23,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	private final WebSocketAuthInterceptor webSocketAuthInterceptor;
 	private final TokenService tokenService; // 🔥 JWT 인증을 위한 서비스 추가
 
-//	// ✅ Spring에서 의존성 주입 받도록 변경
-//	public WebSocketConfig(SignalingHandler signalingHandler, AudioWebSocketHandler audioWebSocketHandler, TokenService tokenService) {
-//		this.signalingHandler = signalingHandler;
-//		this.audioWebSocketHandler = audioWebSocketHandler;
-//		this.tokenService = tokenService;
-//	}
-
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		// ✅ 기존에 주입된 `webSocketAuthInterceptor` 사용

@@ -29,7 +29,10 @@ const PronsSecond = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isMatch, setIsMatch] = useState(null); 
+  const [feedback, setFeedback] = useState("")
 
+//   const [isRecording, setIsRecording] = useState(false);
+//   const [audioStream, setAudioStream] = useState(null)
   useEffect(() => { 
     const fetchData = async () => {
       try {
@@ -87,6 +90,28 @@ const PronsSecond = () => {
     }
   };
 
+  // ✅ 마이크 & 카메라 권한을 요청하는 함수
+//   const startRecording = async () => {
+//     try {
+//       const audio = await navigator.mediaDevices.getUserMedia({ audio: true });
+//       console.log("🎤 마이크 권한 허용됨");
+//       setAudioStream(audio); // ✅ 마이크 스트림 저장
+
+//       const video = await navigator.mediaDevices.getUserMedia({ video: true });
+//       console.log("📷 카메라 권한 허용됨");
+
+//       const combinedStream = new MediaStream([...audio.getTracks(), ...video.getTracks()]);
+//       if (videoRef.current) {
+//         videoRef.current.srcObject = combinedStream;
+//       }
+
+//       setIsRecording(true);
+//     } catch (error) {
+//       console.error("❌ 마이크/카메라 접근 오류:", error);
+//       alert("마이크 & 카메라 사용을 허용해주세요.");
+//     }
+//   };
+
   useEffect(() => {
     const startCamera = async () => {
       try {
@@ -109,24 +134,6 @@ const PronsSecond = () => {
     };
   }, []);
 
-//   const saveSimilarity = async () => {
-//     const session_id = localStorage.getItem("session_id");
-//     if (!session_id) {
-//       alert("세션 ID가 없습니다. 다시 시작해주세요.");
-//       return;
-//     }
-
-//     try {
-//       console.log("📡 유사도 저장 요청:", { session_id, similarity });
-//       await springApi.post("/prons/session/similarity", {
-//         session_id,
-//         similarity,
-//       });
-//       console.log("✅ 유사도 저장 완료");
-//     } catch (error) {
-//       console.error("❌ 유사도 저장 실패:", error);
-//     }
-//   };
 
   // ✅ 학습 완료 후 세션 종료, 히스토리 저장, 통계 업데이트
   const handleEndSession = async () => {
@@ -225,10 +232,40 @@ const PronsSecond = () => {
               {data.pronunciation}
             </div>
           )}
-            <div className="record-button-container">
-          <RecordButton onMatchUpdate={setIsMatch} pronunciation={data?.pronunciation} />
+            {/* ✅ 녹음 버튼 */}
+          <div className="record-button-container">
+            <RecordButton 
+              onMatchUpdate={(match, feedbackMsg) => {
+                setIsMatch(match);
+                setFeedback(feedbackMsg);
+              }} 
+              pronunciation={data?.pronunciation} 
+            />
+          </div>
+
+        {/* ✅ 피드백 표시 */}
+          {feedback && (
+            <div className="feedback-box">
+              <p>🧑‍🏫: {feedback}</p>
             </div>
-            
+          )}
+
+
+            {/* <div className="record-button-container">
+            <button onClick={startRecording} disabled={isRecording}>
+                {isRecording ? "🎙 녹음 중..." : "🎤 녹음 & 카메라 시작"}
+            </button>
+
+            {isRecording && audioStream && (
+              <RecordButton 
+                onMatchUpdate={setIsMatch} 
+                pronunciation={data?.pronunciation} 
+                audioStream={audioStream} // ✅ 마이크 스트림 전달
+              />
+            )}
+          </div> */}
+
+
           <button className="next-button" onClick={handleSaveCorrectAndNext}>
             {parseInt(seq_id) === classMaxSeqMap[class_id] ? "🔚학습 끝내기" : "다음으로"}
           </button>

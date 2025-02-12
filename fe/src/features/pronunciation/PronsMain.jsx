@@ -69,7 +69,7 @@ const PronsMain = () => {
             classData.map((item) => (
               <div className="card" key={item.id}>
                 <h2>{item.title}</h2>
-                <span className="emoji">🔤</span>
+                <span className="emoji">🙂</span>
                 <p>{item.description}</p>
                 <div className="divider"></div>
                 <p>발음의 입모양을 익혀보고 소리내어 읽어봐요!</p>

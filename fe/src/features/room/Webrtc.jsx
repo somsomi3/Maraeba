@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
-import { useParams } from 'react-router-dom';
-import {springApi} from "../../utils/api.js";  // React Router에서 useParams를 사용
+import { useParams } from "react-router-dom";
+import { springApi } from "../../utils/api.js"; // React Router에서 useParams를 사용
 
 import { useSelector } from "react-redux";
 
@@ -18,7 +18,7 @@ const Webrtc = () => {
     const chatBoxRef = useRef(null); // 채팅창을 참조하는 useRef 추가
     const [isMuted, setIsMuted] = useState(false); // 음소거 상태 추가
     const [startTime, setStartTime] = useState(null); // 통화 시작 시간 저장
-    const [endTime, setEndTime] = useState(null);  // endTime 상태 정의
+    const [endTime, setEndTime] = useState(null); // endTime 상태 정의
     const [loading, setLoading] = useState(false);
     const [isGameStarted, setIsGameStarted] = useState(false); // 게임 시작 여부 상태 추가
     const [items, setItems] = useState([]);
@@ -27,8 +27,7 @@ const Webrtc = () => {
     const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
     const userId = useSelector((state) => state.auth.userId);
 
-
-    const {roomId} = useParams();  // URL에서 roomId 가져오기
+    const { roomId } = useParams(); // URL에서 roomId 가져오기
     const navigate = useNavigate();
     useEffect(() => {
         if (token && roomId) {
@@ -36,7 +35,6 @@ const Webrtc = () => {
         } else {
             console.error("JWT 토큰 없음 또는 방 ID 없음: 로그인 필요");
         }
-
 
         // 뒤로가기 버튼 감지 및 방 나가기 처리
         const handleBackButton = () => {
@@ -53,8 +51,6 @@ const Webrtc = () => {
     // }, []);
 
     }, [token, roomId]);  // ✅ Redux의 토큰 값이 변경될 때마다 실행
-
-   
 
     // WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -77,14 +73,12 @@ const Webrtc = () => {
                 } else if (receivedMessage.type === "candidate") {
                     await handleCandidate(receivedMessage);
                 } else {
-
                     // ✅ 메시지 상태 업데이트 (새로운 배열 생성)
                     setMessages((prevMessages) => [
                         ...prevMessages,
                         receivedMessage,
                     ]);
                     console.log("📝 업데이트된 메시지 상태:", messages);
-
                 }
             } catch (e) {
                 console.error("JSON 파싱 오류:", e);
@@ -95,8 +89,11 @@ const Webrtc = () => {
 
         //기존 소켓 연결 끊어짐 방지(WebSocket 연결 유지: 30초마다 'ping' 메시지 보내기)
         const pingInterval = setInterval(() => {
-            if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-                webSocketRef.current.send(JSON.stringify({type: "ping"}));
+            if (
+                webSocketRef.current &&
+                webSocketRef.current.readyState === WebSocket.OPEN
+            ) {
+                webSocketRef.current.send(JSON.stringify({ type: "ping" }));
                 console.log("📡 WebSocket 유지: Ping 전송");
             }
         }, 30000); // 30초마다 실행
@@ -108,7 +105,6 @@ const Webrtc = () => {
             clearInterval(pingInterval); // 컴포넌트 언마운트 시 핑 메시지 중단
         };
     }, []);
-
 
     // 메시지가 변경될 때 실행되는 자동 스크롤 useEffect
     useEffect(() => {
@@ -134,7 +130,7 @@ const Webrtc = () => {
     }, []);
 
     // JWT 토큰 가져오기
-//날림! 로컬에서 가져오는거
+    //날림! 로컬에서 가져오는거
 
     // WebSocket 연결
     const connectWebSocket = (token, roomId) => {
@@ -167,16 +163,18 @@ const Webrtc = () => {
 
     // 메시지 전송
     const sendMessage = () => {
-
-        if (message.trim() && webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-
+        if (
+            message.trim() &&
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
             if (!userId) {
                 console.error("사용자 ID 없음");
                 return;
             }
 
             const messageObject = {
-                user_id: userId,  // 사용자 ID
+                user_id: userId, // 사용자 ID
                 // sender_id: senderId, // 상대방 ID
                 // sender: User ${userId},  // 현재 사용자의 ID로 설정
                 message: message.trim(),
@@ -191,7 +189,7 @@ const Webrtc = () => {
             saveMessageToDB(messageObject); // DB 저장
 
             setMessages((prev) => [...prev, messageObject]); // UI 업데이트
-            setMessage("");  // 메시지 입력란 초기화
+            setMessage(""); // 메시지 입력란 초기화
         } else {
             console.error("WebSocket 연결이 닫혀 있음!");
         }
@@ -233,10 +231,10 @@ const Webrtc = () => {
     const saveMessageToDB = async (messageObject) => {
         const requestPayload = {
             // sender: messageObject.sender,  // sender 정보
-            message: messageObject.message,      // 메시지 내용
+            message: messageObject.message, // 메시지 내용
             room_id: messageObject.room_id, // 방 ID
-            sent_at: messageObject.sent_at,   // 보낸 시간
-            user_id: messageObject.user_id  // 사용자 ID
+            sent_at: messageObject.sent_at, // 보낸 시간
+            user_id: messageObject.user_id, // 사용자 ID
         };
         console.log("Request Payload:", requestPayload);
 
@@ -247,17 +245,16 @@ const Webrtc = () => {
         }
 
         try {
-            const response = await springApi.post("/webrtc/messages", requestPayload, {
-
-            });
+            const response = await springApi.post(
+                "/webrtc/messages",
+                requestPayload,
+                {}
+            );
             console.log("메시지 저장 성공:", response.data);
         } catch (error) {
             console.error("메시지 저장 실패:", error);
         }
     };
-
-
-
 
     // 카메라 & 마이크 접근 및 로컬 스트림 설정
 
@@ -280,11 +277,11 @@ const Webrtc = () => {
     };
     const endMedia = async () => {
         if (localStream) {
-            localStream.getTracks().forEach(track => track.stop());
+            localStream.getTracks().forEach((track) => track.stop());
             setLocalStream(null);
             localVideoRef.current.srcObject = null;
 
-            const now = new Date().toISOString().slice(0, 19);  // 종료 시간 기록
+            const now = new Date().toISOString().slice(0, 19); // 종료 시간 기록
             setEndTime(now);
             console.log("미디어 종료:", now);
             saveWebRTCLog(startTime, now); //로그 저장 실행
@@ -305,7 +302,7 @@ const Webrtc = () => {
 
         peerConnectionRef.current.onicecandidate = (event) => {
             if (event.candidate) {
-                sendToServer({type: "candidate", candidate: event.candidate});
+                sendToServer({ type: "candidate", candidate: event.candidate });
             }
         };
 
@@ -328,7 +325,7 @@ const Webrtc = () => {
         try {
             const offer = await peerConnectionRef.current.createOffer();
             await peerConnectionRef.current.setLocalDescription(offer);
-            sendToServer({type: "offer", sdp: offer.sdp});
+            sendToServer({ type: "offer", sdp: offer.sdp });
         } catch (error) {
             console.error("Offer 생성 실패:", error);
         }
@@ -346,7 +343,7 @@ const Webrtc = () => {
             );
             const answer = await peerConnectionRef.current.createAnswer();
             await peerConnectionRef.current.setLocalDescription(answer);
-            sendToServer({type: "answer", sdp: answer.sdp});
+            sendToServer({ type: "answer", sdp: answer.sdp });
         } catch (error) {
             console.error("Offer 처리 실패:", error);
         }
@@ -387,8 +384,10 @@ const Webrtc = () => {
         ) {
             webSocketRef.current.send(JSON.stringify(message));
         } else {
-
-            console.error("WebSocket이 연결되지 않음, 메시지 전송 실패:", message);
+            console.error(
+                "WebSocket이 연결되지 않음, 메시지 전송 실패:",
+                message
+            );
         }
     };
     const toggleMute = () => {
@@ -398,13 +397,10 @@ const Webrtc = () => {
                 audioTrack.enabled = !audioTrack.enabled;
                 setIsMuted(!isMuted);
             }
-
         }
     };
 
-
     const saveWebRTCLog = async (startTime, endTime) => {
-
         console.log("저장할 사용자 ID:", userId); //user_id 값이 있는지 확인
 
         if (!userId) {
@@ -413,19 +409,18 @@ const Webrtc = () => {
         }
 
         const logData = {
-            room_id: roomId,  // 방 ID?
-            user_id: userId,  // 사용자 ID
+            room_id: roomId, // 방 ID?
+            user_id: userId, // 사용자 ID
             start_time: startTime,
             end_time: endTime,
         };
-
 
         console.log("📩 서버로 보낼 로그 데이터:", logData); //실제 전송 데이터 확인
 
         try {
             const response = await springApi.post("/webrtc/logs", logData, {
                 headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    Authorization: "Bearer " + localStorage.getItem("token"),
                 },
             });
 
@@ -437,7 +432,6 @@ const Webrtc = () => {
         } catch (error) {
             console.error("로그 저장 중 오류 발생:", error);
         }
-
     };
     // 방 나가기 요청
     const handleLeaveRoom = async () => {
@@ -453,14 +447,14 @@ const Webrtc = () => {
             });
             if (response.status === 200) {
                 alert("방에서 나갔습니다.");
-                navigate("/room/RoomList");  // 방 목록 화면으로 이동
+                navigate("/room/RoomList"); // 방 목록 화면으로 이동
             }
         } catch (error) {
             console.error("❌ 방 나가기 실패:", error);
             alert("방 나가기 실패!");
         }
     };
-// 게임 시작
+    // 게임 시작
     const startGame = async () => {
         if (!userId) {
             alert("사용자 정보가 없습니다. 로그인 후 다시 시도해주세요.");
@@ -468,7 +462,9 @@ const Webrtc = () => {
         }
         try {
             setLoading(true);
-            const response = await springApi.post(`/game/start/${roomId}`, { userId });
+            const response = await springApi.post(`/game/start/${roomId}`, {
+                userId,
+            });
             if (response.status === 200) {
                 setIsGameStarted(true);
             } else {
@@ -498,25 +494,42 @@ const Webrtc = () => {
     };
     return (
         <div style={styles.container}>
-
             {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
             <div style={styles.videoContainer}>
                 <h3>WebRTC 테스트</h3>
 
                 {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
                 <div style={styles.videoWrapper}>
-                    <video ref={remoteVideoRef} autoPlay playsInline style={styles.largeVideo}/>
-                    <video ref={localVideoRef} autoPlay playsInline muted style={styles.smallVideo}/>
+                    <video
+                        ref={remoteVideoRef}
+                        autoPlay
+                        playsInline
+                        style={styles.largeVideo}
+                    />
+                    <video
+                        ref={localVideoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        style={styles.smallVideo}
+                    />
                 </div>
 
                 {/* 버튼을 비디오 아래로 이동 */}
                 <div style={styles.buttonContainer}>
-                    <button onClick={startMedia} style={styles.button}>🎥 나의 화면 열기</button>
-                    <button onClick={createOffer} style={styles.button}>📡 나의 화면 보여주기(Offer)</button>
-                    <button onClick={endMedia} style={styles.button}>🛑 종료</button>
-                    <button onClick={toggleMute} style={styles.button}>{isMuted ? "🔇 음소거 해제" : "🎤 음소거"}</button>
+                    <button onClick={startMedia} style={styles.button}>
+                        🎥 나의 화면 열기
+                    </button>
+                    <button onClick={createOffer} style={styles.button}>
+                        📡 나의 화면 보여주기(Offer)
+                    </button>
+                    <button onClick={endMedia} style={styles.button}>
+                        🛑 종료
+                    </button>
+                    <button onClick={toggleMute} style={styles.button}>
+                        {isMuted ? "🔇 음소거 해제" : "🎤 음소거"}
+                    </button>
                 </div>
-
             </div>
 
             {/* 오른쪽 - 채팅 창 및 입력창 */}
@@ -526,7 +539,11 @@ const Webrtc = () => {
                     {messages.map((msg, idx) => (
                         <div
                             key={idx}
-                            style={msg.user_id === userId ? styles.myMessage : styles.otherMessage} // 내 메시지는 오른쪽, 상대방은 왼쪽
+                            style={
+                                msg.user_id === userId
+                                    ? styles.myMessage
+                                    : styles.otherMessage
+                            } // 내 메시지는 오른쪽, 상대방은 왼쪽
                         >
                             <strong>user{msg.user_id}:</strong> {msg.message}
                         </div>
@@ -542,13 +559,16 @@ const Webrtc = () => {
                         placeholder="메시지 입력..."
                         style={styles.input}
                     />
-                    <button onClick={sendMessage} style={styles.sendButton}>전송</button>
+                    <button onClick={sendMessage} style={styles.sendButton}>
+                        전송
+                    </button>
                 </div>
             </div>
             {/* 방 나가기 버튼 추가 */}
             <div style={styles.leaveButtonContainer}>
-                <button onClick={handleLeaveRoom} style={styles.leaveButton}>방 나가기</button>
-
+                <button onClick={handleLeaveRoom} style={styles.leaveButton}>
+                    방 나가기
+                </button>
             </div>
             {/* 게임 시작 버튼 */}
             {!isGameStarted ? (
@@ -568,7 +588,10 @@ const Webrtc = () => {
                                     key={item}
                                     onClick={() => handleChoice(item)}
                                     style={{
-                                        backgroundColor: selectedItem === item ? "lightblue" : "white",
+                                        backgroundColor:
+                                            selectedItem === item
+                                                ? "lightblue"
+                                                : "white",
                                     }}
                                 >
                                     {item}
@@ -618,7 +641,7 @@ const styles = {
 
     /** ✅ 상대방(큰 화면) */
     largeVideo: {
-        width: "500px",  // 상대방 화면 크게
+        width: "500px", // 상대방 화면 크게
         height: "300px",
         border: "2px solid #333",
         background: "black",
@@ -626,7 +649,7 @@ const styles = {
 
     /** ✅ 내 화면(작은 화면) */
     smallVideo: {
-        width: "200px",  // 내 화면 작게
+        width: "200px", // 내 화면 작게
         height: "120px",
         border: "2px solid #999",
         background: "black",
@@ -653,7 +676,6 @@ const styles = {
         background: "#0056b3",
     },
 
-
     /** 💬 오른쪽 - 채팅 영역 */
     chatContainer: {
         display: "flex",
@@ -668,7 +690,6 @@ const styles = {
     },
 
     chatBox: {
-
         flex: "1",
         overflowY: "auto",
 
@@ -689,7 +710,6 @@ const styles = {
         width: "100%",
         gap: "10px",
         alignItems: "center",
-
     },
 
     input: {
@@ -735,7 +755,6 @@ const styles = {
         marginTop: "20px",
         display: "flex",
         justifyContent: "center",
-
     },
     leaveButton: {
         padding: "10px 20px",
@@ -745,8 +764,6 @@ const styles = {
         borderRadius: "5px",
         cursor: "pointer",
     },
-
 };
 
-
-export default Webrtc; 
+export default Webrtc;

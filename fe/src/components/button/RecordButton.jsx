@@ -3,17 +3,22 @@ import { flaskApi } from "../../utils/api";
 import "./RecordButton.css";
 import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
+import { useSelector } from "react-redux";
 
 const RecordButton = ({ onMatchUpdate, pronunciation }) => {
     const [isRecording, setIsRecording] = useState(false);
     const mediaRecorderRef = useRef(null);
     const audioChunksRef = useRef([]);
+    const { audioType } = useSelector((state) => state.browser);
 
     // 🔴 **녹음 시작**
     const startRecording = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: "audio/webm" }); // ✅ webm 사용
+
+            const mimeType = `audio/${audioType}`;
+
+            mediaRecorderRef.current = new MediaRecorder(stream, { mimeType }); // ✅ webm 사용
     
             audioChunksRef.current = [];
             mediaRecorderRef.current.ondataavailable = (event) => {
@@ -28,7 +33,7 @@ const RecordButton = ({ onMatchUpdate, pronunciation }) => {
                     return;
                 }
     
-                const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" }); // ✅ webm으로 전송
+                const audioBlob = new Blob(audioChunksRef.current, { type: mimeType }); // ✅ webm으로 전송
                 await analyzePronunciation(audioBlob); // ✅ AI 서버에 전송
             };
     
@@ -61,7 +66,9 @@ const RecordButton = ({ onMatchUpdate, pronunciation }) => {
             console.log("✅ AI 분석 응답:", response.data);
 
             const isMatch = response.data.match || false;
-            onMatchUpdate(isMatch);
+            const feedbackMsg = response.data.feedback || "잘했어요🙂";
+        
+            onMatchUpdate(isMatch, feedbackMsg);
         } catch (error) {
             console.error("❌ AI 요청 오류:", error.response ? error.response.data : error);
         }
