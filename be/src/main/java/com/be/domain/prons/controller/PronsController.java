@@ -112,7 +112,7 @@ public class PronsController {
 	@Operation(summary = "발음 정답 여부 저장", description = "발음 정답 여부를 저장합니다.")
 	@PostMapping("/session/correct")
 	public BaseResponseBody savePronunciationSimilarity(@Validated @RequestBody PostSimilarityReq request) {
-		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getIsCorrect());
+		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getPronId(), request.getIsCorrect());
 		return new BaseResponseBody("Correct saved", HttpStatus.CREATED);
 	}
 

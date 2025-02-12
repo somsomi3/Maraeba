@@ -57,7 +57,7 @@ public interface PronsService {
 	 * @param id
 	 * @param isCorrect
 	 */
-	void savePronunciationSimilarity(String id, Integer isCorrect);
+	void savePronunciationSimilarity(String id, Long pronId, Integer isCorrect);
 
 	/**
 	 * 히스토리 저장

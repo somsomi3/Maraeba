@@ -12,6 +12,10 @@ import lombok.ToString;
 public class PostSimilarityReq {
 	@NotBlank
 	private String sessionId;
+
+	@NotNull
+	private Long pronId;
+
 	@NotNull
 	private Integer isCorrect;
 }

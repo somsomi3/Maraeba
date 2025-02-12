@@ -11,6 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class PronunciationDataDTO {
 
+	private Long id;
 	private String pronunciation;
 	private String description;
 	private Integer sequence;
