@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class StartResponse {
-    private String sessionId;
+public class ChatResponse {
     private String answer;
 }
