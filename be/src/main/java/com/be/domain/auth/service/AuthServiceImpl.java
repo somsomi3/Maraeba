@@ -139,9 +139,9 @@ public class AuthServiceImpl implements AuthService {
 			refreshToken.setToken(refreshTokenWithExpiration.getToken());
 			refreshToken.setExpiryDate(
 				refreshTokenWithExpiration.getExpiration()
-				.toInstant()
-				.atZone(ZoneId.systemDefault())
-				.toLocalDateTime());
+					.toInstant()
+					.atZone(ZoneId.systemDefault())
+					.toLocalDateTime());
 		} else {
 			log.info("해당 유저 고유 번호의 리프레시 토큰이 존재하지 않음");
 			// 5. refreshToken DB 저장
@@ -307,17 +307,17 @@ public class AuthServiceImpl implements AuthService {
 		User user = userRepository.findByUserIdAndEmail(request.getUserId(), request.getEmail())
 			.orElseThrow(() -> new CustomAuthException(AuthErrorCode.USER_NOT_FOUND));
 
-		// 3. 기존 토큰 삭제 (보안 강화)
+		// 3. 기존 토큰 삭제
 		if (user.getPasswordResetToken() != null) {
-			passwordResetTokenRepository.delete(user.getPasswordResetToken()); // 즉시 DELETE 실행
-			passwordResetTokenRepository.flush(); // 트랜잭션 내에서 즉시 반영
-			user.setPasswordResetToken(null); // Hibernate가 이후 변경 사항을 반영할 수 있도록 설정
+			passwordResetTokenRepository.delete(user.getPasswordResetToken());
+			passwordResetTokenRepository.flush(); // 즉시 반영
+			user.setPasswordResetToken(null); // Hibernate가 변경을 인식할 수 있도록 설정
 		}
 
 		// 4. 새로운 비밀번호 변경 토큰 생성 및 저장
 		PasswordResetToken passwordResetToken = new PasswordResetToken(user);
-		user.setPasswordResetToken(passwordResetToken); // 새로운 토큰을 설정
-		passwordResetTokenRepository.save(passwordResetToken); // DB에 저장
+		user.setPasswordResetToken(passwordResetToken);
+		passwordResetTokenRepository.save(passwordResetToken);
 
 		// 5. 비밀번호 변경 링크 생성
 		String resetLink = passwordResetBaseUrl + "?token=" + passwordResetToken.getToken();
