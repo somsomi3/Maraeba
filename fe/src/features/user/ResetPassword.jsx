@@ -26,12 +26,14 @@ const ResetPassword = () => {
 
         try {
             setLoading(true);
-            await springApi.patch("/auth/reset-password", {
+            await springApi.post("/auth/reset-password", {
                 token,
                 new_password: newPassword,
             });
 
-            alert("✅ 비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.");
+            alert(
+                "✅ 비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요."
+            );
             navigate("/login");
         } catch (error) {
             console.error("❌ 비밀번호 재설정 실패:", error);

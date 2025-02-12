@@ -4,7 +4,7 @@ import { springApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice";
 import HomeButton from "../../components/button/HomeButton";
-import './Profile.css'
+import "./Profile.css";
 
 const ChangePassword = () => {
     const token = useSelector((state) => state.auth.token);
@@ -26,7 +26,7 @@ const ChangePassword = () => {
 
         try {
             setLoading(true);
-            await springApi.patch("/users/me/password", {
+            await springApi.put("/users/me/password", {
                 current_password: currentPassword,
                 new_password: newPassword,
             });

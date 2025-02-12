@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,7 +71,7 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 		@ApiResponse(responseCode = "401", description = "인증 실패")
 	})
-	@PatchMapping("/me/password")
+	@PutMapping("/me/password")
 	public ResponseEntity<? extends BaseResponseBody> updatePassword(
 		@AuthenticationPrincipal UserDetails userDetails,
 		@Valid @RequestBody PasswordUpdateRequest request) {
