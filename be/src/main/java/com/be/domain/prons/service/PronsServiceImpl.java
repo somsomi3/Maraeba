@@ -28,6 +28,7 @@ import com.be.db.repository.UserRepository;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationDetailStatDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 import com.be.domain.prons.dto.PronunciationStatDTO;
@@ -204,6 +205,14 @@ public class PronsServiceImpl implements PronsService {
 			.stream()
 			.limit(10)  // 최신 10개 제한
 			.toList();
+	}
+
+	// 특정 클래스 자세한 통계 조회
+	@Override
+	public List<PronunciationDetailStatDTO> getStatDetail(Long id, Long classId) {
+		List<PronunciationDetailStatDTO> statDTOS = pronunciationSpecificStatRepository.findPronunciationStatsByUserIdAndClassId(
+			id, classId);
+		return statDTOS;
 	}
 
 	// 평균 정확도 계산
