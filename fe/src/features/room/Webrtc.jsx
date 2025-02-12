@@ -30,10 +30,10 @@ const Webrtc = () => {
     const { roomId } = useParams(); // URL에서 roomId 가져오기
     const navigate = useNavigate();
     useEffect(() => {
-        if (token) {
-            connectWebSocket(token);
+        if (token && roomId) {
+            connectWebSocket(token, roomId);
         } else {
-            console.error("JWT 토큰 없음: 로그인 필요");
+            console.error("JWT 토큰 없음 또는 방 ID 없음: 로그인 필요");
         }
 
         // 뒤로가기 버튼 감지 및 방 나가기 처리
@@ -48,8 +48,9 @@ const Webrtc = () => {
         return () => {
             window.onpopstate = null; // 클린업: 컴포넌트가 언마운트될 때
         };
-        // }, []);
-    }, [token]); // ✅ Redux의 토큰 값이 변경될 때마다 실행
+    // }, []);
+
+    }, [token, roomId]);  // ✅ Redux의 토큰 값이 변경될 때마다 실행
 
     // WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -132,32 +133,33 @@ const Webrtc = () => {
     //날림! 로컬에서 가져오는거
 
     // WebSocket 연결
-    const connectWebSocket = (token) => {
-        if (
-            webSocketRef.current &&
-            webSocketRef.current.readyState === WebSocket.OPEN
-        ) {
-            console.warn("WebSocket이 이미 연결되어 있음");
+    const connectWebSocket = (token, roomId) => {
+        if (!roomId) {
+            console.error("❌ 방 ID(roomId)가 없습니다.");
+            return;
+        }
 
+        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+            console.warn("WebSocket이 이미 연결되어 있음");
             return;
         }
 
         webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         webSocketRef.current.onopen = () => {
-            console.log("WebSocket 연결됨 (Signaling)");
+            console.log(`✅ WebSocket 연결됨 (방 ID: ${roomId})!!!!!!!!!!!!!!!`);
         };
-
+        webSocketRef.current.onerror = (error) => console.error("❌ WebSocket 연결 오류", error);
         webSocketRef.current.onclose = () => {
             console.log("WebSocket 연결 종료됨. 5초 후 재연결 시도...");
-            //재연결 해제하고 싶으면, 이하 3줄 주석처리
             setTimeout(() => {
-                connectWebSocket(token); //연결이 닫히면 5초 후 다시 연결 시도
+                connectWebSocket(token, roomId); // ✅ 재연결 시 `roomId` 포함
             }, 5000);
         };
     };
+
 
     // 메시지 전송
     const sendMessage = () => {
@@ -176,8 +178,8 @@ const Webrtc = () => {
                 // sender_id: senderId, // 상대방 ID
                 // sender: User ${userId},  // 현재 사용자의 ID로 설정
                 message: message.trim(),
-                room_id: 1, // 방 ID
-                sent_at: new Date().toISOString(), // 메시지 보낸 시간
+                room_id: roomId,// 방 ID
+                sent_at: new Date().toISOString()  // 메시지 보낸 시간
             };
 
             console.log("📡 메시지 전송:", messageObject);
@@ -193,7 +195,39 @@ const Webrtc = () => {
         }
     };
 
-    // DB 저장 함수
+
+    const fetchRoomUsers = async () => {
+        if (!roomId) {
+            console.error("❌ 방 ID(roomId)가 없습니다.");
+            return;
+        }
+
+        console.log(`📡 서버로 방 참가자 목록 요청: roomId=${roomId}`); // ✅ 요청 로그 추가
+
+        try {
+            const response = await springApi.get(`/rooms/room-users/${roomId}`);
+
+            if (!response || !response.data) {
+                console.error("❌ 서버 응답 오류: 데이터 없음");
+                return;
+            }
+
+            console.log(`🔹 방 ${roomId}의 참가자 목록:`, response.data);
+        } catch (error) {
+            console.error("❌ 방 참가자 목록 조회 실패:", error);
+        }
+    };
+
+
+
+// ✅ 방에 있는 유저 목록 불러오기 (컴포넌트 마운트 후)
+    useEffect(() => {
+        if (roomId) {
+            fetchRoomUsers();
+        }
+    }, [roomId]);
+
+// DB 저장 함수
     const saveMessageToDB = async (messageObject) => {
         const requestPayload = {
             // sender: messageObject.sender,  // sender 정보
