@@ -79,7 +79,7 @@ public class SecurityConfig {
 					"/auth/reset-password",
 					"/WebRTC/**",
 					"/webrtc/**",
-					 "/rooms/**",
+//					 "/rooms/**",
 					// "/game/**",
 					// "/session/**",
 

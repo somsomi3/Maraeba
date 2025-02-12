@@ -32,9 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(
-		@NonNull HttpServletRequest request,
-		@NonNull HttpServletResponse response,
-		@NonNull FilterChain filterChain) throws ServletException, IOException {
+			@NonNull HttpServletRequest request,
+			@NonNull HttpServletResponse response,
+			@NonNull FilterChain filterChain) throws ServletException, IOException {
 
 		String requestURI = request.getRequestURI();
 		log.info("Request URI: {}", requestURI);
@@ -45,18 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		if (requestURI.startsWith("/rooms")) {
-			log.info("세션분할요청 - JWT 필터 제외");
-			filterChain.doFilter(request, response);
-			return;
-		}
 
 		// Swagger 관련 요청은 필터를 그냥 통과시킴
 		if (requestURI.startsWith("/swagger") ||
-			requestURI.startsWith("/swagger-ui") ||
-			requestURI.startsWith("/v3/api-docs") ||
-			requestURI.startsWith("/swagger-resources") ||
-			requestURI.startsWith("/webjars")
+				requestURI.startsWith("/swagger-ui") ||
+				requestURI.startsWith("/v3/api-docs") ||
+				requestURI.startsWith("/swagger-resources") ||
+				requestURI.startsWith("/webjars")
 		) {
 			filterChain.doFilter(request, response);
 			return;
@@ -82,7 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			if (token != null && tokenService.validateToken(token)) {
 				Long id = tokenService.extractUserIdFromToken(token)
-					.orElseThrow(() -> new JwtFilterException(TokenErrorCode.INVALID_ACCESS_TOKEN));
+						.orElseThrow(() -> new JwtFilterException(TokenErrorCode.INVALID_ACCESS_TOKEN));
 
 				log.info("User ID from Token: {}", id);
 
@@ -91,7 +86,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 				// 인증 객체 생성 및 Security Context에 저장
 				UsernamePasswordAuthenticationToken authentication =
-					new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+						new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -99,9 +94,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				filterChain.doFilter(request, response);
 			}
 		} catch (Exception e) {
-				// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
-				log.info("JWT Filter Exception: {}", e.getMessage());
-				// logger.error("Could not set user authentication in security context", e);
-			}
+			// 예외 발생 시 로그 기록 (필요하면 response에 메시지 반환 가능)
+			log.info("JWT Filter Exception: {}", e.getMessage());
+			// logger.error("Could not set user authentication in security context", e);
+		}
 	}
 }
