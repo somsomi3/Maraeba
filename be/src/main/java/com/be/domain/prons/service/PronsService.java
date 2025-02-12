@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationDetailStatDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 import com.be.domain.prons.dto.PronunciationStatDTO;
@@ -57,7 +58,7 @@ public interface PronsService {
 	 * @param id
 	 * @param isCorrect
 	 */
-	void savePronunciationSimilarity(String id, Integer isCorrect);
+	void savePronunciationSimilarity(String id, Long pronId, Integer isCorrect);
 
 	/**
 	 * 히스토리 저장
@@ -85,4 +86,12 @@ public interface PronsService {
 	 * @return
 	 */
 	List<PronunciationClassHistoryDTO> getClassHistory(Long id, Long classId);
+
+	/**
+	 * 특정 클래스 상세 통계 조회
+	 * @param id
+	 * @param classId
+	 * @return
+	 */
+	List<PronunciationDetailStatDTO> getStatDetail(Long id, Long classId);
 }

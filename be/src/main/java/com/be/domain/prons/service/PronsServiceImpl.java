@@ -10,21 +10,25 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
 import com.be.db.entity.PronunciationClass;
 import com.be.db.entity.PronunciationHistory;
+import com.be.db.entity.PronunciationSpecificStat;
 import com.be.db.entity.PronunciationStat;
 import com.be.db.entity.User;
 import com.be.db.repository.PronunciationClassRepository;
 import com.be.db.repository.PronunciationDataRepository;
 import com.be.db.repository.PronunciationHistoryRepository;
+import com.be.db.repository.PronunciationSpecificStatRepository;
 import com.be.db.repository.PronunciationStatRepository;
 import com.be.db.repository.UserRepository;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationDetailStatDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 import com.be.domain.prons.dto.PronunciationStatDTO;
@@ -41,6 +45,7 @@ public class PronsServiceImpl implements PronsService {
 	private final PronunciationHistoryRepository pronunciationHistoryRepository;
 	private final PronunciationStatRepository pronunciationStatRepository;
 	private final RedisTemplate<String, PronunciationSessionDTO> redisTemplate;
+	private final PronunciationSpecificStatRepository pronunciationSpecificStatRepository;
 
 	// 수업 리스트 반환
 	@Override
@@ -66,6 +71,7 @@ public class PronsServiceImpl implements PronsService {
 	}
 
 	// 수업 세션 생성
+	@Transactional
 	@Override
 	public void saveSession(PronunciationSessionDTO session) {
 		ValueOperations<String, PronunciationSessionDTO> ops = redisTemplate.opsForValue();
@@ -80,25 +86,29 @@ public class PronsServiceImpl implements PronsService {
 	}
 
 	// 수업 세션 삭제
+	@Transactional
 	@Override
 	public void deleteSession(String id) {
 		redisTemplate.delete(id);
 	}
 
 	// 세션에 발음 정답 여부 저장
+	@Transactional
 	@Override
-	public void savePronunciationSimilarity(String id, Integer isCorrect) {
+	public void savePronunciationSimilarity(String id, Long pronId, Integer isCorrect) {
 		PronunciationSessionDTO session = redisTemplate.opsForValue().get(id);
 
 		// 세션을 찾았다면
 		if (session != null) {
 			session.setTryCount(session.getTryCount() + 1);    // 시도 횟수 1 증가
 			session.setCorrectCount(session.getCorrectCount() + isCorrect); // 정답 여부 저장
+			session.getCorrectMap().put(pronId, isCorrect);    // 특정 발음 정답 여부 저장
 			redisTemplate.opsForValue().set(id, session); // 업데이트
 		}
 	}
 
 	// 히스토리 저장
+	@Transactional
 	@Override
 	public void saveSessionHistory(String id) {
 		// 평균 정확도 계산하기
@@ -146,6 +156,31 @@ public class PronsServiceImpl implements PronsService {
 					stat.getCount() + 1)));
 			stat.setCount(stat.getCount() + 1);
 			pronunciationStatRepository.save(stat);
+
+			// 특정 발음 정답률 갱신
+			for (Long pronId : session.getCorrectMap().keySet()) {
+				// 없으면 만들기
+				if (!pronunciationSpecificStatRepository.existsByUser_IdAndPronunciationData_Id(session.getUserId(),
+					pronId)) {
+					PronunciationSpecificStat specificStat = PronunciationSpecificStat.builder()
+						.user(user)
+						.pronunciationData(pronunciationDataRepository.getReferenceById(pronId))
+						.averageCorrectRate(0f)
+						.count(0)
+						.build();
+					pronunciationSpecificStatRepository.save(specificStat);
+				}
+
+				PronunciationSpecificStat specificStat = pronunciationSpecificStatRepository.findByUser_IdAndPronunciationData_Id(
+					session.getUserId(), pronId).orElseThrow(() -> new CustomException(ErrorCode.STAT_NOT_FOUND));
+				specificStat.setAverageCorrectRate(
+					specificStat.getAverageCorrectRate()
+						+ (session.getCorrectMap().get(pronId) - specificStat.getAverageCorrectRate()) / (
+						specificStat.getCount() + 1));
+				specificStat.setCount(specificStat.getCount() + 1);
+				pronunciationSpecificStatRepository.save(specificStat);
+
+			}
 		}
 	}
 
@@ -170,6 +205,14 @@ public class PronsServiceImpl implements PronsService {
 			.stream()
 			.limit(10)  // 최신 10개 제한
 			.toList();
+	}
+
+	// 특정 클래스 자세한 통계 조회
+	@Override
+	public List<PronunciationDetailStatDTO> getStatDetail(Long id, Long classId) {
+		List<PronunciationDetailStatDTO> statDTOS = pronunciationSpecificStatRepository.findPronunciationStatsByUserIdAndClassId(
+			id, classId);
+		return statDTOS;
 	}
 
 	// 평균 정확도 계산

@@ -22,23 +22,16 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	private final AudioWebSocketHandler audioWebSocketHandler;
 	private final TokenService tokenService; // 🔥 JWT 인증을 위한 서비스 추가
 
-//	// ✅ Spring에서 의존성 주입 받도록 변경
-//	public WebSocketConfig(SignalingHandler signalingHandler, AudioWebSocketHandler audioWebSocketHandler, TokenService tokenService) {
-//		this.signalingHandler = signalingHandler;
-//		this.audioWebSocketHandler = audioWebSocketHandler;
-//		this.tokenService = tokenService;
-//	}
-
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		// 🔥 WebSocket 요청이 들어오면 WebSocketAuthInterceptor를 사용하여 JWT 검증 수행
 		registry.addHandler(signalingHandler, "/WebRTC/signaling")
 				.addInterceptors(new WebSocketAuthInterceptor(tokenService)) // ✅ 인증 인터셉터 추가
-				.setAllowedOrigins("*");
+		 .setAllowedOriginPatterns("*");
 
 		registry.addHandler(audioWebSocketHandler, "/WebRTC/audio")
 				.addInterceptors(new WebSocketAuthInterceptor(tokenService)) // ✅ 인증 인터셉터 추가
-				.setAllowedOrigins("*");
+			.setAllowedOriginPatterns("*");
 
 		log.info("✅ WebSocket 핸들러 등록 완료: /WebRTC/signaling (JWT 인증 포함)");
 		log.info("✅ WebSocket 핸들러 등록 완료: /WebRTC/audio (JWT 인증 포함)");

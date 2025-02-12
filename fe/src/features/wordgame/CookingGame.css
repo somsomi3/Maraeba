@@ -1,30 +1,4 @@
-/* 전체 게임 컨테이너 */
-.cooking-game-container {
-    width: 100vw;
-    height: 100vh;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
 
-
-/* 게임 오버레이 */
-.cooking-game-overlay {   
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 600px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 20px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-}
 
 /*   
   .pause-button {
@@ -240,3 +214,73 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   }
    */
+
+
+
+/* ✅ 게임 전체 컨테이너 */
+.cooking-game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vw; /* 🔹 게임 화면과 사이드 컨테이너 간격 */
+    height: 100vh; /* 🔹 전체 높이 고정 */
+    width : 100vw;
+}
+
+/* ✅ 게임 화면 (왼쪽) */
+.cooking-game-overlay {
+    width: 600px; /* 🔹 최대 너비 제한 */
+    height: auto; /* 🔹 내용에 맞게 자동 조정 */
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ✅ 오른쪽 정보 컨테이너 */
+.side-info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 🔹 위에서부터 정렬 */
+    align-items: center;
+    width: 280px; /* 🔹 원하는 크기로 조절 */
+    height: auto; /* 🔹 내용에 맞게 조정 */
+    gap: 15px; /* 🔹 점수 박스 & 피드백 박스 간격 */
+}
+
+/* 🏆 점수 박스 */
+.score-box {
+    width: 100%;
+    height: 100px; /* 🔹 점수 박스 크기 조절 */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ❌ 피드백 박스 */
+.feedback-box {
+    width: 100%;
+    height: 250px; /* 🔹 피드백 박스 크기 조절 */
+    background: rgba(255, 77, 77, 0.9);
+    color: white;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 🔹 텍스트 중앙 정렬 */
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+

@@ -9,13 +9,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @AllArgsConstructor
-public class PronunciationDataDTO {
-
-	private Long id;
+public class PronunciationDetailStatDTO {
 	private String pronunciation;
-	private String description;
-	private Integer sequence;
-	private String tongueImageUrl;
-	private String lipVideoUrl;
-
+	private Float averageCorrectRate;
+	private Integer count;
 }

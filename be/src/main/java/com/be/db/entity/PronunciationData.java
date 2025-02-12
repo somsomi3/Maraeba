@@ -1,5 +1,7 @@
 package com.be.db.entity;
 
+import java.util.List;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -7,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,5 +37,8 @@ public class PronunciationData extends BaseEntity {
 
 	@Column(nullable = false)
 	private Integer sequence;
+
+	@OneToMany(mappedBy = "pronunciationData")
+	private List<PronunciationSpecificStat> pronunciationSpecificStats;
 
 }

@@ -24,6 +24,7 @@ import com.be.common.model.response.PageResponse;
 import com.be.domain.prons.dto.PronunciationClassDTO;
 import com.be.domain.prons.dto.PronunciationClassHistoryDTO;
 import com.be.domain.prons.dto.PronunciationDataDTO;
+import com.be.domain.prons.dto.PronunciationDetailStatDTO;
 import com.be.domain.prons.dto.PronunciationHistoryDTO;
 import com.be.domain.prons.dto.PronunciationSessionDTO;
 import com.be.domain.prons.dto.PronunciationStatDTO;
@@ -31,6 +32,7 @@ import com.be.domain.prons.request.PostSimilarityReq;
 import com.be.domain.prons.response.GetClassDataRes;
 import com.be.domain.prons.response.GetClassHistoryRes;
 import com.be.domain.prons.response.GetClassesRes;
+import com.be.domain.prons.response.GetDetailStatRes;
 import com.be.domain.prons.response.GetHistoriesRes;
 import com.be.domain.prons.response.GetSessionRes;
 import com.be.domain.prons.response.GetSpecificDataRes;
@@ -112,7 +114,7 @@ public class PronsController {
 	@Operation(summary = "발음 정답 여부 저장", description = "발음 정답 여부를 저장합니다.")
 	@PostMapping("/session/correct")
 	public BaseResponseBody savePronunciationSimilarity(@Validated @RequestBody PostSimilarityReq request) {
-		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getIsCorrect());
+		pronsService.savePronunciationSimilarity(request.getSessionId(), request.getPronId(), request.getIsCorrect());
 		return new BaseResponseBody("Correct saved", HttpStatus.CREATED);
 	}
 
@@ -166,5 +168,16 @@ public class PronsController {
 
 		List<PronunciationClassHistoryDTO> response = pronsService.getClassHistory(id, classId);
 		return new GetClassHistoryRes("Success", HttpStatus.OK, response);
+	}
+
+	// 특정 클래스의 발음별 통계 가져오기
+	@Operation(summary = "특정 클래스의 발음별 통계 조회", description = "특정 클래스의 발음별 통계 가져오기")
+	@GetMapping("/stat/detail/{class_id}")
+	public GetDetailStatRes getStatDetail(@AuthenticationPrincipal UserDetails userDetails,
+		@PathVariable("class_id") Long classId) {
+		Long id = Long.parseLong(userDetails.getUsername());
+
+		List<PronunciationDetailStatDTO> response = pronsService.getStatDetail(id, classId);
+		return new GetDetailStatRes("Success", HttpStatus.OK, response);
 	}
 }

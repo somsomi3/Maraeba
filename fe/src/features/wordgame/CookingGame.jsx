@@ -28,6 +28,10 @@ const CookingGame = () => {
     item1: '',
     item2: '',
   });
+  const [score, setScore] = useState(0); // ✅ 점수 상태 추가
+  const [feedbackMessage, setFeedbackMessage] = useState(""); // ✅ 피드백 메시지 상태
+  const [userSpokenWord, setUserSpokenWord] = useState(""); // ✅ 사용자가 말한 단어 저장
+  
   const mediaRecorderRef = useRef(null); // MediaRecorder 참조
   const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
   const recordingTimeoutRef = useRef(null); // 녹음 타임아웃 관리
@@ -130,6 +134,9 @@ const CookingGame = () => {
         console.log("✅ 정답 검증 결과:", result);
         console.log("🔹 image_url:", result.image_url);
 
+        // ✅ 오답, 중복 정답 피드백 추가
+        checkIncorrect(result);
+
         if (result.if_correct) {
           if (result.image_url && result.image_url.includes("/")) {
               // URL 기반 이미지 처리
@@ -169,6 +176,19 @@ const CookingGame = () => {
 }
 };
 
+// 🎯 정답 검증 및 피드백 처리 함수
+const checkIncorrect = (result) => {
+    setUserSpokenWord(result.item || ""); // 사용자가 말한 단어 저장
+    
+    if (result.duplication) {
+      setFeedbackMessage("⚠️ 이미 맞춘 정답입니다!");
+    } else if (!result.if_correct) {
+      setFeedbackMessage("❌ 오답입니다! 다시 시도하세요.");
+    } else {
+      setFeedbackMessage("✅ 정답!");
+      setScore((prev) => prev + 10); // 점수 증가
+    }
+  };
 
 
   // 게임 시작 POST 요청
@@ -232,7 +252,7 @@ const CookingGame = () => {
 
   // 다음 음식
   useEffect(() => {
-    if (gameData.item2 !== null) {
+    if (gameData.item2 !== null && !showCorrectPopup) {
       const timeoutId = setTimeout(() => {
         newFood();
       }, 1000); // 1초 후에 newFood() 실행
@@ -240,7 +260,7 @@ const CookingGame = () => {
       // 컴포넌트가 언마운트되거나 item2가 null로 변경되면 타이머 클리어
       return () => clearTimeout(timeoutId);
     }
-  }, [gameData.item2]);
+  }, [gameData.item2, showCorrectPopup]);
 
   // 게임 재시작
   const restart = () => {
@@ -260,9 +280,9 @@ const CookingGame = () => {
 
   return (
     <div className="cooking-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
-      
       <HomeButton />
-      
+  
+      {/* 🎮 게임 UI (왼쪽) */}
       <div className="cooking-game-overlay">
         <button className="pause-button">
           <PausePopup onExit={() => navigate("/wgame")} />
@@ -270,33 +290,17 @@ const CookingGame = () => {
   
         <h1 className="cooking-game-title">{gameData.foodName || "요리 만들기"}</h1>
         <div>남은 시간: {timeLeft}초</div>
-        
+  
         {/* ✅ 정답 팝업 표시 */}
         {showCorrectPopup && <CorrectPopup message="🎉 정답입니다! 🎉" onRestart={restart} />}
-
+  
         {/* 🔹 정답 조합 UI */}
         <div className="combination">
-          {foodImg.item1 ? (
-            <img src={foodImg.item1} alt="재료1" className="recipe-image" />
-          ) : (
-            <img src={dish} alt="기본 재료1" className="recipe-image" />
-          )}
-          
+          <img src={foodImg.item1 || dish} alt="재료1" className="recipe-image" />
           <span className="plus-sign">+</span>
-  
-          {foodImg.item2 ? (
-            <img src={foodImg.item2} alt="재료2" className="recipe-image" />
-          ) : (
-            <img src={dish} alt="기본 재료2" className="recipe-image" />
-          )}
-  
+          <img src={foodImg.item2 || dish} alt="재료2" className="recipe-image" />
           <span className="equals-sign">=</span>
-  
-          {foodImg.food ? (
-            <img src={foodImg.food} alt="결과 음식" className="recipe-image" />
-          ) : (
-            <img src="/assets/images/placeholder.png" alt="기본 음식" className="recipe-image" />
-          )}
+          <img src={foodImg.food || "/assets/images/placeholder.png"} alt="결과 음식" className="recipe-image" />
         </div>
   
         {/* 🔹 AI가 인식한 텍스트 표시 */}
@@ -309,10 +313,7 @@ const CookingGame = () => {
         {/* 🔹 선택 가능한 재료 목록 */}
         <div className="item-selection">
           {gameData.itemList.map((item, index) => (
-            <button 
-              key={index} 
-              className={item === gameData.item1 || item === gameData.item2 ? "selected" : ""}
-            >
+            <button key={index} className={item === gameData.item1 || item === gameData.item2 ? "selected" : ""}>
               {item}
             </button>
           ))}
@@ -328,7 +329,6 @@ const CookingGame = () => {
           게임 시작
         </button>
   
-        {/* 🔹 녹음된 오디오 UI */}
         {audioURL && (
           <div className="audio-preview">
             <h2>녹음된 오디오</h2>
@@ -337,9 +337,30 @@ const CookingGame = () => {
           </div>
         )}
       </div>
+  
+      {/* ✅ 오른쪽 정보 컨테이너 (독립적) */}
+      <div className="side-info-container">
+        <div className="score-box">
+          <h3>SCORE:</h3>
+          <p>{score}</p>
+        </div>
+  
+        <div className="feedback-box">
+          <h3>🚨 피드백</h3>
+          {feedbackMessage ? (
+            <>
+              <p>{feedbackMessage}</p>
+              {userSpokenWord && <p>🗣 사용자가 말한 단어: <strong>{userSpokenWord}</strong></p>}
+            </>
+          ) : (
+            <p>📝 여기에 피드백이 표시됩니다.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
-};
-    
+  
+
+}
 
 export default CookingGame;
