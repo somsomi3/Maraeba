@@ -48,8 +48,8 @@ const Login = () => {
 
   return (
     <div className="form-container">
-      <img src={yaho} alt="yaho" className="main-emoji emoji-left" />
-      <img src={happy} alt="smile" className="main-emoji emoji-right" />
+      {/* <img src={yaho} alt="yaho" className="main-emoji emoji-left" />
+      <img src={happy} alt="smile" className="main-emoji emoji-right" /> */}
 
       <img src={logo} alt="마래바 로고" className="logo" />
       <form onSubmit={handleSubmit} className="mainform">

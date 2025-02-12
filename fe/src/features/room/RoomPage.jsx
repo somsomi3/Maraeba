@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Webrtc from "./Webrtc";
-import ChatBox from "./ChatBox";
+import Webrtc from "./Webrtc.jsx";
+import ChatBox from "./ChatBox.jsx";
 
 import { springApi } from "../../utils/api.js";
 

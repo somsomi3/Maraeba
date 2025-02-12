@@ -59,12 +59,12 @@
 /* 카드 개별 색상 */
 .single-mode {
     background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 그라데이션 */
-    color: white;
+    
 }
 
 .multi-mode {
     background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 그라데이션 */
-    color: white;
+    
 }
 
 /* 카드 내부 텍스트 */
@@ -75,14 +75,16 @@
 
 .card-content h2 {
     font-size: 1.8rem;
+    color: white;
     margin-bottom: 10px;
-    font-family: "Roboto", sans-serif; /* 폰트 변경 */
+    font-family: "Roboto", sans-serif; 
 }
 
 .card-content p {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    color: black;
     line-height: 1.5;
-    font-family: "Roboto", sans-serif; /* 폰트 변경 */
+    font-family: "Roboto", sans-serif;
 }
 
 /* 카드 이미지 스타일 */
@@ -109,24 +111,42 @@
     bottom: -2px;
 }
 
-.profile-image {
-    position: absolute; /* 절대 위치 설정 */
-    top: 20px; /* 상단에서 20px 떨어지도록 */
-    left: 20px; /* 왼쪽에서 20px 떨어지도록 */
+.main-profile-image {
+    
     border-radius: 50%; /* 동그랗게 만들기 */
     cursor: pointer; /* 클릭 가능하도록 */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
     transition: transform 0.2s ease-in-out;
-    width: 50px !important;
-    height: 50px !important;
+    width: 50px;
+    height: 50px;
 
 }
+
+.main-profile-container {
+    position: fixed;
+    top: 20px; /* 상단에서 20px 떨어지도록 */
+    left: 20px; /* 왼쪽에서 20px 떨어지도록 */
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    align-items: center;
+    margin-bottom: 10px; /* 아래 여백 추가 */
+}
+
 
 
 .profile-image:hover {
     transform: scale(1.1); /* 마우스 올리면 약간 확대 */
 }
 
+
+.profile-text {
+    margin-top: 5px; /* 이미지와 텍스트 사이 간격 */
+    font-size: 14px;
+    font-weight: bold;
+    color: darkslategrey; /* 텍스트 색상 */
+
+}
 /* 반응형 디자인 */
 /* @media (max-width: 768px) {
     .card {

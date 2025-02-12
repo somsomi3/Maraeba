@@ -43,7 +43,7 @@
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
     font-family: SDSamliphopang;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     margin-bottom: 3%;
     width: 18vw;
     height: 63vh;
@@ -80,7 +80,7 @@
   
   .card-description {
     font-family: SDSamliphopang;
-    font-size: 1.2rem; /* 설명 크기 키움 */
+    font-size: 1.4rem; /* 설명 크기 키움 */
     line-height: 1.6;
   }
   

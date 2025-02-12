@@ -66,7 +66,7 @@
 .stop-button {
     position: fixed; /* 화면에 고정 */
     top: 20px; /* 화면 상단으로부터 20px */
-    right: 20px; /* 화면 오른쪽으로부터 20px */
+    left: 20px; /* 화면 오른쪽으로부터 20px */
     width: 50px; /* 버튼 크기 */
     cursor: pointer;
     z-index: 1000; /* 팝업보다 위에 배치 */
