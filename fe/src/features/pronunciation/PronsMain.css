@@ -2,20 +2,32 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  height: 100vh; /* ✅ 전체 화면을 채우도록 설정 */
-  justify-content: flex-start; /* 수직 가운데 정렬 */
+  height: auto; /* ✅ 전체 화면을 채우도록 설정 */
+  justify-content: center; /* 수직 가운데 정렬 */
   align-items: center; /* 수평 가운데 정렬 */
   margin-top: -12vh; /* ✅ 제목을 위로 이동 */
   
 }
-  .card{
+  .prons-card{
     font-family: SDSamliphopang;
     font-size: 1.5vw;
     width: 18vw;
-    height: 60vh;
+    height: 30vw;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    padding: 2rem;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
   
-  .card-slider {
+  .prons-card-slider {
     display: flex;
     gap: 1vw;
     flex-wrap: wrap;
@@ -24,17 +36,17 @@
     /* padding: 0 2vw */
   }
 
-  .card:nth-child(1) {
+  .prons-card:nth-child(1) {
     background: linear-gradient(135deg, #f28d8d, #f5b2b2); /* 첫 번째 카드 그라데이션 */
     color: #fff;
     
   }
-  .card:nth-child(2) {
+  .prons-card:nth-child(2) {
       background: linear-gradient(135deg, #88c2d8, #b3e4f2); /* 두 번째 카드 그라데이션 */
       color: #fff;
       
   }
-  .card:nth-child(3) {
+  .prons-card:nth-child(3) {
       background: linear-gradient(135deg, #ffb88c, #ffd7a5); /* 세 번째 카드 그라데이션 */
       color: #fff;
       
@@ -45,7 +57,7 @@
    
   }
 
-  .card .divider {
+  .prons-card .divider {
     width: 80vw;
     height: 2px;
     background-color: #ccc;

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Conversation.css';
 import conversationTitle from '../../assets/images/conversation.png'; 
 import HomeButton from '../../components/button/HomeButton';
-import { flaskApi } from '../../utils/api';
+import { springApi } from '../../utils/api';
 
 const Conversation = () => {
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const Conversation = () => {
   };
 
   useEffect(() => {
+
     if (selectedSituation) {
       setFormData((prev) => ({
         ...prev,
@@ -44,16 +45,18 @@ const Conversation = () => {
     if (!formData.situation.trim() || !formData.aiRole.trim() || !formData.userRole.trim()) return;
 
     try {
-      const { data } = await flaskApi.post('/chat/start', {
+      const { data } = await springApi.post('/chat/start', {
         is_default: false,
         default_id: null,
         ai_role: formData.aiRole,
         user_role: formData.userRole,
         situation: formData.situation
       });
+    
+      console.log(data.answer)
 
       if (data.session_id) {
-        navigate('/conversation/start', { state: { sessionId: data.session_id } });
+        navigate('/conversation/start', { state: { sessionId: data.session_id, aiAnswer: data.answer, aiRole: formData.aiRole, userRole: formData.userRole } });
       }
     } catch (error) {
       console.error('🚨 대화 시작 오류:', error);

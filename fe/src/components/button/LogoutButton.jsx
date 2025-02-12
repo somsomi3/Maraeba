@@ -27,9 +27,10 @@ const LogoutButton = () => {
     if (!isAuthenticated) return null; // ✅ 로그인하지 않았으면 버튼 숨김
 
     return (
-        <button className="logout-button" onClick={handleLogout}>
-            <img src={logoutbtn} alt="로그아웃" />
-        </button>
+        <div className="logout-container"> {/* ✅ 추가된 div */}
+            <img src={logoutbtn} alt="로그아웃" onClick={handleLogout} className="logout-icon"/>
+            {/* <span className="logout-text">로그아웃</span> ✅ 추가된 텍스트 */}
+        </div>
     );
 };
 
