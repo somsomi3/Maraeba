@@ -5,6 +5,7 @@ import com.be.db.repository.RoomRepository;
 import com.be.db.repository.RoomUserRepository;
 import com.be.db.repository.UserRepository;
 
+import com.be.domain.rooms.SignalingHandler;
 import com.be.domain.rooms.request.CreateRoomRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.request.UserLeaveRequest;
@@ -18,8 +19,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Collections; // ✅ 빈 JSON 반환을 위한 import 추가
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Getter
@@ -33,6 +36,25 @@ public class RoomController {
     private final RoomUserRepository roomUserRepository;
     private final RoomRepository roomRepository;
     private final RoomService roomService;
+
+    private final SignalingHandler signalingHandler; // ✅ WebSocket 핸들러 주입
+
+    // ✅ 특정 방의 참가자 목록 조회 API
+
+    // ✅ 특정 방의 참가자 목록 조회 API
+    @GetMapping("/room-users/{roomId}")
+    public ResponseEntity<Set<Long>> getRoomUsers(@PathVariable String roomId) {
+        log.info("📌 getRoomUsers API 호출됨, roomId: {}", roomId);
+        log.info("🔍 방 참가자 목록 요청: roomId={}", roomId); // ✅ 요청 로그 추가
+        Set<Long> userIds = signalingHandler.getRoomUserIds(roomId);
+
+        if (userIds == null || userIds.isEmpty()) {
+            log.info("❌ 방 {}에는 참가자가 없습니다.", roomId);
+            return ResponseEntity.ok(Collections.emptySet()); // ✅ 빈 JSON `[]` 반환
+        }
+        log.info("✅ 방 {} 참가자 목록 반환: {}", roomId, userIds);
+        return ResponseEntity.ok(userIds);
+    }
 
     // 방 생성 API
     @PostMapping("/create")

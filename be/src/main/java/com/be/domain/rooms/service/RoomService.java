@@ -29,6 +29,8 @@ public class RoomService {
 
     @Autowired
     private RoomUserRepository roomUserRepository;
+    @Autowired
+    private WebSocketService webSocketService;
 
     // 🔹 방 목록 조회
     public List<Room> getAllRooms() {
@@ -49,7 +51,8 @@ public class RoomService {
     public RoomJoinResponse joinRoom(UserJoinRequest request) {
         System.out.println("Room ID: " + request.getRoom());  // Room ID가 null인지 확인
         System.out.println("User ID: " + request.getUser());  // User ID가 null인지 확인
-
+        Long roomId = Long.valueOf(request.getRoom());
+        Long userId = request.getUser();
         // 해당 방과 사용자 조회
         Room room = roomRepository.findById(Long.valueOf(request.getRoom()))
                 .orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));  // 해당 방 조회
@@ -79,7 +82,8 @@ public class RoomService {
 //            return "User " + roomUser.getUser().getUsername() + " joined room " + roomUser.getRoom().getTitle();
 //        }
         // 방장 여부와 메시지를 담은 응답 객체 생성
-
+        // ✅ WebSocket을 통해 방 참가 메시지 브로드캐스트
+        webSocketService.broadcastRoomEvent(roomId, "join", userId);
         return RoomJoinResponse.of(200,isHost);
     }
 
