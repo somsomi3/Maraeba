@@ -17,7 +17,6 @@ function AuthInitializer({ children }) {
                 const res = await refreshTokenApi();
                 const newToken = res.data.access_token;
 
-                console.log("✅ AccessToken 갱신 성공:", newToken);
                 dispatch(login(newToken));
             } catch (err) {
                 console.error("❌ Silent refresh 실패:", err);

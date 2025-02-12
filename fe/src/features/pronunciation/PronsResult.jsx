@@ -20,7 +20,7 @@ const PronsResult = () => {
   const [isClassTitlesFetched, setIsClassTitlesFetched] = useState(false);
 
   useEffect(() => {
-    // 🟢 PronsMain에서 저장된 제목을 localStorage에서 가져와 classTitleMap에 저장
+    // PronsMain에서 저장된 제목을 localStorage에서 가져와 classTitleMap에 저장
     const fetchClassTitles = async () => {
       if (isClassTitlesFetched) return; // 🔵 이미 불러왔다면 재호출 방지
       try {
@@ -38,7 +38,7 @@ const PronsResult = () => {
       }
     };
 
-    // 🟢 학습 기록 가져오기
+    // 학습 기록 가져오기
     const fetchHistory = async () => {
       setLoading(true);
       try {
@@ -74,7 +74,7 @@ const PronsResult = () => {
     fetchHistory();
   }, [page, token]); // 🔵 token 변경 시에도 실행
 
-  // 🔴 다시하기 버튼: 새로운 세션 시작
+  // 다시하기 버튼: 새로운 세션 시작
   const handleRestart = async () => {
     if (!latestRecord?.class_id) {
       alert("클래스 ID가 없습니다.");

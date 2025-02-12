@@ -56,6 +56,7 @@ const addAuthToken = async (config) => {
         "/auth/naver/callback",
         "/auth/find-id",
         "/auth/forgot-password",
+        "/auth/reset-password"
     ];
     if (publicEndpoints.some((endpoint) => config.url.includes(endpoint))) {
         return config;
