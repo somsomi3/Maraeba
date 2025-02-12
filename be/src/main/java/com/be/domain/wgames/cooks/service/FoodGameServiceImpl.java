@@ -28,7 +28,6 @@ public class FoodGameServiceImpl implements FoodGameService {
 
     private final FoodGameRepository foodGameRepository;
     private final FoodItemRepository foodItemRepository;
-    private final AiTest aiTest;
     private final SpeechService speechService;
 
     @Override
