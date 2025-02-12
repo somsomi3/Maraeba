@@ -59,11 +59,11 @@ public class AnimalDataLoader {
                             .locationX(1136).locationY(2089).build(),
                     AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(2).getId())
                             .locationX(2277).locationY(1985).build(),
-                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(2).getId())
+                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(3).getId())
                             .locationX(3140).locationY(2152).build(),
-                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(2).getId())
+                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(4).getId())
                             .locationX(3404).locationY(1366).build(),
-                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(2).getId())
+                    AnimalCorrect.builder().gameId(animalGame.getId()).animalId(animals.get(5).getId())
                             .locationX(2729).locationY(1241).build()
             );
             animalCorrectRepository.saveAll(correctAnswers);

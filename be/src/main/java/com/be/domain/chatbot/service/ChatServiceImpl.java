@@ -60,7 +60,7 @@ public class ChatServiceImpl implements ChatService{
 
     @Override
     public ChatResponse chat(String sessionId, MultipartFile audio) throws IOException {
-        String message = "speechService.SpeechToText(audio)";
+        String message = speechService.SpeechToText(audio);
         System.out.println(message);
         String answer = response(sessionId, message);
         System.out.println(answer);

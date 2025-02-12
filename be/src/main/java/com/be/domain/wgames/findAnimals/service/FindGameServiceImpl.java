@@ -50,6 +50,7 @@ public class FindGameServiceImpl implements FindGameService {
         answerList.replaceAll(s -> s.replaceAll(" ", ""));
         //음성인식 결과
         String text = speechService.SpeechToText(audio);
+        System.out.println(text);
 
         //이미 정답을 맞춘 경우 (중복)
         if (answerList.contains(text)) {

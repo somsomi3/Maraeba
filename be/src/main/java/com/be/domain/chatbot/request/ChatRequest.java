@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-@Builder
 public class ChatRequest {
     private MultipartFile audio;
     private String sessionId;
