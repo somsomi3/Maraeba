@@ -292,13 +292,14 @@ public class AuthServiceImpl implements AuthService {
 		}
 	}
 
+	@Transactional
 	@Override
 	public void sendPasswordResetLink(ForgotPasswordRequest request) {
 		// 1. 입력값 유효성 검사
-		if (request.getUserId() == null || request.getUserId().trim().isEmpty()) {
+		if (request.getUserId() == null || request.getUserId().isBlank()) {
 			throw new CustomAuthException(AuthErrorCode.INVALID_USER_ID);
 		}
-		if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+		if (request.getEmail() == null || request.getEmail().isBlank()) {
 			throw new CustomAuthException(AuthErrorCode.INVALID_EMAIL);
 		}
 
@@ -307,15 +308,19 @@ public class AuthServiceImpl implements AuthService {
 			.orElseThrow(() -> new CustomAuthException(AuthErrorCode.USER_NOT_FOUND));
 
 		// 3. 기존 토큰 삭제 (보안 강화)
-		passwordResetTokenRepository.findByUserId(user.getId())
-			.ifPresent(passwordResetTokenRepository::delete);
+		if (user.getPasswordResetToken() != null) {
+			passwordResetTokenRepository.delete(user.getPasswordResetToken()); // 즉시 DELETE 실행
+			passwordResetTokenRepository.flush(); // 트랜잭션 내에서 즉시 반영
+			user.setPasswordResetToken(null); // Hibernate가 이후 변경 사항을 반영할 수 있도록 설정
+		}
 
-		// 4. 비밀번호 변경 토큰 생성 및 저장
-		PasswordResetToken resetToken = new PasswordResetToken(user);
-		passwordResetTokenRepository.save(resetToken);
+		// 4. 새로운 비밀번호 변경 토큰 생성 및 저장
+		PasswordResetToken passwordResetToken = new PasswordResetToken(user);
+		user.setPasswordResetToken(passwordResetToken); // 새로운 토큰을 설정
+		passwordResetTokenRepository.save(passwordResetToken); // DB에 저장
 
 		// 5. 비밀번호 변경 링크 생성
-		String resetLink = passwordResetBaseUrl + "?token=" + resetToken.getToken();
+		String resetLink = passwordResetBaseUrl + "?token=" + passwordResetToken.getToken();
 
 		// 6. 이메일로 링크 전송
 		String subject = "비밀번호 재설정 안내";
@@ -327,6 +332,7 @@ public class AuthServiceImpl implements AuthService {
 		emailService.sendEmail(user.getEmail(), subject, message);
 	}
 
+	@Transactional
 	@Override
 	public void resetPassword(PasswordResetRequest request) {
 		// 1. 입력값 검증
@@ -350,10 +356,9 @@ public class AuthServiceImpl implements AuthService {
 		// 4. 해당 사용자의 비밀번호 변경
 		User user = resetToken.getUser();
 		user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-		userRepository.save(user);
 
-		// 5. 사용된 토큰 삭제 (보안 강화를 위해)
-		passwordResetTokenRepository.delete(resetToken);
+		// 5. 사용된 토큰 삭제 (고아 객체 탈락)
+		user.setPasswordResetToken(null);
 	}
 
 	/**

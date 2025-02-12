@@ -45,6 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
+		if (requestURI.startsWith("/rooms")) {
+			log.info("세션분할요청 - JWT 필터 제외");
+			filterChain.doFilter(request, response);
+			return;
+		}
 
 		// Swagger 관련 요청은 필터를 그냥 통과시킴
 		if (requestURI.startsWith("/swagger") ||

@@ -52,7 +52,7 @@ const Login = () => {
       <img src={happy} alt="smile" className="main-emoji emoji-right" />
 
       <img src={logo} alt="마래바 로고" className="logo" />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mainform">
         <div className="input-group">
           <input
             className="input"

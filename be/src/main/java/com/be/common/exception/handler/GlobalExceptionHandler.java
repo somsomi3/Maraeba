@@ -29,6 +29,7 @@ public class GlobalExceptionHandler {
 			.body(BaseResponseBody.of(ex.getTokenErrorCode().getMessage(), ex.getTokenErrorCode().getStatus()));
 	}
 
+
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<BaseResponseBody> handleCustomException(CustomException ex) {
 		return ResponseEntity

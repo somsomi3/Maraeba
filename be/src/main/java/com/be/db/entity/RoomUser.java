@@ -3,27 +3,27 @@ package com.be.db.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
 @Setter
-public class RoomUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class RoomUser extends BaseEntity {
 
-    // user_id 외래키 매핑
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // id2 → user_id
+    @ManyToOne(fetch = FetchType.EAGER) // EAGER로 변경
+    @JoinColumn(name = "user", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     // session_id 외래키 매핑
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false) // id3 → session_id
+    @JoinColumn(name = "room", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Room room;
 
-    @Column(name = "joined_at", nullable = false)
-    private LocalDateTime joinedAt;
+    private Boolean isHost;  // 방장 여부
+
+//    @Column(name = "joined_at", nullable = false)
+//    private LocalDateTime joinedAt;
 }

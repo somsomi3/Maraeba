@@ -9,9 +9,11 @@ import com.be.domain.prons.dto.PronunciationStatDTO;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class GetStatsRes extends BaseResponseBody {
 	List<PronunciationStatDTO> stats;
 

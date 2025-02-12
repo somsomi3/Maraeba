@@ -19,11 +19,14 @@ FROM openjdk:17-jdk-slim
 # 7. 작업 디렉토리 설정
 WORKDIR /app
 
-# 8. 빌드된 JAR 파일 복사
+# 8. JVM 타임존을 KST(Asia/Seoul)로 설정
+ENV JAVA_TOOL_OPTIONS="-Duser.timezone=Asia/Seoul"
+
+# 9. 빌드된 JAR 파일 복사
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# 9. 컨테이너에서 사용할 포트 노출
+# 10. 컨테이너에서 사용할 포트 노출
 EXPOSE 8081
 
-# 10. 애플리케이션 실행
+# 11. 애플리케이션 실행
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { springApi } from "../../utils/api"; 
 import "./PronsSecond.css";
 import GoBackButton from "../../components/button/GoBackButton";
@@ -9,28 +10,53 @@ import RecordButton from "../../components/button/RecordButton";
 import lipshape from "../../assets/images/lipshape.png";
 import tongue from "../../assets/images/tongue.png";
 
+const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
+
 const classMaxSeqMap = {
-  1: 6, 
+  1: 8, 
   2: 9, 
-  3: 14, 
+  3: 13, 
 };
 
 const PronsSecond = () => {
   const navigate = useNavigate();
   const { class_id, seq_id } = useParams();
+  const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
   const videoRef = useRef(null);
- 
+  const [tongueImage, setTongueImage] = useState(null);
+  const [lipVideoSrc, setLipVideoSrc] = useState(null); // ✅ 비디오 Blob URL
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isMatch, setIsMatch] = useState(null); 
+  const [feedback, setFeedback] = useState("")
 
+//   const [isRecording, setIsRecording] = useState(false);
+//   const [audioStream, setAudioStream] = useState(null)
   useEffect(() => { 
     const fetchData = async () => {
       try {
         console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
-        setData(response.data.data || {});
+        console.log("✅ 가져온 데이터:", response.data.data);
+
+        // ✅ 혀 이미지 & 입모양 비디오 URL 가져오기
+        const { tongue_image_url, lip_video_url } = response.data.data;
+
+        // ✅ 혀 이미지 & 비디오 fetch 요청
+        if (tongue_image_url) {
+          fetchResource(`${STATIC_API_URL}${tongue_image_url}`, setTongueImage);
+        } else {
+          setTongueImage(null);
+        }
+
+        if (lip_video_url) {
+          fetchResource(`${STATIC_API_URL}${lip_video_url}`, setLipVideoSrc);
+        } else {
+          setLipVideoSrc(null);
+        }
+
+        setData(response.data.data);
         setError(false);
       } catch (error) {
         console.error("❌ 데이터 불러오기 실패:", error);
@@ -42,6 +68,49 @@ const PronsSecond = () => {
 
     fetchData();
   }, [class_id, seq_id]);
+
+  const fetchResource = async (url, setState) => {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ 토큰 포함하여 요청
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("리소스 로딩 실패");
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      setState(blobUrl);
+    } catch (error) {
+      console.error(`❌ ${url} 가져오기 실패:`, error);
+      setState(null); // 실패하면 기본 이미지 또는 null
+    }
+  };
+
+  // ✅ 마이크 & 카메라 권한을 요청하는 함수
+//   const startRecording = async () => {
+//     try {
+//       const audio = await navigator.mediaDevices.getUserMedia({ audio: true });
+//       console.log("🎤 마이크 권한 허용됨");
+//       setAudioStream(audio); // ✅ 마이크 스트림 저장
+
+//       const video = await navigator.mediaDevices.getUserMedia({ video: true });
+//       console.log("📷 카메라 권한 허용됨");
+
+//       const combinedStream = new MediaStream([...audio.getTracks(), ...video.getTracks()]);
+//       if (videoRef.current) {
+//         videoRef.current.srcObject = combinedStream;
+//       }
+
+//       setIsRecording(true);
+//     } catch (error) {
+//       console.error("❌ 마이크/카메라 접근 오류:", error);
+//       alert("마이크 & 카메라 사용을 허용해주세요.");
+//     }
+//   };
 
   useEffect(() => {
     const startCamera = async () => {
@@ -65,6 +134,7 @@ const PronsSecond = () => {
     };
   }, []);
 
+
   // ✅ 학습 완료 후 세션 종료, 히스토리 저장, 통계 업데이트
   const handleEndSession = async () => {
     const session_id = localStorage.getItem("session_id");
@@ -72,7 +142,7 @@ const PronsSecond = () => {
       alert("세션 ID가 존재하지 않습니다. 다시 시작해주세요.");
       return;
     }
-
+    
     try {
       console.log("📡 히스토리 저장 요청:", session_id);
       await springApi.post(`/prons/session/history/${session_id}`);
@@ -133,9 +203,15 @@ const PronsSecond = () => {
       ) : (
         <>
           <div className="content-container">
-            <div className="image-section">
-              <img src={lipshape} alt="입모양" className="image-top" />
-              <img src={tongue} alt="혀 위치" className="image-bottom" />
+          <div className="image-section">
+              {lipVideoSrc ? (
+                <video className="lip-video" controls autoPlay loop>
+                  <source src={lipVideoSrc} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={lipshape} alt="입모양" className="image-top" />
+              )}
+              <img src={tongueImage ?? tongue} alt="구강 내부" className="image-bottom" />
             </div>
             <div className="camera-section">
               <div className="camera-frame">
@@ -156,10 +232,40 @@ const PronsSecond = () => {
               {data.pronunciation}
             </div>
           )}
-            <div className="record-button-container">
-          <RecordButton onMatchUpdate={setIsMatch} pronunciation={data?.pronunciation} />
+            {/* ✅ 녹음 버튼 */}
+          <div className="record-button-container">
+            <RecordButton 
+              onMatchUpdate={(match, feedbackMsg) => {
+                setIsMatch(match);
+                setFeedback(feedbackMsg);
+              }} 
+              pronunciation={data?.pronunciation} 
+            />
+          </div>
+
+        {/* ✅ 피드백 표시 */}
+          {feedback && (
+            <div className="feedback-box">
+              <p>🧑‍🏫: {feedback}</p>
             </div>
-            
+          )}
+
+
+            {/* <div className="record-button-container">
+            <button onClick={startRecording} disabled={isRecording}>
+                {isRecording ? "🎙 녹음 중..." : "🎤 녹음 & 카메라 시작"}
+            </button>
+
+            {isRecording && audioStream && (
+              <RecordButton 
+                onMatchUpdate={setIsMatch} 
+                pronunciation={data?.pronunciation} 
+                audioStream={audioStream} // ✅ 마이크 스트림 전달
+              />
+            )}
+          </div> */}
+
+
           <button className="next-button" onClick={handleSaveCorrectAndNext}>
             {parseInt(seq_id) === classMaxSeqMap[class_id] ? "🔚학습 끝내기" : "다음으로"}
           </button>

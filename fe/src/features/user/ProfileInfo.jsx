@@ -83,36 +83,20 @@ const ProfileInfo = () => {
         navigate("/change-password");
     };
 
-    // ✅ 회원 탈퇴 요청
-    const handleDeleteAccount = async () => {
-        if (!window.confirm("정말 회원 탈퇴를 진행하시겠습니까? 🥲")) return;
-
-        try {
-            await springApi.delete("/users/me", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            dispatch(logout());
-            alert("✅ 회원 탈퇴가 완료되었습니다.");
-            navigate("/login");
-        } catch (error) {
-            console.error("❌ 회원 탈퇴 실패:", error);
-            alert("회원 탈퇴 중 오류 발생");
-        }
-    };
 
     return (
         <div className="profile-container">
-            {/* ✅ 사이드바 추가 (Profile.jsx랑 동일) */}
+            {/* ✅ 사이드바 */}
             <div className="sidebar">
                 <div className="profile-header">
-                    <img src={pororo} alt="프로필" className="profile-avatar" />
-                    <h2>{loading ? "로딩 중..." : userInfo.username}</h2>
+                    <h2>회원정보 수정</h2>
+                    
                 </div>
                 <nav className="profile-menu">
                     <ul>
                         <li onClick={() => navigate("/profile")}>내 프로필</li>
                         <li className="active">회원정보 수정</li>
-                        <li>도움말</li>
+                        <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
                     </ul>
                 </nav>
             </div>
@@ -144,10 +128,6 @@ const ProfileInfo = () => {
 
                         <button className="change-password-btn" onClick={handleChangePassword}>
                             비밀번호 변경
-                        </button>
-
-                        <button className="delete-account-btn" onClick={handleDeleteAccount}>
-                            회원 탈퇴
                         </button>
                     </>
                 )}

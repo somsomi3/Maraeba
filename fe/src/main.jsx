@@ -37,7 +37,7 @@ import {
 import CookingGame from "./features/wordgame/CookingGame";
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
-import { Profile, ProfileInfo, ChangePassword } from "./features/user";
+import { Profile, ProfileInfo, ChangePassword, ProfileDelete, ResetPassword } from "./features/user";
 import AuthInitializer from "./AuthInitializer.jsx";
 
 // 라우트 정의
@@ -51,7 +51,8 @@ const router = createBrowserRouter(
             <Route path="/register" element={<Register />} />
             <Route path="/find-id" element={<FindId />} />
             <Route path="/find-pw" element={<FindPw />} />
-
+            <Route path='/reset-password' element={<ResetPassword />} />
+            
             <Route element={<ProtectedLayout />}>
                 <Route path="/main" element={<Main />} />
                 <Route path="/single" element={<SingleMain />} />
@@ -93,7 +94,7 @@ const router = createBrowserRouter(
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile-info" element={<ProfileInfo />} />
                 <Route path="/change-password" element={<ChangePassword />} />
-
+                <Route path="/profile-delete" element={<ProfileDelete />} />
             </Route>
         </>
     )

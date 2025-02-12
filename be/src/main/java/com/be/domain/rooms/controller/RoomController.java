@@ -1,49 +1,73 @@
 package com.be.domain.rooms.controller;
+import com.be.common.model.response.BaseResponseBody;
 import com.be.db.entity.Room;
-import com.be.db.entity.User;
 import com.be.db.repository.RoomRepository;
+import com.be.db.repository.RoomUserRepository;
 import com.be.db.repository.UserRepository;
 
+import com.be.domain.rooms.SignalingHandler;
 import com.be.domain.rooms.request.CreateRoomRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
+import com.be.domain.rooms.request.UserLeaveRequest;
+import com.be.domain.rooms.response.RoomJoinResponse;
 import com.be.domain.rooms.response.RoomResponse;
 import com.be.domain.rooms.service.RoomService;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collections; // ✅ 빈 JSON 반환을 위한 import 추가
 
+import java.util.List;
+import java.util.Set;
+
+@Slf4j
 @Getter
 @Setter
 @RestController
 @RequestMapping("/rooms")
+@RequiredArgsConstructor
 public class RoomController {
-    @Autowired
-    private RoomRepository roomRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoomUserRepository roomUserRepository;
+    private final RoomRepository roomRepository;
+    private final RoomService roomService;
 
-    @Autowired
-    private RoomService roomService;
+    private final SignalingHandler signalingHandler; // ✅ WebSocket 핸들러 주입
+
+    // ✅ 특정 방의 참가자 목록 조회 API
+
+    // ✅ 특정 방의 참가자 목록 조회 API
+    @GetMapping("/room-users/{roomId}")
+    public ResponseEntity<Set<Long>> getRoomUsers(@PathVariable String roomId) {
+        log.info("📌 getRoomUsers API 호출됨, roomId: {}", roomId);
+        log.info("🔍 방 참가자 목록 요청: roomId={}", roomId); // ✅ 요청 로그 추가
+        Set<Long> userIds = signalingHandler.getRoomUserIds(roomId);
+
+        if (userIds == null || userIds.isEmpty()) {
+            log.info("❌ 방 {}에는 참가자가 없습니다.", roomId);
+            return ResponseEntity.ok(Collections.emptySet()); // ✅ 빈 JSON `[]` 반환
+        }
+        log.info("✅ 방 {} 참가자 목록 반환: {}", roomId, userIds);
+        return ResponseEntity.ok(userIds);
+    }
 
     // 방 생성 API
     @PostMapping("/create")
-    public ResponseEntity<Room> createRoom(@RequestBody CreateRoomRequest request) {
-        // ✅ hostId를 이용해 User 조회
-        User host = userRepository.findById(request.getHostId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+    public ResponseEntity<? extends BaseResponseBody> createRoom(@RequestBody CreateRoomRequest request) {
+//        // ✅ hostId를 이용해 User 조회
+//        User host = userRepository.findById(request.getHostId())
+//            .orElseThrow(() -> new RuntimeException("User not found"));
+//        // ✅ 생성자를 사용하여 간결하게 Room 객체 생성
+//        Room savedRoom = roomRepository.save(new Room(request.getTitle(), request.getRoomPassword(), host));
 
-        // ✅ 생성자를 사용하여 간결하게 Room 객체 생성
-        Room savedRoom = roomRepository.save(new Room(request.getTitle(), request.getRoomPassword(), host));
-
-
-        return ResponseEntity.ok(savedRoom);
+        //방생성
+        roomService.createRoom(request);
+        return ResponseEntity.ok().body(BaseResponseBody.of("방생성 성공",200));
     }
 
     @GetMapping("/list")
@@ -62,25 +86,27 @@ public class RoomController {
 
 
     @PostMapping("/join/{room_id}")
-    public ResponseEntity<String> joinRoom(@PathVariable("room_id") Long roomId, @RequestBody UserJoinRequest request) {
-        // ✅ 방 정보 조회
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+    public ResponseEntity<? extends BaseResponseBody> joinRoom(@RequestBody UserJoinRequest request) {
+        log.info("Room ID: {}", request.getRoom());  // Room ID 로그
+        log.info("User ID: {}", request.getUser());  // User ID 로그
 
-        // ✅ 비밀번호 확인 (비밀번호가 설정된 경우)
-        if (room.getRoomPassword() != null && !room.getRoomPassword().isEmpty()) {
-            if (!room.getRoomPassword().equals(request.getRoomPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀렸습니다.");
-            }
-        }
-
-        return ResponseEntity.ok(roomService.joinRoom(request.getUserId(), roomId));
+        RoomJoinResponse roomJoinResponse = roomService.joinRoom(request);
+        return ResponseEntity.ok().body(roomJoinResponse);
     }
 
-    @PostMapping("/end/{room_id}")
-    public String leaveRoom(@PathVariable("room_id") Long roomId, @RequestBody UserJoinRequest request) {
-        return roomService.leaveRoom(request.getUserId(), roomId);
+
+
+    @PostMapping("/leave/{roomId}")
+    public ResponseEntity<? extends BaseResponseBody> leaveRoom(@RequestBody UserLeaveRequest request, @PathVariable Long roomId) {
+        System.out.println("Received roomId: " + roomId);  // 방 ID 출력
+        System.out.println("Received roomId: " + request.getRoom());  // 방 ID 출력
+        System.out.println("Received userId: " + request.getUser());  // 사용자 ID 출력
+
+        roomService.leaveRoom(request);
+        roomUserRepository.deleteByUserIdAndRoomId(request.getUser(), roomId);
+        return ResponseEntity.ok().body(BaseResponseBody.of("방삭제요청 성공", 200));
     }
+
     // 방 생성 요청을 처리할 DTO
 
 }
