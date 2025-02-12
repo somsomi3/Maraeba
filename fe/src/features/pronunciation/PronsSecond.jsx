@@ -246,7 +246,7 @@ const PronsSecond = () => {
         {/* ✅ 피드백 표시 */}
           {feedback && (
             <div className="feedback-box">
-              <p>{feedback}</p>
+              <p>🧑‍🏫: {feedback}</p>
             </div>
           )}
 

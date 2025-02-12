@@ -77,22 +77,3 @@
     display: block;
   }
 
-
-  /* @media (max-width: 768px) {
-    .card {
-      width: 80vw;
-      height: 50vh;
-      font-size: 1.2rem;
-    }
-  
-    .start-button {
-      font-size: 1.5rem;
-      width: 70%;
-      max-width: 100px;
-    }
-  
-    .pronstitle-image {
-      width: 90vw;
-    }
-  }
-   */
