@@ -114,7 +114,7 @@ const Conversation = () => {
         </div>
       </div>
 
-      <HomeButton />
+      <HomeButton to='/single' />
     </>
   );
 };

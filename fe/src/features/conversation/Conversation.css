@@ -23,7 +23,7 @@
 }
 
 .conversation-title-image {
-  width: 40vw;
+  width: 580px;
   height: auto;
   object-fit: contain;
 }
@@ -43,9 +43,9 @@
   justify-content: space-between; /* 자식 섹션 간 간격 */
   align-items: stretch; /* 자식 요소의 높이를 동일하게 만듦 */
   gap: 2vw; /* 섹션 간 간격 */
-  width: 68vw; /* 부모 너비 */
+  width: 70vw; /* 부모 너비 */
   height: auto;
-  margin-top: 0.5vh;
+  margin-top: 20px;
 }
 
 /* 두 섹션 공통 스타일 */
@@ -95,12 +95,12 @@
   padding: 0.5vh;
   color: white;
   border: none;
-  font-size: 1rem; /* 텍스트 크기 확대 */
+  font-size: 1.2rem; /* 텍스트 크기 확대 */
   border-radius: 12px; /* 둥근 모서리 */
-  margin-top: 1.5vh; /* 위쪽 간격 */
+  margin-top: 15px; /* 위쪽 간격 */
   margin-bottom: 2vh;
-  width: 12vw;
-  height: 5vh;
+  width: 140px;
+  height: 40px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex; /* 플렉스박스 사용 */

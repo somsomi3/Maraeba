@@ -1,49 +1,57 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ConversationStart.css';
 import catAvatar from '../../assets/images/aiCat.png';
 import smileAvatar from '../../assets/images/smile.png';
 import { springApi, flaskApi } from '../../utils/api';
 import recordbtn from '../../assets/icons/record.png';
+import pausebtn from '../../assets/icons/pause.png';
 import PausePopup from '../../components/popup/PausePopup';
+import ConversationStopPopup from '../../components/popup/ConversationStopPopup';
 
 const ConversationStart = () => {
   const location = useLocation();
   const { sessionId, aiAnswer, aiRole, userRole } = location.state || {}; // AI 첫 메시지 & 역할 받음
   const [messages, setMessages] = useState([{ role: 'ai', text: aiAnswer }]); // AI 첫 메시지
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태
+  const [recordingIcon, setRecordingIcon] = useState(recordbtn); // 🔥 버튼 아이콘 상태 추가
   const [audioBlob, setAudioBlob] = useState(null); // 녹음된 음성 파일
   const navigate = useNavigate();
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   // 🔥 녹음 시작
-  const startRecording = () => {
-    if (isRecording) return; // 중복 방지
-    setIsRecording(true);
-    setAudioBlob(null);
+  const toggleRecording = async () => {
+    if (!isRecording) {
+      // ✅ 녹음 시작
+      setIsRecording(true);
+      setRecordingIcon(pausebtn); // 🎤 녹음 중 버튼 변경
 
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream);
-        const audioChunks = [];
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
 
-        mediaRecorder.ondataavailable = (event) => {
-          audioChunks.push(event.data);
-        };
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
 
-        mediaRecorder.onstop = () => {
-          const audioFile = new Blob(audioChunks, { type: 'audio/webm' });
-          console.log("녹음된 파일", audioFile)
-          setAudioBlob(audioFile);
-          setIsRecording(false);
-        };
+      mediaRecorder.onstop = () => {
+        const audioFile = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        console.log("🎤 녹음된 파일:", audioFile);
+        setAudioBlob(audioFile);
+        setRecordingIcon(recordbtn); // 🔁 버튼 원래대로
+        setIsRecording(false);
+      };
 
-        mediaRecorder.start();
-
-        setTimeout(() => {
-          mediaRecorder.stop();
-        }, 5000); // 5초 후 자동 종료
-      })
-      .catch((error) => console.error('🚨 마이크 권한 오류:', error));
+      mediaRecorder.start();
+    } else {
+      // ✅ 녹음 중지
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    }
   };
 
   // 🔥 녹음 완료 후 STT 변환 + AI 응답
@@ -57,7 +65,7 @@ const ConversationStart = () => {
       setMessages((prev) => [
         ...prev,
         { role: 'user', text: "..." }, // 유저 말풍선 (STT 변환 전)
-        { role: 'ai', text: "🤖 AI가 생각 중..." } // AI 응답 대기
+        { role: 'ai', text: "..." } // AI 응답 대기
       ]);
       
       const audioFile = new File([audioBlob], "recording.wav", { type: 'audio/wav' });
@@ -136,13 +144,14 @@ const ConversationStart = () => {
       {/* 🔥 녹음 버튼 (이미지 클릭) */}
       <div className="footer">
         <img 
-          src={recordbtn} 
+          src={recordingIcon} 
           alt="녹음 버튼" 
           className={`record-button ${isRecording ? 'recording' : ''}`} 
-          onClick={startRecording} 
+          onClick={toggleRecording} 
         />
       </div>
-      <PausePopup onExit={() => navigate("/prons")} title="대화를 끝낼까요?" />
+      {/* <PausePopup onExit={() => navigate("/prons")} title="대화를 끝낼까요?" /> */}
+      <ConversationStopPopup />
     </div>
   );
 };
