@@ -114,14 +114,14 @@
     cursor: pointer; /* 클릭 가능하도록 */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
     transition: transform 0.2s ease-in-out;
-    width: 4vw;
-    height: 4vw;
+    width: 50px;
+    height: 50px;
 
 }
 
 .main-profile-container {
     position: fixed;
-    top: 2vw; /* 상단에서 20px 떨어지도록 */
+    top: 1.5vw; /* 상단에서 20px 떨어지도록 */
     left: 2vw; /* 왼쪽에서 20px 떨어지도록 */
     display: flex;
     flex-direction: column;
@@ -138,8 +138,8 @@
 
 
 .profile-text {
-    margin-top: 5px; /* 이미지와 텍스트 사이 간격 */
-    font-size: 14px;
+    margin-top: 8px; /* 이미지와 텍스트 사이 간격 */
+    font-size: 11px;
     font-weight: bold;
     color: darkslategrey; /* 텍스트 색상 */
 

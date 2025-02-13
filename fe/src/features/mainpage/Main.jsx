@@ -18,6 +18,7 @@ const Main = () => {
                     className="main-profile-image"
                 />
                 <p className="profile-text">프로필</p>
+                {/* <LogoutButton /> */}
             </div>
             <div className="card-container">
                 {/* 왼쪽 카드 */}
@@ -44,7 +45,8 @@ const Main = () => {
             
                 </div>
             </div>
-            <LogoutButton />
+
+            
         </div>
     );
 };

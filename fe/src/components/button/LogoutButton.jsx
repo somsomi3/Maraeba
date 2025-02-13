@@ -29,7 +29,7 @@ const LogoutButton = () => {
     return (
         <div className="logout-container"> {/* ✅ 추가된 div */}
             <img src={logoutbtn} alt="로그아웃" onClick={handleLogout} className="logout-icon"/>
-            {/* <span className="logout-text">로그아웃</span> ✅ 추가된 텍스트 */}
+            <span className="logout-text">로그아웃</span>
         </div>
     );
 };

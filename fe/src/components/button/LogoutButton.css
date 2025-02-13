@@ -1,7 +1,10 @@
 .logout-container {
+    position: fixed;
+    
     display: flex;
     flex-direction: column; /* ✅ 수직 정렬 */
     align-items: center; /* ✅ 중앙 정렬 */
+    justify-content: center;
     cursor: pointer;
 }
 
@@ -12,22 +15,21 @@
 }
 
 .logout-text {
-    font-size: 14px; /* 글자 크기 */
-    color: #333; /* 글자 색 */
-    margin-top: 5px; /* ✅ 아이콘과 글자 사이 간격 */
+    margin-top: 4px; /* 이미지와 텍스트 사이 간격 */
+    font-size: 1vw;
+    font-weight: bold;
+    color: darkslategrey; /* 텍스트 색상 */
 }
 
 
 .logout-icon {
-    position: fixed;  
-    top: 2vw;        
-    right: 2vw;      
+        
     border: none;
     border-radius: 50%;     
     cursor: pointer;     
     z-index: 1000;   
-    width: 3.5vw;
-    height: 3.5vw;
+    width: 3vw;
+    height: 3vw;
 }
 
 .logout-button:hover img {
