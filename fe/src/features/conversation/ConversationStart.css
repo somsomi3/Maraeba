@@ -1,5 +1,5 @@
 .conversation-start-container {
-    /* display: flex; */
+    display: flex;
     align-items: center;
     height: 100vh;
 
@@ -15,28 +15,33 @@
 
 /* AI 메시지 (왼쪽 정렬) */
 .message-row.ai {
+    margin-left: 5%;
     justify-content: flex-start;
+    transform: translateY(-35%);
 }
 
 /* 사용자 메시지 (오른쪽 정렬) */
 .message-row.user {
+    margin-right: 5%;
     justify-content: flex-end;
+    transform: translateY(+60%);
 }
 
 /* 아바타 스타일 */
 .avatar {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     margin: 0 10px;
 }
 
 /* 말풍선 스타일 */
 .message-bubble {
-    max-width: 40vw;
+    max-width: 70vw;
     padding: 15px;
     border-radius: 15px;
-    font-size: 16px;
+    font-size: 27px;
+    font-family: Pretendard;
     background-color: white;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -44,27 +49,27 @@
 /* AI 말풍선 */
 .message-row.ai .message-bubble {
     background-color: white;
-    border-radius: 10px 10px 10px 0;
+    border-radius: 20px 20px 20px 0;
 }
 
 /* 사용자 말풍선 */
 .message-row.user .message-bubble {
     background-color: white;
-    border-radius: 10px 10px 0 10px;
+    border-radius: 20px 20px 0 20px;
 }
 
 /* 역할 이름 스타일 */
 .role-name {
-    font-size: 14px;
+    font-size: 20px;
     font-weight: bold;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 /* 입력창 스타일 (빈 말풍선) */
 .user-input {
     height: 50px;
-    width: 250px;
+    width: 350px;
     background-color: white;
     border-radius: 15px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -81,8 +86,8 @@
 /* 기존 CSS 유지 */
 
 .record-button {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50px;
     cursor: pointer;
     transition: 0.3s;
