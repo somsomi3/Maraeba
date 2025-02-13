@@ -64,3 +64,8 @@ body {
     font-family: 'NPSextrabold';
     src: url('./assets/fonts/NPSfont_extrabold.ttf')
 }
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('./assets/fonts/PretendardVariable.ttf');
+}
