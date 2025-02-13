@@ -6,6 +6,7 @@ import HomeButton from "../../components/button/HomeButton";
 import { useNavigate } from "react-router-dom"; // ✅ 로그인 페이지 리디렉션
 import pororo from "../../assets/images/pororo.png"
 import PronunciationHistoryChart from "./PronunciationHistoryChart";
+import PronunciationDetailChart from "./PronunciationDetailChart";
 import "./Profile.css";
 
 const Profile = () => {
@@ -89,54 +90,15 @@ const Profile = () => {
 
             {/* 메인 컨텐츠 */}
             <div className="profile-content">
-                <div className="level-container">
-                    <h1>마이페이지</h1>
-                    {/* <div className="progress-bar">
-                        <div className="progress" style={{ width: "30%" }}></div>
-                        <span className="progress-text">다음 레벨까지 70%</span>
-                    </div> */}
-                </div>
+                <h1>마이페이지</h1>
 
-                {/* <div className="profile-stats">
-                    <div className="stat-box red">
-                        <div className="stat-icon">🎁</div>
-                        <p>모은 보물</p>
-                        <h2>0개</h2>
-                    </div>
-                    <div className="stat-box blue">
-                        <div className="stat-icon">📅</div>
-                        <p>우리가 친구가 된 날</p>
-                        <h2>0일</h2>
-                    </div>
-                    <div className="stat-box green">
-                        <div className="stat-icon">⏳</div>
-                        <p>즐겁게 놀았던 시간</p>
-                        <h2>0시간 0분</h2>
-                    </div>
-                </div> */}
-
+                {/* ✅ 발음 학습 기록 */}
                 <h2>📊 발음 학습 기록</h2>
                 <PronunciationHistoryChart />
 
-                {/* <h2>받은 칭찬 ✨</h2>
-                <div className="badges-list">
-                    <div className="badge-item glow">
-                        <img src="/assets/badge1.png" alt="탐험가 배지" />
-                        <div className="badge-tooltip">첫 발견! 🗺️</div>
-                    </div>
-                    <div className="badge-item glow">
-                        <img src="/assets/badge2.png" alt="모험가 배지" />
-                        <div className="badge-tooltip">10번 도전! 🚀</div>
-                    </div>
-                    <div className="badge-item glow">
-                        <img src="/assets/badge3.png" alt="독서왕 배지" />
-                        <div className="badge-tooltip">책 50권 읽음! 📚</div>
-                    </div>
-                    <div className="badge-item glow">
-                        <img src="/assets/badge4.png" alt="꾸준함 배지" />
-                        <div className="badge-tooltip">30일 연속 학습! 💪</div>
-                    </div>
-                </div> */}
+                {/* ✅ 클래스별 발음 학습 통계 (제대로 배치) */}
+                <h2>📈 클래스별 발음 학습 통계</h2>
+                <PronunciationDetailChart />
             </div>
 
             <HomeButton />
