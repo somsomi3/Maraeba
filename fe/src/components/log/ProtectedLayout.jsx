@@ -8,7 +8,6 @@ const ProtectedLayout = () => {
 
     return isAuthenticated ? (
         <>
-            <LogoutButton /> {/* ✅ 모든 페이지에서 로그아웃 버튼 표시 */}
             <Outlet />
         </>
     ) : (

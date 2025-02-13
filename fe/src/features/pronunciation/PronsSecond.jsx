@@ -196,7 +196,7 @@ const PronsSecond = () => {
   return (
     <div className="prons-second-container">
       <GoBackButton />
-      <PausePopup onExit={() => navigate("/prons")} />
+      <PausePopup onExit={() => navigate("/prons")} title="수업을 끝낼까요?" />
 
       {loading ? (
         <div className="loading-container">🔄 데이터 로딩 중...</div>
@@ -205,7 +205,7 @@ const PronsSecond = () => {
           <div className="content-container">
           <div className="image-section">
               {lipVideoSrc ? (
-                <video className="lip-video" controls autoPlay loop>
+                <video className="lip-video" controls autoPlay loop muted>
                   <source src={lipVideoSrc} type="video/mp4" />
                 </video>
               ) : (
