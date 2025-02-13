@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { springApi } from "../../utils/api";
+import { springApi, logoutApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice"; 
 import HomeButton from "../../components/button/HomeButton";
@@ -83,6 +83,17 @@ const ProfileInfo = () => {
         navigate("/change-password");
     };
 
+     const handleLogout = async () => {
+            try {
+                await logoutApi(); // 로그아웃 API 호출
+                dispatch(logout()); // Redux에서 사용자 정보 삭제
+                navigate("/login"); // 로그인 페이지로 이동
+                alert("로그아웃 되었습니다.");
+            } catch (error) {
+                console.error("❌ 로그아웃 실패:", error);
+                alert("로그아웃에 실패했습니다.");
+            }
+        };
 
     return (
         <div className="profile-container">
@@ -96,6 +107,7 @@ const ProfileInfo = () => {
                     <ul>
                         <li onClick={() => navigate("/profile")}>내 프로필</li>
                         <li className="active">회원정보 수정</li>
+                        <li onClick={handleLogout}>로그아웃</li>
                         <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
                     </ul>
                 </nav>

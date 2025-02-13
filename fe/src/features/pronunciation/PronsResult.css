@@ -150,8 +150,8 @@
 
 /* ✅ 학습 결과 스타일 */
 .current-session-result {
-    flex: 1.1; 
-    max-width: 40vw;
+    /* flex: 1.1;  */
+    max-width: 45vw;
     transform: translateY(10%);
 }
 
