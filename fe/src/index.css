@@ -50,3 +50,17 @@ body {
     src: url('./assets/fonts/SDSamliphopangcheTTFBasic.ttf');
 }
 
+@font-face {
+    font-family: 'NPSbold';
+    src: url('./assets/fonts/NPSfont_bold.ttf')
+}
+
+@font-face {
+    font-family: 'NPSregular';
+    src: url('./assets/fonts/NPSfont_regular.ttf')
+}
+
+@font-face {
+    font-family: 'NPSextrabold';
+    src: url('./assets/fonts/NPSfont_extrabold.ttf')
+}

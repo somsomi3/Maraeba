@@ -56,7 +56,7 @@ const PronsMain = () => {
   
   return (
     <div className="prons-container">
-      <HomeButton />
+      <HomeButton to='/single' />
       <img src={pronstitle} alt="Pronunciation Title" className="pronstitle-image" />
 
       {loading ? (
@@ -64,10 +64,10 @@ const PronsMain = () => {
       ) : error ? (
         <p>발음 수업 정보를 불러오는 데 실패했습니다.</p>
       ) : (
-        <div className="card-slider">
+        <div className="prons-card-slider">
           {classData.length > 0 ? (
             classData.map((item) => (
-              <div className="card" key={item.id}>
+              <div className="prons-card" key={item.id}>
                 <h2>{item.title}</h2>
                 <span className="emoji">🙂</span>
                 <p>{item.description}</p>

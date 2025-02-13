@@ -5,7 +5,7 @@ import "./PausePopup.css";
 import bunny from "../../assets/images/bunny.png";
 import stopIcon from "../../assets/icons/stop.png";
 
-const PausePopup = ({ onExit }) => {
+const PausePopup = ({ onExit, title = "수업을 끝낼까요?" }) => { // ✅ title을 props로 받음
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handlePauseClick = () => {
@@ -28,7 +28,7 @@ const PausePopup = ({ onExit }) => {
       {isPopupOpen && (
         <div className="popup-overlay">
           <div className="popup-container">
-            <h2 className="popup-title">수업을 끝낼까요?</h2>
+            <h2 className="popup-title">{title}</h2> {/* ✅ 동적 타이틀 */}
             <img src={bunny} alt="Bunny illustration" className="popup-image" />
             <div className="popup-buttons">
               <button className="popup-button continue" onClick={handleClosePopup}>
@@ -47,6 +47,7 @@ const PausePopup = ({ onExit }) => {
 
 PausePopup.propTypes = {
   onExit: PropTypes.func.isRequired, // 끝내기 버튼 클릭 시 동작
+  title: PropTypes.string, // ✅ 동적 타이틀을 위한 props 추가
 };
 
 export default PausePopup;

@@ -1,20 +1,35 @@
-.logout-button {
-    position: fixed;  
-    top: 18px;        
-    right: 20px;      
-    background: #54c3c3; 
-    opacity: 0.9;
-    border: none;
-    border-radius: 50%;     
-    cursor: pointer;  
-    padding: 6px;     
-    z-index: 1000;   
+.logout-container {
+    position: fixed;
+    
+    display: flex;
+    flex-direction: column; /* ✅ 수직 정렬 */
+    align-items: center; /* ✅ 중앙 정렬 */
+    justify-content: center;
+    cursor: pointer;
 }
 
-.logout-button img {
-    height: 30px;
-    width: 30px;
-    transition: transform 0.2s ease-in-out; /* 🎞️ 부드러운 애니메이션 */
+
+
+.logout-icon:hover {
+    opacity: 0.7;
+}
+
+.logout-text {
+    margin-top: 4px; /* 이미지와 텍스트 사이 간격 */
+    font-size: 1vw;
+    font-weight: bold;
+    color: darkslategrey; /* 텍스트 색상 */
+}
+
+
+.logout-icon {
+        
+    border: none;
+    border-radius: 50%;     
+    cursor: pointer;     
+    z-index: 1000;   
+    width: 3vw;
+    height: 3vw;
 }
 
 .logout-button:hover img {

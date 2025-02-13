@@ -77,10 +77,6 @@ const PronsFirst = () => {
         }
     };
 
-    const handleExit = () => {
-        navigate("/prons");
-    };
-
     const goToPractice = () => {
         navigate(`/prons/class/${class_id}/seq/${seq_id}/prac`);
     };
@@ -104,7 +100,7 @@ const PronsFirst = () => {
     return (
         <div className="prons-first-container">
             <GoBackButton />
-            <PausePopup onExit={handleExit} />
+            <PausePopup onExit={() => navigate('/prons')} title="수업을 끝낼까요?" />
 
             {/* 데이터 로딩 중 표시 */}
             {loading ? (
