@@ -8,6 +8,7 @@ import CreateRoomPopup from "../room/CreatePopup";
 const RoomList = () => {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [shouldJoin, setShouldJoin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const navigate = useNavigate();
@@ -39,6 +40,18 @@ const RoomList = () => {
         return () => clearInterval(interval); // 언마운트 시 인터벌 제거
     }, []); // 페이지 로드 시 방 목록을 불러오기
 
+    useEffect(() => {
+        if (selectedRoom && shouldJoin) {
+            handleJoinRoom(selectedRoom);
+            setShouldJoin(false);
+        }
+    }, [selectedRoom, shouldJoin]);
+
+    const handleSelectRoomAndJoin = (room) => {
+        setSelectedRoom(room);
+        setShouldJoin(true);
+    };
+
     // 방 선택
     const handleSelectRoom = (room) => {
         setSelectedRoom(room);
@@ -57,13 +70,13 @@ const RoomList = () => {
             return;
         }
 
-        if (selectedRoom.current_players >= selectedRoom.max_players) {
+        if (selectedRoom.userCnt >= 2) {
             alert("❌ 이 방은 최대 인원에 도달하여 입장할 수 없습니다.");
             return;
         }
 
         let password = "";
-        if (room.room_password) {
+        if (selectedRoom.room_password) {
             password = prompt("방 비밀번호를 입력하세요:");
             if (!password) {
                 alert("비밀번호가 필요합니다.");
@@ -72,18 +85,20 @@ const RoomList = () => {
         }
 
         try {
-            // 방 입장 API 요청
-            const response = await springApi.post(`/rooms/join/${room.id}`, {
-                user: userId,
-                room: room.id,
-                room_password: password || null,
-            });
+            const response = await springApi.post(
+                `/rooms/join/${selectedRoom.id}`,
+                {
+                    user: userId,
+                    room: selectedRoom.id,
+                    room_password: password || null,
+                }
+            );
 
             const { host } = response.data;
             alert(host ? "방장으로 입장했습니다!" : "참가자로 입장했습니다.");
 
             // 방 입장 후 해당 방 페이지로 이동
-            navigate(`/room/${room.id}`);
+            navigate(`/room/${selectedRoom.id}`);
         } catch (error) {
             alert(error.response?.data?.message || "방 참가에 실패했습니다.");
         }
@@ -114,7 +129,7 @@ const RoomList = () => {
                 </button>
                 <button
                     className="join-room-btn"
-                    onClick={() => handleJoinRoom(selectedRoom)}
+                    onClick={handleJoinRoom}
                     disabled={!selectedRoom}
                 >
                     입장하기
@@ -151,7 +166,9 @@ const RoomList = () => {
                                     <td>
                                         <button
                                             className="room-link"
-                                            onClick={() => handleJoinRoom(room)} // 클릭 시 방 입장
+                                            onClick={() =>
+                                                handleSelectRoomAndJoin(room)
+                                            }
                                         >
                                             {room.title} (ID: {room.id})
                                         </button>
@@ -168,8 +185,8 @@ const RoomList = () => {
                                             : "WAITING"}
                                     </td>
                                     <td>
-                                        {room.current_players}/
-                                        {room.max_players}
+                                        {room.userCnt}/ 2
+                                        {room.userCnt >= 2 && " 🚫"}
                                     </td>
                                     <td>{room.room_password ? "🔒" : "🔓"}</td>
                                 </tr>

@@ -6,13 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Getter
 @Setter
@@ -24,11 +24,11 @@ public class Room extends BaseEntity {
     @Column(nullable = false, length = 20)
     private String title;
 
-    private LocalDateTime StartedAt;
-
     private boolean isActive = true;
 
     private String roomPassword;
+
+    private int userCnt = 0;
 
     // owner_id를 User의 기본키와 연결
     @ManyToOne(fetch = FetchType.EAGER) // EAGER로 변경
