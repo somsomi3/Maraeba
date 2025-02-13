@@ -21,15 +21,44 @@ const Webrtc = () => {
     const [endTime, setEndTime] = useState(null); // endTime 상태 정의
     const [loading, setLoading] = useState(false);
     const [isGameStarted, setIsGameStarted] = useState(false); // 게임 시작 여부 상태 추가
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState(["red","orange", "yellow", "green", "blue", "purple"]);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [correctAnswer, setCorrectAnswer] = useState(null); // 정답 저장
+    const [isHost, setIsHost] = useState(false); // ✅ 방장 여부 상태 추가
 
     const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
     const userId = useSelector((state) => state.auth.userId);
 
     const { roomId } = useParams(); // URL에서 roomId 가져오기
     const navigate = useNavigate();
+    
+    // // 방장 여부 확인 API 호출
+    // useEffect(() => {
+    //     const fetchHostStatus = async () => {
+    //         try {
+    //             const response = await springApi.get(`/rooms/host/${roomId}`);
+    //             setIsHost(response.data.isHost); // ✅ 방장 여부 저장
+    //         } catch (error) {
+    //             console.error("❌ 방장 여부 확인 실패:", error);
+    //         }
+    //     };
+    //
+    //     if (roomId) {
+    //         fetchHostStatus();
+    //     }
+    // }, [roomId]);
     useEffect(() => {
+        if (!roomId) {
+            console.error("🚨 roomId가 없습니다. 방장 여부 확인을 중단합니다.");
+            return;
+        }
+        fetchHostStatus();
+    }, [roomId]);
+
+    useEffect(() => {
+        if (roomId) {
+            fetchHostStatus(); // ✅ 방장 여부 확인 API 호출
+        }
         if ((token, roomId)) {
             // const decodedUserId = getUserIdFromToken(token);
             //     setUserId(decodedUserId); // ✅ 상태에 저장
@@ -51,7 +80,7 @@ const Webrtc = () => {
             window.onpopstate = null; // 클린업: 컴포넌트가 언마운트될 때
         };
         // }, []);
-    }, [token]); // ✅ Redux의 토큰 값이 변경될 때마다 실행
+    }, [token, roomId]);// ✅ Redux의 토큰 값이 변경될 때마다 실행
 
     // WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -106,6 +135,25 @@ const Webrtc = () => {
             clearInterval(pingInterval); // 컴포넌트 언마운트 시 핑 메시지 중단
         };
     }, []);
+
+    const fetchHostStatus = async () => {
+        try {
+            const response = await springApi.post(`/rooms/join/${roomId}`, {
+                user: userId,
+                room: roomId,
+                // room_password: password || null,
+            });
+            
+            if (!response || !response.data) {
+                throw new Error("🚨 서버 응답이 없습니다.");
+            }
+
+            setIsHost(response.data.host || false); // ✅ 방장 여부 업데이트
+            console.log("✅ 방장 여부:", response.data.host ? "방장" : "참가자");
+        } catch (error) {
+            console.error("❌ 방장 여부 확인 실패:", error.message);
+        }
+    };
 
     // 메시지가 변경될 때 실행되는 자동 스크롤 useEffect
     useEffect(() => {
@@ -457,40 +505,69 @@ const Webrtc = () => {
     };
     // 게임 시작
     const startGame = async () => {
-        if (!userId) {
-            alert("사용자 정보가 없습니다. 로그인 후 다시 시도해주세요.");
+        if (!isHost) {
+            alert("방장만 게임을 시작할 수 있습니다.");
             return;
         }
         try {
-            setLoading(true);
-            const response = await springApi.post(`/game/start/${roomId}`, {
-                userId,
-            });
+            const response = await springApi.post(`/game/start/${roomId}`, { userId });
             if (response.status === 200) {
                 setIsGameStarted(true);
-            } else {
-                console.error("❌ 게임 시작 실패:", response.data);
             }
         } catch (error) {
             console.error("❌ 게임 시작 오류:", error);
-        } finally {
-            setLoading(false);
         }
     };
 
-    // 사용자의 단어 선택 처리
-    const handleChoice = async (choice) => {
+    // // 사용자의 단어 선택 처리
+    // const handleChoice = async (choice) => {
+    //     try {
+    //         setSelectedItem(choice);
+    //
+    //         const response = await springApi.post(`/game/choice/${roomId}`, {
+    //             userId,
+    //             choice,
+    //         });
+    //
+    //         alert(`✅ 선택 완료: ${choice}\n서버 응답: ${response.data}`);
+    //     } catch (error) {
+    //         console.error("❌ 선택 전송 실패:", error);
+    //     }
+    // };
+    // 단어 목록 불러오기
+    const fetchGameWords = async () => {
         try {
-            setSelectedItem(choice);
+            console.log(correctAnswer);
+            const response = await springApi.get(`/game/items?color=${correctAnswer}`);
+            console.log(response);
+            setItems(response.data);
+        } catch (error) {
+            console.error("❌ 단어 목록 불러오기 실패:", error);
+        }
+    };
 
-            const response = await springApi.post(`/game/choice/${roomId}`, {
-                userId,
-                choice,
-            });
 
-            alert(`✅ 선택 완료: ${choice}\n서버 응답: ${response.data}`);
+    // ✅ 참가자가 단어 선택
+    const handleChoice = async (choice) => {
+        setSelectedItem(choice);
+        try {
+            await springApi.post(`/game/choice/${roomId}`, { userId, choice });
         } catch (error) {
             console.error("❌ 선택 전송 실패:", error);
+        }
+    };
+
+    // ✅ 방장이 정답 선택 (빨간 테두리 표시)
+    const handleAnswerChoice = async (answer) => {
+        if (!isHost) {
+            alert("방장만 정답을 선택할 수 있습니다.");
+            return;
+        }
+        setCorrectAnswer(answer);
+        try {
+            await springApi.post(`/game/answer/${roomId}`, { userId, answer });
+        } catch (error) {
+            console.error("❌ 정답 선택 실패:", error);
         }
     };
     return (
@@ -571,43 +648,55 @@ const Webrtc = () => {
                     방 나가기
                 </button>
             </div>
+            <h1>WebRTC 게임 화면</h1>
+            <h2>{isHost ? "🎩 방장 화면" : "🧑‍🤝‍🧑 참가자 화면"}</h2>
+
             {/* 게임 시작 버튼 */}
-            {!isGameStarted ? (
-                <button onClick={startGame} disabled={loading}>
-                    {loading ? "게임 시작 중..." : "게임 시작"}
-                </button>
-            ) : (
+            {isHost && !isGameStarted && (
+                <button onClick={startGame}>게임 시작</button>
+            )}
+
+            {/* 게임 화면 */}
+            {isGameStarted && (
                 <div>
                     <h2>🎮 사물 맞추기 게임</h2>
-                    <p>상대방의 입모양을 보고 어떤 단어인지 맞춰보세요!</p>
-                    {loading ? (
-                        <p>⏳ 단어 불러오는 중...</p>
-                    ) : items.length > 0 ? (
+                    <p>입모양을 보고 정답을 맞춰보세요!</p>
+                    <div>
+                        {items.map((item) => (
+                            <button
+                                key={item}
+                                onClick={() => handleChoice(item)}
+                                style={{
+                                    backgroundColor: selectedItem === item ? "lightblue" : "white",
+                                    border: correctAnswer === item ? "3px solid red" : "1px solid black",
+                                }}
+                            >
+                                {item}
+                            </button>
+                        ))}
+                    </div>
+                    {isHost && (
                         <div>
+                            <h3>방장: 정답 선택</h3>
                             {items.map((item) => (
                                 <button
                                     key={item}
-                                    onClick={() => handleChoice(item)}
+                                    onClick={() => handleAnswerChoice(item)}
                                     style={{
-                                        backgroundColor:
-                                            selectedItem === item
-                                                ? "lightblue"
-                                                : "white",
+                                        backgroundColor: correctAnswer === item ? "red" : "white",
+                                        color: correctAnswer === item ? "white" : "black",
                                     }}
                                 >
-                                    {item}
+                                    {item} (정답)
                                 </button>
                             ))}
                         </div>
-                    ) : (
-                        <p>❌ 사용할 수 있는 단어가 없습니다.</p>
                     )}
                 </div>
             )}
         </div>
     );
 };
-
 // ✅ 스타일 추가
 const styles = {
     container: {
