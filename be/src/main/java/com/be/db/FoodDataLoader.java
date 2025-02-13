@@ -135,6 +135,7 @@ public class FoodDataLoader {
                     .foodItem1(foodItemRepository.findByIngredientName("빵"))
                     .foodItem2(foodItemRepository.findByIngredientName("야채"))
                     .build();
+            foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
                     .resultImage(foodUrl + "/딸기 케이크.png")
@@ -142,6 +143,7 @@ public class FoodDataLoader {
                     .foodItem1(foodItemRepository.findByIngredientName("딸기"))
                     .foodItem2(foodItemRepository.findByIngredientName("케이크 시트"))
                     .build();
+            foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
                     .resultImage(foodUrl + "/코코아.png")
@@ -149,6 +151,7 @@ public class FoodDataLoader {
                     .foodItem1(foodItemRepository.findByIngredientName("코코아 가루"))
                     .foodItem2(foodItemRepository.findByIngredientName("우유"))
                     .build();
+            foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
                     .resultImage(foodUrl + "/초밥.png")
@@ -156,6 +159,7 @@ public class FoodDataLoader {
                     .foodItem1(foodItemRepository.findByIngredientName("밥"))
                     .foodItem2(foodItemRepository.findByIngredientName("생선 살"))
                     .build();
+            foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
                     .resultImage(foodUrl + "/버터맛 팝콘.png")
@@ -163,6 +167,7 @@ public class FoodDataLoader {
                     .foodItem1(foodItemRepository.findByIngredientName("버터"))
                     .foodItem2(foodItemRepository.findByIngredientName("옥수수"))
                     .build();
+            foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
                     .resultImage(foodUrl + "/딸기잼 바른 식빵.png")
@@ -170,6 +175,7 @@ public class FoodDataLoader {
                     .foodItem1(foodItemRepository.findByIngredientName("딸기잼"))
                     .foodItem2(foodItemRepository.findByIngredientName("식빵"))
                     .build();
+            foodGameRepository.save(foodGame);
 
             foodGame = FoodGame.builder()
                     .resultImage(foodUrl + "/초코 쿠키.png")
