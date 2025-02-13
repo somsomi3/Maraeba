@@ -93,9 +93,6 @@
     transition: 0.3s;
 }
 
-.record-button:hover {
-    background-color: #008f72;
-}
 
 .recording {
     opacity: 0.5;
