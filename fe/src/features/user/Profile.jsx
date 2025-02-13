@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice"; // ✅ Redux logout 액션 추가
-import { springApi } from "../../utils/api";
+import { springApi, logoutApi } from "../../utils/api";
 import HomeButton from "../../components/button/HomeButton";
 import { useNavigate } from "react-router-dom"; // ✅ 로그인 페이지 리디렉션
 import pororo from "../../assets/images/pororo.png"
 import PronunciationHistoryChart from "./PronunciationHistoryChart";
-import LogoutButton from "../../components/button/LogoutButton";
 import "./Profile.css";
 
 const Profile = () => {
@@ -48,11 +47,27 @@ const Profile = () => {
         fetchUserInfo();
     }, [token, dispatch, navigate]); // ✅ token이 변경될 때마다 실행
 
+    const handleLogout = async () => {
+        try {
+            await logoutApi(); // 로그아웃 API 호출
+            dispatch(logout()); // Redux에서 사용자 정보 삭제
+            navigate("/login"); // 로그인 페이지로 이동
+            alert("로그아웃 되었습니다.");
+        } catch (error) {
+            console.error("❌ 로그아웃 실패:", error);
+            alert("로그아웃에 실패했습니다.");
+        }
+    };
+
+
     return (
         <div className="profile-container">
             {/* 사이드바 */}
             <div className="sidebar">
-                <div className="profile-header">
+            <div className="profile-header">
+                    <h2>마이페이지</h2>
+                </div>
+                {/* <div className="profile-header">
                     <img
                         src={pororo}
                         alt="프로필"
@@ -61,11 +76,12 @@ const Profile = () => {
                     <h2 className="childname">
                         {loading ? "로딩 중..." : error ? "오류 발생" : username}
                     </h2>
-                </div>
+                </div> */}
                 <nav className="profile-menu">
                     <ul>
                         <li className="active">내 프로필</li>
                         <li onClick={() => navigate("/profile-info")}>회원정보 수정</li>
+                        <li onClick={handleLogout}>로그아웃</li>
                         <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
                     </ul>
                 </nav>
