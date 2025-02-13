@@ -42,11 +42,12 @@ const PronsMain = () => {
       console.log(`수업 세션 생성 요청: /prons/start/class/${classId}`);
       const response = await springApi.post(`/prons/start/class/${classId}`);
       const sessionId = response.data.session_id; // 응답에서 세션 ID 추출
-  
+      const pronId = response.data.id
+
       console.log("세션 생성 완료, session_id:", sessionId);
       localStorage.setItem("session_id", sessionId); // session_id 저장
       localStorage.setItem("class_title", title); // 🔹 수업 제목 저장
-  
+      localStorage.setItem("pron_id", pronId)
       navigate(`/prons/class/${classId}/seq/1`); // 첫 번째 발음 학습 화면으로 이동
     } catch (error) {
       console.error("❌ 세션 생성 실패:", error);

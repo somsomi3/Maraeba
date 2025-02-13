@@ -159,7 +159,8 @@ const PronsSecond = () => {
   // ✅ "다음으로" 버튼을 눌렀을 때 정답 여부 저장 후 학습 완료 시 세션 종료
   const handleSaveCorrectAndNext = async () => {
     const session_id = localStorage.getItem("session_id");
-    if (!session_id) {
+    const pron_id = localStorage.getItem("pron_id");
+    if (!session_id || !pron_id) {
       alert("세션 ID가 존재하지 않습니다. 다시 시작해주세요.");
       return;
     }
@@ -170,9 +171,10 @@ const PronsSecond = () => {
     }
 
     try {
-      console.log("📡 정답 여부 저장 요청:", { session_id, is_correct: isMatch ? 1 : 0 });
+      console.log("📡 정답 여부 저장 요청:", { session_id, pron_id, is_correct: isMatch ? 1 : 0 });
       await springApi.post("/prons/session/correct", {
         session_id,
+        pron_id,
         is_correct: isMatch ? 1 : 0, // 🔹 match 값에 따라 1(정답) 또는 0(오답) 저장
       });
 
@@ -245,7 +247,7 @@ const PronsSecond = () => {
 
         {/* ✅ 피드백 표시 */}
           {feedback && (
-            <div className="feedback-box">
+            <div className="prons-feedback-box">
               <p>{feedback}</p>
             </div>
           )}
