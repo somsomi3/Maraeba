@@ -6,6 +6,7 @@ import HomeButton from "../../components/button/HomeButton";
 import "./AnimalGame.css";
 import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
+import CorrectPopup from "../../components/popup/CorrectPopup"; 
 
 const AnimalGame = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -25,6 +26,11 @@ const AnimalGame = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [showCorrectPopup, setShowCorrectPopup] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState(""); // ✅ 피드백 메시지 상태
+  const [userSpokenWord, setUserSpokenWord] = useState(""); // ✅ 사용자가 말한 단어 저장
+  const [feedbackAnimation, setFeedbackAnimation] = useState(""); 
+  const [spokenAnswers, setSpokenAnswers] = useState(new Set()); // ✅ 이미 맞춘 정답 저장
 
    // ✅ 공통 fetch 함수 (Access Token 포함)
    const fetchResource = async (url, setState) => {
@@ -103,7 +109,7 @@ const AnimalGame = () => {
 
       recordingTimeoutRef.current = setTimeout(() => {
         stopRecording();
-      }, 10000);
+      }, 4000);
     } catch (error) {
       console.error('마이크 권한 요청 실패:', error);
     }
@@ -153,18 +159,21 @@ const AnimalGame = () => {
         const result = response.data;
         console.log("✅ 백엔드 응답 데이터:", result);
 
+
         if (result.duplication) {
             console.warn("⚠️ 이미 맞춘 정답입니다:", result.animal_name);
             return; // 중복 정답이면 처리 중단
         }
 
-        // ✅ 이미 존재하는 정답인지 프론트에서도 중복 체크 (추가적인 보안)
-        if (currentAnswerList.includes(result.animal_name)) {
-            alert(`⚠️ 이미 맞춘 정답입니다: ${result.animal_name}`);
-            return;
-        }
+        // // ✅ 이미 존재하는 정답인지 프론트에서도 중복 체크 (추가적인 보안)
+        // if (currentAnswerList.includes(result.animal_name)) {
+        //     // alert(`⚠️ 이미 맞춘 정답입니다: ${result.animal_name}`);
+        //     return;
+        // }
 
-        if (result.if_correct) {
+        checkIncorrect(result);
+
+        if (result.if_correct && !currentAnswerList.includes(result.animal_name))  {
             console.log("🎯 정답 확인! 추가된 동물:", result.animal_name);
 
             // 5️⃣ 정답 리스트 & 동그라미 위치 업데이트
@@ -177,7 +186,7 @@ const AnimalGame = () => {
             // 6️⃣ 모든 정답을 맞추면 게임 재시작
             if (result.cnt === 5) {
                 console.log("🎉 5개 정답 완료! 게임을 새로 시작합니다.");
-                startGame(); // 새로운 게임 시작
+                setShowCorrectPopup(true); 
             }
         } else {
             console.log("❌ 오답입니다. 다시 시도하세요.");
@@ -205,36 +214,84 @@ const AnimalGame = () => {
   };
 
 // ✅ 동그라미 좌표 비율 변환
-const calculateAdjustedPosition = (x, y) => {
-    const image = imageRef.current;
-    if (!image) return { x: "0%", y: "0%", size: "1vw" };
+const calculateAdjustedPosition = (origX, origY) => {
+    if (!imageRef.current) return { x: "0%", y: "0%", size: "20px" };
   
-    const imgWidth = image.naturalWidth;
-    const imgHeight = image.naturalHeight;
-    const containerWidth = image.clientWidth;
-    const containerHeight = image.clientHeight;
+    // 원본 이미지의 크기 (DB 좌표 기준)
+    const imgWidth = imageRef.current.naturalWidth;
+    const imgHeight = imageRef.current.naturalHeight;
+    // 현재 화면에 표시되는 이미지의 크기
+    const displayWidth = imageRef.current.clientWidth;
   
-    // ✅ 원본 이미지 좌표를 % 단위로 변환
-    let adjustedX = (x / imgWidth) * 100;
-    let adjustedY = (y / imgHeight) * 100;
+    // 원본 좌표를 %로 변환
+    let percX = (origX / imgWidth) * 100;
+    let percY = (origY / imgHeight) * 100;
   
-    // ✅ 동그라미 크기 조정 (최소 2% 최대 4%)
-    const adjustedSize = Math.max((3 / 100) * containerWidth, (2 / 100) * window.innerWidth);
+    // 여기서 보정값을 적용 (예: 10%씩 오른쪽과 아래로 이동)
+    const correctionXPercent = 10; // 필요에 따라 조정 가능
+    const correctionYPercent = 10; // 필요에 따라 조정 가능
   
-    return { 
-      x: `${adjustedX}%`, 
-      y: `${adjustedY}%`, 
-      size: `${adjustedSize}px` 
+    percX += correctionXPercent;
+    percY += correctionYPercent;
+  
+    // 동그라미 크기: 현재 이미지 너비의 일정 비율(또는 최소/최대 값을 고려)
+    const circleSize = Math.max((8 / 100) * displayWidth, (2 / 100) * window.innerWidth);
+  
+    return {
+      x: `${percX}%`,
+      y: `${percY}%`,
+      size: `${circleSize}px`,
     };
   };
+
+  // 5개 정답 달성 시 팝업이 뜨고,
+  // 팝업에서 [게임 시작] 버튼을 누르면 실제 startGame() 실행
+  const handleRestart = () => {
+    setShowCorrectPopup(false); // 팝업 닫기
+    startGame();                // 새로운 게임 시작
+  };
   
+// 🎯 정답 검증 및 피드백 처리 함수
+const checkIncorrect = (result) => {
+    setUserSpokenWord(result.animal_name || ""); // 사용자가 말한 단어 저장
+
+     // ✅ gameData.answerList가 undefined일 경우 빈 배열로 처리
+     const currentAnswerList = gameData.answerList || [];
+
+
+    if (currentAnswerList.includes(result.animal_name)) {
+        setFeedbackMessage("⚠️ 이미 맞춘 정답입니다!");
+        setFeedbackAnimation("feedback-shake");
+        setTimeout(() => {
+            setFeedbackAnimation("");
+          }, 1000);
+    } else if (!result.if_correct) {
+        setFeedbackMessage("❌ 오답이에요! 다시 시도하세요.");
+        setFeedbackAnimation("feedback-shake");
+        setTimeout(() => {
+            setFeedbackAnimation("");
+          }, 1000);
+    } else {
+        setFeedbackMessage("✅ 정답!");
+        setFeedbackAnimation("feedback-bounce");
+
+        setTimeout(() => {
+            setFeedbackAnimation("");
+          }, 1000);
+    }
+};
+
+
+
+
+
   
   useEffect(() => {
     const handleResize = () => {
       if (imageRef.current) {
         setGameData((prev) => ({
           ...prev,
-          circleData: prev.circleData.map((circle) => {
+          circleData: (prev.circleData || []).map((circle) => {
             const adjustedPos = calculateAdjustedPosition(parseFloat(circle.x), parseFloat(circle.y));
             return { x: adjustedPos.x, y: adjustedPos.y };
           }),
@@ -249,67 +306,70 @@ const calculateAdjustedPosition = (x, y) => {
 
   return (
     <div className="animal-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
-      
-      {/* ✅ 홈 버튼 */}
       <HomeButton />
   
-      {/* ✅ 게임 오버레이 추가 */}
       <div className="animal-game-overlay">
-        
-        {/* 🎯 게임 제목 */}
-        <h1 className="animal-game-title">어떤 동물이 있을까?</h1>
+        <h1 className="animal-game-title">숨은 동물을 찾아보자!</h1>
   
-        {/* ✅ 이미지 & 동물 리스트를 가로 정렬 (3:1 비율) */}
         <div className="animal-game-content">
           
-          {/* 🎨 동물 찾기 이미지 */}
-          <div className="image-container" style={{ position: "relative", display: "inline-block" }}>
-            {gameData.imageData && (
-              <img
-                ref={imageRef}
-                src={gameData.imageData}
-                alt="Game Image"
-                className="animal-game-image"
-                onLoad={handleImageLoad} // ✅ 이미지 로드 시 크기 업데이트
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "80vh",
-                  width: "auto",
-                  height: "auto",
-                  objectFit: "contain",
-                  display: "block",
-                  margin: "0 auto",
-                }}
-              />
+          {/* 왼쪽 칼럼 */}
+          <div className="animal-left-column">
+            {/* 이미지를 감싸는 컨테이너 */}
+            <div className="animal-image-container">
+              {gameData.imageData && (
+                <img
+                  ref={imageRef}
+                  src={gameData.imageData}
+                  alt="Game Image"
+                  className="animal-game-image"
+                  onLoad={handleImageLoad}
+                />
+              )}
+  
+                {Array.isArray(gameData.circleData) &&
+                gameData.circleData.map((circle, index) => {
+                    const { x, y, size } = calculateAdjustedPosition(circle.x, circle.y);
+                    return (
+                    <div
+                        key={index}
+                        className="circle-marker"
+                        style={{
+                            top: y,
+                            left: x,
+                            width: size,
+                            height: size,
+                        }}
+                    />
+                    );
+                })}
+            </div>
+            
+          {/* 🔹 피드백 박스 */}
+            <div className={`animal-feedback-box ${feedbackAnimation}`}>
+            <h3>피드백</h3>
+            {feedbackMessage ? (
+                <>
+                <p>{feedbackMessage}</p>
+                {userSpokenWord && <p>🗣 사용자가 말한 동물: <strong>{userSpokenWord}</strong></p>}
+                </>
+            ) : (
+                <p>📝 여기에 피드백이 표시됩니다.</p>
             )}
+            </div>
+            </div>
   
-            {/* 🔴 동그라미 표시 (위치 및 크기 반응형 조정) */}
-            {Array.isArray(gameData.circleData) &&
-              gameData.circleData.map((circle, index) => {
-                const { x, y, size } = calculateAdjustedPosition(circle.x, circle.y);
-                return (
-                  <div
-                    key={index}
-                    className="circle-marker"
-                    style={{
-                      position: "absolute",
-                      top: y,  // ✅ % 단위 적용
-                      left: x, // ✅ % 단위 적용
-                      width: size,
-                      height: size,
-                      borderRadius: "50%",
-                      border: "3px solid red",
-                      backgroundColor: "transparent",
-                      transform: "translate(-50%, -50%)",
-                    }}
-                  ></div>
-                );
-              })}
-          </div>
+          {showCorrectPopup && (
+            <CorrectPopup
+              message="축하합니다! 5개 정답을 모두 맞추셨어요!"
+              onRestart={handleRestart}
+            />
+          )}
   
-          {/* 📝 동물 리스트 */}
+          {/* 동물 리스트 (오른쪽 칼럼) */}
           <div className="animal-list">
-            <h3>음성으로 동물을 맞춰보세요! 🎤</h3>
+            <h3>음성으로 동물을 맞춰보세요!</h3>
+            <p>{(gameData.answerList || []).length} / 5</p>
             <ul>
               {(gameData.answerList || []).length > 0 ? (
                 gameData.answerList.map((animal, index) => (
@@ -325,20 +385,26 @@ const calculateAdjustedPosition = (x, y) => {
           </div>
         </div>
   
-        {/* 🎤 녹음 버튼 */}
+        {/* 녹음 버튼 */}
+        <div className="animal-record-container">
+        <p className="animal-record-guide">
+            {isRecording ? "녹음을 완료하려면 정지 버튼을 눌러주세요" : "녹음을 하려면 마이크 버튼을 눌러주세요"}
+        </p>
         <button
-          className="record-button"
+          className="Animal-record-button"
           onClick={isRecording ? stopRecording : startRecording}
         >
-          <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
+          <img
+            src={isRecording ? stopIcon : recordIcon}
+            alt="녹음 버튼"
+            className="Animal-record-icon"
+          />
         </button>
-        
-      </div> {/* game-overlay 끝 */}
+        </div>
+
+      </div>
     </div>
   );
-  
-  
-  
   
 };
 

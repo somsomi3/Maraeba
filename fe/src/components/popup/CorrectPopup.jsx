@@ -5,7 +5,7 @@ const CorrectPopup = ({ message, onRestart }) => {
     <div className="popup-overlay">
       <div className="popup-content">
         <p>{message}</p>
-        {/* <button className="popup-button" onClick={onRestart}>게임 시작</button> */}
+        <button className="popup-button" onClick={onRestart}>다음 게임</button>
       </div>
     </div>
   );
