@@ -77,7 +77,6 @@ const router = createBrowserRouter(
                 {/* ✅ 채팅 페이지 추가 */}
                 <Route path="/room/webrtc" element={<Webrtc />} />
                 <Route path="/room/waiting" element={<WaitingRoom />} />
-                <Route path="/room/create" element={<CreateRoom />} />
                 <Route path="/cooking-game" element={<CookingGame />} />
                 {/*<Route path="/room/:roomId" element={<RoomPage />} /> /!* ✅ RoomPage 라우트 추가 *!/*/}
                 <Route path="/room/:roomId" element={<Webrtc />} />{" "}
