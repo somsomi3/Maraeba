@@ -1,5 +1,6 @@
 package com.be.domain.users.service;
 
+import com.be.domain.users.dto.UserTutorialDTO;
 import com.be.domain.users.request.PasswordRequest;
 import com.be.domain.users.request.PasswordUpdateRequest;
 import com.be.domain.users.request.UserUpdateRequest;
@@ -17,4 +18,7 @@ public interface UserService {
 
 	//회원 탈퇴
 	void deleteUser(Long id, PasswordRequest request);
+
+	// 사용자 튜토리얼 시행 여부 가져오기
+	UserTutorialDTO getTutorial(Long id);
 }

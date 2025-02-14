@@ -58,4 +58,7 @@ public class User extends BaseEntity {
 
 	@OneToMany(mappedBy = "user")
 	private List<PronunciationSpecificStat> pronunciationSpecificStats;
+
+	@OneToOne(mappedBy = "user")
+	private UserTutorial userTutorials;
 }

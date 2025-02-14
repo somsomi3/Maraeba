@@ -7,7 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
 import com.be.db.entity.User;
+import com.be.db.entity.UserTutorial;
 import com.be.db.repository.UserRepository;
+import com.be.db.repository.UserTutorialRepository;
+import com.be.domain.users.dto.UserTutorialDTO;
 import com.be.domain.users.request.PasswordRequest;
 import com.be.domain.users.request.PasswordUpdateRequest;
 import com.be.domain.users.request.UserUpdateRequest;
@@ -23,10 +26,11 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final UserTutorialRepository userTutorialRepository;
 
 	private User findUserById(long id) {
 		log.info("id : {}", id);
-		return userRepository.findById(id).orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
+		return userRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public class UserServiceImpl implements UserService {
 		if (newEmail != null && !newEmail.isBlank()) {
 			user.setEmail(newEmail);
 		}
-		if(newUsername != null && !newUsername.isBlank()) {
+		if (newUsername != null && !newUsername.isBlank()) {
 			user.setUsername(request.getUsername());
 		}
 	}
@@ -68,5 +72,32 @@ public class UserServiceImpl implements UserService {
 		}
 		userRepository.delete(user);
 		userRepository.flush();
+	}
+
+	@Override
+	public UserTutorialDTO getTutorial(Long id) {
+		UserTutorial userTutorial = userTutorialRepository.findByUser_Id(id)
+			.orElseGet(() -> {
+				// 새로운 UserTutorial 생성 및 저장
+				User newUser = userRepository.findById(id)
+					.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+				UserTutorial newUserTutorial = UserTutorial.builder()
+					.user(newUser)
+					.hasSeenPron(false)
+					.hasSeenFood(false)
+					.hasSeenAnimal(false)
+					.hasSeenAI(false)
+					.build();
+
+				return userTutorialRepository.save(newUserTutorial);
+			});
+		
+		UserTutorialDTO response = UserTutorialDTO.builder().hasSeenPron(userTutorial.getHasSeenPron())
+			.hasSeenFood(userTutorial.getHasSeenFood())
+			.hasSeenAnimal(userTutorial.getHasSeenAnimal())
+			.hasSeenAI(userTutorial.getHasSeenAI())
+			.build();
+		return response;
 	}
 }

@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.common.model.response.BaseResponseBody;
+import com.be.domain.users.dto.UserTutorialDTO;
 import com.be.domain.users.request.PasswordRequest;
 import com.be.domain.users.request.PasswordUpdateRequest;
 import com.be.domain.users.request.UserUpdateRequest;
 import com.be.domain.users.response.GetCurrentUserResponse;
+import com.be.domain.users.response.GetUserTutorialRes;
 import com.be.domain.users.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,6 +89,7 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 		@ApiResponse(responseCode = "401", description = "인증 실패")
 	})
+
 	@DeleteMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> deleteUser(
 		@AuthenticationPrincipal UserDetails userDetails,
@@ -94,5 +97,12 @@ public class UserController {
 		Long id = Long.parseLong(userDetails.getUsername());
 		userService.deleteUser(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", HttpStatus.OK));
+	}
+
+	@GetMapping("/me/tutorial")
+	public GetUserTutorialRes getTutorial(@AuthenticationPrincipal UserDetails userDetails) {
+		Long id = Long.parseLong(userDetails.getUsername());
+		UserTutorialDTO response = userService.getTutorial(id);
+		return new GetUserTutorialRes("Success", HttpStatus.OK, response);
 	}
 }
