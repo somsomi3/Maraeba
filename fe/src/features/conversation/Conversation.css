@@ -3,7 +3,7 @@
 /* 컨테이너 */
 .conversation-container {
   position: relative;
-  width: 88vw;
+  width: 100vw;    
   height: 100vh;
   overflow: hidden; /* 내부 콘텐츠가 컨테이너를 벗어나지 않도록 */
   display: flex;
@@ -12,6 +12,7 @@
   justify-content: center;
   background-color: #ffe0b1;
   box-sizing: border-box;
+  font-family: NPSregular;
 }
 
 /* 헤더 */
@@ -43,7 +44,7 @@
   justify-content: space-between; /* 자식 섹션 간 간격 */
   align-items: stretch; /* 자식 요소의 높이를 동일하게 만듦 */
   gap: 2vw; /* 섹션 간 간격 */
-  width: 70vw; /* 부모 너비 */
+  width: 900px; 
   height: auto;
   margin-top: 20px;
 }
@@ -53,11 +54,13 @@
 .situation-create {
   margin-bottom: 0px;
   flex: 1; /* 동일한 비율로 공간 차지 */
-  background-color: white;
+  background-color: #ffb9b1b3;
+  /* background-color: #facda5; */
+  /* background-color: #efc3fab3; */
   border-radius: 15px;
   padding: 1.2vw;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 동일한 그림자 */
-  width: 20vw;
+  /* width: 30px; */
   flex-direction: column; /* 내부 요소 정렬 */
   justify-content: space-between; /* 내부 콘텐츠 균형 배치 */
 }
@@ -71,13 +74,14 @@
 }
 
 .situation-card {
-  padding: 10px 15px; /* 내부 여백 조정 */
+  padding: 13px 15px; /* 내부 여백 조정 */
   font-size: 1rem; /* 텍스트 크기 */
   text-align: center; /* 텍스트 중앙 정렬 */
   display: flex; /* 플렉스박스로 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
   justify-content: center; /* 수평 중앙 정렬 */
-  border: 2px solid #e0e0e0;
+  /* border: 2px solid #e0e0e0; */
+  border: none;
   border-radius: 8px;
   background: #f8f9fa;
   cursor: pointer;
@@ -85,13 +89,14 @@
 }
 
 .situation-card.selected {
-  background-color: #dcedff;
-  border-color: #2196f3;
+  background-color: #fad9bc;
+  /* border-color: #2196f3; */
 }
 
 /* 시작하기 버튼 */
 .primary-button {
-  background-color: #42a5f5;
+  /* background-color: #42a5f5; */
+  background-color: #fabf65;
   padding: 0.5vh;
   color: white;
   border: none;
@@ -99,8 +104,8 @@
   border-radius: 12px; /* 둥근 모서리 */
   margin-top: 15px; /* 위쪽 간격 */
   margin-bottom: 2vh;
-  width: 140px;
-  height: 40px;
+  width: 150px;
+  height: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex; /* 플렉스박스 사용 */
@@ -122,7 +127,7 @@
 
 .situation-section h2 {
   text-align: center; /* 텍스트 가운데 정렬 */
-  font-size: 1.3rem; /* 글씨 크기 */
+  font-size: 1.4rem; /* 글씨 크기 */
   color: #2c3e50; /* 글씨 색상 */
   margin-bottom: 5%; /* 아래 여백 */
 }
@@ -134,12 +139,12 @@
   margin-left: 0.5vh;
   font-size: 1rem;
   font-weight: bold;
-  color: #333;
 }
 
 .situation-create input,
 .situation-create textarea {
   width: 100%; /* 컨테이너의 전체 너비 사용 */
+  font-family: Pretendard;
   padding: 15px; /* 여백 조정 */
   margin-top: 0.3vh;
   margin-bottom: 2vh; /* 위쪽 간격 추가 */
@@ -174,4 +179,6 @@
 }
 
 
-
+.situation-input{
+    font-family: Pretendard;
+}
