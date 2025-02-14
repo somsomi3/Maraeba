@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
@@ -18,8 +19,6 @@ import com.be.domain.rooms.request.CreateRoomRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.request.UserLeaveRequest;
 import com.be.domain.rooms.response.RoomJoinResponse;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class RoomService {
@@ -38,6 +37,7 @@ public class RoomService {
 	}
 
 	// 🔹 방 생성
+	@Transactional
 	public Long createRoom(CreateRoomRequest request) {
 		Room createRoom = new Room();
 		createRoom.setHost(userRepository.findById(request.getHostId())
@@ -45,6 +45,14 @@ public class RoomService {
 		createRoom.setRoomPassword(request.getRoomPassword());
 		createRoom.setTitle(request.getTitle());
 		Room savedRoom = roomRepository.save(createRoom);
+
+		User user = new User();
+		user.setId(request.getHostId());
+		RoomUser roomUser = new RoomUser();
+		roomUser.setRoom(savedRoom);
+		roomUser.setUser(user);  // 해당 사용자 설정
+		roomUser.setIsHost(true);  // 방장 여부 설정
+		roomUserRepository.save(roomUser);
 		return savedRoom.getId();
 	}
 
