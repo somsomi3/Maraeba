@@ -152,3 +152,33 @@
     background-color: #c0392b;
 }
 
+/* 🔥 탭 컨테이너 */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* 🔥 탭 버튼 스타일 */
+.tab-button {
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background: #ffd79d;
+    border: none;
+    cursor: pointer;
+    margin: 0 10px;
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+/* 🔥 활성화된 탭 */
+.tab-button.active {
+    background: #ffa500;
+    color: white;
+}
+
+/* 🔥 탭 버튼 hover */
+.tab-button:hover {
+    background: #ffc567;
+}

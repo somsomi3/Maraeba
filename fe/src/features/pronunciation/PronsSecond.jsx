@@ -13,9 +13,9 @@ import tongue from "../../assets/images/tongue.png";
 const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
 
 const classMaxSeqMap = {
-  1: 8, 
-  2: 9, 
-  3: 13, 
+  1: 6, 
+  2: 8, 
+  3: 6, 
 };
 
 const PronsSecond = () => {
