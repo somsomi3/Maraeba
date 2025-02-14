@@ -1,17 +1,27 @@
+/* ✅ 로고 크기 유지 */
+.logo-container {
+    position: relative; /* 📌 이모티콘 배치를 위한 기준 */
+    display: flex;
+    justify-content: center; /* 로고를 가운데 정렬 */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 2vh; /* 로고 아래 여백 조정 */
+}
 .logo {
     display: block;
-    margin: 0 auto 1vw;
-    width: 18vw;
+    margin: 0 auto 10px;
+    width: 260px; /* 📌 고정 크기 설정 */
     height: auto;
 }
 
-/* 폼 컨테이너 */
+/* ✅ 폼 컨테이너 크기 조정 */
 .form-container {
-    padding: 10px;
+    padding: 20px;
     border-radius: 12px;
-    width: 24vw;
+    width: 360px; /* 📌 고정 크기 설정 */
+    max-width: 90vw; /* 📌 화면이 너무 작을 때 조절 */
     text-align: center;
-    margin-top: 0.6vw;
+    margin-top: 20px;
 }
 
 .mainform {
@@ -20,7 +30,6 @@
 
 /* 입력 그룹 */
 .input-group {
-
     margin-bottom: 1vw;
     display: flex;
     flex-direction: column;
@@ -37,22 +46,23 @@
     flex: 1; /* 남은 공간을 입력창이 차지하도록 */
 }
 
+/* ✅ 입력 필드 크기 유지 */
 .input {
-    width: 24vw;
-    padding: 1.2vw;
-    font-size: 1.2vw;
+    width: 100%; /* 📌 부모 요소에 맞게 조절 */
+    padding: 22px;
+    font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
 
-/* 버튼 */
+/* ✅ 로그인 버튼 */
 .auth-button {
-    width: 24vw;
-    height: 3.5vw;
-    margin-bottom: 1%;
-    font-size: 1.2vw;
+    width: 100%;
+    height: 51px;
+    font-size: 18px;
+    margin-bottom: 3px;
     background-color: #81bec5;
     color: white;
     border: none;
@@ -60,17 +70,16 @@
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .auth-button:hover {
     background-color: #5dade2;
 }
 
-/* 링크 버튼 */
+/* ✅ 링크 버튼 */
 .secondary-button {
     margin-top: 10px;
-    font-size: 1vw;
+    font-size: 14px;
     font-weight: bold;
     background: none;
     border: none;
@@ -78,6 +87,7 @@
     text-decoration: none;
     outline: none;
 }
+
 
 /* 작은 버튼 (중복 검사 버튼) */
 .small-button {
@@ -101,32 +111,27 @@
     border: none;
     cursor: pointer;
     padding: 0;
-    display: flex; /* 버튼 내 요소를 정렬 */
-    justify-content: center; /* 가운데 정렬 */
-    align-items: center; /* 세로 가운데 정렬 */
-    width: 24vw; /* 버튼이 부모 요소의 전체 너비를 차지하도록 설정 */
-
+    width: 100%; /* 버튼이 부모 요소의 전체 너비를 차지하도록 설정 */
 }
   .naverbtn {
     background-color: #03C75A;
     border: none;
     cursor: pointer;
     display: flex;
-    width: 24vw;
-    height: 3.5vw;
-    padding: 0;
+    width: 100%;
+    height: auto;
     border-radius: 3px;
   }
   .kakao {
-    width: 100%; /* 가이드에 맞춘 크기 */
+    width: 100%; 
     height: auto;
     display: block;
-    margin: 0.8vw auto; /* 중앙 정렬 */
+    /* margin: 0.8vw auto;  */
     box-shadow: inset;
   }
 
   .naver {
-    width: 50%; 
+    width: 55%; 
     height: auto;
     display: block;
     margin: auto;
@@ -160,18 +165,18 @@
   /* ✅ 이모티콘 공통 스타일 */
 .main-emoji {
     position: absolute;
-    width: 7vw; /* 이모티콘 크기 조정 */
+    width: 110px; /* 이모티콘 크기 조정 */
     height: auto;
 }
 
-/* ✅ 왼쪽 이모티콘 (yaho.png) */
+/* ✅ 왼쪽 이모티콘 */
 .emoji-left {
-    top: 6vw; /* 원하는 위치 조정 */
-    right: 32vw;
+    right: -65px; /* 로고 왼쪽으로 이동 */
+    top: -16px; /* 로고와 높이 맞추기 */
 }
 
-/* ✅ 오른쪽 이모티콘 (smile.png) */
+/* ✅ 오른쪽 이모티콘 */
 .emoji-right {
-    top: 8vw;
-    left: 30vw;
+    left: -80px; /* 로고 오른쪽으로 이동 */
+    top: 15px;
 }

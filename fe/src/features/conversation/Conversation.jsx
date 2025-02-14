@@ -52,8 +52,6 @@ const Conversation = () => {
         user_role: formData.userRole,
         situation: formData.situation
       });
-    
-      console.log(data.answer)
 
       if (data.session_id) {
         navigate('/conversation/start', { state: { sessionId: data.session_id, aiAnswer: data.answer, aiRole: formData.aiRole, userRole: formData.userRole } });
@@ -90,7 +88,7 @@ const Conversation = () => {
             <h2>상황 만들기</h2>
             <form onSubmit={handleSubmit} className="creation-form">
               <label>
-                AI 역할
+                상대방 역할
                 <input type="text" name="aiRole" value={formData.aiRole} onChange={handleInputChange} placeholder="AI의 역할을 입력해주세요." />
               </label>
 
@@ -101,7 +99,7 @@ const Conversation = () => {
 
               <label className="situation-description">
                 상황
-                <textarea name="situation" value={formData.situation} onChange={handleInputChange} placeholder="상황을 설명해주세요." />
+                <textarea name="situation" value={formData.situation} onChange={handleInputChange} placeholder="상황을 설명해주세요." className='situation-input'/>
               </label>
             </form>
           </div>

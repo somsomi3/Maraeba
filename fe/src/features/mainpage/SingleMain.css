@@ -1,3 +1,51 @@
+/* 🔥 배경 이미지 스타일 */
+.background-image {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw; /* 💡 뷰포트 너비에 맞게 설정 */
+    max-width: 1270px; /* 📌 최대 크기 제한 */
+    height: auto; /* 비율 유지 */
+    z-index: 50; /* 📌 카드보다 뒤에 배치 */
+    pointer-events: none;
+}
+
+/* 🔥 구름 이미지 공통 스타일 */
+.cloud {
+    position: absolute;
+    width: 10vw; /* 📌 화면 크기에 맞게 조절 */
+    height: auto; /* 비율 유지 */
+    opacity: 0.7; /* 살짝 투명하게 */
+    z-index: 50; /* 🔥 카드보다 앞에 배치 */
+    pointer-events: none;
+}
+
+/* 🔥 개별 구름 위치 조정 */
+/* 🔥 개별 구름 위치 조정 */
+.cloud-1 {
+    top: -4%;
+    left: 12%;
+    width: 24vw; /* 크기 조절 가능 */
+}
+
+.cloud-2 {
+    top: 32%;
+    right: -15%;
+    width: 19vw;
+}
+
+.cloud-3 {
+    top: 20%;
+    left: -26%;
+    width: 22vw;
+}
+
+.cloud-4 {
+    top: -6%;
+    right: 15%;
+    width: 20vw;
+}
 /* MainPage 스타일 */
 .main-container {
     display: flex;
@@ -7,6 +55,7 @@
     padding: 0;
     background-color: #ffe0b1;
     min-height: 100vh;
+    position: relative;
 }
 
   
@@ -25,7 +74,8 @@
     flex-wrap: wrap; /* 화면이 줄어들면 줄바꿈 */
     width: 100%;
     max-width: 1200px; /* 최대 너비 설정 */
-
+    position: relative;
+    
 }
 
   
