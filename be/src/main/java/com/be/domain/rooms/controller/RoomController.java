@@ -55,7 +55,7 @@ public class RoomController {
         // ✅ Room 리스트를 RoomResponse 리스트로 변환
         List<RoomResponse> roomResponses = rooms.stream()
                 //다음줄에 포함된 각각의 id는
-                .map(room -> new RoomResponse(room.getId(), room.getTitle(), room.getHost().getUsername()))
+                .map(room -> new RoomResponse(room.getId(), room.getTitle(), room.getHost().getUsername(), room.getUserCnt()))
                 .toList();
 
         return ResponseEntity.ok(roomResponses);
@@ -84,7 +84,5 @@ public class RoomController {
         roomUserRepository.deleteByUserIdAndRoomId(request.getUser(), roomId);
         return ResponseEntity.ok().body(BaseResponseBody.of("방삭제요청 성공", 200));
     }
-
-    // 방 생성 요청을 처리할 DTO
 
 }

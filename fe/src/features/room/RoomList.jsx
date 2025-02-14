@@ -8,15 +8,14 @@ import CreateRoomPopup from "../room/CreatePopup";
 const RoomList = () => {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [shouldJoin, setShouldJoin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const navigate = useNavigate();
     const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
     const userId = useSelector((state) => state.auth.userId);
-    
 
     // ✅ JWT 토큰에서 사용자 정보 추출하는 함수
-
 
     // 방 목록 가져오기
     const fetchRooms = async () => {
@@ -33,7 +32,25 @@ const RoomList = () => {
 
     useEffect(() => {
         fetchRooms();
+
+        const interval = setInterval(() => {
+            fetchRooms(); // 주기적인 목록 갱신
+        }, 10000); // 10초마다 갱신
+
+        return () => clearInterval(interval); // 언마운트 시 인터벌 제거
     }, []); // 페이지 로드 시 방 목록을 불러오기
+
+    useEffect(() => {
+        if (selectedRoom && shouldJoin) {
+            handleJoinRoom(selectedRoom);
+            setShouldJoin(false);
+        }
+    }, [selectedRoom, shouldJoin]);
+
+    const handleSelectRoomAndJoin = (room) => {
+        setSelectedRoom(room);
+        setShouldJoin(true);
+    };
 
     // 방 선택
     const handleSelectRoom = (room) => {
@@ -41,9 +58,8 @@ const RoomList = () => {
     };
 
     // 방 입장 요청
-// 방 입장 요청
-    const handleJoinRoom = async (room) => {
-        if (!room) {
+    const handleJoinRoom = async () => {
+        if (!selectedRoom) {
             alert("입장할 방을 선택하세요.");
             return;
         }
@@ -54,8 +70,13 @@ const RoomList = () => {
             return;
         }
 
+        if (selectedRoom.userCnt >= 2) {
+            alert("❌ 이 방은 최대 인원에 도달하여 입장할 수 없습니다.");
+            return;
+        }
+
         let password = "";
-        if (room.room_password) {
+        if (selectedRoom.room_password) {
             password = prompt("방 비밀번호를 입력하세요:");
             if (!password) {
                 alert("비밀번호가 필요합니다.");
@@ -64,47 +85,51 @@ const RoomList = () => {
         }
 
         try {
-            // 방 입장 API 요청
-            const response = await springApi.post(`/rooms/join/${room.id}`, {
-                user: userId,
-                room: room.id,
-                room_password: password || null,
-            });
+            const response = await springApi.post(
+                `/rooms/join/${selectedRoom.id}`,
+                {
+                    user: userId,
+                    room: selectedRoom.id,
+                    room_password: password || null,
+                }
+            );
 
-            console.log("서버 응답:", response.data);  // isHost 값 확인
-            // 방장 여부 확인
             const { host } = response.data;
-
-            // 방장 여부에 따라 UI 처리
-            if (host) {
-                alert("방장으로 입장했습니다!");
-            } else {
-                console.log(host);
-                alert("참가자로 입장했습니다.");
-            }
+            alert(host ? "방장으로 입장했습니다!" : "참가자로 입장했습니다.");
 
             // 방 입장 후 해당 방 페이지로 이동
-            navigate(`/room/${room.id}`);
+            navigate(`/room/${selectedRoom.id}`);
         } catch (error) {
             alert(error.response?.data?.message || "방 참가에 실패했습니다.");
         }
     };
 
-    
-
     return (
         <div className="waiting-room">
-             <CreateRoomPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+            <CreateRoomPopup
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+            />
             <h1>방 목록</h1>
 
-            {/* 방 만들기 & 입장 버튼 */}
+            {/* ✅ 새로고침 버튼 추가 */}
             <div className="room-actions">
-                <button className="create-room-btn" onClick={() => setIsPopupOpen(true)}>
+                <button
+                    className="create-room-btn"
+                    onClick={() => setIsPopupOpen(true)}
+                >
                     방 만들기
                 </button>
                 <button
+                    className="refresh-room-btn"
+                    onClick={fetchRooms}
+                    disabled={loading}
+                >
+                    {loading ? "🔄 새로고침 중..." : "🔄 새로고침"}
+                </button>
+                <button
                     className="join-room-btn"
-                    onClick={() => handleJoinRoom(selectedRoom)}
+                    onClick={handleJoinRoom}
                     disabled={!selectedRoom}
                 >
                     입장하기
@@ -118,37 +143,54 @@ const RoomList = () => {
                 ) : rooms.length > 0 ? (
                     <table className="room-table">
                         <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th>방 제목</th>
-                            <th>상태</th>
-                            <th>인원</th>
-                            <th>비밀번호</th>
-                        </tr>
+                            <tr>
+                                <th>번호</th>
+                                <th>방 제목</th>
+                                <th>상태</th>
+                                <th>인원</th>
+                                <th>비밀번호</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {rooms.map((room, index) => (
-                            <tr
-                                key={room.id}
-                                className={selectedRoom?.id === room.id ? "selected" : ""}
-                                onClick={() => handleSelectRoom(room)} // 방을 선택하는 함수 호출
-                            >
-                                <td>{index + 1}</td>
-                                <td>
-                                    <button
-                                        className="room-link"
-                                        onClick={() => handleJoinRoom(room)} // 클릭 시 방 입장
+                            {rooms.map((room, index) => (
+                                <tr
+                                    key={room.id}
+                                    className={
+                                        selectedRoom?.id === room.id
+                                            ? "selected"
+                                            : ""
+                                    }
+                                    onClick={() => handleSelectRoom(room)} // 방을 선택하는 함수 호출
+                                >
+                                    <td>{index + 1}</td>
+                                    <td>
+                                        <button
+                                            className="room-link"
+                                            onClick={() =>
+                                                handleSelectRoomAndJoin(room)
+                                            }
+                                        >
+                                            {room.title} (ID: {room.id})
+                                        </button>
+                                    </td>
+                                    <td
+                                        className={
+                                            room.status === "playing"
+                                                ? "playing"
+                                                : "waiting"
+                                        }
                                     >
-                                        {room.title} (ID: {room.id})
-                                    </button>
-                                </td>
-                                <td className={room.status === "playing" ? "playing" : "waiting"}>
-                                    {room.status === "playing" ? "PLAYING" : "WAITING"}
-                                </td>
-                                <td>{room.current_players}/{room.max_players}</td>
-                                <td>{room.room_password ? "🔒" : "🔓"}</td>
-                            </tr>
-                        ))}
+                                        {room.status === "playing"
+                                            ? "PLAYING"
+                                            : "WAITING"}
+                                    </td>
+                                    <td>
+                                        {room.userCnt}/ 2
+                                        {room.userCnt >= 2 && " 🚫"}
+                                    </td>
+                                    <td>{room.room_password ? "🔒" : "🔓"}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 ) : (

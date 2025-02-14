@@ -15,9 +15,10 @@ import com.be.domain.rooms.response.RoomJoinResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class RoomService {
@@ -40,12 +41,12 @@ public class RoomService {
         Room createRoom = new Room();
         createRoom.setHost(userRepository.findById(request.getHostId()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND)));
         createRoom.setRoomPassword(request.getRoomPassword());
-        createRoom.setStartedAt(LocalDateTime.now());
         createRoom.setTitle(request.getTitle());
         roomRepository.save(createRoom);
     }
 
     // 🔹 방 참가
+    @Transactional
     public RoomJoinResponse joinRoom(UserJoinRequest request) {
         System.out.println("Room ID: " + request.getRoom());  // Room ID가 null인지 확인
         System.out.println("User ID: " + request.getUser());  // User ID가 null인지 확인
@@ -53,6 +54,7 @@ public class RoomService {
         // 해당 방과 사용자 조회
         Room room = roomRepository.findById(Long.valueOf(request.getRoom()))
                 .orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));  // 해당 방 조회
+        room.setUserCnt(room.getUserCnt() + 1);
         User user = userRepository.findById(request.getUser())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));  // 해당 사용자 조회
 
@@ -72,20 +74,12 @@ public class RoomService {
         // 방에 참가한 사용자 데이터 저장
         roomUserRepository.save(roomUser);
 
-        // 방장 여부에 따른 메시지 반환
-//        if (isHost) {
-//            return "User " + roomUser.getUser().getUsername() + " joined as host in room " + roomUser.getRoom().getTitle();
-//        } else {
-//            return "User " + roomUser.getUser().getUsername() + " joined room " + roomUser.getRoom().getTitle();
-//        }
-        // 방장 여부와 메시지를 담은 응답 객체 생성
 
         return RoomJoinResponse.of(200,isHost);
     }
 
 
     // 🔹 방 나가기
-// 🔹 방 나가기
     public String leaveRoom(UserLeaveRequest request) {
         Long roomId = Long.valueOf(request.getRoom());  // Room ID 받아오기
         Long userId = request.getUser();  // User ID 받아오기
@@ -105,8 +99,4 @@ public class RoomService {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
     }
-
-
-
-
 }

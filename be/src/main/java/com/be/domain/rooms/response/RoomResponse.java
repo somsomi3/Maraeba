@@ -1,6 +1,5 @@
 package com.be.domain.rooms.response;
 
-import com.be.db.entity.Room;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -22,9 +21,7 @@ public class RoomResponse {
 	@JsonProperty("hostUsername")
 	private String hostUsername; // 방장의 이름만 전달
 
-	// public RoomResponse(Room room) {
-	// 	this.id = room.getId();
-	// 	this.title = room.getTitle();
-	// 	this.hostUsername = room.getHost().getUsername();
-	// }
+	@JsonProperty("userCnt")
+	private int userCnt;
+
 }
