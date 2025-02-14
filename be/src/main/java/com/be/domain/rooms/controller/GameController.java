@@ -1,13 +1,18 @@
 package com.be.domain.rooms.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import com.be.common.model.response.BaseResponseBody;
+import com.be.db.entity.BaseEntity;
 import com.be.db.entity.Room;
 import com.be.db.repository.RoomRepository;
+import com.be.db.repository.UserRepository;
 import com.be.domain.rooms.request.UserChoiceRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.response.GameResult;
 import com.be.domain.rooms.response.GameStartResponse;
+import com.be.domain.rooms.service.ColorItemService;
 import com.be.domain.rooms.service.GameService;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -20,14 +25,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/game")
 public class GameController {
 
-    private GameService gameService;
+    private final GameService gameService;
     private final RoomRepository roomRepository;
+    private final ColorItemService colorItemService;
 
     @GetMapping("/items")
-    public ResponseEntity<List<String>> getGameItems() {
-        List<String> items = List.of("딸기", "바나나", "피클", "자동차");
-        return ResponseEntity.ok(items);
+    public ResponseEntity
+            <Map<String, String>> getGameItems() {
+
+        return ResponseEntity.status(200).body(colorItemService.getRandomWordsByColor());
     }
+
     //게임 시작
     @PostMapping("/start/{room_id}")
     public ResponseEntity<GameStartResponse> startGame(

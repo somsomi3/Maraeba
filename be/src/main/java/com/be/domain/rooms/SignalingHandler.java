@@ -48,8 +48,11 @@ public class SignalingHandler extends TextWebSocketHandler {
 				break;
 			case "chat":
 			case "offer":
+			case "items":
 			case "answer":
+			case "choice":
 			case "candidate":
+			case "answerChoice":
 				broadcast(roomId, message, session);
 				break;
 			default:
@@ -76,6 +79,7 @@ public class SignalingHandler extends TextWebSocketHandler {
 			log.info("📡 메시지 전송 대상 사용자 ID: {}", session.getId());
 			if (session.isOpen() && !session.getId().equals(senderSession.getId())) {
 				session.sendMessage(message);
+				log.info("보냄");
 			}
 		}
 	}

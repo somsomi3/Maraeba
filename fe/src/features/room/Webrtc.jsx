@@ -21,15 +21,48 @@ const Webrtc = () => {
     const [endTime, setEndTime] = useState(null); // endTime 상태 정의
     const [loading, setLoading] = useState(false);
     const [isGameStarted, setIsGameStarted] = useState(false); // 게임 시작 여부 상태 추가
-    const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [items, setItems] = useState([]); // 빈 배열로 초기화
+    const [choice, setChoice] = useState([]); // 빈 배열로 초기화
+    const [answer, setAnswer] = useState([]); // 빈 배열로 초기화
+    const [answerChoice, setAnswerChoice] = useState([]); // 빈 배열로 초기화
+    
+    
+    const [correctAnswer, setCorrectAnswer] = useState(null); // 정답 저장
+    const [isHost, setIsHost] = useState(false); // 방장 여부 상태 추가
 
-    const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+    const token = useSelector((state) => state.auth.token); // Redux에서 토큰 가져오기
     const userId = useSelector((state) => state.auth.userId);
 
     const { roomId } = useParams(); // URL에서 roomId 가져오기
     const navigate = useNavigate();
+
+    // // 방장 여부 확인 API 호출
+    // useEffect(() => {
+    //     const fetchHostStatus = async () => {
+    //         try {
+    //             const response = await springApi.get(`/rooms/host/${roomId}`);
+    //             setIsHost(response.data.isHost); // ✅ 방장 여부 저장
+    //         } catch (error) {
+    //             console.error("❌ 방장 여부 확인 실패:", error);
+    //         }
+    //     };
+    //
+    //     if (roomId) {
+    //         fetchHostStatus();
+    //     }
+    // }, [roomId]);
     useEffect(() => {
+        if (!roomId) {
+            console.error("🚨 roomId가 없습니다. 방장 여부 확인을 중단합니다.");
+            return;
+        }
+        fetchHostStatus();
+    }, [roomId]);
+
+    useEffect(() => {
+        if (roomId) {
+            fetchHostStatus(); // ✅ 방장 여부 확인 API 호출
+        }
         if ((token, roomId)) {
             // const decodedUserId = getUserIdFromToken(token);
             //     setUserId(decodedUserId); // ✅ 상태에 저장
@@ -51,7 +84,7 @@ const Webrtc = () => {
             window.onpopstate = null; // 클린업: 컴포넌트가 언마운트될 때
         };
         // }, []);
-    }, [token]); // ✅ Redux의 토큰 값이 변경될 때마다 실행
+    }, [token, roomId]);// ✅ Redux의 토큰 값이 변경될 때마다 실행
 
     // WebSocket 메시지 수신 처리
     useEffect(() => {
@@ -69,10 +102,16 @@ const Webrtc = () => {
 
                 if (receivedMessage.type === "offer") {
                     await handleOffer(receivedMessage);
+                } else if(receivedMessage.type === "items"){
+                    await  handleItems(receivedMessage);
                 } else if (receivedMessage.type === "answer") {
                     await handleAnswer(receivedMessage);
+                } else if (receivedMessage.type === "choice"){
+                    await handleChoice(receivedMessage);
                 } else if (receivedMessage.type === "candidate") {
                     await handleCandidate(receivedMessage);
+                } else if (receivedMessage.type === "answerChoice") {
+                    await handleAnswerChoice(receivedMessage);
                 } else {
                     // ✅ 메시지 상태 업데이트 (새로운 배열 생성)
                     setMessages((prevMessages) => [
@@ -107,6 +146,29 @@ const Webrtc = () => {
         };
     }, []);
 
+    const fetchHostStatus = async () => {
+        try {
+            const response = await springApi.post(`/rooms/join/${roomId}`, {
+                user: userId,
+                room: roomId,
+                // room_password: password || null,
+            });
+
+            if (!response || !response.data) {
+                throw new Error("🚨 서버 응답이 없습니다.");
+            }
+
+            const isHostValue = response.data.host || false;
+            setIsHost(isHostValue);
+            console.log("응답에서 받은 host 값:", response.data.host);
+            console.log("setIsHost에 저장된 값:", isHostValue);
+            console.log("방장 여부:", response.data.host ? "방장" : "참가자");
+            
+        } catch (error) {
+            console.error("방장 여부 확인 실패:", error.message);
+        }
+    };
+
     // 메시지가 변경될 때 실행되는 자동 스크롤 useEffect
     useEffect(() => {
         if (chatBoxRef.current) {
@@ -114,55 +176,70 @@ const Webrtc = () => {
         }
     }, [messages]); // messages가 변경될 때마다 실행
 
-    useEffect(() => {
-        const fetchItems = async () => {
-            try {
-                setLoading(true);
-                const response = await springApi.get("/game/items"); // 단어 목록 API 호출
-                setItems(response.data);
-            } catch (error) {
-                console.error("❌ 단어 목록 불러오기 실패:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchItems();
-    }, []);
+    // useEffect(() => {
+    //     const fetchItems = async () => {
+    //         try {
+    //             setLoading(true);
+    //             const response = await springApi.get("/game/items"); // 단어 목록 API 호출
+    //             setItems(response.data);
+    //             // console.log("출력출력",response.data);
+    //         } catch (error) {
+    //             console.error("❌ 단어 목록 불러오기 실패:", error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //
+    //     fetchItems();
+    // }, []);
 
     // JWT 토큰 가져오기
     //날림! 로컬에서 가져오는거
 
-    // WebSocket 연결
     const connectWebSocket = (token, roomId) => {
         if (!roomId) {
             console.error("❌ 방 ID(roomId)가 없습니다.");
             return;
         }
 
-        if (
-            webSocketRef.current &&
-            webSocketRef.current.readyState === WebSocket.OPEN
-        ) {
+        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
             console.warn("WebSocket이 이미 연결되어 있음");
             return;
         }
 
         webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         webSocketRef.current.onopen = () => {
             console.log(`✅ WebSocket 연결됨 (방 ID: ${roomId})`);
-
-            // ✅ 방 입장 메시지 전송 (방에 참여하기 위해)
             const joinMessage = {
                 type: "join",
-                room_id: roomId, // 방 번호
-                user_id: userId, // 사용자 ID
+                room_id: roomId,
+                user_id: userId,
             };
             webSocketRef.current.send(JSON.stringify(joinMessage));
             console.log("🚀 방 입장 메시지 전송:", joinMessage);
+        };
+
+        webSocketRef.current.onmessage = (event) => {
+            const receivedMessage = JSON.parse(event.data);
+            console.log("📩 WebSocket 메시지 수신:", receivedMessage);
+
+            if (receivedMessage.type === "gameStart") {
+                console.log("📌 참가자가 받은 단어 목록:", receivedMessage.items);
+                setItems(receivedMessage.items);
+            }
+
+            if (receivedMessage.type === "answerSelected") {
+                console.log("📌 참가자가 받은 정답:", receivedMessage.answer);
+                setCorrectAnswer(receivedMessage.answer);
+            }
+
+            if (receivedMessage.type === "userChoice") {
+                console.log(`📌 참가자가 선택한 단어: ${receivedMessage.choice}`);
+                setChoice(receivedMessage.choice);
+            }
         };
 
         webSocketRef.current.onclose = () => {
@@ -172,6 +249,8 @@ const Webrtc = () => {
             }, 5000);
         };
     };
+
+
 
     // 메시지 전송
     const sendMessage = () => {
@@ -205,6 +284,9 @@ const Webrtc = () => {
             console.error("WebSocket 연결이 닫혀 있음!");
         }
     };
+
+   
+    
 
     // DB 저장 함수
     const saveMessageToDB = async (messageObject) => {
@@ -272,10 +354,10 @@ const Webrtc = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
                 {
-                    // urls: "stun:stun.l.google.com:19302",
-                    urls: "turn:3.39.252.223:3478?transport=tcp",
-                    username: `${import.meta.env.VITE_USERNAME_URL}`,
-                    credential: `${import.meta.env.VITE_PASSWORD_URL}`,
+                    urls: "stun:stun.l.google.com:19302",
+                    // urls: "turn:3.39.252.223:3478?transport=tcp",
+                    // username: `${import.meta.env.VITE_USERNAME_URL}`,
+                    // credential: `${import.meta.env.VITE_PASSWORD_URL}`,
                 },
             ],
         });
@@ -382,7 +464,7 @@ const Webrtc = () => {
             webSocketRef.current &&
             webSocketRef.current.readyState === WebSocket.OPEN
         ) {
-            const messageWithRoom = { ...message, roomId }; // ✅ roomId 추가
+            const messageWithRoom = { ...message, roomId }; // roomId 추가
             webSocketRef.current.send(JSON.stringify(messageWithRoom));
         } else {
             console.error(
@@ -391,6 +473,55 @@ const Webrtc = () => {
             );
         }
     };
+
+    //items수신
+    // WebSocket으로 수신한 items 데이터를 저장하는 함수
+    const handleItems = async (message) => {
+        console.log("조건 확인 : message.items = ",(message.items));
+        console.log("조건 확인 : Array.isArray(message.items)",(Array.isArray(message.items)));
+        if (message.items && Array.isArray(message.items)) {
+            console.log("📩 WebSocket을 통해 수신한 단어 목록:", message.items);
+            setItems(message.items); // ✅ 상태 업데이트
+            
+        } else {
+            console.error("🚨 수신한 items 데이터가 올바르지 않음:", message);
+        }
+    };
+
+    //choice수신
+    const handleChoice = async (message) => {
+        console.log("조건 확인 : message.choice = ",(message.choice));
+        console.log("조건 확인 : isHost = ",(isHost));
+        
+        if (message.choice) {
+            
+            console.log("📩 WebSocket을 통해 수신한 단어 목록:", message.choice);
+            setChoice(message.choice); // ✅ 상태 업데이트
+
+        } else {
+            console.error("🚨 수신한 choice 데이터가 올바르지 않음:", message);
+        }
+    };
+
+    //answer수신
+    const handleAnswerChoice = async (message) => {
+        
+        console.log("조건 확인 : message.answerChoice = ",(message.answer_choice));
+        console.log("조건 확인 : isHost = ",(isHost));
+
+        if (message.answer_choice) {
+
+            console.log("📩 WebSocket을 통해 수신한 단어 목록:", message.answer_choice);
+            setAnswerChoice(message.answer_choice); // 상태 업데이트
+            setCorrectAnswer(message.answer_choice);
+
+        } else {
+            console.error("🚨 수신한 answerChoice 데이터가 올바르지 않음:", message);
+        }
+    };
+    
+
+    //음소거 
     const toggleMute = () => {
         if (localStream) {
             const audioTrack = localStream.getAudioTracks()[0];
@@ -457,42 +588,187 @@ const Webrtc = () => {
     };
     // 게임 시작
     const startGame = async () => {
-        if (!userId) {
-            alert("사용자 정보가 없습니다. 로그인 후 다시 시도해주세요.");
+        if (!isHost) {
+            alert("방장만 게임을 시작할 수 있습니다.");
             return;
         }
         try {
-            setLoading(true);
-            const response = await springApi.post(`/game/start/${roomId}`, {
-                userId,
-            });
+            const response = await springApi.post(`/game/start/${roomId}`, { userId });
             if (response.status === 200) {
                 setIsGameStarted(true);
-            } else {
-                console.error("❌ 게임 시작 실패:", response.data);
             }
         } catch (error) {
             console.error("❌ 게임 시작 오류:", error);
-        } finally {
-            setLoading(false);
         }
     };
 
-    // 사용자의 단어 선택 처리
-    const handleChoice = async (choice) => {
+    // // 사용자의 단어 선택 처리
+    // const handleChoice = async (choice) => {
+    //     try {
+    //         setSelectedItem(choice);
+    //
+    //         const response = await springApi.post(`/game/choice/${roomId}`, {
+    //             userId,
+    //             choice,
+    //         });
+    //
+    //         alert(`✅ 선택 완료: ${choice}\n서버 응답: ${response.data}`);
+    //     } catch (error) {
+    //         console.error("❌ 선택 전송 실패:", error);
+    //     }
+    // };
+    // 단어 목록 불러오기
+    const fetchGameWords = async () => {
         try {
-            setSelectedItem(choice);
+            console.log(`✅ 게임 단어 요청: color=${correctAnswer}`);
+            const response = await springApi.get(`/game/items`);
 
-            const response = await springApi.post(`/game/choice/${roomId}`, {
-                userId,
-                choice,
-            });
+            console.log("📩 API 응답 데이터:", response.data);
 
-            alert(`✅ 선택 완료: ${choice}\n서버 응답: ${response.data}`);
+            if (response.status === 200 && typeof response.data === "object") {
+                const wordsArray = Object.values(response.data);
+                setItems(wordsArray);
+                console.log("✅ 변환된 단어 목록:", wordsArray);
+                sendItems();
+
+
+            } else {
+                console.error("🚨 서버 응답이 올바르지 않습니다:", response.data);
+                setItems([]);
+            }
         } catch (error) {
-            console.error("❌ 선택 전송 실패:", error);
+            console.error("❌ 단어 목록 불러오기 실패:", error);
+            setItems([]);
         }
     };
+
+    //게임 정답 전송 items?
+    const sendItems = () => {
+        if (isHost===true &&
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            if (!userId) {
+                console.error("사용자 ID 없음");
+                return;
+            }
+            console.log("Items 보낸다");
+            const messageObject = {
+                type: "items", // 메시지 타입 추가
+                user_id: userId, // 사용자 ID
+                items: items,
+                room_id: roomId, // 방 ID
+                sentAt: new Date().toISOString(), // 메시지 보낸 시간
+            };
+
+            console.log("📡 메시지 전송!!!!!!!:", messageObject);
+            webSocketRef.current.send(JSON.stringify(messageObject));
+
+        } else {
+            console.error("WebSocket 연결이 닫혀 있음!");
+        }
+    };
+
+    
+    //참가자 선택상황 choice 전송
+    const sendChoice = (choice) => {
+        setChoice(choice);
+        
+        if (isHost=== false &&
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            if (!userId) {
+                console.error("사용자 ID 없음");
+                return;
+            }
+            console.log("Choice 보낸다");
+            const messageObject = {
+                type: "choice", // 메시지 타입 추가
+                user_id: userId, // 사용자 ID
+                choice: choice,
+                room_id: roomId, // 방 ID
+                sentAt: new Date().toISOString(), // 메시지 보낸 시간
+            };
+
+            console.log("📡 메시지 전송!!!!!!!:", messageObject);
+            webSocketRef.current.send(JSON.stringify(messageObject));
+
+        } else {
+            console.error("WebSocket 연결이 닫혀 있거나 host가 아님!");
+        }
+    };
+    
+    
+    // 빨간 테두리 전송
+    const sendAnswerChoice = (answerChoice) => {
+        setCorrectAnswer(answerChoice);
+        setAnswerChoice(answerChoice);
+    
+        if (isHost=== true &&
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            if (!userId) {
+                console.error("사용자 ID 없음");
+                return;
+            }
+            console.log("AnswerChoice 보낸다");
+            const messageObject = {
+                type: "answerChoice", // 메시지 타입 추가
+                user_id: userId, // 사용자 ID
+                answer_choice: answerChoice,
+                room_id: roomId, // 방 ID
+                sentAt: new Date().toISOString(), // 메시지 보낸 시간
+            };
+
+            console.log("📡 메시지 전송!!!!!!!:", messageObject);
+            webSocketRef.current.send(JSON.stringify(messageObject));
+
+        } else {
+            console.error("WebSocket 연결이 닫혀 있거나 host가 아님!");
+        }
+    };
+    
+    
+    // // ✅ 방장이 정답 선택 (빨간 테두리 표시)
+    // const handleAnswerChoice = async (answer) => {
+    //     if (!isHost) {
+    //         alert("방장만 정답을 선택할 수 있습니다.");
+    //         return;
+    //     }
+    //     setCorrectAnswer(answer);
+    //
+    //     // try {
+    //     //     await springApi.post(`/game/answer/${roomId}`, { userId, answer });
+    //     //
+    //     //     if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+    //     //         const answerMessage = {
+    //     //             type: "answerSelected",
+    //     //             roomId: roomId,
+    //     //             answer: answer,
+    //     //         };
+    //     //         webSocketRef.current.send(JSON.stringify(answerMessage));
+    //     //         console.log("🚀 정답 전송 완료:", answerMessage);
+    //     //     }
+    //     // } catch (error) {
+    //     //     console.error("❌ 정답 선택 실패:", error);
+    //     // }
+    // };
+
+    // items가 변경될 때 실행되는 useEffect
+    useEffect(() => {
+        if (items.length > 0) {
+            console.log("items 값 변경됨:", items);
+
+            // 방장이면 WebSocket을 통해 참가자들에게 전송
+            if (isHost) {
+                console.log("📡 WebSocket으로 단어 목록 전송:", items);
+                sendItems();
+            }
+        }
+    }, [items]); // ✅ items 변경 감지
+    const colors = ["red", "orange", "yellow", "green", "blue", "purple"]; // 인덱스별 색상 지정
     return (
         <div style={styles.container}>
             {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
@@ -571,43 +847,81 @@ const Webrtc = () => {
                     방 나가기
                 </button>
             </div>
+            <h1>WebRTC 게임 화면</h1>
+            <h2>{isHost ? "🎩 방장 화면" : "🧑‍🤝‍🧑 참가자 화면"}</h2>
+
             {/* 게임 시작 버튼 */}
-            {!isGameStarted ? (
-                <button onClick={startGame} disabled={loading}>
-                    {loading ? "게임 시작 중..." : "게임 시작"}
-                </button>
-            ) : (
+            {/*{isHost && (*/}
+            <button onClick={() => {
+                console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
+                setIsGameStarted(true); // ✅ 게임 시작 상태 변경
+                fetchGameWords(); // ✅ 단어 목록 불러오기 실행
+            }}>
+                게임 시작
+            </button>
+
+
+
+            {/* 게임 화면 */}
+            {/*{isGameStarted && (*/}
+
+            <div>
+                <h2>🎮 사물 맞추기 게임</h2>
+                <p>입모양을 보고 정답을 맞춰보세요!</p>
+
+                {/* 🛠️ 로그 추가: items 상태 확인 */}
+                {console.log("📌 렌더링 중 items 상태:", items)}
+
                 <div>
-                    <h2>🎮 사물 맞추기 게임</h2>
-                    <p>상대방의 입모양을 보고 어떤 단어인지 맞춰보세요!</p>
-                    {loading ? (
-                        <p>⏳ 단어 불러오는 중...</p>
-                    ) : items.length > 0 ? (
-                        <div>
-                            {items.map((item) => (
-                                <button
-                                    key={item}
-                                    onClick={() => handleChoice(item)}
-                                    style={{
-                                        backgroundColor:
-                                            selectedItem === item
-                                                ? "lightblue"
-                                                : "white",
-                                    }}
-                                >
-                                    {item}
-                                </button>
-                            ))}
-                        </div>
+                    {items.length > 0 ? (
+                        items.map((word, index) => (
+                            <button
+                                key={index}
+                                onClick={() => sendChoice(word)}
+                                style={{
+                                    backgroundColor: choice === word ? "lightblue" : "white",
+                                    border: correctAnswer === word ? "3px solid red" : "1px solid black",
+                                }}
+                            >
+                                {word}
+                            </button>
+                        ))
                     ) : (
-                        <p>❌ 사용할 수 있는 단어가 없습니다.</p>
+                        <p>📌 단어 목록을 불러오는 중...</p> // 🛠️ items가 비어있을 때 표시
                     )}
                 </div>
-            )}
+
+                {isHost && (
+                    <div>
+                        <h3>방장: 정답 선택</h3>
+
+                        {/* 🛠️ 로그 추가: 방장이 선택할 items 상태 확인 */}
+                        {console.log("📌 방장이 선택할 items 상태:", items)}
+
+                        {items.length > 0 ? (
+                            items.map((word, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => sendAnswerChoice(word)}
+                                    style={{
+                                        backgroundColor: correctAnswer === word ? "red" : "white",
+                                        color: correctAnswer === word ? "white" : "black",
+                                    }}
+                                >
+                                    {colors[index]} {/* 색상 확인용 표시 */}
+                                </button>
+                            ))
+                        ) : (
+                            <p>📌 단어 목록을 불러오는 중...</p> // 🛠️ items가 비어있을 때 표시
+                        )}
+                    </div>
+                )}
+            </div>
+            )
+
         </div>
     );
 };
-
 // ✅ 스타일 추가
 const styles = {
     container: {
