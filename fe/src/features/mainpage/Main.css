@@ -3,7 +3,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* 화면 중앙 정렬 */
+
+    height:auto;
     background-color: #ffe0b1; /* 기존 배경색 유지 */
     
 }
@@ -13,14 +14,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 3rem;
+    gap: 5vw;
     flex-wrap: wrap; /* 화면이 줄어들면 카드가 아래로 배치됨 */
-    width: 100%;
-    max-width: 1200px; /* 최대 너비 설정 */
     margin-top: 3rem;
 }
 
-/* 스크롤바 스타일 (선택 사항) */
+/* 스크롤바 스타일 (선택 사항)
 .card-container::-webkit-scrollbar {
     height: 8px;
 }
@@ -32,7 +31,7 @@
 
 .card-container::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0.1);
-}
+} */
 /* 카드 스타일 */
 .card {
     position: relative;
@@ -41,8 +40,8 @@
     justify-content: flex-start;
     align-items: center;
     text-align: center;
-    width: 320px; /* 카드 크기 조정 */
-    height: 500px;
+    width: 28vw; /* 카드 크기 조정 */
+    height: 78vh;
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -74,17 +73,17 @@
 }
 
 .card-content h2 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: white;
     margin-bottom: 10px;
-    font-family: "Roboto", sans-serif; 
+    font-family: 'NPSbold'; 
 }
 
 .card-content p {
-    font-size: 1.1rem;
-    color: black;
+    font-size: 1.2em;
+    color: rgb(247, 247, 247);
     line-height: 1.5;
-    font-family: "Roboto", sans-serif;
+    font-family: 'NPSregular';
 }
 
 /* 카드 이미지 스타일 */
@@ -101,18 +100,16 @@
 
 /* 개별 이미지 조정 */
 .single-image {
-    width: 36rem;
-    bottom: 0px;
+    width: 50vw;
 }
 
 .multi-image {
     margin-right: 10%;
-    width: 38rem;
+    width: 50vw;
     bottom: -2px;
 }
 
 .main-profile-image {
-    
     border-radius: 50%; /* 동그랗게 만들기 */
     cursor: pointer; /* 클릭 가능하도록 */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
@@ -124,8 +121,8 @@
 
 .main-profile-container {
     position: fixed;
-    top: 20px; /* 상단에서 20px 떨어지도록 */
-    left: 20px; /* 왼쪽에서 20px 떨어지도록 */
+    top: 1.5vw; /* 상단에서 20px 떨어지도록 */
+    left: 2vw; /* 왼쪽에서 20px 떨어지도록 */
     display: flex;
     flex-direction: column;
     cursor: pointer;
@@ -141,8 +138,8 @@
 
 
 .profile-text {
-    margin-top: 5px; /* 이미지와 텍스트 사이 간격 */
-    font-size: 14px;
+    margin-top: 8px; /* 이미지와 텍스트 사이 간격 */
+    font-size: 11px;
     font-weight: bold;
     color: darkslategrey; /* 텍스트 색상 */
 

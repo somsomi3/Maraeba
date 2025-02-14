@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Conversation.css';
 import conversationTitle from '../../assets/images/conversation.png'; 
 import HomeButton from '../../components/button/HomeButton';
-import { flaskApi } from '../../utils/api';
+import { springApi } from '../../utils/api';
 
 const Conversation = () => {
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const Conversation = () => {
   };
 
   useEffect(() => {
+
     if (selectedSituation) {
       setFormData((prev) => ({
         ...prev,
@@ -44,7 +45,7 @@ const Conversation = () => {
     if (!formData.situation.trim() || !formData.aiRole.trim() || !formData.userRole.trim()) return;
 
     try {
-      const { data } = await flaskApi.post('/chat/start', {
+      const { data } = await springApi.post('/chat/start', {
         is_default: false,
         default_id: null,
         ai_role: formData.aiRole,
@@ -53,7 +54,7 @@ const Conversation = () => {
       });
 
       if (data.session_id) {
-        navigate('/conversation/start', { state: { sessionId: data.session_id } });
+        navigate('/conversation/start', { state: { sessionId: data.session_id, aiAnswer: data.answer, aiRole: formData.aiRole, userRole: formData.userRole } });
       }
     } catch (error) {
       console.error('🚨 대화 시작 오류:', error);
@@ -87,7 +88,7 @@ const Conversation = () => {
             <h2>상황 만들기</h2>
             <form onSubmit={handleSubmit} className="creation-form">
               <label>
-                AI 역할
+                상대방 역할
                 <input type="text" name="aiRole" value={formData.aiRole} onChange={handleInputChange} placeholder="AI의 역할을 입력해주세요." />
               </label>
 
@@ -98,7 +99,7 @@ const Conversation = () => {
 
               <label className="situation-description">
                 상황
-                <textarea name="situation" value={formData.situation} onChange={handleInputChange} placeholder="상황을 설명해주세요." />
+                <textarea name="situation" value={formData.situation} onChange={handleInputChange} placeholder="상황을 설명해주세요." className='situation-input'/>
               </label>
             </form>
           </div>
@@ -111,7 +112,7 @@ const Conversation = () => {
         </div>
       </div>
 
-      <HomeButton />
+      <HomeButton to='/single' />
     </>
   );
 };

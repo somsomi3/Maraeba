@@ -103,10 +103,10 @@ const PronsResult = () => {
   };
 
   return (
-    <div className="prons-result-container">
+<div className="prons-result-container">
   <h1>📊 학습 결과</h1>
 
-  {/* ✅ 가로 정렬을 위한 새로운 div 추가 */}
+  {/* ✅ 결과 박스와 히스토리를 감싸는 div */}
   <div className="result-wrapper">
     {/* ✅ 최근 학습 결과 */}
     {latestRecord && (
@@ -117,20 +117,15 @@ const PronsResult = () => {
         <div className="session-info">
           <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>
           <p className="session-score">
-            유사도: {(latestRecord.average_correct_rate * 100).toFixed(0)}점
+            {(latestRecord.average_correct_rate * 100).toFixed(0)}점
           </p>
-          <div className="session-buttons">
-            <button onClick={handleRestart} disabled={isRestarting}>
-              {isRestarting ? "🔄 다시 시작 중..." : "다시하기"}
-            </button>
-            <button onClick={() => navigate("/prons")}>학습 끝내기</button>
-          </div>
         </div>
       </div>
     )}
 
-    {/* ✅ 결과 히스토리 */}
-    <div className="history-container">
+
+        {/* ✅ 결과 히스토리 */}
+        <div className="history-container">
       <h2 className="history-title">결과 히스토리</h2>
       {loading ? (
         <p>🔄 학습 기록을 불러오는 중...</p>
@@ -159,6 +154,13 @@ const PronsResult = () => {
         <p>📢 학습 기록이 없습니다.</p>
       )}
     </div>
+  </div>
+    {/* ✅ 버튼을 아래쪽에 배치 */}
+    <div className="buttons-container">
+    <button onClick={handleRestart} disabled={isRestarting} className="retry-button">
+      {isRestarting ? "🔄 다시 시작 중..." : "다시하기"}
+    </button>
+    <button onClick={() => navigate("/prons")} className="end-button">학습 끝내기</button>
   </div>
 </div>
 

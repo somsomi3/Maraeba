@@ -1,11 +1,11 @@
 .prons-result-container {
-    padding-top: 5%;
+    padding-top: 10%;
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
     text-align: center;
     height: 100vh; /* ✅ 화면이 아래로 스크롤 가능하도록 설정 */
-    
+    font-family: SDSamliphopang;
 }
 
 /* ✅ 현재 세션 결과 */
@@ -41,28 +41,17 @@
     flex-grow: 1;
     text-align: left;
     padding-left: 3rem;
+    font-size: 25px;
+    color: #000000;
 }
 
 .session-score {
-    font-size: 22px;
+    font-size: 40px;
     font-weight: bold;
+    
 }
 
-.session-buttons button {
-    margin-right: 15px;
-    padding: 8px 15px;
-    border: none;
-    background: #64b0b7;
-    color: white;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: 0.3s;
-    margin-bottom: 3%;
-}
 
-.session-buttons button:hover {
-    background: #468c92;
-}
 
 /* ✅ 히스토리 제목 */
 .history-title {
@@ -155,18 +144,54 @@
 .result-wrapper {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 3vw; /* 간격 조정 */
+    align-items: center;
+    gap: 2vw; /* 간격 조정 */
 }
 
 /* ✅ 학습 결과 스타일 */
 .current-session-result {
-    flex: 1; /* 히스토리와 동일한 크기 할당 */
-    max-width: 40vw; /* 최대 50% 너비 */
+    /* flex: 1.1;  */
+    max-width: 45vw;
+    transform: translateY(10%);
 }
 
 /* ✅ 결과 히스토리 스타일 */
 .history-container {
-    flex: 1;
-    max-width: 40vw;
+    flex: 1.3;
+}
+
+/* ✅ 버튼을 결과창 아래로 정렬 */
+.buttons-container {
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    gap: 20px; /* 버튼 간 간격 */
+    margin-top: 40px; /* 결과창과의 간격 */
+}
+
+/* ✅ 버튼 스타일 */
+.retry-button, .end-button {
+    font-size: 1.2rem;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.retry-button {
+    background-color: #4da6ff;
+    color: white;
+}
+
+.end-button {
+    background-color: #ff7675;
+    color: white;
+}
+
+.retry-button:hover {
+    background-color: #3498db;
+}
+
+.end-button:hover {
+    background-color: #d63031;
 }

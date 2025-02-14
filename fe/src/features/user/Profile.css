@@ -11,16 +11,10 @@
     text-align: center;
 }
 
-/* 사이드바 */
-/* 사이드바 (sticky + 전체 높이 유지) */
-/* 사이드바 (sticky + 전체 높이 유지 + 최소 높이 추가) */
-/* 사이드바 (확대 시에도 짤리지 않도록 수정) */
 .sidebar {
     width: 280px;
     height: auto; /* ✅ 내용이 많아질 경우 자동으로 늘어남 */
-    min-height: 100vh; /* ✅ 최소 높이는 항상 100vh 유지 */
     position: sticky;
-    top: 0;
     background: #ffb9b1;
     display: flex;
     flex-direction: column;
@@ -72,39 +66,48 @@
     border-radius: 20px;
   }
   
-  /* 메인 컨텐츠 */
-  .profile-content {
+/* 메인 컨텐츠 */
+.profile-content {
     flex: 1;
     padding: 40px;
-  }
-  
-  /* 레벨 프로그래스 바 */
-  .level-container {
-    margin-bottom: 2rem;
-  }
-  
-  .progress-bar {
-    height: 20px;
-    background: #fff3cd;
+    /* text-align: center; */
+}
+
+/* 🔥 학습 기록 & 통계 스타일 */
+.chart-container {
+    background: #fff7eb;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 96%;
+    max-width: 90vw;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #ffe4c4;
+}
+
+.chart-wrapper-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2vw;
+}
+
+.chart-wrapper {
+    width: 28%;
+    min-width: 250px;
+    height: 320px;
+    background: white;
     border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .progress {
-    height: 100%;
-    background: linear-gradient(90deg, #ffd700 0%, #ffa500 100%);
-    transition: width 0.5s ease;
-  }
-  
-  .progress-text {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b4e00;
-    font-size: 0.9em;
-  }
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 15px;
+}
+
+.chart-wrapper canvas {
+    width: 95% !important;
+    height: 82% !important;
+}
   
   /* 통계 박스 */
   .profile-stats {
@@ -133,67 +136,7 @@
     background-color: #4caf50;
   }
   
-  /* 관심 분야 프로그래스 */
-  .interest-item {
-    position: relative;
-    padding: 12px 20px;
-  }
-  
-  .interest-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.5);
-    transition: width 0.5s ease;
-  }
-  
-  /* 배지 */
-  /* .badges-list {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
-  .badge-item {
-    position: relative;
-    transition: transform 0.3s;
-  }
-  
-  .badge-item:hover {
-    transform: scale(1.1);
-  }
-  
-  .badge-tooltip {
-    visibility: hidden;
-    position: absolute;
-    bottom: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.8em;
-    white-space: nowrap;
-  }
-  
-  .badge-item:hover .badge-tooltip {
-    visibility: visible;
-  } */
-  
-  /* 배지 반짝이 효과 */
-  /* .glow {
-    animation: badge-glow 2s infinite alternate;
-  }
 
-  @keyframes badge-glow {
-    from {
-      filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));
-    }
-    to {
-      filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
-    }
-  } */
-  
   .delete-button {
     background-color: #e74c3c;
     color: white;
@@ -207,4 +150,35 @@
 
 .delete-button:hover {
     background-color: #c0392b;
+}
+
+/* 🔥 탭 컨테이너 */
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* 🔥 탭 버튼 스타일 */
+.tab-button {
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background: #ffd79d;
+    border: none;
+    cursor: pointer;
+    margin: 0 10px;
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+/* 🔥 활성화된 탭 */
+.tab-button.active {
+    background: #ffa500;
+    color: white;
+}
+
+/* 🔥 탭 버튼 hover */
+.tab-button:hover {
+    background: #ffc567;
 }

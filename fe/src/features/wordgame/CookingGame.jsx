@@ -7,9 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
 import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
-import { useSelector } from "react-redux";  // ✅ Redux에서 state 가져오기
+import { useSelector } from "react-redux"; 
 import dish from "../../assets/images/dish.png"
-import CorrectPopup from "../../components/popup/CorrectPopup";
 
 const CookingGame = () => {
   const [isRecording, setIsRecording] = useState(false); // 녹음 중인지 여부
@@ -38,7 +37,8 @@ const CookingGame = () => {
   const navigate = useNavigate();
   const token = useSelector((state) => state.auth.token); // ✅ Redux에서 Token 가져오기
   const backendURL = import.meta.env.VITE_STATIC_API_URL; // 환경변수에서 백엔드 주소 가져오기
-  const [showCorrectPopup, setShowCorrectPopup] = useState(false); // ✅ 정답 팝업 상태
+  const [feedbackAnimation, setFeedbackAnimation] = useState(""); 
+  const [showFoodHighlight, setShowFoodHighlight] = useState(false);
 
    // ✅ 공통 fetch 함수 (Access Token 포함)
    const fetchResource = async (url, setState) => {
@@ -89,10 +89,10 @@ const CookingGame = () => {
       mediaRecorder.start(); // 녹음 시작
       setIsRecording(true);
 
-      // 10초 후에 자동으로 녹음 종료
+      // 4초 후에 자동으로 녹음 종료
       recordingTimeoutRef.current = setTimeout(() => {
         stopRecording();
-      }, 10000); // 10초 후에 자동 종료
+      }, 4000);
     } catch (error) {
       console.error('마이크 권한 요청 실패:', error);
     }
@@ -179,21 +179,42 @@ const CookingGame = () => {
 // 🎯 정답 검증 및 피드백 처리 함수
 const checkIncorrect = (result) => {
     setUserSpokenWord(result.item || ""); // 사용자가 말한 단어 저장
-    
+
     if (result.duplication) {
-      setFeedbackMessage("⚠️ 이미 맞춘 정답입니다!");
+        setFeedbackMessage("⚠️ 이미 맞춘 정답입니다!");
+        setFeedbackAnimation("feedback-shake");
+        setTimeout(() => {
+            setFeedbackAnimation("");
+          }, 1000);
     } else if (!result.if_correct) {
-      setFeedbackMessage("❌ 오답입니다! 다시 시도하세요.");
+        setFeedbackMessage("❌ 오답이에요! 다시 시도하세요.");
+        setFeedbackAnimation("feedback-shake");
+        setTimeout(() => {
+            setFeedbackAnimation("");
+          }, 1000);
     } else {
-      setFeedbackMessage("✅ 정답!");
-      setScore((prev) => prev + 10); // 점수 증가
+        setFeedbackMessage("✅ 정답!");
+        setFeedbackAnimation("feedback-bounce");
+
+        setTimeout(() => {
+            setFeedbackAnimation("");
+          }, 1000);
+
+        // ✅ 두 개의 아이템이 모두 맞춰졌을 때만 점수 증가
+        if (result.cnt === 2) {
+            setScore((prev) => prev + 10);
+        }
     }
-  };
+};
 
 
   // 게임 시작 POST 요청
   const newFood = async () => {
     try {
+        setShowFoodHighlight(false);
+        setFeedbackMessage("");
+        setFeedbackAnimation("");
+
       const response = await springApi.get("/cook-game/start-game", {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
@@ -231,57 +252,55 @@ const checkIncorrect = (result) => {
     }
   };
 
-  // 타이머 설정
-  useEffect(() => {
-    if (isTimerActive && timeLeft > 0) {
-      const timerId = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1); // 1초 감소
-      }, 1000);
-
-      return () => clearInterval(timerId); // 정리
-    } else if (timeLeft === 0) {
-      setIsTimerActive(false); // 타이머 종료
-      stopRecording(); // 녹음 종료
+// ⏳ 타이머 설정
+useEffect(() => {
+    if (!isTimerActive || timeLeft <= 0) {
+        setIsTimerActive(false);
+        stopRecording(); // 녹음 종료
+        return;
     }
-  }, [isTimerActive, timeLeft]);
 
-  // 초기 게임 시작 (한 번만 실행)
-  useEffect(() => {
+    const timerId = setTimeout(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000); // ⏳ 1초마다 감소
+
+    return () => clearTimeout(timerId); // ✅ 타이머 정리
+}, [isTimerActive, timeLeft]);
+
+// 🎮 초기 게임 시작
+useEffect(() => {
     newFood();
-  }, []);
+    setIsTimerActive(false);
+}, []);
 
-  // 다음 음식
-  useEffect(() => {
-    if (gameData.item2 !== null && !showCorrectPopup) {
-      const timeoutId = setTimeout(() => {
-        newFood();
-      }, 1000); // 1초 후에 newFood() 실행
-
-      // 컴포넌트가 언마운트되거나 item2가 null로 변경되면 타이머 클리어
-      return () => clearTimeout(timeoutId);
-    }
-  }, [gameData.item2, showCorrectPopup]);
-
-  // 게임 재시작
-  const restart = () => {
-    setShowCorrectPopup(false);
-    setTimeLeft(60); // 타이머 초기화
-    setAudioURL('');
-    setIsTimerActive(true); // 타이머 활성화
-    newFood(); // 게임 다시 시작
-  };
-
-  // ✅ 정답 확인 후 팝업 표시 및 재시작
-  useEffect(() => {
+// 🍽️ 다음 음식 (정답 맞췄을 때)
+useEffect(() => {
     if (gameData.item1 && gameData.item2) {
-      setShowCorrectPopup(true);
+        setShowFoodHighlight(true); // 🔴 음식 이미지 강조 효과
+
+        setTimeout(() => {
+            newFood();
+        }, 1000); // ✅ 1초 후 실행 
     }
-  }, [gameData.item1, gameData.item2]);
+}, [gameData.item1, gameData.item2]);
+
+// 🔄 게임 재시작
+const restart = () => {
+    setTimeLeft(60);
+    setAudioURL('');
+    setIsTimerActive(true);
+    setScore(0);
+
+    // ✅ 상태 초기화 후 새로운 음식 로드
+    setTimeout(() => {
+        newFood();
+    }, 500);
+};
 
   return (
     <div className="cooking-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <HomeButton />
-  
+
       {/* 🎮 게임 UI (왼쪽) */}
       <div className="cooking-game-overlay">
         <button className="pause-button">
@@ -289,18 +308,14 @@ const checkIncorrect = (result) => {
         </button>
   
         <h1 className="cooking-game-title">{gameData.foodName || "요리 만들기"}</h1>
-        <div>남은 시간: {timeLeft}초</div>
-  
-        {/* ✅ 정답 팝업 표시 */}
-        {showCorrectPopup && <CorrectPopup message="🎉 정답입니다! 🎉" onRestart={restart} />}
-  
+        
         {/* 🔹 정답 조합 UI */}
         <div className="combination">
           <img src={foodImg.item1 || dish} alt="재료1" className="recipe-image" />
           <span className="plus-sign">+</span>
           <img src={foodImg.item2 || dish} alt="재료2" className="recipe-image" />
           <span className="equals-sign">=</span>
-          <img src={foodImg.food || "/assets/images/placeholder.png"} alt="결과 음식" className="recipe-image" />
+          <img src={foodImg.food || "/assets/images/placeholder.png"} alt="결과 음식" className={`recipe-image ${showFoodHighlight ? "food-highlight" : ""}`} />
         </div>
   
         {/* 🔹 AI가 인식한 텍스트 표시 */}
@@ -309,7 +324,7 @@ const checkIncorrect = (result) => {
             <p>🎤 AI 인식 결과: {gameData.recognizedText}</p>
           </div>
         )}
-  
+                                 
         {/* 🔹 선택 가능한 재료 목록 */}
         <div className="item-selection">
           {gameData.itemList.map((item, index) => (
@@ -319,13 +334,18 @@ const checkIncorrect = (result) => {
           ))}
         </div>
   
-        {/* 🔹 녹음 버튼 */}
+        {/* 🔹 마이크 버튼 및 안내 문구 */}
+        <div className="record-container">
+        <p className="record-guide">
+            {isRecording ? "녹음을 완료하려면 정지 버튼을 눌러주세요" : "녹음을 하려면 마이크 버튼을 눌러주세요"}
+        </p>
         <button className="record-button" disabled={!isTimerActive} onClick={isRecording ? stopRecording : startRecording}>
-          <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
+            <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
         </button>
+        </div>
   
         {/* 🔹 게임 재시작 버튼 */}
-        <button className="start-button" disabled={isTimerActive} onClick={restart}>
+        <button className="cooking-start-button" disabled={isTimerActive} onClick={restart}>
           게임 시작
         </button>
   
@@ -340,12 +360,14 @@ const checkIncorrect = (result) => {
   
       {/* ✅ 오른쪽 정보 컨테이너 (독립적) */}
       <div className="side-info-container">
-        <div className="score-box">
-          <h3>SCORE:</h3>
+        
+        <div className="cooking-score-box">
+          <p>남은 시간: {timeLeft}초</p>
+          <h3> 점수 </h3>
           <p>{score}</p>
         </div>
   
-        <div className="feedback-box">
+        <div className={`cooking-feedback-box ${feedbackAnimation}`}>
           <h3>🚨 피드백</h3>
           {feedbackMessage ? (
             <>

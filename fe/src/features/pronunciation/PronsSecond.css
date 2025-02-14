@@ -19,7 +19,7 @@
   .image-section {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.5vh;
   }
   
   .camera-section {
@@ -41,7 +41,7 @@
     align-items: center;
     justify-content: center;
     width: 35vw;
-    height: 55vh;
+    height: 56vh;
     background-color: #eef;
     /* border: 2px #aaa; */
     border: none;
@@ -93,7 +93,7 @@
     padding: 5px 15px;
     border-radius: 100%;
     font-family: 'DXChildsdrawing';
-    font-size: 66px;
+    font-size: 70px;
     font-weight: bold;
     color: #ffffff;
     text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
@@ -124,18 +124,19 @@
 } */
 
 .lip-video {
-    width: 23vw;
-    height: 28vh;
+    width: 24vw;
+    height: 34vh;
+    transform: translateY(-1vh) ;
 }
 
 .image-top, .image-bottom {
-    width: 23vw;
+    width: 24vw;
     height: 32vh;
     border: none;
     border-radius: 10px;
   }
 
-  .feedback-box {
+  .prons-feedback-box {
     background-color: #f8f9fa;
     border: 2px solid #ccc;
     border-radius: 15px;

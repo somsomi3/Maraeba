@@ -1,0 +1,52 @@
+/* ✅ 전체 컨테이너 */
+.pronunciation-detail-chart {
+    background: #fff7eb;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 96%;
+    max-width: 90vw;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #ffe4c4;
+}
+
+/* ✅ 클래스 선택 탭 */
+.class-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.class-tabs button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #f4bc68;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.class-tabs button.active {
+    background: #e08476;
+    font-weight: bold;
+}
+
+.class-tabs button:hover {
+    background: #e08476;
+}
+
+/* ✅ 차트 스타일 */
+.pronunciation-detail-chart canvas {
+    width: 100% !important;
+    height: 350px !important;
+}
+
+/* ✅ 로딩 및 오류 메시지 */
+.chart-loading, .chart-error, .no-data-message {
+    font-size: 16px;
+    color: #ff6347;
+}

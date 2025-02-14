@@ -27,7 +27,9 @@ const PronsFirst = () => {
                 const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
                 console.log("✅ 가져온 데이터:", response.data.data);
 
-                const { tongue_image_url, lip_video_url } = response.data.data;
+                const { tongue_image_url, lip_video_url, id: pronId } = response.data.data;
+
+                localStorage.setItem("pron_id", pronId);
 
                 // ✅ 혀 이미지 & 입모양 비디오 가져오기 (토큰 포함 요청)
                 if (tongue_image_url) {
@@ -77,10 +79,6 @@ const PronsFirst = () => {
         }
     };
 
-    const handleExit = () => {
-        navigate("/prons");
-    };
-
     const goToPractice = () => {
         navigate(`/prons/class/${class_id}/seq/${seq_id}/prac`);
     };
@@ -104,7 +102,7 @@ const PronsFirst = () => {
     return (
         <div className="prons-first-container">
             <GoBackButton />
-            <PausePopup onExit={handleExit} />
+            <PausePopup onExit={() => navigate('/prons')} title="수업을 끝낼까요?" />
 
             {/* 데이터 로딩 중 표시 */}
             {loading ? (
@@ -131,7 +129,7 @@ const PronsFirst = () => {
                     </div>
 
                     <div className="description-container">
-                        <h2 className="vowel-title">{data?.pronunciation || '발음 학습'}</h2>
+                        {/* <h2 className="vowel-title">{data?.pronunciation || '발음 학습'}</h2> */}
                         <p>{error ? '데이터를 불러오는 중 오류가 발생했습니다.' : data?.description}</p>
                     </div>
 
@@ -141,6 +139,13 @@ const PronsFirst = () => {
                         </button>
                         {audioSrc && <audio src={audioSrc} controls autoPlay />}
                     </div>
+
+                        {/* ✅ 발음 정보 표시 */}
+                            {data?.pronunciation && (
+                                <div className="pronunciation-box">
+                                {data.pronunciation}
+                                </div>
+                            )}
 
                     <div className="next-button" onClick={goToPractice}>
                         다음으로
