@@ -208,7 +208,8 @@ const Webrtc = () => {
         }
 
         webSocketRef.current = new WebSocket(
-            `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            // `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         webSocketRef.current.onopen = () => {
@@ -354,10 +355,11 @@ const Webrtc = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
                 {
-                    urls: "stun:stun.l.google.com:19302",
-                    // urls: "turn:3.39.252.223:3478?transport=tcp",
-                    // username: `${import.meta.env.VITE_USERNAME_URL}`,
-                    // credential: `${import.meta.env.VITE_PASSWORD_URL}`,
+                    urls: "turn:3.39.252.223:3478?transport=tcp",
+                    username: `${import.meta.env.VITE_USERNAME_URL}`,
+                    credential: `${import.meta.env.VITE_PASSWORD_URL}`,
+                    // urls: "stun:stun.l.google.com:19302",
+
                 },
             ],
         });
