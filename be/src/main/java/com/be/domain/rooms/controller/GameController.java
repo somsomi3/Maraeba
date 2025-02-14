@@ -1,6 +1,7 @@
 package com.be.domain.rooms.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.be.common.model.response.BaseResponseBody;
 import com.be.db.entity.BaseEntity;
@@ -29,9 +30,10 @@ public class GameController {
     private final ColorItemService colorItemService;
 
     @GetMapping("/items")
-    public ResponseEntity<? extends BaseResponseBody> getGameItems(@RequestParam String color) {
+    public ResponseEntity
+            <Map<String, String>> getGameItems() {
 
-        return ResponseEntity.status(200).body(colorItemService.getAllColorItemsByColor(color));
+        return ResponseEntity.status(200).body(colorItemService.getRandomWordsByColor());
     }
 
     //게임 시작

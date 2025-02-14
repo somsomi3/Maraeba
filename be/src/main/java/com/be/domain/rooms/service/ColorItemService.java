@@ -4,50 +4,36 @@ import com.be.db.entity.ColorItem;
 import com.be.db.repository.ColorItemRepository;
 import com.be.domain.rooms.response.GetColorListResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ColorItemService {
 
     private final ColorItemRepository colorItemRepository;
+    private final Random random = new Random(); // 랜덤 객체
 
-    // 새로운 색상 아이템 저장
-    public ColorItem saveColorItem(ColorItem colorItem) {
-        return colorItemRepository.save(colorItem);
-    }
+    // 각 색상별로 단어 1개씩 랜덤으로 선택하여 반환
+    public Map<String, String> getRandomWordsByColor() {
+        List<String> colors = List.of("red", "orange", "yellow", "green", "blue", "purple");
+        Map<String, String> randomWords = new LinkedHashMap<>();
 
-    // 특정 색상별로 하나의 데이터 가져오기
-    public Optional<ColorItem> getOneColorItem(String color) {
-        return colorItemRepository.findRandomByColor(color);
-    }
+        for (String colorKey : colors) {
+            List<ColorItem> items = colorItemRepository.findByColor(colorKey); // DB에서 색상별 단어 가져오기
 
-    // 특정 색상의 모든 데이터 가져오기
-    public List<ColorItem> getColorItemsByColor(String color) {
-        return colorItemRepository.findByColor(color);
-    }
-
-    // 모든 데이터 가져오기
-    public List<ColorItem> getAllColorItems() {
-        return colorItemRepository.findAll();
-    }
-
-    public GetColorListResponse getAllColorItemsByColor(String color) {
-        String[] colors = {"red", "orange", "yellow", "green", "blue", "purple"};
-        Map<String, Boolean> colorList = new HashMap<>();
-
-        for (String c : colors) {
-            colorItemRepository.findRandomByColor(c)
-                    .ifPresent(item -> colorList.put(item.getName(), item.getColor().equals(color)));
+            if (!items.isEmpty()) {
+                int randomIndex = random.nextInt(items.size()); // 랜덤 인덱스 선택
+//                log.info("색깔={}, 이름={}",colorKey,items.get(randomIndex).getName());
+                randomWords.put(colorKey, items.get(randomIndex).getName()); // 해당 색상의 랜덤 단어 선택
+            }
         }
 
-        return GetColorListResponse.of(colorList);
+        return randomWords; // { "red": "토마토", "orange": "오렌지", "yellow": "레몬", ... }
     }
-
 }
