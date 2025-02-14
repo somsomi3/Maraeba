@@ -1,41 +1,40 @@
+/* CorrectPopup.css */
 .popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5); 
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 999;
   }
   
   .popup-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
     text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .popup-content p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
   }
   
   .popup-button {
-    margin-top: 15px;
+    font-size: 1.1rem;
     padding: 10px 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    background-color: #ff6f61;
-    border: none;
     border-radius: 8px;
+    border: none;
     cursor: pointer;
-    transition: background 0.3s ease;
+    background-color: #ffce55;
+    transition: background-color 0.2s ease;
   }
   
   .popup-button:hover {
-    background-color: #e65b50;
+    background-color: #ffc107;
   }
   
