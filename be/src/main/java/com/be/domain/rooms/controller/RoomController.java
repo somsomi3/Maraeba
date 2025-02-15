@@ -79,6 +79,7 @@ public class RoomController {
 		return ResponseEntity.ok().body(roomJoinResponse);
 	}
 
+	//방나가기
 	@PostMapping("/leave/{roomId}")
 	public ResponseEntity<? extends BaseResponseBody> leaveRoom(@RequestBody UserLeaveRequest request,
 		@PathVariable Long roomId) {
