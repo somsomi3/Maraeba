@@ -27,7 +27,7 @@ const CreateRoomPopup = ({ isOpen, onClose }) => {
 
         try {
             setLoading(true);
-            await springApi.post("/rooms/create", {
+            const response = await springApi.post("/rooms/create", {
                 title: roomTitle,
                 room_password: password || null,
                 host_id: userId,
@@ -36,7 +36,7 @@ const CreateRoomPopup = ({ isOpen, onClose }) => {
 
             alert("방이 성공적으로 생성되었습니다!");
             onClose(); // 팝업 닫기
-            navigate("/room/Roomlist");
+            navigate(`/room/${response.data.room_id}`);
         } catch (error) {
             alert(error.response?.data?.message || "방 생성에 실패했습니다.");
         } finally {
@@ -66,11 +66,17 @@ const CreateRoomPopup = ({ isOpen, onClose }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <button className="create-roombtn" type="submit" disabled={loading}>
+                    <button
+                        className="create-roombtn"
+                        type="submit"
+                        disabled={loading}
+                    >
                         {loading ? "생성 중..." : "방 만들기"}
                     </button>
                 </form>
-                <button className="cancel-button" onClick={onClose}>취소</button>
+                <button className="cancel-button" onClick={onClose}>
+                    취소
+                </button>
             </div>
         </div>
     );

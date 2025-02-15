@@ -16,7 +16,7 @@ import {
     Login,
     Register,
     KakaoCallback,
-    NaverCallback
+    NaverCallback,
 } from "./features/auth";
 import { Main, MultiMain, SingleMain } from "./features/mainpage";
 import {
@@ -27,17 +27,19 @@ import {
 } from "./features/pronunciation";
 import { WordMain } from "./features/wordgame";
 import { Conversation, ConversationStart } from "./features/conversation";
-import {
-    ChatBox,
-    Webrtc,
-    WaitingRoom,
-    CreateRoom,
-    RoomList,
-} from "./features/room";
+
+import { ChatBox, Webrtc, RoomList } from "./features/room";
+
 import CookingGame from "./features/wordgame/CookingGame";
 import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
-import { Profile, ProfileInfo, ChangePassword, ProfileDelete, ResetPassword } from "./features/user";
+import {
+    Profile,
+    ProfileInfo,
+    ChangePassword,
+    ProfileDelete,
+    ResetPassword,
+} from "./features/user";
 import AuthInitializer from "./AuthInitializer.jsx";
 
 // 라우트 정의
@@ -51,8 +53,8 @@ const router = createBrowserRouter(
             <Route path="/register" element={<Register />} />
             <Route path="/find-id" element={<FindId />} />
             <Route path="/find-pw" element={<FindPw />} />
-            <Route path='/reset-password' element={<ResetPassword />} />
-            
+            <Route path="/reset-password" element={<ResetPassword />} />
+
             <Route element={<ProtectedLayout />}>
                 <Route path="/main" element={<Main />} />
                 <Route path="/single" element={<SingleMain />} />
@@ -76,10 +78,7 @@ const router = createBrowserRouter(
                 <Route path="/session" element={<ChatBox />} />{" "}
                 {/* ✅ 채팅 페이지 추가 */}
                 <Route path="/room/webrtc" element={<Webrtc />} />
-                <Route path="/room/waiting" element={<WaitingRoom />} />
-                <Route path="/room/create" element={<CreateRoom />} />
                 <Route path="/cooking-game" element={<CookingGame />} />
-                {/*<Route path="/room/:roomId" element={<RoomPage />} /> /!* ✅ RoomPage 라우트 추가 *!/*/}
                 <Route path="/room/:roomId" element={<Webrtc />} />{" "}
                 {/* ✅ RoomPage 라우트 추가 */}
                 <Route path="/room/RoomList" element={<RoomList />} />
@@ -95,6 +94,9 @@ const router = createBrowserRouter(
                 <Route path="/profile-info" element={<ProfileInfo />} />
                 <Route path="/change-password" element={<ChangePassword />} />
                 <Route path="/profile-delete" element={<ProfileDelete />} />
+                {/*<Route path="/room/waiting" element={<WaitingRoom />} />*/}
+                {/*<Route path="/room/:roomId" element={<RoomPage />} />*/}
+
             </Route>
         </>
     )

@@ -54,6 +54,7 @@ public class FindGameServiceImpl implements FindGameService {
 
         //이미 정답을 맞춘 경우 (중복)
         if (answerList.contains(text)) {
+            response.setAnimalName(text);
             response.setDuplication(true);
             return response;
         }
@@ -74,6 +75,7 @@ public class FindGameServiceImpl implements FindGameService {
         }
         //정답에 없는 경우
         else {
+            response.setAnimalName(text);
             response.setIfCorrect(false);
         }
         return response;
