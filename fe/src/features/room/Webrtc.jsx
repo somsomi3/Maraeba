@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { springApi } from "../../utils/api.js";
+import "./Webrtc.css";
+// import rtc from '../../assets/images/rtc.png';
 
 const Webrtc = () => {
     // ===================================================
     //                      상태 & 참조
     // ===================================================
     const [localStream, setLocalStream] = useState(null);
-    const [remoteStream, setRemoteStream] = useState(null);
     const peerConnectionRef = useRef(null);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
@@ -59,9 +60,11 @@ const Webrtc = () => {
                 user_id: userId,
                 room_id: roomId,
             });
+
             if (!response || !response.data) {
                 throw new Error("🚨 서버 응답이 없습니다.");
             }
+
             const isHostValue = response.data.host || false;
             setIsHost(isHostValue);
             console.log("🚀 방장 여부:", isHostValue ? "방장" : "참가자");
@@ -265,7 +268,7 @@ const Webrtc = () => {
             }
             const now = new Date().toISOString().slice(0, 19);
             setStartTime(now); // 시작시간 저장
-            console.log("🎥 미디어 시작:", now);
+            console.log("미디어 시작:", now);
         } catch (error) {
             console.error("미디어 접근 실패:", error);
         }
@@ -280,8 +283,8 @@ const Webrtc = () => {
             }
             const now = new Date().toISOString().slice(0, 19);
             setEndTime(now);
-            console.log("🛑 미디어 종료:", now);
-            saveWebRTCLog(startTime, now); // 로그 저장
+            console.log("미디어 종료:", now);
+            saveWebRTCLog(startTime, now); //로그 저장 실행
         }
     };
 
@@ -324,13 +327,12 @@ const Webrtc = () => {
         }
     };
 
-    // 1) Offer 생성 및 전송
+    // Offer 생성 및 전송
     const createOffer = async () => {
         createPeerConnection();
         try {
             const offer = await peerConnectionRef.current.createOffer();
             await peerConnectionRef.current.setLocalDescription(offer);
-
             sendToServer({
                 type: "offer",
                 sdp: offer.sdp,
@@ -342,7 +344,7 @@ const Webrtc = () => {
         }
     };
 
-    // 2) Offer 수신 처리
+    // Offer 수신 처리
     const handleOffer = async (message) => {
         createPeerConnection();
         try {
@@ -354,7 +356,6 @@ const Webrtc = () => {
             );
             const answer = await peerConnectionRef.current.createAnswer();
             await peerConnectionRef.current.setLocalDescription(answer);
-
             sendToServer({
                 type: "answer",
                 sdp: answer.sdp,
@@ -366,7 +367,7 @@ const Webrtc = () => {
         }
     };
 
-    // 3) Answer 수신 처리
+    // Answer 수신 처리
     const handleAnswer = async (message) => {
         try {
             await peerConnectionRef.current.setRemoteDescription(
@@ -380,7 +381,7 @@ const Webrtc = () => {
         }
     };
 
-    // 4) ICE Candidate 처리
+    // ICE Candidate 처리
     const handleCandidate = async (message) => {
         try {
             if (message.candidate) {
@@ -398,9 +399,10 @@ const Webrtc = () => {
     // ===================================================
     const sendToServer = (msgObj) => {
         if (!roomId) {
-            console.error("❌ roomId가 없습니다. 메시지 전송 불가");
+            console.error("roomId가 없습니다. 메시지를 보낼 수 없습니다.");
             return;
         }
+
         if (
             webSocketRef.current &&
             webSocketRef.current.readyState === WebSocket.OPEN
@@ -524,7 +526,7 @@ const Webrtc = () => {
     // ===================================================
     const saveWebRTCLog = async (start, end) => {
         if (!userId) {
-            console.error("❌ 사용자 ID 없음, 로그 저장 불가");
+            console.error("사용자 ID 없음! 로그 저장 불가.");
             return;
         }
 
@@ -542,10 +544,11 @@ const Webrtc = () => {
                     Authorization: "Bearer " + localStorage.getItem("token"),
                 },
             });
+
             if (response.status === 200) {
-                console.log("✅ WebRTC 로그 저장 성공");
+                console.log("WebRTC 로그 저장 성공");
             } else {
-                console.error("❌ WebRTC 로그 저장 실패");
+                console.error("WebRTC 로그 저장 실패");
             }
         } catch (error) {
             console.error("로그 저장 중 오류:", error);
@@ -565,27 +568,22 @@ const Webrtc = () => {
             return;
         }
         try {
-            // 서버에 별도 API가 있다면 호출
-            // const response = await springApi.post(`/game/start/${roomId}`, { userId });
-            // if (response.status === 200) {
-            //   setIsGameStarted(true);
-            // }
-
-            // 간단히 처리: 단어 목록 가져오기
+            const response = await springApi.post(`/rgames/start/${roomId}`, { userId });
+            if (response.status === 200) {
+                setIsGameStarted(true);
+            }
             setChoice(null);
             setCorrectAnswer(null);
-
-            setIsGameStarted(true);
             fetchGameWords();
         } catch (error) {
-            console.error("❌ 게임 시작 오류:", error);
+            console.error("게임 시작 오류:", error);
         }
     };
 
     // 단어 목록 불러오기
     const fetchGameWords = async () => {
         try {
-            const response = await springApi.get(`/game/items`);
+            const response = await springApi.get(`/rgames/item`);
             console.log("📩 게임 단어 목록 응답:", response.data);
 
             if (response.status === 200 && typeof response.data === "object") {
@@ -596,7 +594,7 @@ const Webrtc = () => {
                 setItems([]);
             }
         } catch (error) {
-            console.error("❌ 단어 목록 불러오기 실패:", error);
+            console.error("단어 목록 불러오기 실패:", error);
             setItems([]);
         }
     };
@@ -708,304 +706,183 @@ const Webrtc = () => {
         if (isHost && items.length > 0) {
             sendItems();
         }
-        // eslint-disable-next-line
-    }, [items]);
+    }, [items]); // items 변경 감지
+    const colors = ["빨강", "주황", "노랑", "초록", "파랑", "보라"]; // 인덱스별 색상 지정
 
     // ===================================================
     //                      렌더링
     // ===================================================
     return (
-        <div style={styles.container}>
-            {/* 왼쪽 영역: 화상 */}
-            <div style={styles.videoContainer}>
-                <h3>WebRTC 테스트</h3>
+        <div className="container">
+            {/*<div className="container" style={{ backgroundImage: `url(${rtc}`}}>?*/}
+            {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
 
-                {/* 비디오 영역 */}
-                <div style={styles.videoWrapper}>
-                    <video
-                        ref={remoteVideoRef}
-                        autoPlay
-                        playsInline
-                        style={styles.largeVideo}
-                    />
-                    <video
-                        ref={localVideoRef}
-                        autoPlay
-                        playsInline
-                        muted
-                        style={styles.smallVideo}
-                    />
-                </div>
+            {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
+            <div className="video-chat-wrapper">
+                
+                {/* 게임 화면 */}
+                {/*{isGameStarted && (*/}
+                <div>
+                    {/*<h2>{isHost ? "🎩 방장 화면" : "🧑‍🤝‍🧑 참가자 화면"}</h2>*/}
 
-                {/* 버튼 모음 */}
-                <div style={styles.buttonContainer}>
-                    <button onClick={startMedia} style={styles.button}>
-                        🎥 화면 열기
-                    </button>
-                    <button onClick={createOffer} style={styles.button}>
-                        📡 내 화면 Offer
-                    </button>
-                    <button onClick={endMedia} style={styles.button}>
-                        🛑 종료
-                    </button>
-                    <button onClick={toggleMute} style={styles.button}>
-                        {isMuted ? "🔇 해제" : "🎤 음소거"}
-                    </button>
-                </div>
-            </div>
-
-            {/* 오른쪽 영역: 채팅 */}
-            <div style={styles.chatContainer}>
-                <h3>채팅</h3>
-                <div ref={chatBoxRef} style={styles.chatBox}>
-                    {messages.map((msg, idx) => (
-                        <div
-                            key={idx}
-                            style={
-                                msg.user_id === userId
-                                    ? styles.myMessage
-                                    : styles.otherMessage
-                            }
+                    {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
+                    {isHost && (
+                        <button
+                            onClick={() => {
+                                console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
+                                startGame(); // ✅ 단어 목록 불러오기 실행
+                            }}
+                            className="start-game-button"
                         >
-                            <strong>user{msg.user_id}:</strong> {msg.message}
-                        </div>
-                    ))}
-                </div>
-
-                <div style={styles.inputContainer}>
-                    <input
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        placeholder="메시지 입력..."
-                        style={styles.input}
-                    />
-                    <button onClick={sendMessage} style={styles.sendButton}>
-                        전송
-                    </button>
-                </div>
-            </div>
-
-            {/* 방 나가기 버튼 */}
-            <div style={styles.leaveButtonContainer}>
-                <button
-                    onClick={() => sendLeave({ showAlert: true })}
-                    style={styles.leaveButton}
-                >
-                    방 나가기
-                </button>
-            </div>
-
-            {/* 게임 영역 */}
-            <div>
-                <h1>WebRTC 게임 화면</h1>
-                <h2>{isHost ? "🎩 방장 화면" : "🧑‍🤝‍🧑 참가자 화면"}</h2>
-                <button
-                    onClick={() => {
-                        console.log("🎮 게임 시작 버튼 클릭");
-                        startGame();
-                    }}
-                >
-                    게임 시작
-                </button>
-
-                {isGameStarted && (
-                    <div>
-                        <h2>🎮 사물 맞추기 게임</h2>
-                        <p>입모양을 보고 정답을 맞춰보세요!</p>
-
-                        {/* 참가자: 단어 선택 */}
-                        <div>
-                            {items.length > 0 ? (
-                                items.map((word, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => sendChoice(word)}
-                                        style={{
-                                            backgroundColor:
-                                                choice === word
-                                                    ? "lightblue"
-                                                    : "white",
-                                            border:
-                                                correctAnswer === word
-                                                    ? "3px solid red"
-                                                    : "1px solid black",
-                                            margin: "5px",
-                                        }}
-                                    >
-                                        {word}
-                                    </button>
-                                ))
-                            ) : (
-                                <p>📌 단어 목록을 불러오는 중...</p>
-                            )}
-                        </div>
-
-                        {/* 방장: 정답 선택 */}
-                        {isHost && (
-                            <div>
-                                <h3>방장: 정답 선택</h3>
+                            게임 시작
+                        </button>
+                    )}
+                    <div className="host-answer-selection">
+                    {isHost && (
+                        <div className="host-answer-selection">
+                            <h3>정답 선택</h3>
+                            <div className="answer-buttons">
                                 {items.length > 0 ? (
                                     items.map((word, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() =>
-                                                sendAnswerChoice(word)
-                                            }
-                                            style={{
-                                                margin: "5px",
-                                                backgroundColor:
-                                                    correctAnswer === word
-                                                        ? "red"
-                                                        : "white",
-                                                color:
-                                                    correctAnswer === word
-                                                        ? "white"
-                                                        : "black",
-                                            }}
-                                        >
-                                            {word}
-                                        </button>
+                                        <div key={index} className="answer-button-wrapper">
+                                            <button
+                                                onClick={() => sendAnswerChoice(word)}
+                                                className="answer-button"
+                                                style={{
+                                                    backgroundColor: correctAnswer === word ? "red" : "white",
+                                                    color: correctAnswer === word ? "white" : "black",
+                                                    border: correctAnswer === word ? "3px solid red" : "1px solid black",
+                                                }}
+                                            >
+                                                {colors[index]}
+                                            </button>
+                                        </div>
                                     ))
                                 ) : (
-                                    <p>📌 단어 목록을 불러오는 중...</p>
+                                    <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
                                 )}
                             </div>
-                        )}
+                        </div>
+
+                    )}
+                </div>
+                </div>
+                <div className="video-container">
+    
+                    {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
+                    {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
+                    <div className="video-wrapper">
+                        {/* 상대방 화면 */}
+                        <div className="video-box">
+                            <div className="video-label">상대방 화면</div>
+                            <video ref={remoteVideoRef} autoPlay playsInline className="large-video" />
+                        </div>
+
+                        {/* 본인 화면 (왕관 or 크리스마스 리스 추가) */}
+                        <div className="video-box small-video-container">
+                            <div className="video-label">본인 화면</div>
+
+                            {/* 🏆 왕관 or 🎄 크리스마스 리스 추가 */}
+                            <div className="role-badge">
+                                {isHost ? "👑" : "🎄"}
+                            </div>
+
+                            <video ref={localVideoRef} autoPlay playsInline muted className="small-video" />
+                        </div>
                     </div>
-                )}
+
+                    <div className="button-container">
+                        <button onClick={startMedia} className="button">
+                            🎥 나의 화면 열기
+                        </button>
+                        <button onClick={createOffer} className="button">
+                            📡 나의 화면 보여주기
+                        </button>
+                        <button onClick={endMedia} className="button">
+                            🛑 종료
+                        </button>
+                        <button onClick={toggleMute} className="button">
+                            {isMuted ? "🔇 음소거 해제" : "🎤 음소거"}
+                        </button>
+                    </div>
+                </div>
+                {/* 버튼을 비디오 아래로 이동 */}
+               
+                <div className="chat-container">
+                    <div ref={chatBoxRef} className="chat-box">
+                        {messages.map((msg, idx) => (
+                            <div
+                                key={idx}
+                                className={msg.user_id === userId ? "my-message" : "other-message"}// 내 메시지는 오른쪽, 상대방은 왼쪽
+                            >
+                                <strong>user{msg.user_id}:</strong> {msg.message}
+                            </div>
+                        ))}
+                    </div>
+    
+                    {/* 입력창과 전송 버튼을 채팅 아래로 이동 */}
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="메시지 입력..."
+                            className="input"
+                        />
+                        <button onClick={sendMessage} className="send-button">
+                            전송
+                        </button>
+                    </div>
+                </div>
             </div>
+                
+            
+            {/* 오른쪽 - 채팅 창 및 입력창 */}
+            {/* 방 나가기 버튼 추가 */}
+            <div className="game-container">
+                <h2>🎮 사물 맞추기 게임</h2>
+                <p>입모양을 보고, 색상이 들어간 정답을 선택하세요!</p>
+
+                {/* 🛠️ 로그 추가: items 상태 확인 */}
+                {console.log("📌 렌더링 중 items 상태:", items)}
+
+                <div className="game-buttons">
+                    {items.length > 0 ? (
+                        items.map((word, index) => (
+                            <button
+                                key={index}
+                                onClick={() => sendChoice(word)}
+                                className="game-button"
+                                style={{
+                                    backgroundColor: choice === word ? "lightblue" : "white",
+                                    border: correctAnswer === word ? "3px solid red" : "1px solid black",
+                                }}
+                            >
+                                {word}
+                            </button>
+                        ))
+                    ) : (
+                        <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
+                    )}
+                </div>
+
+                {/* 방 나가기 버튼 */}
+                {/*<div style={styles.leaveButtonContainer}>*/}
+                {/*    <button*/}
+                {/*        onClick={() => sendLeave({ showAlert: true })}*/}
+                {/*        style={styles.leaveButton}*/}
+                {/*    >*/}
+                {/*        방 나가기*/}
+                {/*    </button>*/}
+                {/*</div>*/}
+
+            </div>
+
+
         </div>
     );
 };
 
-// ===================================================
-//                      스타일
-// ===================================================
-const styles = {
-    container: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        gap: "20px",
-        height: "100vh",
-        padding: "20px",
-    },
-    videoContainer: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "10px",
-        padding: "20px",
-    },
-    videoWrapper: {
-        display: "flex",
-        flexDirection: "row",
-        gap: "10px",
-        alignItems: "center",
-    },
-    largeVideo: {
-        width: "500px",
-        height: "300px",
-        border: "2px solid #333",
-        background: "black",
-    },
-    smallVideo: {
-        width: "200px",
-        height: "120px",
-        border: "2px solid #999",
-        background: "black",
-    },
-    buttonContainer: {
-        display: "flex",
-        gap: "15px",
-        marginTop: "10px",
-    },
-    button: {
-        padding: "10px",
-        background: "#007BFF",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-    },
-    chatContainer: {
-        display: "flex",
-        flexDirection: "column",
-        width: "400px",
-        height: "400px",
-        padding: "10px",
-        background: "#fff",
-        borderRadius: "10px",
-        border: "1px solid #ddd",
-    },
-    chatBox: {
-        flex: 1,
-        overflowY: "auto",
-        background: "#f9f9f9",
-        padding: "10px",
-        borderRadius: "10px",
-        border: "1px solid #ddd",
-        display: "flex",
-        flexDirection: "column",
-        scrollBehavior: "smooth",
-    },
-    inputContainer: {
-        display: "flex",
-        width: "100%",
-        gap: "10px",
-        alignItems: "center",
-    },
-    input: {
-        flex: 1,
-        padding: "10px",
-        borderRadius: "20px",
-        border: "1px solid #ccc",
-        outline: "none",
-        fontSize: "14px",
-    },
-    sendButton: {
-        padding: "10px 15px",
-        borderRadius: "20px",
-        background: "#007BFF",
-        color: "white",
-        border: "none",
-        cursor: "pointer",
-    },
-    myMessage: {
-        alignSelf: "flex-end",
-        backgroundColor: "#007BFF",
-        color: "white",
-        borderRadius: "10px",
-        padding: "5px 10px",
-        marginBottom: "5px",
-        maxWidth: "80%",
-        wordBreak: "break-word",
-    },
-    otherMessage: {
-        alignSelf: "flex-start",
-        backgroundColor: "#f1f1f1",
-        color: "black",
-        borderRadius: "10px",
-        padding: "5px 10px",
-        marginBottom: "5px",
-        maxWidth: "80%",
-        wordBreak: "break-word",
-    },
-    leaveButtonContainer: {
-        marginTop: "20px",
-        display: "flex",
-        justifyContent: "center",
-    },
-    leaveButton: {
-        padding: "10px 20px",
-        backgroundColor: "#FF5733",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-    },
-};
+
 
 export default Webrtc;

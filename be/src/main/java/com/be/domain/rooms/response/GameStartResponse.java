@@ -9,5 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GameStartResponse {
 	private Long roomId;
-	private boolean isHost;  // ✅ 방장 여부 추가
+	private boolean isHost;  // 방장 여부 추가
 }

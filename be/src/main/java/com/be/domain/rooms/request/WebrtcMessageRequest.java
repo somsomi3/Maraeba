@@ -14,6 +14,5 @@ public class WebrtcMessageRequest {
     private Long roomId;
     private LocalDateTime sentAt;
     public String Message;
-//    private String type; // "offer", "answer", "candidate"
-//    private Long senderId; // 보낸 사람
+
 }

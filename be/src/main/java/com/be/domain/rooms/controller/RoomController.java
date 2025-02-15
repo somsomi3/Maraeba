@@ -78,7 +78,7 @@ public class RoomController {
 		log.info("User ID: {}", request.getUserId());
 
 		RoomJoinResponse roomJoinResponse = roomService.joinRoom(request);
-		return ResponseEntity.ok(roomJoinResponse);
+		return ResponseEntity.ok().body(roomJoinResponse);
 	}
 
 	/**
@@ -108,4 +108,5 @@ public class RoomController {
 				.body(BaseResponseBody.of("방에 인원이 남아있어 삭제 불가", 409));
 		}
 	}
+
 }
