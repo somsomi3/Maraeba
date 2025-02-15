@@ -4,9 +4,7 @@ import java.util.Map;
 
 import com.be.db.entity.Room;
 import com.be.db.repository.RoomRepository;
-import com.be.domain.rooms.request.UserChoiceRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
-import com.be.domain.rooms.response.GameResult;
 import com.be.domain.rooms.response.GameStartResponse;
 import com.be.domain.rooms.service.ColorItemService;
 import com.be.domain.rooms.service.GameService;
