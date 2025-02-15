@@ -5,6 +5,8 @@ import { springApi, flaskApi } from '../../utils/api';
 import './PronsFirst.css';
 import GoBackButton from '../../components/button/GoBackButton';
 import PausePopup from '../../components/popup/PausePopup';
+import porong from '../../assets/images/porong.png'
+
 
 // ✅ .env에서 STATIC_API_URL 가져오기
 const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
@@ -20,6 +22,9 @@ const PronsFirst = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [audioSrc, setAudioSrc] = useState(null);
+
+    const showPorong = class_id === "1" && seq_id === "1"; // ✅ class 1의 seq 1에서만 true
+    
 
     useEffect(() => {
         const fetchPronunciationData = async () => {
@@ -99,11 +104,13 @@ const PronsFirst = () => {
         }
     };
 
+    
+
     return (
         <div className="prons-first-container">
             <GoBackButton />
             <PausePopup onExit={() => navigate('/prons')} title="수업을 끝낼까요?" />
-
+           
             {/* 데이터 로딩 중 표시 */}
             {loading ? (
                 <div className="loading-container">🔄 데이터 로딩 중...</div>
@@ -129,12 +136,17 @@ const PronsFirst = () => {
                     </div>
 
                     <div className="description-container">
-                        {/* <h2 className="vowel-title">{data?.pronunciation || '발음 학습'}</h2> */}
+                        <div className="porong-wrapper">
+                            {showPorong && <img src={porong} alt="포롱이" className="porong-image" />}
+                        </div>
                         <p>{error ? '데이터를 불러오는 중 오류가 발생했습니다.' : data?.description}</p>
                     </div>
 
-                    <div className="audio-container">
-                        <button className="audio-button" onClick={playPronunciation}>
+                    <div className="audio container">
+                        <button 
+                            className="audio-button" 
+                            onClick={playPronunciation}
+                        >
                             🔊 음성 듣기
                         </button>
                         {audioSrc && <audio src={audioSrc} controls autoPlay />}
@@ -152,6 +164,7 @@ const PronsFirst = () => {
                     </div>
                 </>
             )}
+
         </div>
     );
 };

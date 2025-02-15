@@ -14,15 +14,27 @@ const Conversation = () => {
     situation: ''
   });
 
-  const predefinedSituations = [
-    '친구의 숙제 도와주기',
-    '친구와 함께 우산쓰고 돌아가기',
-    '학교에서 새로운 친구 사귀기',
-    '마트에서 간식 구매하기',
-    '다친 동생 위로해 주기',
-    '친구와 여행에 대해 이야기하기'
-  ];
 
+
+  const defaultRoles = {
+    '친구의 숙제 도와주기': { aiRole: '도움을 받는 친구', userRole: '도와주는 친구' },
+    '친구와 함께 우산쓰고 돌아가기': { aiRole: '우산을 같이 쓰는 친구', userRole: '우산을 함께 쓰는 친구' },
+    '학교에서 새로운 친구 사귀기': { aiRole: '새로운 친구', userRole: '학교 학생' },
+    '마트에서 간식 구매하기': { aiRole: '마트 점원', userRole: '손님' },
+    '다친 동생 위로해 주기': { aiRole: '다친 동생', userRole: '위로해주는 형/누나' },
+    '친구와 여행에 대해 이야기하기': { aiRole: '여행을 다녀온 친구', userRole: '여행을 계획하는 친구' }
+  };
+  
+  const handleSituationClick = (situation) => {
+    setSelectedSituation(situation);
+    setFormData({
+      ...formData,
+      situation,
+      aiRole: defaultRoles[situation]?.aiRole || '',
+      userRole: defaultRoles[situation]?.userRole || ''
+    });
+  };
+  
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -52,10 +64,12 @@ const Conversation = () => {
         user_role: formData.userRole,
         situation: formData.situation
       });
-
+      console.log(data)
       if (data.session_id) {
+        
         navigate('/conversation/start', { state: { sessionId: data.session_id, aiAnswer: data.answer, aiRole: formData.aiRole, userRole: formData.userRole } });
-      }
+        
+    }
     } catch (error) {
       console.error('🚨 대화 시작 오류:', error);
     }
@@ -72,16 +86,18 @@ const Conversation = () => {
           <div className="situation-section situation-select">
             <h2>상황 고르기</h2>
             <div className="situation-grid">
-              {predefinedSituations.map((situation, index) => (
-                <button
-                  key={index}
-                  className={`situation-card ${selectedSituation === situation ? 'selected' : ''}`}
-                  onClick={() => setSelectedSituation(situation)}
-                >
-                  {situation}
-                </button>
-              ))}
-            </div>
+                {Object.keys(defaultRoles).map((situation, index) => (
+                    <button
+                    key={index}
+                    className={`situation-card ${selectedSituation === situation ? 'selected' : ''}`}
+                    onClick={() => handleSituationClick(situation)}
+                    >
+                    {situation}
+                    </button>
+                    
+                ))}
+                </div>
+
           </div>
 
           <div className="situation-section situation-create">
