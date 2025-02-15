@@ -1,13 +1,9 @@
 package com.be.domain.rooms.controller;
 
-import java.util.List;
 import java.util.Map;
 
-import com.be.common.model.response.BaseResponseBody;
-import com.be.db.entity.BaseEntity;
 import com.be.db.entity.Room;
 import com.be.db.repository.RoomRepository;
-import com.be.db.repository.UserRepository;
 import com.be.domain.rooms.request.UserChoiceRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.response.GameResult;
@@ -15,8 +11,6 @@ import com.be.domain.rooms.response.GameStartResponse;
 import com.be.domain.rooms.service.ColorItemService;
 import com.be.domain.rooms.service.GameService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +30,7 @@ public class GameController {
         return ResponseEntity.status(200).body(colorItemService.getRandomWordsByColor());
     }
 
-    //게임 시작
+    // 게임 시작 (왜 필요한지 모르겠음)
     @PostMapping("/start/{room_id}")
     public ResponseEntity<GameStartResponse> startGame(
         @PathVariable("room_id") Long roomId,
@@ -45,7 +39,7 @@ public class GameController {
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        boolean isHost = room.getHost().getId().equals(request.getUser()); // 현재 사용자가 방장인지 확인
+        boolean isHost = room.getHost().getId().equals(request.getUserId()); // 현재 사용자가 방장인지 확인
 
         return ResponseEntity.ok(new GameStartResponse(roomId, isHost));
     }

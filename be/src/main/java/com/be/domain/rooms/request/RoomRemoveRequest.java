@@ -9,11 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLeaveRequest {
-    private Long userId;
-    private String roomId;
+public class RoomRemoveRequest {
+    private String roomId; // ✅ 방 비밀번호 필드 추가
 
-    public static UserLeaveRequest of(Long userId, String roomId) {
-        return new UserLeaveRequest(userId, roomId);
+    public static RoomRemoveRequest of(String roomId) {
+        return new RoomRemoveRequest(roomId);
     }
 }
