@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @Slf4j
 @RestController
-@RequestMapping("/webrtc/messages")
+//@RequestMapping
 @RequiredArgsConstructor
 public class WebrtcMessageController {
 
@@ -23,11 +23,11 @@ public class WebrtcMessageController {
     private final WebrtcMessageService webrtcMessageService;
 
     // ✅ 메시지 저장
-    @PostMapping
+    @PostMapping("/webrtcs/messages")
     public ResponseEntity<? extends BaseResponseBody> saveMessage(@RequestBody WebrtcMessageRequest request,
                                                                   @AuthenticationPrincipal UserDetails userDetails) {
         if (request == null) {
-            return ResponseEntity.badRequest().body(BaseResponseBody.of("❌ 잘못된 요청: 요청 본문이 없음", 400));
+            return ResponseEntity.badRequest().body(BaseResponseBody.of("잘못된 요청: 요청 본문이 없음", 400));
         }
 
         log.info("Received WebSocket Message: {}", request);
@@ -37,11 +37,11 @@ public class WebrtcMessageController {
 
         // 메시지 저장
         webrtcMessageService.saveMessage(request);
-        return ResponseEntity.ok().body(BaseResponseBody.of("✅ WebSocket 메시지 저장 성공", 200));
+        return ResponseEntity.ok().body(BaseResponseBody.of("WebSocket 메시지 저장 성공", 200));
     }
 
     // ✅ 특정 방의 메시지 가져오기
-    @GetMapping("/room/{roomId}")
+    @GetMapping("/rooms/{roomId}")
     public ResponseEntity<?> getMessages(@PathVariable Long roomId,
                                          @RequestParam(required = false) Long userId) {
         log.info("📌 요청된 roomId: {}", roomId);

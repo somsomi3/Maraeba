@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/webrtc")
+@RequestMapping("/webrtcs")
 @RequiredArgsConstructor
 public class WebRTCLogController {
 
@@ -31,8 +31,8 @@ public class WebRTCLogController {
 	private final WebRTCLogService webRTCLogService;
 
 
-	// ✅ 모든 로그 조회 (GET 요청 허용)
-	@GetMapping("/logs")
+	// 모든 로그 조회 (GET 요청 허용)
+	@GetMapping("/log")
 	public ResponseEntity<List<WebRTCLog>> getAllCallLogs(
 		@RequestParam(required = false) Long userId,
 		@RequestParam(required = false) String roomId) { // ✅ 쿼리 파라미터 추가
@@ -52,17 +52,18 @@ public class WebRTCLogController {
 		return ResponseEntity.ok(logs);
 	}
 
-	@PostMapping("/logs")
+	// 로그 저장
+	@PostMapping("/log")
 	public ResponseEntity<? extends BaseResponseBody> saveCallLog(@RequestBody(required = false)SaveCallLogRequest request,
 																  @AuthenticationPrincipal UserDetails userDetails) {
 		if (request == null) {
-			return ResponseEntity.badRequest().body(BaseResponseBody.of("❌ 잘못된 요청: 요청 본문이 없음",400));
+			return ResponseEntity.badRequest().body(BaseResponseBody.of("잘못된 요청: 요청 본문이 없음",400));
 		}
 		log.info("Received WebRTC Log: {}", request);
 		Long userId = (userDetails != null) ? Long.parseLong(userDetails.getUsername()) : null;
 		request.setUserId(userId);
 		webRTCLogService.saveCallLog(request);
-		return ResponseEntity.ok().body(BaseResponseBody.of("✅ 로그 저장 완료 (비로그인 허용)",200));
+		return ResponseEntity.ok().body(BaseResponseBody.of("로그 저장 완료 (비로그인 허용)",200));
 	}
 
 }
