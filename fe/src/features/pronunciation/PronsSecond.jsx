@@ -242,8 +242,8 @@ useEffect(() => {
                 <img src={tongueImage ?? tongue} alt="구강 내부" className={`image-bottom ${tutorialStep === 1 ? "highlight" : ""}`} />
                 </div>
                 {tutorialStep === 1 && (
-                <div className="tutorial-overlay">
-                    <div className="tutorial-box">
+                <div className="prons-tutorial-overlay">
+                    <div className="prons-tutorial-box">
                     <p>입모양을 확인해요!</p>
                     <button onClick={() => setTutorialStep(2)}>다음</button>
                     </div>
@@ -275,7 +275,7 @@ useEffect(() => {
                 )}
 
                 {tutorialStep === 2 && (
-                    <div className="prons-torial-overlay">
+                    <div className="prons-tutorial-overlay">
                         <div className="prons-tutorial-box">
                         <p>카메라를 켜고 입모양을 확인하면서 연습해요!</p>
                         <button onClick={() => setTutorialStep(3)}>다음</button>

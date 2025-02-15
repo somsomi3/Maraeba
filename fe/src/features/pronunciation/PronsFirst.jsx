@@ -142,7 +142,7 @@ const PronsFirst = () => {
                         <p>{error ? '데이터를 불러오는 중 오류가 발생했습니다.' : data?.description}</p>
                     </div>
 
-                    <div className="audio container">
+                    <div className="audio-container">
                         <button 
                             className="audio-button" 
                             onClick={playPronunciation}
