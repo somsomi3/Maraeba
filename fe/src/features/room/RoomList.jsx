@@ -1,23 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api.js";
-import "./WaitingRoom.css";
 import { useSelector } from "react-redux";
 import CreateRoomPopup from "../room/CreatePopup";
+import "./WaitingRoom.css";
 
 const RoomList = () => {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
-    const [shouldJoin, setShouldJoin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+
     const navigate = useNavigate();
-    const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+    const token = useSelector((state) => state.auth.token);
     const userId = useSelector((state) => state.auth.userId);
 
-    // ✅ JWT 토큰에서 사용자 정보 추출하는 함수
-
-    // 방 목록 가져오기
+    // 방 목록 불러오기
     const fetchRooms = async () => {
         try {
             setLoading(true);
@@ -30,48 +28,33 @@ const RoomList = () => {
         }
     };
 
+    // 페이지 첫 로드 시 & 10초마다 자동 갱신
     useEffect(() => {
         fetchRooms();
-
         const interval = setInterval(() => {
-            fetchRooms(); // 주기적인 목록 갱신
-        }, 10000); // 10초마다 갱신
+            fetchRooms();
+        }, 1000000);
+        return () => clearInterval(interval);
+        // eslint-disable-next-line
+    }, []);
 
-        return () => clearInterval(interval); // 언마운트 시 인터벌 제거
-    }, []); // 페이지 로드 시 방 목록을 불러오기
-
-    useEffect(() => {
-        if (selectedRoom && shouldJoin) {
-            handleJoinRoom(selectedRoom);
-            setShouldJoin(false);
-        }
-    }, [selectedRoom, shouldJoin]);
-
-    const handleSelectRoomAndJoin = (room) => {
-        setSelectedRoom(room);
-        setShouldJoin(true);
-    };
-
-    // 방 선택
+    // 방 클릭 (행 선택)
     const handleSelectRoom = (room) => {
         setSelectedRoom(room);
     };
 
-    // 방 입장 요청
+    // 방 참여
     const handleJoinRoom = async () => {
         if (!selectedRoom) {
             alert("입장할 방을 선택하세요.");
             return;
         }
-
-        // getUserInfo()에서 이미 토큰을 확인하고 사용자 정보를 가져오기 때문에
         if (!userId) {
-            alert("사용자 정보가 없습니다. 로그인 후 다시 시도하세요.");
+            alert("사용자 정보가 없습니다. 로그인 후 시도하세요.");
             return;
         }
-
         if (selectedRoom.userCnt >= 2) {
-            alert("❌ 이 방은 최대 인원에 도달하여 입장할 수 없습니다.");
+            alert("❌ 이 방은 최대 인원(2명)에 도달했습니다.");
             return;
         }
 
@@ -85,34 +68,48 @@ const RoomList = () => {
         }
 
         try {
-            const response = await springApi.post(
-                `/rooms/join/${selectedRoom.id}`,
-                {
-                    user: userId,
-                    room: selectedRoom.id,
-                    room_password: password || null,
-                }
-            );
+            const response = await springApi.post("/rooms/join", {
+                user_id: userId,
+                room_id: selectedRoom.id,
+                room_password: password || null,
+            });
+
+            if (!response.data) {
+                alert("방 참가에 실패했습니다.");
+                return;
+            }
 
             const { host } = response.data;
-            alert(host ? "방장으로 입장했습니다!" : "참가자로 입장했습니다.");
+            alert(
+                host ? "🙌 방장으로 입장했습니다!" : "🙌 참가자로 입장했습니다."
+            );
 
-            // 방 입장 후 해당 방 페이지로 이동
+            // 방 상세 페이지(WebRTC 화면)으로 이동
             navigate(`/room/${selectedRoom.id}`);
         } catch (error) {
             alert(error.response?.data?.message || "방 참가에 실패했습니다.");
         }
     };
 
+    // 방 이름 클릭 시 바로 입장
+    const handleSelectRoomAndJoin = (room) => {
+        setSelectedRoom(room);
+        // setState로 바로 반영되길 기대할 수 없어서,
+        // Promise.then(...) 또는 setTimeout 등의 방식도 고려할 수 있지만,
+        // 여기선 단순히 joinRoom 함수를 직접 호출해도 무방함
+        setTimeout(() => handleJoinRoom(), 0);
+    };
+
     return (
         <div className="waiting-room">
+            {/* 방 생성 팝업 */}
             <CreateRoomPopup
                 isOpen={isPopupOpen}
                 onClose={() => setIsPopupOpen(false)}
             />
+
             <h1>방 목록</h1>
 
-            {/* ✅ 새로고침 버튼 추가 */}
             <div className="room-actions">
                 <button
                     className="create-room-btn"
@@ -120,6 +117,7 @@ const RoomList = () => {
                 >
                     방 만들기
                 </button>
+
                 <button
                     className="refresh-room-btn"
                     onClick={fetchRooms}
@@ -127,6 +125,7 @@ const RoomList = () => {
                 >
                     {loading ? "🔄 새로고침 중..." : "🔄 새로고침"}
                 </button>
+
                 <button
                     className="join-room-btn"
                     onClick={handleJoinRoom}
@@ -136,7 +135,6 @@ const RoomList = () => {
                 </button>
             </div>
 
-            {/* 방 목록 테이블 */}
             <div className="room-list-container">
                 {loading ? (
                     <p>⏳ 방 목록을 불러오는 중...</p>
@@ -160,15 +158,18 @@ const RoomList = () => {
                                             ? "selected"
                                             : ""
                                     }
-                                    onClick={() => handleSelectRoom(room)} // 방을 선택하는 함수 호출
+                                    onClick={() => handleSelectRoom(room)}
                                 >
                                     <td>{index + 1}</td>
                                     <td>
                                         <button
                                             className="room-link"
-                                            onClick={() =>
-                                                handleSelectRoomAndJoin(room)
-                                            }
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // tr onClick 중복 방지
+                                                setSelectedRoom(room);
+                                                handleJoinRoom();
+                                                // handleSelectRoomAndJoin(room);
+                                            }}
                                         >
                                             {room.title} (ID: {room.id})
                                         </button>
@@ -185,7 +186,7 @@ const RoomList = () => {
                                             : "WAITING"}
                                     </td>
                                     <td>
-                                        {room.userCnt}/ 2
+                                        {room.userCnt}/2
                                         {room.userCnt >= 2 && " 🚫"}
                                     </td>
                                     <td>{room.room_password ? "🔒" : "🔓"}</td>
