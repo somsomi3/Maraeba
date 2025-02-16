@@ -68,9 +68,9 @@ const Register = () => {
     <div className="form-container">
       <h2>회원가입</h2>
       <form onSubmit={handleSubmit}>
-        <div className="input-group inline-group">
+        <div className="login-input-group inline-group">
           <input
-            className="input"
+            className="login-input"
             type="text"
             name="user_id"
             placeholder="로그인 ID"
@@ -80,9 +80,9 @@ const Register = () => {
           />
           <button type="button" className="small-button" onClick={checkUserId}>아이디 중복검사</button>
         </div>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="password"
             name="password"
             placeholder="비밀번호"
@@ -91,9 +91,9 @@ const Register = () => {
             required
           />
         </div>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="password"
             name="confirmPassword"
             placeholder="비밀번호 확인"
@@ -102,9 +102,9 @@ const Register = () => {
             required
           />
         </div>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="email"
             name="email"
             placeholder="이메일"
@@ -113,9 +113,9 @@ const Register = () => {
             required
           />
         </div>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="text"
             name="username"
             placeholder="자녀 이름"
