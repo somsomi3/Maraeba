@@ -7,16 +7,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.common.model.response.BaseResponseBody;
+import com.be.domain.users.dto.UserTutorialDTO;
 import com.be.domain.users.request.PasswordRequest;
 import com.be.domain.users.request.PasswordUpdateRequest;
 import com.be.domain.users.request.UserUpdateRequest;
 import com.be.domain.users.response.GetCurrentUserResponse;
+import com.be.domain.users.response.GetUserTutorialRes;
 import com.be.domain.users.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +28,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -87,6 +92,7 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 		@ApiResponse(responseCode = "401", description = "인증 실패")
 	})
+
 	@DeleteMapping("/me")
 	public ResponseEntity<? extends BaseResponseBody> deleteUser(
 		@AuthenticationPrincipal UserDetails userDetails,
@@ -94,5 +100,20 @@ public class UserController {
 		Long id = Long.parseLong(userDetails.getUsername());
 		userService.deleteUser(id, request);
 		return ResponseEntity.ok(BaseResponseBody.of("User deleted successfully.", HttpStatus.OK));
+	}
+
+	@GetMapping("/me/tutorial")
+	public GetUserTutorialRes getTutorial(@AuthenticationPrincipal UserDetails userDetails) {
+		Long id = Long.parseLong(userDetails.getUsername());
+		UserTutorialDTO response = userService.getTutorial(id);
+		return new GetUserTutorialRes("Success", HttpStatus.OK, response);
+	}
+
+	@PatchMapping("/me/tutorial/{tutorial_id}")
+	public ResponseEntity<? extends BaseResponseBody> updateTutorial(@AuthenticationPrincipal UserDetails userDetails,
+		@PathVariable("tutorial_id") @Min(1) @Max(4) Integer tutorialId) {
+		Long id = Long.parseLong(userDetails.getUsername());
+		userService.updateTutorial(id, tutorialId);
+		return ResponseEntity.ok(BaseResponseBody.of("Success", HttpStatus.OK));
 	}
 }
