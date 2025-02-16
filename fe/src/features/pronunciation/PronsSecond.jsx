@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { turnOnCamera, turnOffCamera } from "../../store/cameraSlice";
 import { springApi } from "../../utils/api"; 
 import "./PronsSecond.css";
 import GoBackButton from "../../components/button/GoBackButton";
@@ -9,6 +10,8 @@ import RecordButton from "../../components/button/RecordButton";
 
 import lipshape from "../../assets/images/lipshape.png";
 import tongue from "../../assets/images/tongue.png";
+
+import tutoPorong from "../../assets/images/tuto_porong.png"
 
 const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
 
@@ -20,8 +23,9 @@ const classMaxSeqMap = {
 
 const PronsSecond = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { class_id, seq_id } = useParams();
-  const token = useSelector((state) => state.auth.token); // ✅ Redux에서 토큰 가져오기
+  const token = useSelector((state) => state.auth.token); 
   const videoRef = useRef(null);
   const [tongueImage, setTongueImage] = useState(null);
   const [lipVideoSrc, setLipVideoSrc] = useState(null); // ✅ 비디오 Blob URL
@@ -32,10 +36,24 @@ const PronsSecond = () => {
   const [feedback, setFeedback] = useState("")
   const [mypron, setMypron] = useState("")
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isCameraOn, setIsCameraOn] = useState(false);
-  const [tutorialStep, setTutorialStep] = useState(null);  // ✅ 튜토리얼 단계 관리
-  const [isTutorialCompleted, setIsTutorialCompleted] = useState(false); // ✅ 튜토리얼 완료 여부
-  
+  const [tutorialStep, setTutorialStep] = useState(null);  
+  const [isTutorialCompleted, setIsTutorialCompleted] = useState(false); 
+  const [username, setUsername] = useState("");
+  const [showGreeting, setShowGreeting] = useState(true); // ✅ 인삿말 표시 여부
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await springApi.get("/users/me");
+      setUsername(response.data.username); // ✅ username 저장
+    } catch (error) {
+      console.error("❌ 사용자 정보 불러오기 실패:", error);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
 
 useEffect(() => { 
     const fetchData = async () => {
@@ -94,70 +112,89 @@ useEffect(() => {
     }
   };
 
+  const isCameraOn = useSelector((state) => state.camera.isCameraOn);
+  const shouldRestart = useSelector((state) => state.camera.shouldRestart);
+  const cameraStreamRef = useRef(null);
+
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        setIsCameraOn(true);  // ✅ 카메라가 켜졌다고 표시
+      if (!cameraStreamRef.current) { // ✅ 이미 켜져 있으면 실행하지 않음
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        cameraStreamRef.current = stream;
+        dispatch(turnOnCamera());
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
       }
     } catch (error) {
       console.error("❌ 카메라 접근 오류:", error);
     }
   };
-  
+
   const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      let tracks = videoRef.current.srcObject.getTracks();
-      tracks.forEach((track) => track.stop());
-      videoRef.current.srcObject = null;
-      setIsCameraOn(false);  // ✅ 카메라가 꺼졌다고 표시
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach(track => track.stop());
+      cameraStreamRef.current = null;
     }
+    dispatch(turnOffCamera());
   };
 
+  // ✅ Redux에서 관리하는 스트림을 videoRef에 연결
   useEffect(() => {
-    // const fetchTutorialStatus = async () => {
-    //   try {
-    //     const response = await springApi.get("/users/me/tutorial");
-    //     if (response.data.has_seen_pron) {
-    //       setIsTutorialCompleted(true);  // 이미 완료된 경우
-    //     } else {
-    //       setTutorialStep(1);  // 튜토리얼 시작
-    //     }
-    //   } catch (error) {
-    //     console.error("튜토리얼 상태 가져오기 실패:", error);
-    //   }
-    // };
-   if (Number(seq_id) === 1) {
-        setTutorialStep(1);
+    if (shouldRestart) {
+      startCamera();
     }
-    // fetchTutorialStatus();
+  }, [shouldRestart]);
+
+
+  useEffect(() => {
+    const fetchTutorialStatus = async () => {
+      try {
+        const response = await springApi.get("/users/me/tutorial");
+        const hasSeenPron = response.data.data.has_seen_pron;
+        
+        if (hasSeenPron) {
+          setIsTutorialCompleted(true);
+          setShowGreeting(false); // 튜토리얼을 봤다면 인삿말 표시 X
+        } else {
+          setShowGreeting(true);  // 처음이면 인삿말 표시
+        }
+      } catch (error) {
+        console.error("❌ 튜토리얼 상태 가져오기 실패:", error);
+      }
+    };
+    fetchTutorialStatus();
   }, [seq_id]);
   
-
-
-//   useEffect(() => {
-//     const startCamera = async () => {
-//       try {
-//         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-//         if (videoRef.current) {
-//           videoRef.current.srcObject = stream;
-//         }
-//       } catch (error) {
-//         console.error("❌ 카메라 접근 오류:", error);
-//       }
-//     };
-
-//     startCamera();
-
-//     return () => {
-//       if (videoRef.current && videoRef.current.srcObject) {
-//         let tracks = videoRef.current.srcObject.getTracks();
-//         tracks.forEach((track) => track.stop());
-//       }
-//     };
-//   }, [navigate]);
-
+  const handleTutorialComplete = async () => {
+    try {
+      await springApi.patch("/users/me/tutorial/1", { completed: true });
+      console.log("✅ 튜토리얼 완료 상태 저장됨");
+      setIsTutorialCompleted(true);
+      setShowGreeting(false); // 튜토리얼 완료 후 인삿말 숨기기
+    } catch (error) {
+      console.error("❌ 튜토리얼 완료 상태 저장 실패:", error);
+    }
+  };
+  
+  
+const PorongSpeech = ({ text, position= "center", onNext }) => {
+    return (
+      <div className={`porong-container ${position}`}>
+        <img src={tutoPorong} alt="포롱이" className="porong-image" />
+        <div className="porong-speech-bubble">
+          {text.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
+          {onNext && <button onClick={onNext} className="porong-nextbutton">다음</button>}
+        </div>
+      </div>
+    );
+  };
+  
 
   // ✅ 학습 완료 후 세션 종료, 히스토리 저장, 통계 업데이트
   const handleEndSession = async () => {
@@ -231,6 +268,16 @@ useEffect(() => {
       ) : (
         <>
           <div className="content-container">
+          {showGreeting && !isTutorialCompleted && (
+            <PorongSpeech
+                text={`안녕하세요, ${username}님! \n 저는 포롱이예요🦊 \n 포롱이와 함께 발음 연습 방법을 익혀볼까요?`}
+                position="center"
+                onNext={() => {
+                setShowGreeting(false);
+                setTutorialStep(1);
+                }}
+            />
+            )}
             <div className="image-section">
                 {lipVideoSrc ? (
                     <video className={`lip-video ${tutorialStep === 1 ? "highlight" : ""}`} controls autoPlay loop muted>
@@ -241,14 +288,9 @@ useEffect(() => {
                 )}
                 <img src={tongueImage ?? tongue} alt="구강 내부" className={`image-bottom ${tutorialStep === 1 ? "highlight" : ""}`} />
                 </div>
-                {tutorialStep === 1 && (
-                <div className="prons-tutorial-overlay">
-                    <div className="prons-tutorial-box">
-                    <p>입모양을 확인해요!</p>
-                    <button onClick={() => setTutorialStep(2)}>다음</button>
-                    </div>
-                </div>
-                )}
+                {!isTutorialCompleted && tutorialStep === 1 && (
+                    <PorongSpeech text="먼저, 입모양을 확인해요!" position="near-result" onNext={() => setTutorialStep(2)} />
+                    )}
 
 
             <div className={`camera-section ${tutorialStep === 2 ? "highlight" : ""}`}>
@@ -262,25 +304,15 @@ useEffect(() => {
                 </button>
                 <div className={`accuracy ${tutorialStep === 5 ? "highlight" : ""}`}>
                     <div className="match-result">
-                        {isMatch === null ? "녹음 후 결과가 표시됩니다." : isMatch ? "정확해요! ✅" : `내 발음: ${mypron}` }
+                        {isMatch === null ? "" : `내 발음: ${mypron}` }
                     </div>
                     </div>
                     {tutorialStep === 5 && (
-                    <div className="prons-tutorial-overlay">
-                        <div className="prons-tutorial-box">
-                        <p>내 발음을 확인할 수 있어요!</p>
-                        <button onClick={() => setTutorialStep(6)}>다음</button>
-                        </div>
-                    </div>
-                )}
+                        <PorongSpeech text="내 발음을 확인할 수 있어요!" position="near-result" onNext={() => setTutorialStep(6)} />
+                        )}
 
                 {tutorialStep === 2 && (
-                    <div className="prons-tutorial-overlay">
-                        <div className="prons-tutorial-box">
-                        <p>카메라를 켜고 입모양을 확인하면서 연습해요!</p>
-                        <button onClick={() => setTutorialStep(3)}>다음</button>
-                        </div>
-                    </div>
+                <PorongSpeech text="카메라를 켜고 입모양을 확인하면서 연습해요!" onNext={() => setTutorialStep(3)} />
                 )}
             </div>
           </div>
@@ -306,31 +338,19 @@ useEffect(() => {
             />
           </div>
           {tutorialStep === 3 && (
-            <div className="prons-tutorial-overlay">
-                <div className="prons-tutorial-box">
-                <p>이제, 내 발음을 확인해볼까요?</p>
-                </div>
-            </div>
-            )}
+            <PorongSpeech text="녹음 버튼을 누르고, 내 발음을 확인해볼까요?" position="near-record"/>
+            
+           )}
 
-            {tutorialStep === 4 && isMatch === null && (
-            <div className="prons-tutorial-overlay">
-                <div className="prons-torial-box">
-                <p>녹음 후 버튼을 눌러주세요!</p>
-                </div>
-            </div>
-            )}
+            {/* ✅ 4단계: 녹음 후 버튼을 눌러주세요! */}
+                {tutorialStep === 4 && isMatch === null && (
+                <PorongSpeech text="녹음 후 버튼을 눌러주세요!" />
+                )}
 
-            {tutorialStep === 4 && isMatch !== null && (
-            <div className="prons-tutorial-overlay">
-                <div className="prons-tutorial-box">
-                <p>잘했어요!</p>
-                <button onClick={() => setTutorialStep(5)}>다음</button>
-                </div>
-            </div>
-            )}
-
-
+                {/* ✅ 5단계: "잘했어요!"도 포롱이가 말하도록 변경 */}
+                {tutorialStep === 4 && isMatch !== null && (
+                <PorongSpeech text="잘했어요!" position="above-record" onNext={() => setTutorialStep(5)} />
+                )}
 
           {feedback && (
             <div className="prons-feedback-box">
@@ -348,42 +368,17 @@ useEffect(() => {
         </div>
         )}
 
-            {/* <div className="record-button-container">
-            <button onClick={startRecording} disabled={isRecording}>
-                {isRecording ? "🎙 녹음 중..." : "🎤 녹음 & 카메라 시작"}
-            </button>
-
-            {isRecording && audioStream && (
-              <RecordButton 
-                onMatchUpdate={setIsMatch} 
-                pronunciation={data?.pronunciation} 
-                audioStream={audioStream} // ✅ 마이크 스트림 전달
-              />
-            )}
-          </div> */}
-
-
             <button className={`next-button ${tutorialStep === 6 ? "highlight" : ""}`} onClick={handleSaveCorrectAndNext}>
             {parseInt(seq_id) === classMaxSeqMap[class_id] ? "🔚학습 끝내기" : "다음으로"}
             </button>
+            
+            {/* ✅ 6단계: 튜토리얼 완료 */}
             {tutorialStep === 6 && (
-            <div className="prons-tutorial-overlay">
-                <div className="prons-tutorial-box">
-                <p>이제 계속해서 발음 연습을 해볼까요?</p>
-                <button onClick={async () => {
-                    setIsTutorialCompleted(true);
-                    setTutorialStep(null);
-
-                    // ✅ 튜토리얼 완료 PUT 요청
-                    try {
-                    await springApi.put("/prons/tutorial-status", { completed: true });
-                    console.log("✅ 튜토리얼 완료 상태 저장됨");
-                    } catch (error) {
-                    console.error("❌ 튜토리얼 완료 상태 저장 실패:", error);
-                    }
-                }}>완료</button>
-                </div>
-            </div>
+            <PorongSpeech
+                text="이제 계속해서 발음 연습을 해볼까요?"
+                position="near-next"
+                onNext={handleTutorialComplete}
+            />
             )}
 
         </>

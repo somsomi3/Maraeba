@@ -54,9 +54,9 @@ const Login = () => {
     <img src={happy} alt="smile" className="main-emoji emoji-right" />
 </div>
       <form onSubmit={handleSubmit} className="mainform">
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="text"
             name="user_id"
             placeholder="아이디"
@@ -65,9 +65,9 @@ const Login = () => {
             required
           />
         </div>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="password"
             name="password"
             placeholder="비밀번호"

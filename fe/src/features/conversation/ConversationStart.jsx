@@ -61,7 +61,7 @@ const ConversationStart = () => {
   
       // ✅ 유저 말풍선에 녹음 중 텍스트 추가 (STT 변환 전)
       
-      ((prev) => [
+      setMessages((prev) => [
         ...prev,
         { role: 'user', text: "..." }, // 유저 말풍선 (STT 변환 전)
         { role: 'ai', text: "..." } // AI 응답 대기
@@ -149,7 +149,7 @@ const ConversationStart = () => {
           onClick={toggleRecording} 
         />
       </div>
-      -
+      
       <ConversationStopPopup />
     </div>
   );

@@ -30,7 +30,7 @@ const Profile = () => {
 
             try {
                 const response = await springApi.get("/users/me", {
-                    headers: { Authorization: `Bearer ${token}` },
+                    // headers: { Authorization: `Bearer ${token}` },
                 });
                 setUsername(response.data.username);
             } catch (error) {

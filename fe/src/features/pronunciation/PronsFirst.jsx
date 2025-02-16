@@ -136,8 +136,8 @@ const PronsFirst = () => {
                     </div>
 
                     <div className="description-container">
-                        <div className="porong-wrapper">
-                            {showPorong && <img src={porong} alt="포롱이" className="porong-image" />}
+                        <div className="conversation-porong-wrapper">
+                            {showPorong && <img src={porong} alt="포롱이" className="conversation-porong-image" />}
                         </div>
                         <p>{error ? '데이터를 불러오는 중 오류가 발생했습니다.' : data?.description}</p>
                     </div>
