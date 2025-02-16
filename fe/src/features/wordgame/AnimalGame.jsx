@@ -215,34 +215,57 @@ const AnimalGame = () => {
 
 // ✅ 동그라미 좌표 비율 변환
 const calculateAdjustedPosition = (origX, origY) => {
-    if (!imageRef.current) return { x: "0%", y: "0%", size: "20px" };
-  
-    // 원본 이미지의 크기 (DB 좌표 기준)
-    const imgWidth = imageRef.current.naturalWidth;
-    const imgHeight = imageRef.current.naturalHeight;
-    // 현재 화면에 표시되는 이미지의 크기
-    const displayWidth = imageRef.current.clientWidth;
-  
-    // 원본 좌표를 %로 변환
-    let percX = (origX / imgWidth) * 100;
-    let percY = (origY / imgHeight) * 100;
-  
-    // 여기서 보정값을 적용 (예: 10%씩 오른쪽과 아래로 이동)
-    const correctionXPercent = 10; // 필요에 따라 조정 가능
-    const correctionYPercent = 10; // 필요에 따라 조정 가능
-  
-    percX += correctionXPercent;
-    percY += correctionYPercent;
-  
-    // 동그라미 크기: 현재 이미지 너비의 일정 비율(또는 최소/최대 값을 고려)
-    const circleSize = Math.max((8 / 100) * displayWidth, (2 / 100) * window.innerWidth);
-  
-    return {
-      x: `${percX}%`,
-      y: `${percY}%`,
-      size: `${circleSize}px`,
-    };
+  if (!imageRef.current) return { x: "0%", y: "0%", size: "2vw" };
+
+  // 이미지의 자연 크기
+  const naturalWidth = imageRef.current.naturalWidth;
+  const naturalHeight = imageRef.current.naturalHeight;
+  // 이미지의 실제 렌더링된 크기
+  const renderedWidth = imageRef.current.clientWidth;
+  const renderedHeight = imageRef.current.clientHeight;
+
+  // 컨테이너의 크기를 가져옴 (이미지 컨테이너가 이미지의 부모라면)
+  const containerRect = imageRef.current.getBoundingClientRect();
+
+  // 스케일 비율 계산 (object-fit: contain이면 가로 또는 세로 중 하나가 꽉 차게 됨)
+  const scale = renderedWidth / naturalWidth; // 혹은 renderedHeight / naturalHeight
+
+  // 원본 좌표를 실제 픽셀 좌표로 변환
+  const pixelX = origX * scale;
+  const pixelY = origY * scale;
+
+  // 만약 컨테이너가 이미지보다 클 경우, 이미지 주변에 생기는 여백(오프셋)을 계산
+  const offsetX = (containerRect.width - renderedWidth) / 2;
+  const offsetY = (containerRect.height - renderedHeight) / 2;
+
+  // 최종 좌표 (컨테이너 기준 픽셀)
+  const finalPixelX = offsetX + pixelX;
+  const finalPixelY = offsetY + pixelY;
+
+  // 컨테이너 기준 퍼센트 좌표로 변환
+  let percX = (finalPixelX / containerRect.width) * 100;
+  let percY = (finalPixelY / containerRect.height) * 100;
+
+  // 보정값을 적용 (DB 좌표가 약간 부정확할 경우)
+  const correctionXPercent = 12; // 조정 가능한 값
+  const correctionYPercent = 13; // 조정 가능한 값
+  percX += correctionXPercent;
+  percY += correctionYPercent;
+
+  // 동그라미 크기도 동일한 스케일로 계산 (예시로 최소/최대 값 고려)
+  const circleSizePx = Math.max((8 / 100) * renderedWidth, (3 / 100) * window.innerWidth);
+  // vw 단위로 변환 (window.innerWidth 기준)
+  const circleSizeVw = (circleSizePx / window.innerWidth) * 100;
+
+  return {
+    x: `${percX}%`,
+    y: `${percY}%`,
+    size: `${circleSizeVw}vw`,
   };
+};
+
+
+
 
   // 5개 정답 달성 시 팝업이 뜨고,
   // 팝업에서 [게임 시작] 버튼을 누르면 실제 startGame() 실행
