@@ -1,362 +1,386 @@
 /* 전체 게임 컨테이너 */
 .animal-game-container {
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 게임 오버레이 */
+.animal-game-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 65vw; /* 기존 800px → 75vw (예시) */
+  height: 90%;
+  padding: 1vh; /* 10px → 약 1vh */
+  border-radius: 2vh; /* 20px → 약 2vh */
+  backdrop-filter: blur(1vh); /* 10px → 약 1vh */
+  box-shadow: 0 0.4vh 1vh rgba(0, 0, 0, 0.3); /* 4px, 10px → 0.4vh, 1vh */
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* 게임 제목 */
+.animal-game-title {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0.2vh 0.2vh 0.4vh rgba(0, 0, 0, 0.8); /* 2px, 2px, 4px 변환 */
+  margin-bottom: 1.5vh; /* 15px → 약 1.5vh */
+}
+
+/* 가로 정렬을 위한 컨테이너 */
+.animal-game-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3vw; /* 30px → 약 3vw */
+  width: 80%;
+  max-width: 75vw; /* 750px → 75vw (예시) */
+}
+
+/* 왼쪽 칼럼: 이미지 + 피드백 */
+.animal-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh; /* 20px → 약 2vh */
+  flex: 2;
+  height: 100%;
+}
+
+/* 이미지 컨테이너 스타일 */
+.animal-image-container {
+  flex: 6;
+  width: 95%;
+  max-width: 60vw; /* 600px → 60vw (예시) */
+  position: relative;
+  border-radius: 1vh; /* 10px → 약 1vh */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+/* 피드백 박스 */
+.animal-feedback-box {
+  width: 92%;
+  max-width: 60vw; /* 600px → 60vw */
+  max-height: 20vh; /* 190px → 약 20vh (화면에 따라 조정 필요) */
+  background: rgba(255, 183, 183, 0.9);
+  border-radius: 1vh; /* 10px → 약 1vh */
+  padding: 1vh; /* 10px → 약 1vh */
+  text-align: center;
+  flex-grow: 1;
+  align-items: flex-end;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.animal-feedback-box h3 {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+  padding: 0.2vh; /* 2px → 약 0.2vh */
+  margin: 0.8vh;  /* 8px → 약 0.8vh */
+}
+
+.animal-feedback-box p {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+  margin: 0.4vh 0; /* 4px → 약 0.4vh */
+  line-height: 1.2;
+  padding: 0.4vh; /* 4px → 약 0.4vh */
+}
+
+/* 게임 이미지 스타일 */
+.animal-game-image {
+  max-width: 100%;
+  max-height: 80vh;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* 동그라미 마커 (정답 위치) */
+.circle-marker {
+  position: absolute;
+  border-radius: 50%;
+  border: 0.3vh solid red; /* 3px → 약 0.3vh */
+  background-color: transparent;
+  transform: translate(-50%, -50%);
+}
+
+/* 동물 목록 컨테이너 */
+.animal-list {
+  flex: 1;
+  max-width: 24vw; /* 240px → 24vw (예시) */
+  height: 95%;
+  background: rgba(193, 231, 200, 0.8);
+  padding: 0.5vh 3vh; /* 5px, 30px → 약 0.5vh, 3vh */
+  border: 0.2vh solid rgba(193, 231, 200, 0.5); /* 2px → 약 0.2vh */
+  border-radius: 1.5vh; /* 15px → 약 1.5vh */
+  box-shadow: 0 0.4vh 1vh rgba(0, 0, 0, 0.2); /* 4px, 10px → 0.4vh, 1vh */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  backdrop-filter: blur(0.5vh); /* 5px → 약 0.5vh */
+}
+
+/* 동물 목록 리스트 스타일 */
+.animal-list h3 {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+  text-align: center;
+  margin: 0.6vh; /* 6px → 약 0.6vh */
+}
+
+.animal-list p {
+  margin: 0.4vh; /* 4px → 약 0.4vh */
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+}
+
+.animal-list ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.animal-list li {
+  height: 1.5vh; /* 15px → 약 1.5vh */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1vh; /* 10px → 약 1vh */
+  width: 100%;
+  padding: 2vh 2vh; /* 14px, 20px → 약 1.4vh, 2vh */
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: #fff;
+  border-radius: 1vh; /* 10px → 약 1vh */
+  box-shadow: 0.2vh 0.2vh 1vh rgba(0, 0, 0, 0.1); /* 2px, 2px, 10px 변환 */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 0 0.5vh 1vh; /* 0, 5px, 5px → 약 0.5vh */
+}
+
+.animal-list li:hover {
+  background-color: #ffeb99;
+  transform: scale(1.05);
+}
+
+/* 녹음 버튼 */
+.Animal-record-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s ease-in-out;
+}
+
+.Animal-record-button img {
+  width: 5vw;  /* 50px → 약 5vw */
+  height: 5vw; /* 50px → 약 5vw */
+}
+
+.Animal-record-button:active {
+  transform: scale(0.8);
+}
+
+/* 녹음 컨테이너 */
+.animal-record-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8vh; /* 8px → 약 0.8vh */
+}
+
+/* 말풍선 가이드 */
+.animal-record-guide {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.8vh 1.2vh; /* 8px, 12px → 약 0.8vh, 1.2vh */
+  border-radius: 1.5vh; /* 15px → 약 1.5vh */
+  box-shadow: 0 0.2vh 0.4vh rgba(0, 0, 0, 0.2); /* 2px, 4px → 약 0.2vh, 0.4vh */
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+.animal-record-guide::after {
+  content: "";
+  position: absolute;
+  bottom: -0.8vh; /* -8px → 약 -0.8vh */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 1vh solid transparent; /* 10px → 약 1vh */
+  border-right: 1vh solid transparent; /* 10px → 약 1vh */
+  border-top: 1vh solid rgba(255, 255, 255, 0.95); /* 10px → 약 1vh */
+}
+
+/* 애니메이션 */
+.feedback-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.feedback-bounce {
+  animation: bounce 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-0.5vh); }  /* 5px → 약 0.5vh */
+  50% { transform: translateX(0.5vh); }
+  75% { transform: translateX(-0.5vh); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.5vh); }
+}
+
+/* ────────────────────────────── */
+/* Landscape 전용 미디어 쿼리 */
+/* ────────────────────────────── */
+
+/* 태블릿 및 작은 데스크탑 (최대 폭 1024px, 가로 화면) */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .animal-game-container {
     width: 100vw;
     height: 100vh;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
   }
-  
-  /* 게임 오버레이 */
   .animal-game-overlay {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 800px;
-    height: 90%;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 10px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    margin: 0 auto;
+    width: 95%;
+    max-width: 90vw;
+    height: 95%;
+    padding: 1.5vh;
   }
-  
-  /* 게임 제목 */
-  .animal-game-title {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    margin-bottom: 15px;
-  }
-  
-  /* 가로 정렬을 위한 컨테이너 */
   .animal-game-content {
-    flex: 1;
-    display: flex;
+    gap: 3vh;
     flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 30px;
-    width: 80%;
-    max-width: 750px;
+    align-items: center;
+    width: 95%;
+    max-width: 90vw;
   }
-  
-  /* 왼쪽 칼럼: 이미지 + 피드백 */
-  .animal-left-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex: 2;
-    height: 100%;
+  .animal-game-title {
+    font-size: 1.8rem;
+    margin-bottom: 2vh;
   }
-  
-  /* 이미지 컨테이너 스타일 */
-  .animal-image-container {
-    flex: 6;
-    width: 100%;
-    max-width: 600px;
-    position: relative;
-    border-radius: 10px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    overflow: hidden;
-    /* margin-bottom 값은 필요에 따라 추가 */
-  }
-  
-  /* 피드백 박스 */
   .animal-feedback-box {
-    width: 94%;
-    max-width: 600px;
-    max-height: 190px;
-    background: rgba(255, 183, 183, 0.9);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    flex-grow: 1;
-    align-items: flex-end;
-    word-wrap: break-word;
-    white-space: normal;
+    max-width: 90%;
+    font-size: 1.3rem;
   }
-  
-  .animal-feedback-box h3 {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-    padding: 2px;
-    margin: 8px;
-  }
-  
-  .animal-feedback-box p {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-    margin: 4px 0;
-    line-height: 1.2;
-    padding: 4px;
-  }
-  
-  /* 게임 이미지 스타일 */
-  .animal-game-image {
-    max-width: 100%;
-    max-height: 80vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-  }
-  
-  /* 동그라미 마커 (정답 위치) */
-  .circle-marker {
-    position: absolute;
-    border-radius: 50%;
-    border: 3px solid red;
-    background-color: transparent;
-    transform: translate(-50%, -50%);
-  }
-  
-  /* 동물 목록 컨테이너 */
   .animal-list {
-    flex: 1;
-    max-width: 240px;
-    height: 93%;
-    background: rgba(193, 231, 200, 0.8);
-    padding: 5px 30px;
-    border: 2px solid rgba(193, 231, 200, 0.5);
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden;
-    backdrop-filter: blur(5px);
+    max-width: 30vw;
+    padding: 0.5vh 2vh;
   }
-  
-  /* 동물 목록 리스트 스타일 */
   .animal-list h3 {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-    text-align: center;
-    margin: 6px;
+    font-size: 1.6rem;
   }
-  
-  .animal-list p {
-    margin: 4px;
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-  }
-  
-  .animal-list ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  
+  .animal-list p,
   .animal-list li {
-    height: 15px;
-    display: flex;
+    font-size: 1.4rem;
+  }
+}
+
+/* 모바일 (최대 폭 768px, 가로 화면) */
+@media (max-width: 768px) and (orientation: landscape) {
+  .animal-game-container {
+    width: 100vw;
+    height: 100vh;
+  }
+  .animal-game-content {
+    gap: 3vh;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    width: 95%;
+    max-width: 90vw;
+  }
+  .animal-left-column,
+  .animal-list {
     width: 100%;
-    padding: 14px 20px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin: 0 5px 5px;
+    margin-bottom: 2vh;
   }
-  
-  .animal-list li:hover {
-    background-color: #ffeb99;
-    transform: scale(1.05);
+  .animal-game-image {
+    width: 90%;
+    max-width: 90%;
   }
-  
-  /* 녹음 버튼 */
-  .Animal-record-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    transition: transform 0.2s ease-in-out;
+  .animal-feedback-box {
+    font-size: 1.3rem;
   }
-  
-  .Animal-record-button img {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .Animal-record-button:active {
-    transform: scale(0.8);
-  }
-  
-  /* 녹음 컨테이너 */
-  .animal-record-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  /* 말풍선 가이드 */
-  .animal-record-guide {
-    font-family: 'Gamja Flower', sans-serif;
+  .animal-list h3 {
     font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 8px 12px;
-    border-radius: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    position: relative;
-    display: inline-block;
   }
-  
-  .animal-record-guide::after {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid rgba(255, 255, 255, 0.95);
+  .animal-list p,
+  .animal-list li {
+    font-size: 1.2rem;
+    padding: 1vh 1.5vh;
   }
-  
-  /* 애니메이션 */
-  .feedback-shake {
-    animation: shake 0.5s ease-in-out;
+  .Animal-record-button img {
+    width: 4vw;
+    height: 4vw;
   }
-  
-  .feedback-bounce {
-    animation: bounce 0.5s ease-in-out;
+  .animal-record-guide {
+    font-size: 1.2rem;
+    padding: 0.6vh 1vh;
   }
-  
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
+}
+
+/* 초소형 모바일 (최대 폭 480px, 가로 화면) */
+@media (max-width: 480px) and (orientation: landscape) {
+  .animal-game-container {
+    width: 100vw;
+    height: 100vh;
   }
-  
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
+  .animal-game-overlay {
+    width: 95%;
+    max-width: 90vw;
+    height: 95%;
+    padding: 2vh;
+    border-radius: 2vh;
   }
-  
-  /* ────────────────────────────── */
-  /* 반응형 미디어 쿼리 (Breakpoints) */
-  /* ────────────────────────────── */
-  
-  /* 태블릿 및 작은 데스크탑 (최대 폭 1024px) */
-  @media (max-width: 1024px) {
-    .animal-game-overlay {
-      width: 95%;
-      padding: 8px;
-    }
-    .animal-game-content {
-      width: 90%;
-      gap: 20px;
-    }
-    .animal-game-title {
-      font-size: 1.8rem;
-    }
-    .animal-feedback-box {
-      max-width: 90%;
-      font-size: 1.3rem;
-    }
-    .animal-list {
-      max-width: 200px;
-      padding: 5px 20px;
-    }
-    .animal-list h3 {
-      font-size: 1.6rem;
-    }
-    .animal-list p,
-    .animal-list li {
-      font-size: 1.4rem;
-    }
+  .animal-game-title {
+    font-size: 1.5rem;
   }
-  
-  /* 모바일 (최대 폭 768px) */
-  @media (max-width: 768px) {
-    .animal-game-content {
-      flex-direction: column;
-      align-items: center;
-    }
-    .animal-left-column,
-    .animal-list {
-      width: 100%;
-      height: auto;
-      margin-bottom: 20px;
-    }
-    .animal-game-image {
-      width: 90%;
-      max-width: 90%;
-    }
-    .animal-feedback-box {
-      font-size: 1.3rem;
-    }
-    .animal-list h3 {
-      font-size: 1.5rem;
-    }
-    .animal-list p,
-    .animal-list li {
-      font-size: 1.2rem;
-      padding: 10px 15px;
-    }
-    .Animal-record-button img {
-      width: 40px;
-      height: 40px;
-    }
-    .animal-record-guide {
-      font-size: 1.2rem;
-      padding: 6px 10px;
-    }
+  .animal-feedback-box p {
+    font-size: 1rem;
   }
-  
-  /* 초소형 모바일 (최대 폭 480px) */
-  @media (max-width: 480px) {
-    .animal-game-title {
-      font-size: 1.5rem;
-    }
-    .animal-feedback-box p {
-      font-size: 1rem;
-    }
-    .animal-list h3 {
-      font-size: 1.3rem;
-    }
-    .animal-list li {
-      font-size: 1rem;
-      padding: 8px 10px;
-    }
-    .animal-record-guide {
-      font-size: 1rem;
-      padding: 5px 8px;
-    }
+  .animal-list h3 {
+    font-size: 1.3rem;
   }
-  
+  .animal-list li {
+    font-size: 1rem;
+    padding: 0.8vh 1vh;
+  }
+  .animal-record-guide {
+    font-size: 1rem;
+    padding: 0.5vh 0.8vh;
+  }
+}
