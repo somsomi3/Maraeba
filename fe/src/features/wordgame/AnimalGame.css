@@ -267,6 +267,120 @@
 }
 
 /* ────────────────────────────── */
-/* 반응형 미디어 쿼리 (Breakpoints) */
+/* Landscape 전용 미디어 쿼리 */
 /* ────────────────────────────── */
 
+/* 태블릿 및 작은 데스크탑 (최대 폭 1024px, 가로 화면) */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .animal-game-container {
+    width: 100vw;
+    height: 100vh;
+  }
+  .animal-game-overlay {
+    width: 95%;
+    max-width: 90vw;
+    height: 95%;
+    padding: 1.5vh;
+  }
+  .animal-game-content {
+    gap: 3vh;
+    flex-direction: row;
+    align-items: center;
+    width: 95%;
+    max-width: 90vw;
+  }
+  .animal-game-title {
+    font-size: 1.8rem;
+    margin-bottom: 2vh;
+  }
+  .animal-feedback-box {
+    max-width: 90%;
+    font-size: 1.3rem;
+  }
+  .animal-list {
+    max-width: 30vw;
+    padding: 0.5vh 2vh;
+  }
+  .animal-list h3 {
+    font-size: 1.6rem;
+  }
+  .animal-list p,
+  .animal-list li {
+    font-size: 1.4rem;
+  }
+}
+
+/* 모바일 (최대 폭 768px, 가로 화면) */
+@media (max-width: 768px) and (orientation: landscape) {
+  .animal-game-container {
+    width: 100vw;
+    height: 100vh;
+  }
+  .animal-game-content {
+    gap: 3vh;
+    flex-direction: row;
+    align-items: center;
+    width: 95%;
+    max-width: 90vw;
+  }
+  .animal-left-column,
+  .animal-list {
+    width: 100%;
+    margin-bottom: 2vh;
+  }
+  .animal-game-image {
+    width: 90%;
+    max-width: 90%;
+  }
+  .animal-feedback-box {
+    font-size: 1.3rem;
+  }
+  .animal-list h3 {
+    font-size: 1.5rem;
+  }
+  .animal-list p,
+  .animal-list li {
+    font-size: 1.2rem;
+    padding: 1vh 1.5vh;
+  }
+  .Animal-record-button img {
+    width: 4vw;
+    height: 4vw;
+  }
+  .animal-record-guide {
+    font-size: 1.2rem;
+    padding: 0.6vh 1vh;
+  }
+}
+
+/* 초소형 모바일 (최대 폭 480px, 가로 화면) */
+@media (max-width: 480px) and (orientation: landscape) {
+  .animal-game-container {
+    width: 100vw;
+    height: 100vh;
+  }
+  .animal-game-overlay {
+    width: 95%;
+    max-width: 90vw;
+    height: 95%;
+    padding: 2vh;
+    border-radius: 2vh;
+  }
+  .animal-game-title {
+    font-size: 1.5rem;
+  }
+  .animal-feedback-box p {
+    font-size: 1rem;
+  }
+  .animal-list h3 {
+    font-size: 1.3rem;
+  }
+  .animal-list li {
+    font-size: 1rem;
+    padding: 0.8vh 1vh;
+  }
+  .animal-record-guide {
+    font-size: 1rem;
+    padding: 0.5vh 0.8vh;
+  }
+}
