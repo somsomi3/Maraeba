@@ -1,473 +1,417 @@
 /* 전체 레이아웃 */
 .cooking-game-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2vw;
-    height: 100vh;
-    width: 100vw;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    overflow: hidden; /* 혹시 넘어가는 요소가 있으면 숨김 처리 */
-    filter: brightness(1.05); /* 배경을 조금 더 밝게 */
-  }
-  
-  /* 홈 버튼, 일시정지 버튼 등 절대 위치 */
-  .pause-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    z-index: 2;
-  }
-  
-  /* 좌측 게임 패널(오버레이) */
-  .cooking-game-overlay {
-    width: 600px;
-    background: rgba(193, 231, 200, 0.8); 
-    padding: 20px;
-    border-radius: 20px;
-    border: 2px solid rgba(193, 231, 200, 0.4); /* 패널 구분선 */
-    backdrop-filter: blur(5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  
-    /* 살짝 등장 애니메이션 */
-    animation: fadeInDown 0.6s ease forwards;
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  
-  @keyframes fadeInDown {
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
-  /* 제목 */
-  .cooking-game-title {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    margin-bottom: 15px;
-  }
-  
-  /* 간단한 아이콘 + 텍스트 표시 줄 */
-  .info-line {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin: 5px 0;
-    padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 10px;
-  }
-  
-  .info-icon {
-    width: 24px;
-    height: 24px;
-  }
-  
-  /* 조합 UI */
-  .combination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .recipe-image {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-  }
-  
-  .plus-sign,
-  .equals-sign {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  }
-  
-  /* 재료 버튼 컨테이너 */
-  .item-selection {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 400px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 15px;
-  }
-  
-  .item-selection button {
-    /* 밝은 파스텔 오렌지 느낌 */
-    background: #FFE2BA; 
-    color: #333;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
-  }
-  
-  .item-selection button:hover {
-    /* hover 시 살짝 진한 톤 */
-    background: #FFD5A3;
-    transform: scale(1.1);
-  }
-  
-  .item-selection button.selected {
-    /* 선택 상태: 같은 톤에서 좀 더 진한 오렌지 + 글자색을 화이트로 */
-    background: #FFB984;
-    color: #fff;
-  }
-  
-  /* 녹음 컨테이너 */
-  .record-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  /* 말풍선 가이드 */
-  .record-guide {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 8px 12px;
-    border-radius: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    position: relative;
-    display: inline-block;
-  }
-  
-  .record-guide::after {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid rgba(255, 255, 255, 0.95);
-  }
-  
-  .record-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .record-button img {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .record-button:active {
-    transform: scale(0.9);
-  }
-  
-  .cooking-start-button {
-    font-family: 'Gamja Flower', sans-serif; /* ✅ 폰트 적용 */
-    font-size: 1.5rem; /* ✅ 기존과 동일한 크기 */
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1); /* 🎨 보색 적용 */
-    background-color: #ffcc66; /* 🔹 기존 스타일 유지 */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2vw;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden; /* 넘어가는 요소 숨김 */
+  filter: brightness(1.05);
 }
 
-/* 🔹 버튼 호버 효과 */
+/* 홈 버튼, 일시정지 버튼 등 */
+.pause-button {
+  position: absolute;
+  top: 2vh;        /* 20px ≈ 2vh */
+  right: 2vh;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 2.5vw; /* 약 24px ≈ 2.5vw */
+  z-index: 2;
+}
+
+/* 좌측 게임 패널(오버레이) */
+.cooking-game-overlay {
+  width: 50vw;               /* 약 600px */
+  background: rgba(193, 231, 200, 0.8);
+  padding: 2vh;              /* 약 20px */
+  border-radius: 2vh;        /* 약 20px */
+  border: 0.33vh solid rgba(193, 231, 200, 0.4);  /* 약 2px */
+  backdrop-filter: blur(0.9vh); /* 약 5px */
+  box-shadow: 0 0.67vh 1.67vh rgba(0, 0, 0, 0.3); /* 약 4px 10px */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInDown 0.6s ease forwards;
+  transform: translateY(-2vh);
+  opacity: 0;
+}
+
+@keyframes fadeInDown {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 제목 */
+.cooking-game-title {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 2rem;  /* 폰트는 rem 단위로 유지 */
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0.2vh 0.2vh 0.4vh rgba(0, 0, 0, 0.8);
+  margin-bottom: 1.5vh;
+}
+
+/* 아이콘 + 텍스트 줄 */
+.info-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5vh;
+  margin: 0.5vh 0;
+  padding: 0.6vh 1vh;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 1vh;
+}
+
+.info-icon {
+  width: 2.4vh;
+  height: 2.4vh;
+}
+
+/* 조합 UI */
+.combination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5vh;
+  margin-bottom: 2vh;
+}
+
+.recipe-image {
+  width: 8vw;
+  height: 8vw;
+  object-fit: contain;
+}
+
+.plus-sign,
+.equals-sign {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0.2vh 0.2vh 0.4vh rgba(0, 0, 0, 0.8);
+}
+
+/* 재료 버튼 컨테이너 */
+.item-selection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1vh;
+  width: 100%;
+  max-width: 40vw;  /* 약 400px */
+  padding: 1vh;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 1.5vh;
+}
+
+.item-selection button {
+  background: #FFE2BA;
+  color: #333;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 1vh 1.5vh;
+  border: none;
+  border-radius: 1.5vh;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.item-selection button:hover {
+  background: #FFD5A3;
+  transform: scale(1.1);
+}
+
+.item-selection button.selected {
+  background: #FFB984;
+  color: #fff;
+}
+
+/* 녹음 컨테이너 */
+.cooking-record-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8vh;
+}
+
+/* 말풍선 가이드 */
+.cooking-record-guide {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.8vh 1.2vh;
+  border-radius: 1.5vh;
+  box-shadow: 0 0.2vh 0.4vh rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+.cooking-record-guide::after {
+  content: "";
+  position: absolute;
+  bottom: -0.8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 1vh solid transparent;
+  border-right: 1vh solid transparent;
+  border-top: 1vh solid rgba(255, 255, 255, 0.95);
+}
+
+/* 녹음 버튼 */
+.cooking-record-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s ease-in-out;
+}
+
+.cooking-record-button img {
+  width: 3.5vw;
+  height: 3.5vw;
+}
+
+.cooking-record-button:active {
+  transform: scale(0.9);
+}
+
+/* 게임 시작 버튼 */
+.cooking-start-button {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+  background-color: #ffcc66;
+  padding: 1vh 2vh;
+  border: none;
+  border-radius: 1.5vh;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
 .cooking-start-button:hover {
-    background-color: #ffb347;
-    transform: scale(1.05);
+  background-color: #ffb347;
+  transform: scale(1.05);
 }
 
-/* 🔹 버튼 비활성화 상태 */
 .cooking-start-button:disabled {
-    background: #ccc;
-    color: #777;
-    cursor: not-allowed;
-}
-  
-  /* 오디오 미리 듣기 */
-  .audio-preview {
-    background: rgba(255, 255, 255, 0.4);
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 10px;
-    width: 80%;
-    animation: fadeIn 0.3s ease forwards;
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  
-  /* 오른쪽 정보 패널 */
-  .side-info-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    width: 280px;
-    height: auto;
-    gap: 15px;
-  
-    /* 패널 살짝 위에서 내려오는 애니메이션 */
-    animation: fadeInRight 0.8s ease forwards;
-    transform: translateX(20px);
-    opacity: 0;
-  }
-  
-  @keyframes fadeInRight {
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-  
-  /* 점수 박스 */
-  .cooking-score-box {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    height: 160px;
-    padding: 20px;
-    background: rgba(193, 231, 200, 0.8); 
-    border: 2px solid rgba(193, 231, 200, 0.5);
-    border-radius: 15px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    color: #333; /* 글자색을 진하게 */
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-  }
-  
-  .cooking-score-box h3 {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-  }
-  
-  .cooking-score-box p {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-    margin: 0;
-  }
-  
-  /* 피드백 박스 */
-  .cooking-feedback-box {
-    width: 100%;
-    min-height: 200px;
-    background: rgba(255, 183, 183, 0.9);
-    color: #333;
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(5px);
-  }
-  
-  .cooking-feedback-box h3 {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-  }
-
-  .cooking-feedback-box p {
-    font-family: 'Gamja Flower', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: rgba(62, 24, 55, 1);
-    
-  }
-
-  /* 피드백 메시지 단순 애니메이션 */
-  .feedback-message {
-    font-size: 1.1rem;
-  }
-  
-  .animate-feedback {
-    animation: pulse 0.8s ease-in-out;
-  }
-  
-  @keyframes pulse {
-    0% {
-      transform: scale(0.9);
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  
-  /* 페이드인 공용 애니메이션 */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  /* 반응형 (768px 이하) */
-  @media (max-width: 768px) {
-    .cooking-game-overlay {
-      width: 90%;
-      margin-top: 20px;
-    }
-  
-    .side-info-container {
-      width: 80%;
-    }
-  
-    .recipe-image {
-      width: 60px;
-      height: 60px;
-    }
-  
-    .plus-sign,
-    .equals-sign {
-      font-size: 1.5rem;
-    }
-  
-    .item-selection button {
-      font-size: 0.9rem;
-      padding: 8px 12px;
-    }
-  
-    .start-button {
-      font-size: 0.9rem;
-      padding: 8px 12px;
-    }
-  
-    .score-box {
-      height: auto;
-    }
-  }
-  
-  /* 흔들림 애니메이션 (shake) */
-@keyframes shake {
-    0%   { transform: translateX(0); }
-    20%  { transform: translateX(-5px); }
-    40%  { transform: translateX(5px); }
-    60%  { transform: translateX(-5px); }
-    80%  { transform: translateX(5px); }
-    100% { transform: translateX(0); }
-  }
-  
-  .feedback-shake {
-    animation: shake 0.4s ease-in-out;
-    animation-iteration-count: 1; /* 한 번만 실행 */
-  }
-  
-  /* 반짝임 애니메이션 (flash) */
-  @keyframes flash {
-    0%   { opacity: 1; }
-    50%  { opacity: 0.1; }
-    100% { opacity: 1; }
-  }
-  
-  .feedback-flash {
-    animation: flash 0.8s ease-in-out;
-    animation-iteration-count: 1; /* 한 번만 실행 */
-  }
-  
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  
-  .feedback-bounce {
-    animation: bounce 0.5s ease-in-out;
-  }
-
-  /* 🔴 정답 맞춘 음식 강조 효과 */
-.food-highlight {
-    border: 5px solid red; /* 빨간 테두리 */
-    border-radius: 50%; /* 원형 강조 */
-    animation: pulse 1s ease-in-out;
+  background: #ccc;
+  color: #777;
+  cursor: not-allowed;
 }
 
-/* 🔴 강조 효과 (깜빡이는 애니메이션) */
+/* 오디오 미리 듣기 */
+.audio-preview {
+  background: rgba(255, 255, 255, 0.4);
+  margin-top: 1.5vh;
+  padding: 1vh;
+  border-radius: 1vh;
+  width: 80%;
+  animation: fadeIn 0.3s ease forwards;
+  transform: translateY(-1vh);
+  opacity: 0;
+}
+
+/* 오른쪽 정보 패널 */
+.side-info-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 28vw; /* 약 280px */
+  height: auto;
+  gap: 1.5vh;
+  animation: fadeInRight 0.8s ease forwards;
+  transform: translateX(2vh);
+  opacity: 0;
+}
+
+@keyframes fadeInRight {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 점수 박스 */
+.cooking-score-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  width: 95%;
+  height: 24vh; /* 약 160px */
+  padding: 2vh;
+  background: rgba(193, 231, 200, 0.8);
+  border: 0.2vh solid rgba(193, 231, 200, 0.5);
+  border-radius: 1.5vh;
+  box-shadow: 0 0.4vh 0.8vh rgba(0, 0, 0, 0.2);
+  color: #333;
+  font-size: 2vw;
+  font-weight: bold;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  box-sizing: border-box; /* 패딩 포함 */
+}
+
+.cooking-score-box h3 {
+  white-space: normal;
+  max-width: 100%;
+  min-width: 0; /* flex item이 컨테이너 범위 내로 줄어들 수 있도록 함 */
+  word-break: break-word;       /* 단어 끊기 */
+  overflow-wrap: break-word;     /* 긴 단어도 줄바꿈 */
+  /* 필요에 따라 font-size 축소 (미디어 쿼리 활용) */
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5vh;
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 2vw;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+}
+
+.cooking-score-box p {
+  white-space: normal;
+  max-width: 100%;
+  min-width: 0; /* flex item이 컨테이너 범위 내로 줄어들 수 있도록 함 */
+  word-break: break-word;       /* 단어 끊기 */
+  overflow-wrap: break-word;     /* 긴 단어도 줄바꿈 */
+  /* 필요에 따라 font-size 축소 (미디어 쿼리 활용) */
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 2vw;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+  margin: 0;
+}
+
+/* 피드백 박스 */
+.cooking-feedback-box {
+  width: 95%;
+  min-height: 30vh; /* 약 200px */
+  background: rgba(255, 183, 183, 0.9);
+  color: #333;
+  border-radius: 1vh;
+  padding: 1.5vh;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1vh;
+  box-shadow: 0 0.4vh 0.8vh rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.cooking-feedback-box h3 {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+}
+
+.cooking-feedback-box p {
+  font-family: 'Gamja Flower', sans-serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgba(62, 24, 55, 1);
+}
+
+/* 피드백 메시지 애니메이션 */
+.feedback-message {
+  font-size: 1.1rem;
+}
+
+.animate-feedback {
+  animation: pulse 0.8s ease-in-out;
+}
+
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
-/* ⏳ 타이머 Progress Bar 컨테이너 */
+/* 페이드인 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 흔들림 애니메이션 */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-0.5vh); }
+  40% { transform: translateX(0.5vh); }
+  60% { transform: translateX(-0.5vh); }
+  80% { transform: translateX(0.5vh); }
+  100% { transform: translateX(0); }
+}
+
+.feedback-shake {
+  animation: shake 0.4s ease-in-out;
+  animation-iteration-count: 1;
+}
+
+/* 반짝임 애니메이션 */
+@keyframes flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.1; }
+  100% { opacity: 1; }
+}
+
+.feedback-flash {
+  animation: flash 0.8s ease-in-out;
+  animation-iteration-count: 1;
+}
+
+/* 바운스 애니메이션 */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1vh); }
+}
+
+.feedback-bounce {
+  animation: bounce 0.5s ease-in-out;
+}
+
+/* 정답 강조 (음식 강조 효과) */
+.food-highlight {
+  border: 0.5vh solid red;
+  border-radius: 50%;
+  animation: pulse 1s ease-in-out;
+}
+
+/* 타이머 Progress Bar */
 .timer-container {
-    width: 100%;
-    height: 15px;
-    background: rgba(255, 255, 255, 0.3); /* 반투명 배경 */
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 10px;
+  width: 100%;
+  height: 1.5vh;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 1vh;
+  overflow: hidden;
+  margin-bottom: 1vh;
 }
 
-/* ⏳ 타이머 바 (시간이 줄어들수록 감소) */
 .timer-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #ff6b6b, #ffcc66); /* 빨강 → 노랑 */
-    transition: width 1s linear; /* 부드럽게 줄어드는 효과 */
-    border-radius: 10px;
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b6b, #ffcc66);
+  transition: width 1s linear;
+  border-radius: 1vh;
 }
+
