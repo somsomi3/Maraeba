@@ -13,7 +13,7 @@
 
 .sidebar {
     width: 280px;
-    height: auto; /* ✅ 내용이 많아질 경우 자동으로 늘어남 */
+    height: 950px; 
     position: sticky;
     background: #ffb9b1;
     display: flex;
@@ -76,7 +76,7 @@
 /* 🔥 학습 기록 & 통계 스타일 */
 .chart-container {
     background: #fff7eb;
-    padding: 20px;
+    padding: 16px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 96%;
@@ -181,4 +181,93 @@
 /* 🔥 탭 버튼 hover */
 .tab-button:hover {
     background: #ffc567;
+}
+
+
+/* 📌 반응형 스타일 */
+@media screen and (max-width: 1024px) {
+    /* ✅ 사이드바를 상단으로 이동 */
+    .profile-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+    }
+
+    .profile-menu ul {
+        display: flex;
+        gap: 10px;
+    }
+
+    .profile-menu li {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    /* ✅ 탭 버튼 크기 조정 */
+    .tab-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tab-button {
+        width: 80%;
+        font-size: 16px;
+    }
+
+    /* ✅ 차트 크기 조정 */
+    .chart-wrapper-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .chart-wrapper {
+        width: 90%;
+        height: auto;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    /* ✅ 더 작은 화면에서는 탭 버튼을 더 크게 */
+    .tab-button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    /* ✅ 차트 크기 줄이기 */
+    .chart-wrapper {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* ✅ 모바일 화면에서는 폰트 크기 줄이기 */
+    .profile-content h1 {
+        font-size: 20px;
+    }
+
+    .tab-button {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    /* ✅ 사이드바 메뉴 줄이기 */
+    .profile-menu li {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    /* ✅ 차트 크기 더 줄이기 */
+    .chart-wrapper {
+        width: 100%;
+        height: 250px;
+    }
 }

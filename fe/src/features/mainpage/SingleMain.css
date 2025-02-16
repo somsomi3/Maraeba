@@ -1,13 +1,13 @@
 /* 🔥 배경 이미지 스타일 */
 .background-image {
     position: absolute;
-    bottom: 70px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     width: 100vw; /* 💡 뷰포트 너비에 맞게 설정 */
-    max-width: 1270px; /* 📌 최대 크기 제한 */
-    height: auto; /* 비율 유지 */
-    z-index: 50; /* 📌 카드보다 뒤에 배치 */
+    max-width: 1260px; /* 📌 최대 크기 제한 */
+    height: auto; 
+    z-index: 50; 
     pointer-events: none;
 }
 
@@ -138,7 +138,7 @@
  .fox-image{
     width: 50%; /* 이미지 너비를 카드 너비의 150%로 설정 */
     height: auto; /* 비율 유지 */
-    
+
     z-index: 30;
     left: 3%;
     

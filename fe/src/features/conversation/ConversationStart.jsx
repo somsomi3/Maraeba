@@ -6,7 +6,6 @@ import smileAvatar from '../../assets/images/smile.png';
 import { springApi, flaskApi } from '../../utils/api';
 import recordbtn from '../../assets/icons/record.png';
 import pausebtn from '../../assets/icons/pause.png';
-import PausePopup from '../../components/popup/PausePopup';
 import ConversationStopPopup from '../../components/popup/ConversationStopPopup';
 
 const ConversationStart = () => {
@@ -16,7 +15,6 @@ const ConversationStart = () => {
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태
   const [recordingIcon, setRecordingIcon] = useState(recordbtn); // 🔥 버튼 아이콘 상태 추가
   const [audioBlob, setAudioBlob] = useState(null); // 녹음된 음성 파일
-  const navigate = useNavigate();
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
@@ -62,7 +60,8 @@ const ConversationStart = () => {
       console.log("🎤 Sending audio to STT & AI...");
   
       // ✅ 유저 말풍선에 녹음 중 텍스트 추가 (STT 변환 전)
-      setMessages((prev) => [
+      
+      ((prev) => [
         ...prev,
         { role: 'user', text: "..." }, // 유저 말풍선 (STT 변환 전)
         { role: 'ai', text: "..." } // AI 응답 대기
@@ -150,7 +149,7 @@ const ConversationStart = () => {
           onClick={toggleRecording} 
         />
       </div>
-      {/* <PausePopup onExit={() => navigate("/prons")} title="대화를 끝낼까요?" /> */}
+      -
       <ConversationStopPopup />
     </div>
   );

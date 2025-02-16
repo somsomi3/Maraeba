@@ -33,8 +33,14 @@
     border-radius: 10px;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+        
+.camera-button {
+    margin-left: auto; /* 오른쪽 끝으로 이동 */
   }
   
+
   .camera-frame {
     display: flex;
     flex-direction: column;
@@ -107,22 +113,6 @@
     transform: translateX(-50%);
   }
 
-  /* .next-button {
-    margin-top: 16px; 
-    padding: 10px 22px;
-    font-size: 16px;
-    background-color: #2ec4a1;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    position: fixed; 
-    right: 80px;
-    bottom: 20px;
-    font-weight: bold;
-} */
-
 .lip-video {
     width: 24vw;
     height: 34vh;
@@ -148,3 +138,124 @@
     font-weight: bold;
     color: #333;
 }
+
+/* 🔹 팝업 배경 (어두운 오버레이 효과) */
+.prons-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* 반투명 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+/* 🔹 팝업 본문 */
+.prons-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔹 버튼 */
+.prons-popup-content button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #54c3c3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ✅ 튜토리얼 오버레이 - 화면 전체를 어둡게 */
+.prons-tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 어둡게 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  
+  /* ✅ 튜토리얼 안내 박스 */
+  .prons-tutorial-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* ✅ 강조할 요소 (하이라이트 효과) */
+  .highlight {
+    /* position: relative; */
+    z-index: 101;
+    filter: brightness(1.2); /* 밝게 처리 */
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* ✅ 일반적인 버튼 스타일 */
+  .prons-tutorial-box button {
+    background-color: #3da9fc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .prons-tutorial-box button:hover {
+    background-color: #2c89e5;
+  }
+  
+  /* ✅ 특정 UI 요소 강조 */
+  .image-top.highlight,
+  .image-bottom.highlight,
+  .lip-video.highlight {
+    border: 3px solid #ffcc00; /* 강조 */
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+  }
+  
+  /* 카메라 강조 */
+  .camera-section.highlight {
+    border: 3px solid #ffcc00;
+    padding: 5px;
+  }
+  
+  /* 녹음 버튼 강조 */
+  .record-button-container.highlight {
+    border: solid #ffcc00;
+    padding: 5px;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+  }
+  
+  /* 녹음 후 결과 강조 */
+  .accuracy.highlight {
+    border: 3px solid #ffcc00;
+    padding: 10px;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+  }
+  
+  /* "다음으로" 버튼 강조 */
+  .next-button.highlight {
+    background-color: #ffcc00;
+    color: black;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+  }
+  
+
