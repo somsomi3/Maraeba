@@ -16,7 +16,8 @@ public enum ErrorCode {
 	PASSWORD_MISMATCH("Password Mismatch", HttpStatus.BAD_REQUEST),
 	SOCIAL_LOGIN_FAILED("Social Login Failed", HttpStatus.FORBIDDEN),
 	EMAIL_SEND_FAIL("Send Email Failed", HttpStatus.CONFLICT),
-	DATABASE_ERROR("Database Error", HttpStatus.INTERNAL_SERVER_ERROR);
+	DATABASE_ERROR("Database Error", HttpStatus.INTERNAL_SERVER_ERROR),
+	ROOM_PASSWORD_INCORRECT("Room Password Incorrect", HttpStatus.BAD_REQUEST ),;
 
 
 	private final String message;
