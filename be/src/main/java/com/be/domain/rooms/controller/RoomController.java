@@ -58,7 +58,9 @@ public class RoomController {
 				room.getId(),
 				room.getTitle(),
 				room.getHost().getUsername(),
-				room.getUserCnt()))
+				room.getUserCnt(),
+				room.getRoomPassword()
+			))
 			.toList();
 
 		return ResponseEntity.ok(roomResponses);
@@ -76,6 +78,7 @@ public class RoomController {
 	public ResponseEntity<? extends BaseResponseBody> joinRoom(@RequestBody UserJoinRequest request) {
 		log.info("Room ID: {}", request.getRoomId());
 		log.info("User ID: {}", request.getUserId());
+		log.info("Room PW: {}", request.getRoomPassword());
 
 		RoomJoinResponse roomJoinResponse = roomService.joinRoom(request);
 		return ResponseEntity.ok().body(roomJoinResponse);
