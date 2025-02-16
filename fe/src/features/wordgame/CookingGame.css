@@ -27,7 +27,7 @@
 
 /* 좌측 게임 패널(오버레이) */
 .cooking-game-overlay {
-  width: 60vw;               /* 약 600px */
+  width: 50vw;               /* 약 600px */
   background: rgba(193, 231, 200, 0.8);
   padding: 2vh;              /* 약 20px */
   border-radius: 2vh;        /* 약 20px */
@@ -252,14 +252,14 @@
   flex-direction: column;
   gap: 1vh;
   width: 95%;
-  height: 20vh; /* 약 160px */
+  height: 24vh; /* 약 160px */
   padding: 2vh;
   background: rgba(193, 231, 200, 0.8);
   border: 0.2vh solid rgba(193, 231, 200, 0.5);
   border-radius: 1.5vh;
   box-shadow: 0 0.4vh 0.8vh rgba(0, 0, 0, 0.2);
   color: #333;
-  font-size: 1.5vw;
+  font-size: 2vw;
   font-weight: bold;
   text-align: center;
   justify-content: center;
@@ -281,7 +281,7 @@
   justify-content: center;
   gap: 0.5vh;
   font-family: 'Gamja Flower', sans-serif;
-  font-size: 1.5vw;
+  font-size: 2vw;
   font-weight: bold;
   color: rgba(62, 24, 55, 1);
 }
@@ -294,7 +294,7 @@
   overflow-wrap: break-word;     /* 긴 단어도 줄바꿈 */
   /* 필요에 따라 font-size 축소 (미디어 쿼리 활용) */
   font-family: 'Gamja Flower', sans-serif;
-  font-size: 1.5vw;
+  font-size: 2vw;
   font-weight: bold;
   color: rgba(62, 24, 55, 1);
   margin: 0;
