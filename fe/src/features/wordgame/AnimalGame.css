@@ -201,8 +201,8 @@
 }
 
 .Animal-record-button img {
-  width: 4vw;  /* 50px → 약 5vw */
-  height: 4vw; /* 50px → 약 5vw */
+  width: 3.5vw;  /* 50px → 약 5vw */
+  height: 3.5vw; /* 50px → 약 5vw */
 }
 
 .Animal-record-button:active {
@@ -344,8 +344,8 @@
     padding: 1vh 1.5vh;
   }
   .Animal-record-button img {
-    width: 4vw;
-    height: 4vw;
+    width: 3.5vw;
+    height: 3.5vw;
   }
   .animal-record-guide {
     font-size: 1.2rem;
