@@ -33,14 +33,51 @@ const RoomList = () => {
         fetchRooms();
         const interval = setInterval(() => {
             fetchRooms();
-        }, 1000000);
+        }, 10000);
         return () => clearInterval(interval);
         // eslint-disable-next-line
     }, []);
 
     // 방 클릭 (행 선택)
-    const handleSelectRoom = (room) => {
-        setSelectedRoom(room);
+    const handleJoinRoomTitle = async (room) => {
+        if (!userId) {
+            alert("로그인 후 이용해주세요.");
+            return;
+        }
+        if (room.user_cnt >= 2) {
+            alert("❌ 이 방은 최대 인원(2명)에 도달했습니다.");
+            return;
+        }
+
+        let password = "";
+        if (room.room_password) {
+            password = prompt("방 비밀번호를 입력하세요:");
+            if (!password) {
+                alert("비밀번호가 필요합니다.");
+                return;
+            }
+        }
+
+        try {
+            const response = await springApi.post("/rooms/join", {
+                user_id: userId,
+                room_id: room.id,
+                room_password: password || null,
+            });
+
+            if (!response.data) {
+                alert("방 참가에 실패했습니다.");
+                return;
+            }
+
+            const { host } = response.data;
+            alert(host ? "방장으로 입장했어요!" : "참가자로 입장했어요!");
+
+            // 방 상세 페이지(WebRTC 화면)으로 이동
+            navigate(`/room/${room.id}`);
+        } catch (error) {
+            alert(error.response?.data?.message || "방 참가에 실패했습니다.");
+        }
     };
 
     // 방 참여
@@ -50,7 +87,7 @@ const RoomList = () => {
             return;
         }
         if (!userId) {
-            alert("사용자 정보가 없습니다. 로그인 후 시도하세요.");
+            alert("로그인 후 이용해주세요.");
             return;
         }
         if (selectedRoom.user_cnt >= 2) {
@@ -80,9 +117,7 @@ const RoomList = () => {
             }
 
             const { host } = response.data;
-            alert(
-                host ? "🙌 방장으로 입장했습니다!" : "🙌 참가자로 입장했습니다."
-            );
+            alert(host ? "방장으로 입장했어요!" : "참가자로 입장했어요!");
 
             // 방 상세 페이지(WebRTC 화면)으로 이동
             navigate(`/room/${selectedRoom.id}`);
@@ -92,13 +127,13 @@ const RoomList = () => {
     };
 
     // 방 이름 클릭 시 바로 입장
-    const handleSelectRoomAndJoin = (room) => {
-        setSelectedRoom(room);
-        // setState로 바로 반영되길 기대할 수 없어서,
-        // Promise.then(...) 또는 setTimeout 등의 방식도 고려할 수 있지만,
-        // 여기선 단순히 joinRoom 함수를 직접 호출해도 무방함
-        setTimeout(() => handleJoinRoom(), 0);
-    };
+    // const handleSelectRoomAndJoin = (room) => {
+    //     setSelectedRoom(room);
+    //     // setState로 바로 반영되길 기대할 수 없어서,
+    //     // Promise.then(...) 또는 setTimeout 등의 방식도 고려할 수 있지만,
+    //     // 여기선 단순히 joinRoom 함수를 직접 호출해도 무방함
+    //     setTimeout(() => handleJoinRoom(), 0);
+    // };
 
     return (
         <div className="waiting-room">
@@ -108,7 +143,7 @@ const RoomList = () => {
                 onClose={() => setIsPopupOpen(false)}
             />
 
-            <h1>방 목록</h1>
+            <h1 className="title">방 목록</h1>
 
             <div className="room-actions">
                 <button
@@ -123,7 +158,7 @@ const RoomList = () => {
                     onClick={fetchRooms}
                     disabled={loading}
                 >
-                    {loading ? "🔄 새로고침 중..." : "🔄 새로고침"}
+                    {loading ? "🔄 불러오는 중..." : "🔄 새로고침"}
                 </button>
 
                 <button
@@ -143,9 +178,7 @@ const RoomList = () => {
                         <thead>
                             <tr>
                                 <th>번호</th>
-                                <th>방 제목</th>
-                                <th>상태</th>
-                                <th>인원</th>
+                                <th>방 이름</th>
                                 <th>비밀번호</th>
                             </tr>
                         </thead>
@@ -158,7 +191,7 @@ const RoomList = () => {
                                             ? "selected"
                                             : ""
                                     }
-                                    onClick={() => handleSelectRoom(room)}
+                                    onClick={() => setSelectedRoom(room)}
                                 >
                                     <td>{index + 1}</td>
                                     <td>
@@ -167,27 +200,11 @@ const RoomList = () => {
                                             onClick={(e) => {
                                                 e.stopPropagation(); // tr onClick 중복 방지
                                                 setSelectedRoom(room);
-                                                handleJoinRoom();
-                                                // handleSelectRoomAndJoin(room);
+                                                handleJoinRoomTitle(room);
                                             }}
                                         >
-                                            {room.title} (ID: {room.id})
+                                            {room.title}
                                         </button>
-                                    </td>
-                                    <td
-                                        className={
-                                            room.status === "playing"
-                                                ? "playing"
-                                                : "waiting"
-                                        }
-                                    >
-                                        {room.status === "playing"
-                                            ? "PLAYING"
-                                            : "WAITING"}
-                                    </td>
-                                    <td>
-                                        {room.user_cnt}/2
-                                        {room.user_cnt >= 2 && " 🚫"}
                                     </td>
                                     <td>{room.room_password ? "🔒" : "🔓"}</td>
                                 </tr>
@@ -195,7 +212,7 @@ const RoomList = () => {
                         </tbody>
                     </table>
                 ) : (
-                    <p>❌ 현재 생성된 방이 없습니다.</p>
+                    <p className="no-rooms">방이 아직 없어요!</p>
                 )}
             </div>
         </div>

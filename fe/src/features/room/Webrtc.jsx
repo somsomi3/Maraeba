@@ -126,8 +126,8 @@ const Webrtc = () => {
 
         // 실제 서버 주소/포트를 맞춰주세요.
         webSocketRef.current = new WebSocket(
-            // `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
-            `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            // `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         // 소켓 open
@@ -291,12 +291,12 @@ const Webrtc = () => {
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
-                // {
-                //     urls: "turn:3.39.252.223:3478?transport=tcp",
-                //     username: import.meta.env.VITE_USERNAME_URL,
-                //     credential: import.meta.env.VITE_PASSWORD_URL,
-                // },
-                { urls: "stun:stun.l.google.com:19302" },
+                {
+                    urls: "turn:3.39.252.223:3478?transport=tcp",
+                    username: import.meta.env.VITE_USERNAME_URL,
+                    credential: import.meta.env.VITE_PASSWORD_URL,
+                },
+                // { urls: "stun:stun.l.google.com:19302" },
             ],
         });
 
@@ -788,7 +788,6 @@ const Webrtc = () => {
                 </div>
                 <div className="video-container">
                     {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
-                    {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
                     <div className="video-wrapper">
                         {/* 상대방 화면 */}
                         <div className="video-box">
@@ -906,14 +905,14 @@ const Webrtc = () => {
                 </div>
 
                 {/* 방 나가기 버튼 */}
-                {/*<div style={styles.leaveButtonContainer}>*/}
-                {/*    <button*/}
-                {/*        onClick={() => sendLeave({ showAlert: true })}*/}
-                {/*        style={styles.leaveButton}*/}
-                {/*    >*/}
-                {/*        방 나가기*/}
-                {/*    </button>*/}
-                {/*</div>*/}
+                {/* <div className="leave-ButtonContainer">
+                    <button
+                        onClick={() => sendLeave({ showAlert: true })}
+                        className=".leave-button"
+                    >
+                        방 나가기
+                    </button>
+                </div> */}
             </div>
         </div>
     );
