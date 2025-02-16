@@ -1,144 +1,64 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 사용
-import { useParams } from "react-router-dom";
-import { springApi } from "../../utils/api.js"; // React Router에서 useParams를 사용
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { springApi } from "../../utils/api.js";
 import "./Webrtc.css";
 // import rtc from '../../assets/images/rtc.png';
 
 const Webrtc = () => {
+    // ===================================================
+    //                      상태 & 참조
+    // ===================================================
     const [localStream, setLocalStream] = useState(null);
-    const [remoteStream, setRemoteStream] = useState(null);
     const peerConnectionRef = useRef(null);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
+    const chatBoxRef = useRef(null);
     const webSocketRef = useRef(null);
+
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
+    const [isMuted, setIsMuted] = useState(false);
 
-    const chatBoxRef = useRef(null); // 채팅창을 참조하는 useRef 추가
-    const [isMuted, setIsMuted] = useState(false); // 음소거 상태 추가
-    const [startTime, setStartTime] = useState(null); // 통화 시작 시간 저장
-    const [endTime, setEndTime] = useState(null); // endTime 상태 정의
+    // 통화 시간 기록 (로그 저장에 활용)
+    const [startTime, setStartTime] = useState(null);
+    const [endTime, setEndTime] = useState(null);
+
+    // 게임 관련 상태
+    const [isGameStarted, setIsGameStarted] = useState(false);
+    const [items, setItems] = useState([]);
+    const [choice, setChoice] = useState(null);
+    const [correctAnswer, setCorrectAnswer] = useState(null);
+
+    // 방장 여부
+    const [isHost, setIsHost] = useState(false);
+
+    // 로딩 & 나감 여부
     const [loading, setLoading] = useState(false);
-    const [isGameStarted, setIsGameStarted] = useState(false); // 게임 시작 여부 상태 추가
-    const [items, setItems] = useState([]); // 빈 배열로 초기화
-    const [choice, setChoice] = useState([]); // 빈 배열로 초기화
-    const [answer, setAnswer] = useState([]); // 빈 배열로 초기화
-    const [answerChoice, setAnswerChoice] = useState([]); // 빈 배열로 초기화
-    
-    
-    const [correctAnswer, setCorrectAnswer] = useState(null); // 정답 저장
-    const [isHost, setIsHost] = useState(false); // 방장 여부 상태 추가
+    const [didLeave, setDidLeave] = useState(false);
 
-    const token = useSelector((state) => state.auth.token); // Redux에서 토큰 가져오기
+    // Redux & Router
+    const token = useSelector((state) => state.auth.token);
     const userId = useSelector((state) => state.auth.userId);
-
-    const { roomId } = useParams(); // URL에서 roomId 가져오기
+    const { roomId } = useParams();
     const navigate = useNavigate();
 
-
+    // ===================================================
+    //                 초기 방장 여부 확인
+    // ===================================================
     useEffect(() => {
         if (!roomId) {
-            console.error("🚨 roomId가 없습니다. 방장 여부 확인을 중단합니다.");
+            console.error("🚨 roomId가 없습니다. 방장 여부 확인 불가");
             return;
         }
-        fetchHostStatus();
+        fetchHostStatus(); // 서버에 방 참가 요청하여 방장 여부 확인
     }, [roomId]);
-
-    useEffect(() => {
-        if (roomId) {
-            fetchHostStatus(); // ✅ 방장 여부 확인 API 호출
-        }
-        if ((token, roomId)) {
-            // const decodedUserId = getUserIdFromToken(token);
-            //     setUserId(decodedUserId); // ✅ 상태에 저장
-            connectWebSocket(token, roomId);
-        } else {
-            console.error("JWT 토큰 없음: 로그인 필요");
-        }
-
-        // 뒤로가기 버튼 감지 및 방 나가기 처리
-        const handleBackButton = () => {
-            handleLeaveRoom().then(() => {
-                navigate(-1); // 방 나가기 요청 후 뒤로가기
-            });
-        };
-
-        window.onpopstate = handleBackButton; // 뒤로가기 클릭 이벤트 처리
-
-        return () => {
-            window.onpopstate = null; // 클린업: 컴포넌트가 언마운트될 때
-        };
-        // }, []);
-    }, [token, roomId]);// ✅ Redux의 토큰 값이 변경될 때마다 실행
-
-    // WebSocket 메시지 수신 처리
-    useEffect(() => {
-        if (!webSocketRef.current) return;
-
-        const handleMessage = async (event) => {
-            try {
-                const receivedMessage = JSON.parse(event.data);
-                // "ping" 메시지는 로그만 남기고 무시
-                if (receivedMessage.type === "ping") {
-                    console.log("📡 WebSocket 유지: Ping 메시지 수신");
-                    return; // 채팅 메시지 목록에 추가하지 않음
-                }
-                console.log("📩 WebSocket 메시지 수신:", receivedMessage);
-
-                if (receivedMessage.type === "offer") {
-                    await handleOffer(receivedMessage);
-                } else if(receivedMessage.type === "items"){
-                    await  handleItems(receivedMessage);
-                } else if (receivedMessage.type === "answer") {
-                    await handleAnswer(receivedMessage);
-                } else if (receivedMessage.type === "choice"){
-                    await handleChoice(receivedMessage);
-                } else if (receivedMessage.type === "candidate") {
-                    await handleCandidate(receivedMessage);
-                } else if (receivedMessage.type === "answerChoice") {
-                    await handleAnswerChoice(receivedMessage);
-                } else {
-                    // ✅ 메시지 상태 업데이트 (새로운 배열 생성)
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        receivedMessage,
-                    ]);
-                    console.log("📝 업데이트된 메시지 상태:", messages);
-                }
-            } catch (e) {
-                console.error("JSON 파싱 오류:", e);
-            }
-        };
-
-        webSocketRef.current.onmessage = handleMessage;
-
-        //기존 소켓 연결 끊어짐 방지(WebSocket 연결 유지: 30초마다 'ping' 메시지 보내기)
-        const pingInterval = setInterval(() => {
-            if (
-                webSocketRef.current &&
-                webSocketRef.current.readyState === WebSocket.OPEN
-            ) {
-                webSocketRef.current.send(JSON.stringify({ type: "ping" }));
-                console.log("📡 WebSocket 유지: Ping 전송");
-            }
-        }, 30000); // 30초마다 실행
-
-        return () => {
-            if (webSocketRef.current) {
-                webSocketRef.current.onmessage = null;
-            }
-            clearInterval(pingInterval); // 컴포넌트 언마운트 시 핑 메시지 중단
-        };
-    }, []);
 
     const fetchHostStatus = async () => {
         try {
-            const response = await springApi.post(`/rooms/join/${roomId}`, {
-                user: userId,
-                room: roomId,
-                // room_password: password || null,
+            const response = await springApi.post(`/rooms/join`, {
+                user_id: userId,
+                room_id: roomId,
             });
 
             if (!response || !response.data) {
@@ -147,56 +67,70 @@ const Webrtc = () => {
 
             const isHostValue = response.data.host || false;
             setIsHost(isHostValue);
-            console.log("응답에서 받은 host 값:", response.data.host);
-            console.log("setIsHost에 저장된 값:", isHostValue);
-            console.log("방장 여부:", response.data.host ? "방장" : "참가자");
-            
+            console.log("🚀 방장 여부:", isHostValue ? "방장" : "참가자");
         } catch (error) {
             console.error("방장 여부 확인 실패:", error.message);
+            navigate("/room/RoomList");
         }
     };
 
-    // 메시지가 변경될 때 실행되는 자동 스크롤 useEffect
+    // ===================================================
+    //             WebSocket 연결 & 초기 설정
+    // ===================================================
     useEffect(() => {
-        if (chatBoxRef.current) {
-            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+        if (!token || !roomId) {
+            console.error("❌ JWT 토큰 또는 roomId가 없습니다.");
+            return;
         }
-    }, [messages]); // messages가 변경될 때마다 실행
+        connectWebSocket(token, roomId);
 
-    // useEffect(() => {
-    //     const fetchItems = async () => {
-    //         try {
-    //             setLoading(true);
-    //             const response = await springApi.get("/rgames/item"); // 단어 목록 API 호출
-    //             setItems(response.data);
-    //             // console.log("출력출력",response.data);
-    //         } catch (error) {
-    //             console.error("❌ 단어 목록 불러오기 실패:", error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //
-    //     fetchItems();
-    // }, []);
-    
+        // 새로고침 / 브라우저 닫기 시 leave 메시지 전송
+        const handleBeforeUnload = () => {
+            if (
+                webSocketRef.current &&
+                webSocketRef.current.readyState === WebSocket.OPEN
+            ) {
+                webSocketRef.current.send(
+                    JSON.stringify({
+                        type: "leave",
+                        room_id: roomId,
+                        user_id: userId,
+                    })
+                );
+            }
+        };
+        window.addEventListener("beforeunload", handleBeforeUnload);
 
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+        // eslint-disable-next-line
+    }, [token, roomId]);
+
+    /**
+     * WebSocket 연결 설정
+     */
     const connectWebSocket = (token, roomId) => {
         if (!roomId) {
             console.error("❌ 방 ID(roomId)가 없습니다.");
             return;
         }
-
-        if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-            console.warn("WebSocket이 이미 연결되어 있음");
+        // 이미 연결된 소켓이 있으면 중복 연결 X
+        if (
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            console.warn("⚠️ WebSocket이 이미 연결되어 있습니다.");
             return;
         }
 
+        // 실제 서버 주소/포트를 맞춰주세요.
         webSocketRef.current = new WebSocket(
             `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
             // `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
+        // 소켓 open
         webSocketRef.current.onopen = () => {
             console.log(`✅ WebSocket 연결됨 (방 ID: ${roomId})`);
             const joinMessage = {
@@ -208,98 +142,120 @@ const Webrtc = () => {
             console.log("🚀 방 입장 메시지 전송:", joinMessage);
         };
 
+        // 소켓 message
         webSocketRef.current.onmessage = (event) => {
-            const receivedMessage = JSON.parse(event.data);
-            console.log("📩 WebSocket 메시지 수신:", receivedMessage);
-
-            if (receivedMessage.type === "gameStart") {
-                console.log("📌 참가자가 받은 단어 목록:", receivedMessage.items);
-                setItems(receivedMessage.items);
-            }
-
-            if (receivedMessage.type === "answerSelected") {
-                console.log("📌 참가자가 받은 정답:", receivedMessage.answer);
-                setCorrectAnswer(receivedMessage.answer);
-            }
-
-            if (receivedMessage.type === "userChoice") {
-                console.log(`📌 참가자가 선택한 단어: ${receivedMessage.choice}`);
-                setChoice(receivedMessage.choice);
-            }
+            handleSocketMessage(event);
         };
 
+        // 소켓 close
         webSocketRef.current.onclose = () => {
-            console.log("WebSocket 연결 종료됨. 5초 후 재연결 시도...");
+            console.warn("⚠️ WebSocket 연결 종료됨. 5초 후 재연결 시도...");
             setTimeout(() => {
                 connectWebSocket(token, roomId);
             }, 5000);
         };
     };
-    
-    // 메시지 전송
-    const sendMessage = () => {
-        if (
-            message.trim() &&
-            webSocketRef.current &&
-            webSocketRef.current.readyState === WebSocket.OPEN
-        ) {
-            if (!userId) {
-                console.error("사용자 ID 없음");
-                return;
+
+    // ===================================================
+    //        뒤로가기(라우트 이동) 등으로 컴포넌트가
+    //                언마운트될 때 cleanup
+    // ===================================================
+    useEffect(() => {
+        return () => {
+            // 컴포넌트 언마운트 시
+            if (!didLeave) {
+                console.log("[cleanup] 뒤로가기 or 라우트 이동 -> sendLeave");
+                sendLeave({ showAlert: false });
             }
-
-            const messageObject = {
-                type: "chat", // 메시지 타입 추가
-                user_id: userId, // 사용자 ID
-                message: message.trim(),
-                room_id: roomId, // 방 ID
-                sentAt: new Date().toISOString(), // 메시지 보낸 시간
-            };
-
-            console.log("📡 메시지 전송:", messageObject);
-            webSocketRef.current.send(JSON.stringify(messageObject));
-
-            // 전송된 메시지 저장 (DB에 저장)
-            saveMessageToDB(messageObject); // DB 저장
-
-            setMessages((prev) => [...prev, messageObject]); // UI 업데이트
-            setMessage(""); // 메시지 입력란 초기화
-        } else {
-            console.error("WebSocket 연결이 닫혀 있음!");
-        }
-    };
-    
-
-    // DB 저장 함수
-    const saveMessageToDB = async (messageObject) => {
-        const requestPayload = {
-            // sender: messageObject.sender,  // sender 정보
-            message: messageObject.message, // 메시지 내용
-            room_id: messageObject.room_id, // 방 ID
-            sent_at: messageObject.sent_at, // 보낸 시간
-            user_id: messageObject.user_id, // 사용자 ID
         };
-        console.log("Request Payload:", requestPayload);
+        // eslint-disable-next-line
+    }, [didLeave]);
 
-        // user_id가 없으면 에러 처리
-        if (!requestPayload.user_id) {
-            console.error("필수 파라미터 누락: user_id가 없습니다.");
+    // ===================================================
+    //              WebSocket 메시지 수신 처리
+    // ===================================================
+    const handleSocketMessage = async (event) => {
+        let receivedMessage;
+        try {
+            receivedMessage = JSON.parse(event.data);
+        } catch (e) {
+            console.error("JSON 파싱 오류:", e);
             return;
         }
 
-        try {
-            const response = await springApi.post(
-                "/webrtcs/messages",
-                requestPayload,
-                {}
-            );
-            console.log("메시지 저장 성공:", response.data);
-        } catch (error) {
-            console.error("메시지 저장 실패:", error);
+        const { type } = receivedMessage || {};
+
+        // ping (연결 유지를 위한 것)이면 바로 return
+        if (type === "ping") {
+            console.log("📡 WebSocket Ping 수신");
+            return;
+        }
+
+        console.log("📩 WebSocket 메시지 수신:", receivedMessage);
+
+        switch (type) {
+            // WebRTC Offer/Answer/Candidate
+            case "offer":
+                handleOffer(receivedMessage);
+                break;
+            case "answer":
+                handleAnswer(receivedMessage);
+                break;
+            case "candidate":
+                handleCandidate(receivedMessage);
+                break;
+
+            // 게임 로직: 단어 목록(items), 참가자 선택(choice), 정답(answerChoice)
+            case "items":
+                handleItems(receivedMessage);
+                break;
+            case "choice":
+                handleChoice(receivedMessage);
+                break;
+            case "answerChoice":
+                handleAnswerChoice(receivedMessage);
+                break;
+
+            // 그 외(채팅 등)
+            default:
+                // 채팅 메시지 등
+                setMessages((prev) => [...prev, receivedMessage]);
+                break;
         }
     };
 
-    // 카메라 & 마이크 접근 및 로컬 스트림 설정
+    // ===================================================
+    //            주기적 ping 메시지 보내기
+    // ===================================================
+    useEffect(() => {
+        const sendPing = () => {
+            if (
+                webSocketRef.current &&
+                webSocketRef.current.readyState === WebSocket.OPEN
+            ) {
+                webSocketRef.current.send(JSON.stringify({ type: "ping" }));
+                console.log("📡 Ping 메시지 전송");
+            }
+        };
+        const pingInterval = setInterval(sendPing, 10000); // 10초마다 실행
+
+        return () => {
+            clearInterval(pingInterval);
+        };
+    }, []);
+
+    // ===================================================
+    //      채팅 메시지가 추가될 때 자동 스크롤
+    // ===================================================
+    useEffect(() => {
+        if (chatBoxRef.current) {
+            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    // ===================================================
+    //            WebRTC (오디오/비디오) 로직
+    // ===================================================
     const startMedia = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -310,57 +266,60 @@ const Webrtc = () => {
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = stream;
             }
-            const now = new Date().toISOString().slice(0, 19); //로그 저장을 위해 현재 시간 기록
+            const now = new Date().toISOString().slice(0, 19);
             setStartTime(now); // 시작시간 저장
             console.log("미디어 시작:", now);
         } catch (error) {
             console.error("미디어 접근 실패:", error);
         }
     };
-    const endMedia = async () => {
+
+    const endMedia = () => {
         if (localStream) {
             localStream.getTracks().forEach((track) => track.stop());
             setLocalStream(null);
-            localVideoRef.current.srcObject = null;
-
-            const now = new Date().toISOString().slice(0, 19); // 종료 시간 기록
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = null;
+            }
+            const now = new Date().toISOString().slice(0, 19);
             setEndTime(now);
             console.log("미디어 종료:", now);
             saveWebRTCLog(startTime, now); //로그 저장 실행
         }
     };
 
-    // WebRTC 연결 초기화
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
                 {
                     urls: "turn:3.39.252.223:3478?transport=tcp",
-                    username: `${import.meta.env.VITE_USERNAME_URL}`,
-                    credential: `${import.meta.env.VITE_PASSWORD_URL}`,
-                    // urls: "stun:stun.l.google.com:19302",
-
+                    username: import.meta.env.VITE_USERNAME_URL,
+                    credential: import.meta.env.VITE_PASSWORD_URL,
                 },
+                // { urls: "stun:stun.l.google.com:19302" },
             ],
         });
 
+        // ICE Candidate 감지
         peerConnectionRef.current.onicecandidate = (event) => {
             if (event.candidate) {
                 sendToServer({
                     type: "candidate",
                     candidate: event.candidate,
-                    room_id: roomId, // 방 ID 추가
-                    user_id: userId, // 사용자 ID 추가
+                    room_id: roomId,
+                    user_id: userId,
                 });
             }
         };
 
+        // 원격 트랙 수신
         peerConnectionRef.current.ontrack = (event) => {
             if (remoteVideoRef.current) {
                 remoteVideoRef.current.srcObject = event.streams[0];
             }
         };
 
+        // 로컬 스트림 트랙 추가
         if (localStream) {
             localStream.getTracks().forEach((track) => {
                 peerConnectionRef.current.addTrack(track, localStream);
@@ -377,8 +336,8 @@ const Webrtc = () => {
             sendToServer({
                 type: "offer",
                 sdp: offer.sdp,
-                room_id: roomId, // 방 ID 추가
-                user_id: userId, // 사용자 ID 추가
+                room_id: roomId,
+                user_id: userId,
             });
         } catch (error) {
             console.error("Offer 생성 실패:", error);
@@ -400,8 +359,8 @@ const Webrtc = () => {
             sendToServer({
                 type: "answer",
                 sdp: answer.sdp,
-                room_id: roomId, // 방 ID 추가
-                user_id: userId, // 사용자 ID 추가
+                room_id: roomId,
+                user_id: userId,
             });
         } catch (error) {
             console.error("Offer 처리 실패:", error);
@@ -435,8 +394,10 @@ const Webrtc = () => {
         }
     };
 
-    // WebSocket 메시지 전송
-    const sendToServer = (message) => {
+    // ===================================================
+    //              WebSocket 메시지 전송 공통
+    // ===================================================
+    const sendToServer = (msgObj) => {
         if (!roomId) {
             console.error("roomId가 없습니다. 메시지를 보낼 수 없습니다.");
             return;
@@ -446,64 +407,74 @@ const Webrtc = () => {
             webSocketRef.current &&
             webSocketRef.current.readyState === WebSocket.OPEN
         ) {
-            const messageWithRoom = { ...message, roomId }; // roomId 추가
-            webSocketRef.current.send(JSON.stringify(messageWithRoom));
+            webSocketRef.current.send(JSON.stringify(msgObj));
         } else {
-            console.error(
-                "WebSocket이 연결되지 않음, 메시지 전송 실패:",
-                message
+            console.error("❌ WebSocket이 닫혀 있어 메시지 전송 실패:", msgObj);
+        }
+    };
+
+    // ===================================================
+    //                   채팅 로직
+    // ===================================================
+    const sendMessage = () => {
+        if (
+            message.trim() &&
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            if (!userId) {
+                console.error("사용자 ID 없음");
+                return;
+            }
+            const messageObject = {
+                type: "chat",
+                user_id: userId,
+                message: message.trim(),
+                room_id: roomId,
+                sentAt: new Date().toISOString(),
+            };
+            console.log("📡 채팅 메시지 전송:", messageObject);
+
+            webSocketRef.current.send(JSON.stringify(messageObject));
+
+            // UI에 채팅 추가
+            setMessages((prev) => [...prev, messageObject]);
+            setMessage("");
+
+            // (선택) DB에 저장
+            saveMessageToDB(messageObject);
+        } else {
+            console.error("❌ WebSocket 연결이 닫혀 있거나 메시지가 비어있음");
+        }
+    };
+
+    const saveMessageToDB = async (messageObject) => {
+        const requestPayload = {
+            message: messageObject.message,
+            room_id: messageObject.room_id,
+            sent_at: messageObject.sentAt,
+            user_id: messageObject.user_id,
+        };
+
+        if (!requestPayload.user_id) {
+            console.error("❌ user_id가 없어 메시지 DB 저장 불가");
+            return;
+        }
+
+        try {
+            const response = await springApi.post(
+                "/webrtc/messages",
+                requestPayload
             );
+            console.log("✅ 메시지 저장 성공:", response.data);
+        } catch (error) {
+            console.error("메시지 저장 실패:", error);
         }
     };
 
-    //items수신
-    // WebSocket으로 수신한 items 데이터를 저장하는 함수
-    const handleItems = async (message) => {
-        console.log("조건 확인 : message.items = ",(message.items));
-        console.log("조건 확인 : Array.isArray(message.items)",(Array.isArray(message.items)));
-        if (message.items && Array.isArray(message.items)) {
-            console.log("📩 WebSocket을 통해 수신한 단어 목록:", message.items);
-            setItems(message.items); // 상태 업데이트
-            
-        } else {
-            console.error("🚨 수신한 items 데이터가 올바르지 않음:", message);
-        }
-    };
-
-    //choice수신
-    const handleChoice = async (message) => {
-        console.log("조건 확인 : message.choice = ",(message.choice));
-        console.log("조건 확인 : isHost = ",(isHost));
-        
-        if (message.choice) {
-            
-            console.log("📩 WebSocket을 통해 수신한 단어 목록:", message.choice);
-            setChoice(message.choice); // 상태 업데이트
-
-        } else {
-            console.error("수신한 choice 데이터가 올바르지 않음:", message);
-        }
-    };
-
-    //answer수신
-    const handleAnswerChoice = async (message) => {
-        
-        console.log("조건 확인 : message.answerChoice = ",(message.answer_choice));
-        console.log("조건 확인 : isHost = ",(isHost));
-
-        if (message.answer_choice) {
-
-            console.log("📩 WebSocket을 통해 수신한 단어 목록:", message.answer_choice);
-            setAnswerChoice(message.answer_choice); // 상태 업데이트
-            setCorrectAnswer(message.answer_choice);
-
-        } else {
-            console.error("수신한 answerChoice 데이터가 올바르지 않음:", message);
-        }
-    };
-    
-
-    //음소거 
+    // ===================================================
+    //              음소거 토글
+    // ===================================================
     const toggleMute = () => {
         if (localStream) {
             const audioTrack = localStream.getAudioTracks()[0];
@@ -514,25 +485,61 @@ const Webrtc = () => {
         }
     };
 
-    const saveWebRTCLog = async (startTime, endTime) => {
-        console.log("저장할 사용자 ID:", userId); //user_id 값이 있는지 확인
+    // ===================================================
+    //        “나가기” (수동 + 뒤로가기 cleanup)
+    // ===================================================
+    const sendLeave = useCallback(
+        (options = { showAlert: true }) => {
+            // 이미 떠났으면 중복 X
+            if (didLeave) return;
+            setDidLeave(true);
 
+            if (options.showAlert) {
+                alert("방에서 나갑니다.");
+            }
+
+            if (
+                webSocketRef.current &&
+                webSocketRef.current.readyState === WebSocket.OPEN
+            ) {
+                const messageObject = {
+                    type: "leave",
+                    user_id: userId,
+                    room_id: roomId,
+                    sentAt: new Date().toISOString(),
+                };
+                console.log("📡 방 퇴장 메시지 전송:", messageObject);
+                webSocketRef.current.send(JSON.stringify(messageObject));
+            }
+
+            if (webSocketRef.current) {
+                webSocketRef.current.close();
+            }
+
+            navigate("/room/RoomList");
+        },
+        [didLeave, userId, roomId, navigate]
+    );
+
+    // ===================================================
+    //           WebRTC 사용 로그 서버 전송
+    // ===================================================
+    const saveWebRTCLog = async (start, end) => {
         if (!userId) {
             console.error("사용자 ID 없음! 로그 저장 불가.");
             return;
         }
 
         const logData = {
-            room_id: roomId, // 방 ID?
-            user_id: userId, // 사용자 ID
-            start_time: startTime,
-            end_time: endTime,
+            room_id: roomId,
+            user_id: userId,
+            start_time: start,
+            end_time: end,
         };
-
-        console.log("📩 서버로 보낼 로그 데이터:", logData); //실제 전송 데이터 확인
+        console.log("📄 WebRTC 로그 전송:", logData);
 
         try {
-            const response = await springApi.post("/webrtcs/log", logData, {
+            const response = await springApi.post("/webrtc/logs", logData, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("token"),
                 },
@@ -544,31 +551,17 @@ const Webrtc = () => {
                 console.error("WebRTC 로그 저장 실패");
             }
         } catch (error) {
-            console.error("로그 저장 중 오류 발생:", error);
+            console.error("로그 저장 중 오류:", error);
         }
     };
-    // 방 나가기 요청
-    const handleLeaveRoom = async () => {
-        if (!userId) {
-            alert("사용자 정보가 없습니다. 로그인 후 다시 시도해주세요.");
-            return;
-        }
 
-        try {
-            const response = await springApi.post(`/rooms/leave/${roomId}`, {
-                user: userId,
-                room: roomId,
-            });
-            if (response.status === 200) {
-                alert("방에서 나갔습니다.");
-                navigate("/room/RoomList"); // 방 목록 화면으로 이동
-            }
-        } catch (error) {
-            console.error("방 나가기 실패:", error);
-            alert("방 나가기 실패!");
-        }
-    };
-    // 게임 시작
+    // ===================================================
+    //               게임 관련 (items, choice)
+    // ===================================================
+    /**
+     * 방장이 "게임 시작" 버튼 클릭
+     * - 임시로 springApi 호출 후, items 로드
+     */
     const startGame = async () => {
         if (!isHost) {
             alert("방장만 게임을 시작할 수 있습니다.");
@@ -579,28 +572,25 @@ const Webrtc = () => {
             if (response.status === 200) {
                 setIsGameStarted(true);
             }
+            setChoice(null);
+            setCorrectAnswer(null);
+            fetchGameWords();
         } catch (error) {
             console.error("게임 시작 오류:", error);
         }
     };
-    
+
     // 단어 목록 불러오기
     const fetchGameWords = async () => {
         try {
-            console.log(`게임 단어 요청: color=${correctAnswer}`);
             const response = await springApi.get(`/rgames/item`);
-
-            console.log("API 응답 데이터:", response.data);
+            console.log("📩 게임 단어 목록 응답:", response.data);
 
             if (response.status === 200 && typeof response.data === "object") {
                 const wordsArray = Object.values(response.data);
                 setItems(wordsArray);
-                console.log("변환된 단어 목록:", wordsArray);
-                sendItems();
-
-
             } else {
-                console.error("서버 응답이 올바르지 않습니다:", response.data);
+                console.error("🚨 서버 응답이 올바르지 않음:", response.data);
                 setItems([]);
             }
         } catch (error) {
@@ -609,134 +599,119 @@ const Webrtc = () => {
         }
     };
 
-    //게임 정답 전송 items?
+    // 단어 목록 수신 (WebSocket)
+    const handleItems = (message) => {
+        const received = message.items;
+        if (Array.isArray(received)) {
+            setChoice(null);
+            setCorrectAnswer(null);
+            setItems(received);
+            console.log("📝 수신한 items:", received);
+            setIsGameStarted(true);
+        } else {
+            console.error("🚨 items 데이터가 배열이 아님:", received);
+        }
+    };
+
+    // 선택(choice) 수신 (참가자)
+    const handleChoice = (message) => {
+        if (message.choice) {
+            setChoice(message.choice);
+            console.log("📝 참가자 choice 수신:", message.choice);
+        } else {
+            console.error("🚨 잘못된 choice 데이터:", message);
+        }
+    };
+
+    // 정답(answerChoice) 수신
+    const handleAnswerChoice = (message) => {
+        if (message.answer_choice) {
+            setCorrectAnswer(message.answer_choice);
+            console.log("📝 정답(answerChoice) 수신:", message.answer_choice);
+        } else {
+            console.error("🚨 잘못된 answerChoice 데이터:", message);
+        }
+    };
+
+    // 호스트가 단어 목록(items)을 모두에게 전송
     const sendItems = () => {
-        if (isHost===true &&
+        if (!isHost || !items.length) return;
+        if (
             webSocketRef.current &&
             webSocketRef.current.readyState === WebSocket.OPEN
         ) {
-            if (!userId) {
-                console.error("사용자 ID 없음");
-                return;
-            }
-            console.log("Items 보낸다");
-            const messageObject = {
-                type: "items", // 메시지 타입 추가
-                user_id: userId, // 사용자 ID
-                items: items,
-                room_id: roomId, // 방 ID
-                sentAt: new Date().toISOString(), // 메시지 보낸 시간
+            const msg = {
+                type: "items",
+                user_id: userId,
+                items,
+                room_id: roomId,
+                sentAt: new Date().toISOString(),
             };
-
-            console.log("📡 메시지 전송!!!!!!!:", messageObject);
-            webSocketRef.current.send(JSON.stringify(messageObject));
-
-        } else {
-            console.error("WebSocket 연결이 닫혀 있음!");
+            console.log("📡 items 전송:", msg);
+            webSocketRef.current.send(JSON.stringify(msg));
         }
     };
 
-    
-    //참가자 선택상황 choice 전송
-    const sendChoice = (choice) => {
-        setChoice(choice);
-        
-        if (isHost=== false &&
+    // 참가자: 단어를 골랐을 때
+    const sendChoice = (word) => {
+        setChoice(word);
+        if (isHost) {
+            console.error("❌ 방장은 choice를 보낼 수 없습니다.");
+            return;
+        }
+        if (
             webSocketRef.current &&
             webSocketRef.current.readyState === WebSocket.OPEN
         ) {
-            if (!userId) {
-                console.error("사용자 ID 없음");
-                return;
-            }
-            console.log("Choice 보낸다");
-            const messageObject = {
-                type: "choice", // 메시지 타입 추가
-                user_id: userId, // 사용자 ID
-                choice: choice,
-                room_id: roomId, // 방 ID
-                sentAt: new Date().toISOString(), // 메시지 보낸 시간
+            const msg = {
+                type: "choice",
+                user_id: userId,
+                choice: word,
+                room_id: roomId,
+                sentAt: new Date().toISOString(),
             };
-
-            console.log("📡 메시지 전송!!!!!!!:", messageObject);
-            webSocketRef.current.send(JSON.stringify(messageObject));
-
-        } else {
-            console.error("WebSocket 연결이 닫혀 있거나 참가자가 아님!");
+            console.log("📡 choice 전송:", msg);
+            webSocketRef.current.send(JSON.stringify(msg));
         }
     };
-    
-    
-    // 빨간 테두리 전송
+
+    // 호스트: 정답(answerChoice)를 선택했을 때
     const sendAnswerChoice = (answerChoice) => {
         setCorrectAnswer(answerChoice);
-        setAnswerChoice(answerChoice);
-    
-        if (isHost=== true &&
+        if (!isHost) {
+            console.error("❌ 참가자는 answerChoice를 보낼 수 없습니다.");
+            return;
+        }
+        if (
             webSocketRef.current &&
             webSocketRef.current.readyState === WebSocket.OPEN
         ) {
-            if (!userId) {
-                console.error("사용자 ID 없음");
-                return;
-            }
-            console.log("AnswerChoice 보낸다");
-            const messageObject = {
-                type: "answerChoice", // 메시지 타입 추가
-                user_id: userId, // 사용자 ID
+            const msg = {
+                type: "answerChoice",
+                user_id: userId,
                 answer_choice: answerChoice,
-                room_id: roomId, // 방 ID
-                sentAt: new Date().toISOString(), // 메시지 보낸 시간
+                room_id: roomId,
+                sentAt: new Date().toISOString(),
             };
-
-            console.log("📡 메시지 전송!!!!!!!:", messageObject);
-            webSocketRef.current.send(JSON.stringify(messageObject));
-
-        } else {
-            console.error("WebSocket 연결이 닫혀 있거나 host가 아님!");
+            console.log("📡 answerChoice 전송:", msg);
+            webSocketRef.current.send(JSON.stringify(msg));
         }
     };
-    
-    
-    // // 방장이 정답 선택 (빨간 테두리 표시)
-    // const handleAnswerChoice = async (answer) => {
-    //     if (!isHost) {
-    //         alert("방장만 정답을 선택할 수 있습니다.");
-    //         return;
-    //     }
-    //     setCorrectAnswer(answer);
-    //
-    //     // try {
-    //     //     await springApi.post(`/rgames/answer/${roomId}`, { userId, answer });
-    //     //
-    //     //     if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
-    //     //         const answerMessage = {
-    //     //             type: "answerSelected",
-    //     //             roomId: roomId,
-    //     //             answer: answer,
-    //     //         };
-    //     //         webSocketRef.current.send(JSON.stringify(answerMessage));
-    //     //         console.log("정답 전송 완료:", answerMessage);
-    //     //     }
-    //     // } catch (error) {
-    //     //     console.error( 정답 선택 실패:", error);
-    //     // }
-    // };
 
-    // items가 변경될 때 실행되는 useEffect
+    /**
+     * items가 변경될 때마다
+     * - 방장이면 다른 참가자에게도 전송
+     */
     useEffect(() => {
-        if (items.length > 0) {
-            console.log("items 값 변경됨:", items);
-
-            // 방장이면 WebSocket을 통해 참가자들에게 전송
-            if (isHost) {
-                console.log("📡 WebSocket으로 단어 목록 전송:", items);
-                sendItems();
-            }
+        if (isHost && items.length > 0) {
+            sendItems();
         }
     }, [items]); // items 변경 감지
     const colors = ["빨강", "주황", "노랑", "초록", "파랑", "보라"]; // 인덱스별 색상 지정
- 
+
+    // ===================================================
+    //                      렌더링
+    // ===================================================
     return (
         <div className="container">
             {/*<div className="container" style={{ backgroundImage: `url(${rtc}`}}>?*/}
@@ -755,8 +730,7 @@ const Webrtc = () => {
                         <button
                             onClick={() => {
                                 console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
-                                setIsGameStarted(true); // ✅ 게임 시작 상태 변경
-                                fetchGameWords(); // ✅ 단어 목록 불러오기 실행
+                                startGame(); // ✅ 단어 목록 불러오기 실행
                             }}
                             className="start-game-button"
                         >
@@ -891,6 +865,17 @@ const Webrtc = () => {
                         <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
                     )}
                 </div>
+
+                {/* 방 나가기 버튼 */}
+                {/*<div style={styles.leaveButtonContainer}>*/}
+                {/*    <button*/}
+                {/*        onClick={() => sendLeave({ showAlert: true })}*/}
+                {/*        style={styles.leaveButton}*/}
+                {/*    >*/}
+                {/*        방 나가기*/}
+                {/*    </button>*/}
+                {/*</div>*/}
+
             </div>
 
 

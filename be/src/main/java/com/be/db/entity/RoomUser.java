@@ -7,6 +7,11 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"room", "user"})
+    }
+)
 @Getter
 @Setter
 public class RoomUser extends BaseEntity {
@@ -24,6 +29,4 @@ public class RoomUser extends BaseEntity {
 
     private Boolean isHost;  // 방장 여부
 
-//    @Column(name = "joined_at", nullable = false)
-//    private LocalDateTime joinedAt;
 }
