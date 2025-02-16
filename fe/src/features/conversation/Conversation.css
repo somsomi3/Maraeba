@@ -167,7 +167,7 @@
 }
 
 /* 입력 필드와 텍스트의 간격 */
-.input-group {
+.conversation-input-group {
   display: flex;
   flex-direction: column;
   gap: 1vh; /* 필드 사이 간격 */

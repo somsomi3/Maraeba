@@ -43,9 +43,9 @@ const FindPw = () => {
     <div className="form-container">
       <h2>비밀번호 찾기</h2>
       <form onSubmit={handleSubmit}>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="text"
             id="user_id"
             name="user_id"
@@ -55,9 +55,9 @@ const FindPw = () => {
             required
           />
         </div>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="email"
             id="email"
             name="email"
