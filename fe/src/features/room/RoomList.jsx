@@ -53,7 +53,7 @@ const RoomList = () => {
             alert("사용자 정보가 없습니다. 로그인 후 시도하세요.");
             return;
         }
-        if (selectedRoom.userCnt >= 2) {
+        if (selectedRoom.user_cnt >= 2) {
             alert("❌ 이 방은 최대 인원(2명)에 도달했습니다.");
             return;
         }
@@ -186,8 +186,8 @@ const RoomList = () => {
                                             : "WAITING"}
                                     </td>
                                     <td>
-                                        {room.userCnt}/2
-                                        {room.userCnt >= 2 && " 🚫"}
+                                        {room.user_cnt}/2
+                                        {room.user_cnt >= 2 && " 🚫"}
                                     </td>
                                     <td>{room.room_password ? "🔒" : "🔓"}</td>
                                 </tr>

@@ -74,18 +74,9 @@ public class RoomService {
 	 */
 	@Transactional
 	public RoomJoinResponse joinRoom(UserJoinRequest request) {
-		Long roomId = Long.valueOf(request.getRoomId());
+		Long roomId = request.getRoomId();
 		Long userId = request.getUserId();
-
-		// 방, 사용자 엔티티 조회
-		Room room = roomRepository.findById(roomId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND,"방 아이디 찾기 실패"));
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-		if(!room.isActive()) { // 비활성화된 방에 접근 시도
-			throw new CustomException(ErrorCode.ROOM_NOT_FOUND,"비활성화된 방 참가");
-		}
+		String roomPW = request.getRoomPassword();
 
 		// RoomUser 중복 여부 체크
 		Optional<RoomUser> existing = roomUserRepository.findByUserIdAndRoomId(userId, roomId);
@@ -93,6 +84,23 @@ public class RoomService {
 			// 이미 참가 중인 유저면 userCnt 변경 없이 곧바로 OK 응답
 			log.info("사용자({})는 이미 방({})에 참가중.", userId, roomId);
 			return RoomJoinResponse.of(200, existing.get().getIsHost());
+		}
+
+		// 방, 사용자 엔티티 조회
+		Room room = roomRepository.findById(roomId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND,"방 아이디 찾기 실패"));
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		// 비밀번호가 있는 방이면 비밀번호 확인
+		if (room.getRoomPassword() != null) {
+			if (!request.getRoomPassword().equals(room.getRoomPassword())) {
+				throw new CustomException(ErrorCode.ROOM_PASSWORD_INCORRECT);
+			}
+		}
+
+		if(!room.isActive()) { // 비활성화된 방에 접근 시도
+			throw new CustomException(ErrorCode.ROOM_NOT_FOUND,"비활성화된 방 참가");
 		}
 
 		if (room.getUserCnt() >= 2) {
@@ -118,7 +126,7 @@ public class RoomService {
 	 * 방 나가기
 	 */
 	@Transactional
-	public String leaveRoom(UserLeaveRequest request) {
+	public void leaveRoom(UserLeaveRequest request) {
 		Long roomId = Long.valueOf(request.getRoomId());
 		Long userId = request.getUserId();
 
@@ -126,9 +134,6 @@ public class RoomService {
 		if (roomUserOpt.isEmpty()) {
 			// 여기서 예외 대신, "이미 나간 상태"로 간주하고 로직 종료
 			log.info("중복 leave 요청: 사용자({}) 방({}) 이미 떠났습니다.", userId, roomId);
-			return "User " + userId + " already left room " + roomId;
-			// 방 안에 해당 유저가 없으면 예외
-			// throw new CustomException(ErrorCode.USER_NOT_FOUND);
 		}
 
 		// 방에서 해당 사용자 삭제
@@ -150,8 +155,6 @@ public class RoomService {
 
 		// 변경된 부분 DB에 반영
 		roomRepository.save(room);
-
-		return "User " + userId + " left room " + roomId;
 	}
 
 	/**

@@ -126,8 +126,8 @@ const Webrtc = () => {
 
         // 실제 서버 주소/포트를 맞춰주세요.
         webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
-            // `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            // `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         // 소켓 open
@@ -291,12 +291,12 @@ const Webrtc = () => {
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
-                {
-                    urls: "turn:3.39.252.223:3478?transport=tcp",
-                    username: import.meta.env.VITE_USERNAME_URL,
-                    credential: import.meta.env.VITE_PASSWORD_URL,
-                },
-                // { urls: "stun:stun.l.google.com:19302" },
+                // {
+                //     urls: "turn:3.39.252.223:3478?transport=tcp",
+                //     username: import.meta.env.VITE_USERNAME_URL,
+                //     credential: import.meta.env.VITE_PASSWORD_URL,
+                // },
+                { urls: "stun:stun.l.google.com:19302" },
             ],
         });
 
@@ -568,7 +568,9 @@ const Webrtc = () => {
             return;
         }
         try {
-            const response = await springApi.post(`/rgames/start/${roomId}`, { userId });
+            const response = await springApi.post(`/rgames/start/${roomId}`, {
+                userId,
+            });
             if (response.status === 200) {
                 setIsGameStarted(true);
             }
@@ -719,7 +721,6 @@ const Webrtc = () => {
 
             {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
             <div className="video-chat-wrapper">
-                
                 {/* 게임 화면 */}
                 {/*{isGameStarted && (*/}
                 <div>
@@ -738,44 +739,66 @@ const Webrtc = () => {
                         </button>
                     )}
                     <div className="host-answer-selection">
-                    {isHost && (
-                        <div className="host-answer-selection">
-                            <h3>정답 선택</h3>
-                            <div className="answer-buttons">
-                                {items.length > 0 ? (
-                                    items.map((word, index) => (
-                                        <div key={index} className="answer-button-wrapper">
-                                            <button
-                                                onClick={() => sendAnswerChoice(word)}
-                                                className="answer-button"
-                                                style={{
-                                                    backgroundColor: correctAnswer === word ? "red" : "white",
-                                                    color: correctAnswer === word ? "white" : "black",
-                                                    border: correctAnswer === word ? "3px solid red" : "1px solid black",
-                                                }}
+                        {isHost && (
+                            <div className="host-answer-selection">
+                                <h3>정답 선택</h3>
+                                <div className="answer-buttons">
+                                    {items.length > 0 ? (
+                                        items.map((word, index) => (
+                                            <div
+                                                key={index}
+                                                className="answer-button-wrapper"
                                             >
-                                                {colors[index]}
-                                            </button>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
-                                )}
+                                                <button
+                                                    onClick={() =>
+                                                        sendAnswerChoice(word)
+                                                    }
+                                                    className="answer-button"
+                                                    style={{
+                                                        backgroundColor:
+                                                            correctAnswer ===
+                                                            word
+                                                                ? "red"
+                                                                : "white",
+                                                        color:
+                                                            correctAnswer ===
+                                                            word
+                                                                ? "white"
+                                                                : "black",
+                                                        border:
+                                                            correctAnswer ===
+                                                            word
+                                                                ? "3px solid red"
+                                                                : "1px solid black",
+                                                    }}
+                                                >
+                                                    {colors[index]}
+                                                </button>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="loading-message">
+                                            📌 단어 목록을 불러오는 중...
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-
-                    )}
-                </div>
+                        )}
+                    </div>
                 </div>
                 <div className="video-container">
-    
                     {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
                     {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
                     <div className="video-wrapper">
                         {/* 상대방 화면 */}
                         <div className="video-box">
                             <div className="video-label">상대방 화면</div>
-                            <video ref={remoteVideoRef} autoPlay playsInline className="large-video" />
+                            <video
+                                ref={remoteVideoRef}
+                                autoPlay
+                                playsInline
+                                className="large-video"
+                            />
                         </div>
 
                         {/* 본인 화면 (왕관 or 크리스마스 리스 추가) */}
@@ -787,7 +810,13 @@ const Webrtc = () => {
                                 {isHost ? "👑" : "🎄"}
                             </div>
 
-                            <video ref={localVideoRef} autoPlay playsInline muted className="small-video" />
+                            <video
+                                ref={localVideoRef}
+                                autoPlay
+                                playsInline
+                                muted
+                                className="small-video"
+                            />
                         </div>
                     </div>
 
@@ -807,19 +836,24 @@ const Webrtc = () => {
                     </div>
                 </div>
                 {/* 버튼을 비디오 아래로 이동 */}
-               
+
                 <div className="chat-container">
                     <div ref={chatBoxRef} className="chat-box">
                         {messages.map((msg, idx) => (
                             <div
                                 key={idx}
-                                className={msg.user_id === userId ? "my-message" : "other-message"}// 내 메시지는 오른쪽, 상대방은 왼쪽
+                                className={
+                                    msg.user_id === userId
+                                        ? "my-message"
+                                        : "other-message"
+                                } // 내 메시지는 오른쪽, 상대방은 왼쪽
                             >
-                                <strong>user{msg.user_id}:</strong> {msg.message}
+                                <strong>user{msg.user_id}:</strong>{" "}
+                                {msg.message}
                             </div>
                         ))}
                     </div>
-    
+
                     {/* 입력창과 전송 버튼을 채팅 아래로 이동 */}
                     <div className="input-container">
                         <input
@@ -835,8 +869,7 @@ const Webrtc = () => {
                     </div>
                 </div>
             </div>
-                
-            
+
             {/* 오른쪽 - 채팅 창 및 입력창 */}
             {/* 방 나가기 버튼 추가 */}
             <div className="game-container">
@@ -854,15 +887,21 @@ const Webrtc = () => {
                                 onClick={() => sendChoice(word)}
                                 className="game-button"
                                 style={{
-                                    backgroundColor: choice === word ? "lightblue" : "white",
-                                    border: correctAnswer === word ? "3px solid red" : "1px solid black",
+                                    backgroundColor:
+                                        choice === word ? "lightblue" : "white",
+                                    border:
+                                        correctAnswer === word
+                                            ? "3px solid red"
+                                            : "1px solid black",
                                 }}
                             >
                                 {word}
                             </button>
                         ))
                     ) : (
-                        <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
+                        <p className="loading-message">
+                            📌 단어 목록을 불러오는 중...
+                        </p>
                     )}
                 </div>
 
@@ -875,14 +914,9 @@ const Webrtc = () => {
                 {/*        방 나가기*/}
                 {/*    </button>*/}
                 {/*</div>*/}
-
             </div>
-
-
         </div>
     );
 };
-
-
 
 export default Webrtc;

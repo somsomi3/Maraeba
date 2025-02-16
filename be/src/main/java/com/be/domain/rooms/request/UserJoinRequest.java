@@ -11,9 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserJoinRequest {
     private Long userId;
-    private String roomId; // ✅ 방 비밀번호 필드 추가
+    private Long roomId;
+    private String roomPassword;
 
-    public static UserJoinRequest of(Long userId, String roomId) {
-        return new UserJoinRequest(userId, roomId);
+    public static UserJoinRequest of(Long userId, Long roomId, String roomPassword) {
+        return new UserJoinRequest(userId, roomId, roomPassword);
     }
 }
