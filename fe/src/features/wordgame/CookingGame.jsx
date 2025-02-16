@@ -335,12 +335,12 @@ const restart = () => {
         </div>
   
         {/* 🔹 마이크 버튼 및 안내 문구 */}
-        <div className="record-container">
-        <p className="record-guide">
+        <div className="cooking-record-container">
+        <p className="cooking-record-guide">
             {isRecording ? "녹음을 완료하려면 정지 버튼을 눌러주세요" : "녹음을 하려면 마이크 버튼을 눌러주세요"}
         </p>
-        <button className="record-button" disabled={!isTimerActive} onClick={isRecording ? stopRecording : startRecording}>
-            <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="record-icon" />
+        <button className="cooking-record-button" disabled={!isTimerActive} onClick={isRecording ? stopRecording : startRecording}>
+            <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="cooking-record-icon" />
         </button>
         </div>
   

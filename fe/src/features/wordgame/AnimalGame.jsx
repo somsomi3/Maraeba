@@ -3,10 +3,12 @@ import { springApi } from "../../utils/api"; // API 인스턴스 사용
 import backgroundImage from "../../assets/background/animal_bg.png";
 import { useSelector } from 'react-redux'; // ✅ Redux에서 토큰 가져오기
 import HomeButton from "../../components/button/HomeButton";
+import PausePopup from "../../components/popup/PausePopup";
 import "./AnimalGame.css";
 import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
 import CorrectPopup from "../../components/popup/CorrectPopup"; 
+import { useNavigate } from "react-router-dom";
 
 const AnimalGame = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -31,6 +33,7 @@ const AnimalGame = () => {
   const [userSpokenWord, setUserSpokenWord] = useState(""); // ✅ 사용자가 말한 단어 저장
   const [feedbackAnimation, setFeedbackAnimation] = useState(""); 
   const [spokenAnswers, setSpokenAnswers] = useState(new Set()); // ✅ 이미 맞춘 정답 저장
+  const navigate = useNavigate();
 
    // ✅ 공통 fetch 함수 (Access Token 포함)
    const fetchResource = async (url, setState) => {
@@ -332,6 +335,9 @@ const checkIncorrect = (result) => {
       <HomeButton />
   
       <div className="animal-game-overlay">
+        <button className="pause-button">
+          <PausePopup onExit={() => navigate("/wgame")} />
+        </button>
         <h1 className="animal-game-title">숨은 동물을 찾아보자!</h1>
   
         <div className="animal-game-content">

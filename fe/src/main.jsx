@@ -31,7 +31,6 @@ import { Conversation, ConversationStart } from "./features/conversation";
 import { ChatBox, Webrtc, RoomList } from "./features/room";
 
 import CookingGame from "./features/wordgame/CookingGame";
-import AnimalGameTheme from "./features/wordgame/AnimalGameTheme";
 import AnimalGame from "./features/wordgame/AnimalGame";
 import {
     Profile,
@@ -82,10 +81,6 @@ const router = createBrowserRouter(
                 <Route path="/room/:roomId" element={<Webrtc />} />{" "}
                 {/* ✅ RoomPage 라우트 추가 */}
                 <Route path="/room/RoomList" element={<RoomList />} />
-                <Route
-                    path="/animal-game-theme"
-                    element={<AnimalGameTheme />}
-                />
                 <Route
                     path="/animal-game/start-game"
                     element={<AnimalGame />}
