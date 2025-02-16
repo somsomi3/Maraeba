@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -104,5 +107,13 @@ public class UserController {
 		Long id = Long.parseLong(userDetails.getUsername());
 		UserTutorialDTO response = userService.getTutorial(id);
 		return new GetUserTutorialRes("Success", HttpStatus.OK, response);
+	}
+
+	@PatchMapping("/me/tutorial/{tutorial_id}")
+	public ResponseEntity<? extends BaseResponseBody> updateTutorial(@AuthenticationPrincipal UserDetails userDetails,
+		@PathVariable("tutorial_id") @Min(1) @Max(4) Integer tutorialId) {
+		Long id = Long.parseLong(userDetails.getUsername());
+		userService.updateTutorial(id, tutorialId);
+		return ResponseEntity.ok(BaseResponseBody.of("Success", HttpStatus.OK));
 	}
 }

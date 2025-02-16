@@ -92,12 +92,36 @@ public class UserServiceImpl implements UserService {
 
 				return userTutorialRepository.save(newUserTutorial);
 			});
-		
+
 		UserTutorialDTO response = UserTutorialDTO.builder().hasSeenPron(userTutorial.getHasSeenPron())
 			.hasSeenFood(userTutorial.getHasSeenFood())
 			.hasSeenAnimal(userTutorial.getHasSeenAnimal())
 			.hasSeenAI(userTutorial.getHasSeenAI())
 			.build();
 		return response;
+	}
+
+	@Override
+	public void updateTutorial(Long id, Integer tutorialId) {
+		UserTutorial userTutorial = userTutorialRepository.findByUser_Id(id)
+			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+		switch (tutorialId) {
+			case 1:
+				userTutorial.setHasSeenPron(true);
+				break;
+			case 2:
+				userTutorial.setHasSeenFood(true);
+				break;
+			case 3:
+				userTutorial.setHasSeenAnimal(true);
+				break;
+			case 4:
+				userTutorial.setHasSeenAI(true);
+				break;
+			default:
+				break;
+		}
+		userTutorialRepository.save(userTutorial);
 	}
 }

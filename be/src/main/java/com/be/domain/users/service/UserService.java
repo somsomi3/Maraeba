@@ -21,4 +21,7 @@ public interface UserService {
 
 	// 사용자 튜토리얼 시행 여부 가져오기
 	UserTutorialDTO getTutorial(Long id);
+
+	// 사용자 튜토리얼 시행 반영
+	void updateTutorial(Long id, Integer tutorialId);
 }
