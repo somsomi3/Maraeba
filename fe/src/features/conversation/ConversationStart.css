@@ -11,13 +11,14 @@
     align-items: center;
     margin: 15px 0;
     width: 90%;
+    transition: all 0.5s ease-in-out;
 }
 
 /* AI 메시지 (왼쪽 정렬) */
 .message-row.ai {
     margin-left: 5%;
     justify-content: flex-start;
-    transform: translateY(-35%);
+    transform: translateY(-40%);
 }
 
 /* 사용자 메시지 (오른쪽 정렬) */
@@ -26,6 +27,17 @@
     justify-content: flex-end;
     transform: translateY(+60%);
 }
+
+.message-row.swapped.ai {
+    margin-left: 7%;
+    transform: translateY(15%);
+}
+
+.message-row.swapped.user {
+    margin-right: 8%;
+    transform: translateY(-100%);
+}
+
 
 /* 아바타 스타일 */
 .avatar {
@@ -103,4 +115,28 @@
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
+}
+
+/* ✅ 녹음 버튼 위 메시지 */
+.conversation-record-warning {
+    position: absolute;
+    bottom: 80px; /* 녹음 버튼 위에 배치 */
+    left: 50%;
+    transform: translateX(-50%);
+    color: #54c3c3;
+    background-color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    width: 130px;
+}
+
+/* ✅ 버튼을 누르면 메시지를 숨김 */
+.conversation-record-warning.hidden {
+    display: none;
 }
