@@ -12,6 +12,7 @@ import lipshape from "../../assets/images/lipshape.png";
 import tongue from "../../assets/images/tongue.png";
 
 import tutoPorong from "../../assets/images/tuto_porong.png"
+import bookbg from "../../assets/background/book.png"
 
 const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
 
@@ -40,7 +41,21 @@ const PronsSecond = () => {
   const [isTutorialCompleted, setIsTutorialCompleted] = useState(false); 
   const [username, setUsername] = useState("");
   const [showGreeting, setShowGreeting] = useState(true); // ✅ 인삿말 표시 여부
+  const [recordWarning, setRecordWarning] = useState(true);
 
+  const getClassBackground = (class_id) => {
+    switch (class_id) {
+      case "1":
+        return "class1-bg";
+      case "2":
+        return "class2-bg";
+      case "3":
+        return "class3-bg";
+      default:
+        return "default-bg";
+    }
+  };
+  
 useEffect(() => {
   const fetchUserData = async () => {
     try {
@@ -270,10 +285,11 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
   
 
   return (
-    <div className="prons-second-container">
+    <div className={`prons-second-container ${getClassBackground(class_id)}`}>
+    {/* <div className="prons-second-container"> */}
       <GoBackButton />
       <PausePopup onExit={() => navigate("/prons")} title="수업을 끝낼까요?" />
-
+        <img src={bookbg} alt="책배경" className="book-container"/>
       <button className="restart-tutorial-btn" onClick={handleRestartTutorial}>
         ▶ 튜토리얼
       </button>
@@ -340,11 +356,17 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
           )}
             {/* ✅ 녹음 버튼 */}
             <div className={`record-button-container ${tutorialStep === 3 ? "highlight" : ""}`}>
+            {recordWarning && (
+                    <div className="record-warning">
+                        🎤 녹음을 해주세요!
+                    </div>
+                )}
             <RecordButton 
               onMatchUpdate={(match, feedbackMsg, mypron) => {
                 setIsMatch(match);
                 setFeedback(feedbackMsg);
-                setMypron(mypron)
+                setMypron(mypron);
+                setRecordWarning(false);
                 if (tutorialStep === 3) {
                     setTutorialStep(4);
                   }

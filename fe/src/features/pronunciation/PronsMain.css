@@ -10,9 +10,9 @@
 }
   .prons-card{
     font-family: SDSamliphopang;
-    font-size: 1.5vw;
+    font-size: 1.35rem;
     width: 18vw;
-    height: 30vw;
+    height: 63vh;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -26,7 +26,12 @@
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
   }
-  
+
+  .prons-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
   .prons-card-slider {
     display: flex;
     gap: 1vw;

@@ -73,17 +73,17 @@
 }
 
 .card-content h2 {
-    font-size: 2rem;
+    font-size: 2.4rem;
     color: white;
     margin-bottom: 10px;
-    font-family: 'NPSbold'; 
+    font-family: 'SDSamliphopang'; 
 }
 
 .card-content p {
-    font-size: 1.2em;
+    font-size: 1.5em;
     color: rgb(247, 247, 247);
     line-height: 1.5;
-    font-family: 'NPSregular';
+    font-family: 'SDSamliphopang';
 }
 
 /* 카드 이미지 스타일 */
@@ -100,12 +100,12 @@
 
 /* 개별 이미지 조정 */
 .single-image {
-    width: 50vw;
+    width: 580px;
 }
 
 .multi-image {
     margin-right: 10%;
-    width: 50vw;
+    width: 580px;
     bottom: -2px;
 }
 

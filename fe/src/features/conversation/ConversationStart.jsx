@@ -17,7 +17,8 @@ const ConversationStart = () => {
   const [audioBlob, setAudioBlob] = useState(null); // 녹음된 음성 파일
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-
+  const [recordWarning, setRecordWarning] = useState(true);
+  const [isSwapped, setIsSwapped] = useState(false);
   // 🔥 녹음 시작
   const toggleRecording = async () => {
     if (!isRecording) {
@@ -99,8 +100,9 @@ const ConversationStart = () => {
         updatedMessages[updatedMessages.length - 2] = { role: 'user', text: userText }; // STT 변환된 유저 말풍선 업데이트
         updatedMessages[updatedMessages.length - 1] = { role: 'ai', text: aiResponse.data.answer }; // AI 응답 업데이트
         return updatedMessages;
-      });
+      });   
   
+      setIsSwapped(true);
       setAudioBlob(null);
     } catch (error) {
       console.error('🚨 음성 처리 오류:', error.response?.data || error.message);
@@ -117,7 +119,7 @@ const ConversationStart = () => {
   return (
     <div className="conversation-start-container">
       {/* AI 역할과 메시지 */}
-      <div className="message-row ai">
+      <div className={`message-row ai ${isSwapped ? "swapped" : ""}`}>
         <img src={catAvatar} alt="AI 아바타" className="avatar" />
         <div className="message-content">
           <p className="role-name">{aiRole || "상대의 역할 이름"}</p> {/* AI 역할 표시 */}
@@ -128,7 +130,7 @@ const ConversationStart = () => {
       </div>
 
       {/* 사용자 메시지 */}
-      <div className="message-row user">
+      <div className={`message-row user ${isSwapped ? "swapped" : ""}`}>
         <div className="message-content user-content">
           <p className="role-name">{userRole || "내 역할" }</p> 
           <div className="message-bubble">
@@ -142,11 +144,19 @@ const ConversationStart = () => {
 
       {/* 🔥 녹음 버튼 (이미지 클릭) */}
       <div className="footer">
+        {recordWarning && (
+            <div className="conversation-record-warning">
+                🎤  대화를 시작하려면 눌러주세요!
+            </div>
+        )}
         <img 
           src={recordingIcon} 
           alt="녹음 버튼" 
           className={`record-button ${isRecording ? 'recording' : ''}`} 
-          onClick={toggleRecording} 
+          onClick={() => {
+            toggleRecording()
+            setRecordWarning(false)
+            }}  
         />
       </div>
       

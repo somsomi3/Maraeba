@@ -125,7 +125,7 @@ const Conversation = () => {
         </div>
 
         <button className="restart-tutorial-btn" onClick={handleRestartTutorial}>
-          🔄 튜토리얼 다시보기
+          ▶ 튜토리얼
         </button>
 
         <div className="conversation-content">
