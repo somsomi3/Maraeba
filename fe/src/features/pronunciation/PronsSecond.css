@@ -5,11 +5,40 @@
     align-items: center;
     padding: 10px;
     justify-content: center; /* 세로 중앙 정렬 */
+    width: 100vw;
     height: 100vh; /* 화면 전체 높이 */
     box-sizing: border-box;
-  }
-  
-  .content-container {
+    /* background: url("../../assets/background/vowelforest.png") no-repeat center center; */
+    background-size: cover; /* 배경 이미지를 화면에 맞게 확대 */
+    position: relative;
+
+}
+
+/* class_id가 1일 때 */
+.class1-bg {
+    background: url("../../assets/background/vowelforest.png") no-repeat center center;
+}
+
+/* class_id가 2일 때 */
+.class2-bg {
+    background: url("../../assets/background/vowelocean.png") no-repeat center center;
+}
+
+/* class_id가 3일 때 */
+.class3-bg {
+    background: url("../../assets/background/vowelforest.png") no-repeat center center;
+}
+
+
+.book-container {
+        position: fixed;
+        z-index: 0;
+        width: 78vw;
+        height: 90vh;
+    }
+
+
+.content-container {
     display: flex;
     justify-content: space-between;
     width: 60vw;
@@ -99,7 +128,7 @@
     padding: 5px 15px;
     border-radius: 100%;
     font-family: 'DXChildsdrawing';
-    font-size: 70px;
+    font-size: 72px;
     font-weight: bold;
     color: #ffffff;
     text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
@@ -111,12 +140,14 @@
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 5;
   }
 
 .lip-video {
     width: 24vw;
     height: 34vh;
     transform: translateY(-1vh) ;
+    z-index: 2;
 }
 
 .image-top, .image-bottom {
@@ -124,6 +155,7 @@
     height: 32vh;
     border: none;
     border-radius: 10px;
+    z-index: 2;
   }
 
   .prons-feedback-box {
@@ -137,6 +169,7 @@
     font-size: 16px;
     font-weight: bold;
     color: #333;
+    z-index: 3;
 }
 
 /* 🔹 팝업 배경 (어두운 오버레이 효과) */
@@ -334,3 +367,29 @@
   .restart-tutorial-btn:hover {
     background-color: rgba(253, 152, 28, 0.777);
   }
+
+  /* 🔹 녹음 버튼 위 경고 메시지 */
+.record-warning {
+    z-index: 10;
+    position: absolute;
+    bottom: 70px; /* 녹음 버튼 위에 배치 */
+    left: 50%;
+    width: 200px;
+    transform: translateX(-50%);
+    background-color: white;
+    color: #54c3c3;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 0.9;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* 녹음이 시작되면 메시지 숨김 */
+/* .record-button-container:not(:hover) .record-warning {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+} */
