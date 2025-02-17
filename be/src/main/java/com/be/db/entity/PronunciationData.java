@@ -33,6 +33,9 @@ public class PronunciationData extends BaseEntity {
 	private String tongueImageUrl;
 
 	@Column(nullable = false)
+	private String tutorialVideoUrl;
+
+	@Column(nullable = false)
 	private String description;
 
 	@Column(nullable = false)

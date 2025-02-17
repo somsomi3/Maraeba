@@ -17,5 +17,6 @@ public class PronunciationDataDTO {
 	private Integer sequence;
 	private String tongueImageUrl;
 	private String lipVideoUrl;
+	private String tutorialVideoUrl;
 
 }
