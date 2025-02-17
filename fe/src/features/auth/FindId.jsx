@@ -39,9 +39,9 @@ const FindId = () => {
     <div className="form-container">
       <h2>아이디 찾기</h2>
       <form onSubmit={handleSubmit}>
-        <div className="input-group">
+        <div className="login-input-group">
           <input
-            className="input"
+            className="login-input"
             type="email"
             id="email"
             name="email"

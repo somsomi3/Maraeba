@@ -80,7 +80,6 @@
   display: flex; /* 플렉스박스로 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
   justify-content: center; /* 수평 중앙 정렬 */
-  /* border: 2px solid #e0e0e0; */
   border: none;
   border-radius: 8px;
   background: #f8f9fa;
@@ -182,3 +181,29 @@
 .situation-input{
     font-family: Pretendard;
 }
+
+
+/* ✅ 반짝이는 강조 효과 */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+    50% { box-shadow: 0 0 15px rgba(255, 215, 0, 1); }
+    100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+  }
+  
+  /* ✅ 상황 선택 버튼 강조 */
+  .situation-card.highlight {
+    animation: glow 2s infinite alternate;
+  }
+  
+  /* ✅ 입력 필드 강조 */
+  .creation-form input.highlight,
+  .creation-form textarea.highlight {
+    animation: glow 2s infinite alternate;
+    border: 2px solid #ff9900 !important;
+  }
+  
+  /* ✅ 시작하기 버튼 강조 */
+  .primary-button.highlight {
+    animation: glow 1s infinite alternate;
+  }
+  

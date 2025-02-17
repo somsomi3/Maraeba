@@ -169,7 +169,7 @@ useEffect(() => {
   const handleTutorialComplete = async () => {
     try {
       await springApi.patch("/users/me/tutorial/1", { completed: true });
-      console.log("✅ 튜토리얼 완료 상태 저장됨");
+      console.log("튜토리얼 완료 상태 저장");
       setIsTutorialCompleted(true);
       setShowGreeting(false); // 튜토리얼 완료 후 인삿말 숨기기
     } catch (error) {
@@ -177,7 +177,18 @@ useEffect(() => {
     }
   };
   
-  
+  const handleRestartTutorial = async () => {
+    try {
+      await springApi.patch("/users/me/tutorial/1", { completed: false });
+      setIsTutorialCompleted(false);
+      setTutorialStep(1);
+    //   setShowGreeting(true);
+    } catch (error) {
+      console.error("❌ 튜토리얼 다시보기 실패:", error);
+    }
+  };
+
+
 const PorongSpeech = ({ text, position= "center", onNext }) => {
     return (
       <div className={`porong-container ${position}`}>
@@ -262,6 +273,10 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
     <div className="prons-second-container">
       <GoBackButton />
       <PausePopup onExit={() => navigate("/prons")} title="수업을 끝낼까요?" />
+
+      <button className="restart-tutorial-btn" onClick={handleRestartTutorial}>
+        ▶ 튜토리얼
+      </button>
 
       {loading ? (
         <div className="loading-container">🔄 데이터 로딩 중...</div>

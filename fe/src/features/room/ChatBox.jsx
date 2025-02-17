@@ -63,7 +63,7 @@ const ChatBox = ({ roomId }) => {
             setTimeout(() => connectWebSocket(), 3000); // 🔄 3초 후 자동 재연결
         };
     };
-
+    
     // ✅ 메시지 전송
     const sendMessage = () => {
         if (!message.trim()) return;

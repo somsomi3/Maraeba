@@ -1,0 +1,64 @@
+.darong-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 500px;
+    z-index: 300;
+    font-family: Pretendard;
+  }
+  
+  .darong-image {
+    width: 90px;
+  }
+  
+  .darong-speech-bubble {
+    background: #e3f2fd; /* 연한 하늘색 */
+    padding: 17px 20px;
+    border-radius: 10px;
+    border: 2px solid #42a5f5; /* 파란색 */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 20px;
+    margin-top: 5px;
+    font-weight: 600;
+  }
+  
+  /* ✅ 다롱이 위치별 스타일링 */
+  .darong-container.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .darong-container.near-select {
+    top: 24%;
+    left: -1%
+  }
+  
+  .darong-container.above-record {
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .darong-container.near-making {
+    top: 12%;
+    right: 28%;
+  }
+  
+  .darong-container.near-start {
+    bottom: 5%;
+    
+  }
+
+  .darong-nextbutton {
+    background-color: #64b5f6;
+    border: none;
+    border-radius: 20%;
+    margin-top: 7%;
+    font-family: Pretendard;
+    font-weight: 700;
+    padding: 7px 12px;
+    cursor: pointer;
+  }
