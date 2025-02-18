@@ -3,9 +3,13 @@
     display: flex;
     width: 100vw;
     height: 100vh;
-    background-color: #ffe0b1;
-    overflow-y: auto;
+    /* background-color: #ffe0b1; */
+    background-size: cover;
+    background-attachment: fixed;
+    overflow: hidden;
   }
+
+
 
 .childname {
     text-align: center;

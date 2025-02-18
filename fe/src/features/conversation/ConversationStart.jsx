@@ -7,6 +7,7 @@ import { springApi, flaskApi } from '../../utils/api';
 import recordbtn from '../../assets/icons/record.png';
 import pausebtn from '../../assets/icons/pause.png';
 import ConversationStopPopup from '../../components/popup/ConversationStopPopup';
+import backgroundImage from"../../assets/background/ai_Bg.webp";
 
 const ConversationStart = () => {
   const location = useLocation();
@@ -135,7 +136,7 @@ const ConversationStart = () => {
   };
 
   return (
-    <div className="conversation-start-container">
+    <div className="conversation-start-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       {/* AI 역할과 메시지 */}
       <div className={`message-row ai ${isSwapped ? "swapped" : ""}`}>
         <img src={catAvatar} alt="AI 아바타" className="avatar" />
