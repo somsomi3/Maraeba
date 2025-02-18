@@ -26,7 +26,7 @@ const PronsSecond = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { class_id, seq_id } = useParams();
-  const token = useSelector((state) => state.auth.token); 
+//   const token = useSelector((state) => state.auth.token); 
   const videoRef = useRef(null);
   const [tongueImage, setTongueImage] = useState(null);
   const [lipVideoSrc, setLipVideoSrc] = useState(null); // ✅ 비디오 Blob URL
@@ -70,29 +70,18 @@ useEffect(() => {
 }, []);
 
 
-useEffect(() => { 
+useEffect(() => {
     const fetchData = async () => {
       try {
         console.log(`📡 데이터 요청: /prons/class/${class_id}/seq/${seq_id}`);
         const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
         console.log("✅ 가져온 데이터:", response.data.data);
 
-        // ✅ 혀 이미지 & 입모양 비디오 URL 가져오기
         const { tongue_image_url, lip_video_url } = response.data.data;
 
-        // ✅ 혀 이미지 & 비디오 fetch 요청
-        if (tongue_image_url) {
-          fetchResource(`${STATIC_API_URL}${tongue_image_url}`, setTongueImage);
-        } else {
-          setTongueImage(null);
-        }
-
-        if (lip_video_url) {
-          fetchResource(`${STATIC_API_URL}${lip_video_url}`, setLipVideoSrc);
-        } else {
-          setLipVideoSrc(null);
-        }
-
+        // ✅ URL을 바로 상태에 저장
+        setTongueImage(tongue_image_url ? `${STATIC_API_URL}${tongue_image_url}` : null);
+        setLipVideoSrc(lip_video_url ? `${STATIC_API_URL}${lip_video_url}` : null);
         setData(response.data.data);
         setError(false);
       } catch (error) {
@@ -106,26 +95,26 @@ useEffect(() => {
     fetchData();
   }, [class_id, seq_id]);
 
-  const fetchResource = async (url, setState) => {
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`, // ✅ 토큰 포함하여 요청
-        },
-      });
+//   const fetchResource = async (url, setState) => {
+//     try {
+//       const response = await fetch(url, {
+//         headers: {
+//           Authorization: `Bearer ${token}`, // ✅ 토큰 포함하여 요청
+//         },
+//       });
 
-      if (!response.ok) {
-        throw new Error("리소스 로딩 실패");
-      }
+//       if (!response.ok) {
+//         throw new Error("리소스 로딩 실패");
+//       }
 
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      setState(blobUrl);
-    } catch (error) {
-      console.error(`❌ ${url} 가져오기 실패:`, error);
-      setState(null); // 실패하면 기본 이미지 또는 null
-    }
-  };
+//       const blob = await response.blob();
+//       const blobUrl = URL.createObjectURL(blob);
+//       setState(blobUrl);
+//     } catch (error) {
+//       console.error(`❌ ${url} 가져오기 실패:`, error);
+//       setState(null); // 실패하면 기본 이미지 또는 null
+//     }
+//   };
 
   const isCameraOn = useSelector((state) => state.camera.isCameraOn);
   const shouldRestart = useSelector((state) => state.camera.shouldRestart);
