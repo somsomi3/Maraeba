@@ -30,34 +30,6 @@
     left: 0; */
 }
 
-
-
-/* 🔹 이미지 컨테이너  */
-/* .image-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px;
-    transform: translateY(5%);
-} */
-
-
-/* 🔹 설명 컨테이너 크기 키우기 */
-/* .description-container {
-    text-align: center;
-    background-color: #e3f2fd;
-    padding: 3vh;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 800px;  
-    margin-bottom: 2vh;
-    font-size: 1.3rem; 
-    font-family: Pretendard;
-    font-weight: bold;
-    transform: translateY(8%);
-} */
-
 .audio-wrapper {
     display: flex;
     flex-direction: column; /* 버튼과 오디오를 세로 정렬 */
@@ -129,25 +101,5 @@
     height: 300px;
 }
 
-/* 🔹 이미지 크기 키우기 */
-/* .lip-image,
-.mouth-image {
-    width: 400px; 
-    height: 300px;
-    border-radius: 1.2rem;
-}
-
-.pronunciation-box {
-    position: absolute;
-    top: 3%;        
-    background-color: #FF9595; 
-    padding: 5px 15px;
-    border-radius: 100%;
-    font-family: 'DXChildsdrawing';
-    font-size: 70px;
-    font-weight: bold;
-    color: #ffffff;
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
-} */
 
 

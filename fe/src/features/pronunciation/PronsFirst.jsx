@@ -5,7 +5,7 @@ import { springApi, flaskApi } from '../../utils/api';
 import './PronsFirst.css';
 import GoBackButton from '../../components/button/GoBackButton';
 import PausePopup from '../../components/popup/PausePopup';
-import porong from '../../assets/images/porong.png'
+import CuteLoading from '../../components/loading/CuteLoading';
 
 
 // ✅ .env에서 STATIC_API_URL 가져오기
@@ -22,7 +22,7 @@ const PronsFirst = () => {
     const [tutoialSrc, setTutorialSrc] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [audioSrc, setAudioSrc] = useState(null);
+    // const [audioSrc, setAudioSrc] = useState(null);
 
     useEffect(() => {
         const fetchPronunciationData = async () => {
@@ -93,20 +93,20 @@ const PronsFirst = () => {
     };
 
     // ✅ 음성 듣기 기능 유지
-    const playPronunciation = async () => {
-        const textToSpeak = data?.pronunciation || '발음 학습';
+    // const playPronunciation = async () => {
+    //     const textToSpeak = data?.pronunciation || '발음 학습';
 
-        try {
-            const response = await flaskApi.post('/ai/tts', { text: textToSpeak }, { responseType: 'blob' });
+    //     try {
+    //         const response = await flaskApi.post('/ai/tts', { text: textToSpeak }, { responseType: 'blob' });
 
-            const audioBlob = new Blob([response.data], { type: 'audio/mp3' });
-            const audioUrl = URL.createObjectURL(audioBlob);
+    //         const audioBlob = new Blob([response.data], { type: 'audio/mp3' });
+    //         const audioUrl = URL.createObjectURL(audioBlob);
 
-            setAudioSrc(audioUrl);
-        } catch (error) {
-            console.error('음성 변환 실패:', error);
-        }
-    };
+    //         setAudioSrc(audioUrl);
+    //     } catch (error) {
+    //         console.error('음성 변환 실패:', error);
+    //     }
+    // };
 
     
 
@@ -117,7 +117,9 @@ const PronsFirst = () => {
            
             {/* 데이터 로딩 중 표시 */}
             {loading ? (
-                <div className="loading-container">🔄 데이터 로딩 중...</div>
+                <div className="loading-container">
+                    <CuteLoading /> {/* ✅ 귀여운 로딩 화면 표시 */}
+                </div>
             ) : (
                 <>
                     <div className="tutorial-container">
