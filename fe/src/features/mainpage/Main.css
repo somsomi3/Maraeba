@@ -73,7 +73,7 @@
 }
 
 .card-content h2 {
-    font-size: 2.4rem;
+    font-size: 2.6rem;
     color: white;
     margin-bottom: 10px;
     font-family: 'SDSamliphopang'; 
@@ -100,12 +100,12 @@
 
 /* 개별 이미지 조정 */
 .single-image {
-    width: 580px;
+    width: 630px;
 }
 
 .multi-image {
     margin-right: 10%;
-    width: 580px;
+    width: 630px;
     bottom: -2px;
 }
 

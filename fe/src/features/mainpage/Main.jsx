@@ -3,7 +3,7 @@ import "./Main.css";
 import pronsStuff from "../../assets/images/prons_stuff.png";
 import wordStuff from "../../assets/images/word_stuff.png";
 import profile from "../../assets/icons/profile.png"
-import LogoutButton from "../../components/button/LogoutButton";
+// import LogoutButton from "../../components/button/LogoutButton";
 
 
 const Main = () => {

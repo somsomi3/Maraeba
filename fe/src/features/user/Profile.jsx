@@ -4,7 +4,7 @@ import { logout } from "../../store/authSlice";
 import { springApi, logoutApi } from "../../utils/api";
 import HomeButton from "../../components/button/HomeButton";
 import { useNavigate } from "react-router-dom";
-import pororo from "../../assets/images/pororo.png";
+import ProfileImageSelector from "./ProfileImageSelector";
 import PronunciationHistoryChart from "./PronunciationHistoryChart";
 import PronunciationDetailChart from "./PronunciationDetailChart";
 import "./Profile.css";
@@ -19,8 +19,13 @@ const Profile = () => {
 
     // 🔥 탭 상태 추가 (0: 발음 학습 기록, 1: 클래스별 발음 학습 통계)
     const [activeTab, setActiveTab] = useState(0);
-
+    const [selectedProfile, setSelectedProfile] = useState("/assets/profiles/profile1.png");
     useEffect(() => {
+        const savedProfile = localStorage.getItem("profileImage");
+        if (savedProfile) {
+          setSelectedProfile(savedProfile);
+        }
+
         const fetchUserInfo = async () => {
             if (!token) {
                 console.warn("❌ 토큰이 없습니다. 로그인 페이지로 이동");
@@ -61,13 +66,17 @@ const Profile = () => {
         }
     };
 
+    const handleProfileChange = (newProfile) => {
+        setSelectedProfile(newProfile);
+        localStorage.setItem("profileImage", newProfile); // ✅ 선택한 프로필 저장
+      };
+
     return (
         <div className="profile-container">
             {/* 사이드바 */}
             <div className="sidebar">
-                <div className="profile-header">
-                    <h2>마이페이지</h2>
-                </div>
+            <ProfileImageSelector selectedImage={selectedProfile} onSelect={handleProfileChange} />
+            <h2>{username}</h2>
                 <nav className="profile-menu">
                     <ul>
                         <li className="active">내 프로필</li>
