@@ -124,7 +124,7 @@ const ConversationStart = () => {
         <div className="message-content">
           <p className="role-name">{aiRole || "상대의 역할 이름"}</p> {/* AI 역할 표시 */}
           <div className="message-bubble">
-            <p className="message-text">{messages[messages.length - 1].text}</p>
+            <p className="message-text">{messages[messages.length - 1].text.slice(3)}</p>
           </div>
         </div>
       </div>

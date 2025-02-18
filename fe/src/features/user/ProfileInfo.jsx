@@ -4,8 +4,8 @@ import { springApi, logoutApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice"; 
 import HomeButton from "../../components/button/HomeButton";
-import pororo from "../../assets/images/pororo.png"; 
 import "./ProfileInfo.css"; // ✅ 기존 CSS 유지
+import ProfileImageSelector from "./ProfileImageSelector";
 
 const ProfileInfo = () => {
     const token = useSelector((state) => state.auth.token);

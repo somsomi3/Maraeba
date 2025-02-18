@@ -49,3 +49,76 @@
    padding: 10px 5px;
    margin: 1px;
 }
+
+@media screen and (max-width: 1024px) {
+    .profile-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .profile-menu ul {
+        display: flex;
+        gap: 15px;
+    }
+
+    .profile-menu li {
+        padding: 10px;
+        font-size: 14px;
+        text-align: center;
+    }
+}
+
+/* ✅ 모바일 화면 대응 */
+@media screen and (max-width: 768px) {
+    .info-box input {
+        width: 90%;
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .profile-button {
+        width: 90%;
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .change-password-btn,
+    .delete-account-btn {
+        width: 90%;
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* ✅ 초소형 화면 (모바일) */
+@media screen and (max-width: 480px) {
+    .profile-container {
+        padding: 10px;
+    }
+
+    .info-box input {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .profile-button {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .change-password-btn,
+    .delete-account-btn {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
