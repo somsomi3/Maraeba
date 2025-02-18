@@ -1,8 +1,5 @@
 package com.be.domain.rooms.controller;
 
-import com.be.common.model.response.BaseResponseBody;
-import com.be.domain.rooms.request.SaveCallLogRequest;
-import com.be.domain.rooms.service.WebRTCLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.be.common.model.response.BaseResponseBody;
+import com.be.domain.rooms.request.SaveCallLogRequest;
+import com.be.domain.rooms.service.WebRTCLogService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class WebRTCLogController {
 	// 로그 저장
 	@PostMapping("/log")
 	public ResponseEntity<? extends BaseResponseBody> saveCallLog(@RequestBody(required = false)SaveCallLogRequest request,
-																  @AuthenticationPrincipal UserDetails userDetails) {
+		@AuthenticationPrincipal UserDetails userDetails) {
 		if (request == null) {
 			return ResponseEntity.badRequest().body(BaseResponseBody.of("잘못된 요청: 요청 본문이 없음",400));
 		}
