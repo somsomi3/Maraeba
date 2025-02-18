@@ -13,8 +13,6 @@ const STATIC_API_URL = import.meta.env.VITE_STATIC_API_URL;
 const PronsFirst = () => {
     const navigate = useNavigate();
     const { class_id, seq_id } = useParams();
-    // const token = useSelector((state) => state.auth.token); 
-
     const [data, setData] = useState(null);
     const [tutoialSrc, setTutorialSrc] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -34,7 +32,7 @@ const PronsFirst = () => {
                 if (tutorial_video_url) {
                     setTutorialSrc(STATIC_API_URL+tutorial_video_url);
                 } else {
-                    setTutorialSrc
+                    setTutorialSrc(null)
                 }
 
                 setData(response.data.data);
