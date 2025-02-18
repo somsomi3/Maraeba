@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { springApi } from "../../utils/api.js";
+import GoBackButton from "../../components/button/GoBackButton";
 import "./Webrtc.css";
+import backgroundImage from "../../assets/background/Webrtc_Bg.webp";
 // import rtc from '../../assets/images/rtc.png';
 
 const Webrtc = () => {
@@ -568,9 +570,7 @@ const Webrtc = () => {
             return;
         }
         try {
-            const response = await springApi.post(`/rgames/start/${roomId}`, {
-                userId,
-            });
+            const response = await springApi.post(`/rgames/start/${roomId}`, { userId });
             if (response.status === 200) {
                 setIsGameStarted(true);
             }
@@ -715,207 +715,148 @@ const Webrtc = () => {
     //                      렌더링
     // ===================================================
     return (
-        <div className="container">
-            {/*<div className="container" style={{ backgroundImage: `url(${rtc}`}}>?*/}
-            {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
-
-            {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
-            <div className="video-chat-wrapper">
-                {/* 게임 화면 */}
-                {/*{isGameStarted && (*/}
-                <div>
-                    {/*<h2>{isHost ? "🎩 방장 화면" : "🧑‍🤝‍🧑 참가자 화면"}</h2>*/}
-
-                    {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
-                    {isHost && (
-                        <button
-                            onClick={() => {
-                                console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
-                                startGame(); // ✅ 단어 목록 불러오기 실행
-                            }}
-                            className="start-game-button"
-                        >
-                            게임 시작
-                        </button>
-                    )}
-                    <div className="host-answer-selection">
+        <div className="webrtc-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+            <div className="webrtc-game-overlay">
+                {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
+                <GoBackButton />
+                {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
+                <div className="video-chat-wrapper">
+                    <div className="video-answer-wrapper">
+                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
+                        {isHost && (
+                            <button
+                                onClick={() => {
+                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
+                                    startGame(); // ✅ 단어 목록 불러오기 실행
+                                }}
+                                className="start-game-button"
+                            >
+                                게임 시작
+                            </button>
+                        )}
+    
+                        {/* 정답 선택 UI */}
                         {isHost && (
                             <div className="host-answer-selection">
                                 <h3>정답 선택</h3>
                                 <div className="answer-buttons">
                                     {items.length > 0 ? (
                                         items.map((word, index) => (
-                                            <div
-                                                key={index}
-                                                className="answer-button-wrapper"
-                                            >
+                                            <div key={index} className="answer-button-wrapper">
                                                 <button
-                                                    onClick={() =>
-                                                        sendAnswerChoice(word)
-                                                    }
+                                                    onClick={() => sendAnswerChoice(word)}
                                                     className="answer-button"
-                                                    style={{
-                                                        backgroundColor:
-                                                            correctAnswer ===
-                                                            word
-                                                                ? "red"
-                                                                : "white",
-                                                        color:
-                                                            correctAnswer ===
-                                                            word
-                                                                ? "white"
-                                                                : "black",
-                                                        border:
-                                                            correctAnswer ===
-                                                            word
-                                                                ? "3px solid red"
-                                                                : "1px solid black",
-                                                    }}
                                                 >
                                                     {colors[index]}
                                                 </button>
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="loading-message">
-                                            📌 단어 목록을 불러오는 중...
-                                        </p>
+                                        <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
                                     )}
                                 </div>
                             </div>
                         )}
                     </div>
-                </div>
-                <div className="video-container">
-                    {/* 상대방 화면을 크게, 내 화면을 작게 배치 */}
-                    <div className="video-wrapper">
-                        {/* 상대방 화면 */}
-                        <div className="video-box">
-                            <div className="video-label">상대방 화면</div>
-                            <video
-                                ref={remoteVideoRef}
-                                autoPlay
-                                playsInline
-                                className="large-video"
-                            />
-                        </div>
-
-                        {/* 본인 화면 (왕관 or 크리스마스 리스 추가) */}
-                        <div className="video-box small-video-container">
-                            <div className="video-label">본인 화면</div>
-
-                            {/* 🏆 왕관 or 🎄 크리스마스 리스 추가 */}
-                            <div className="role-badge">
-                                {isHost ? "👑" : "🎄"}
+    
+                    <div className="video-container">
+                        <div className="video-wrapper">
+                            {/* 상대방 화면 */}
+                            <div className="video-box">
+                                <div className="video-label">상대방 화면</div>
+                                <video ref={remoteVideoRef} autoPlay playsInline className="large-video"
+                                       aria-label="상대방 비디오"/>
                             </div>
-
-                            <video
-                                ref={localVideoRef}
-                                autoPlay
-                                playsInline
-                                muted
-                                className="small-video"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="button-container">
-                        <button onClick={startMedia} className="button">
-                            🎥 나의 화면 열기
-                        </button>
-                        <button onClick={createOffer} className="button">
-                            📡 나의 화면 보여주기
-                        </button>
-                        <button onClick={endMedia} className="button">
-                            🛑 종료
-                        </button>
-                        <button onClick={toggleMute} className="button">
-                            {isMuted ? "🔇 음소거 해제" : "🎤 음소거"}
-                        </button>
-                    </div>
-                </div>
-                {/* 버튼을 비디오 아래로 이동 */}
-
-                <div className="chat-container">
-                    <div ref={chatBoxRef} className="chat-box">
-                        {messages.map((msg, idx) => (
-                            <div
-                                key={idx}
-                                className={
-                                    msg.user_id === userId
-                                        ? "my-message"
-                                        : "other-message"
-                                } // 내 메시지는 오른쪽, 상대방은 왼쪽
-                            >
-                                <strong>user{msg.user_id}:</strong>{" "}
-                                {msg.message}
+    
+                            {/* 본인 화면 */}
+                            <div className="video-box small-video-container">
+                                <div className="video-label">본인 화면</div>
+                                <div className="role-badge">
+                                    {isHost ? "👑" : "🎄"}
+                                </div>
+                                <video ref={localVideoRef} autoPlay playsInline muted className="small-video"
+                                       aria-label="내 비디오"/>
                             </div>
-                        ))}
-                    </div>
-
-                    {/* 입력창과 전송 버튼을 채팅 아래로 이동 */}
-                    <div className="input-container">
-                        <input
-                            type="text"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="메시지 입력..."
-                            className="input"
-                        />
-                        <button onClick={sendMessage} className="send-button">
-                            전송
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* 오른쪽 - 채팅 창 및 입력창 */}
-            {/* 방 나가기 버튼 추가 */}
-            <div className="game-container">
-                <h2>🎮 사물 맞추기 게임</h2>
-                <p>입모양을 보고, 색상이 들어간 정답을 선택하세요!</p>
-
-                {/* 🛠️ 로그 추가: items 상태 확인 */}
-                {console.log("📌 렌더링 중 items 상태:", items)}
-
-                <div className="game-buttons">
-                    {items.length > 0 ? (
-                        items.map((word, index) => (
-                            <button
-                                key={index}
-                                onClick={() => sendChoice(word)}
-                                className="game-button"
-                                style={{
-                                    backgroundColor:
-                                        choice === word ? "lightblue" : "white",
-                                    border:
-                                        correctAnswer === word
-                                            ? "3px solid red"
-                                            : "1px solid black",
-                                }}
-                            >
-                                {word}
+                        </div>
+    
+                        <div className="button-container">
+                            <button onClick={startMedia} className="button">
+                                🎥 나의 화면 열기
                             </button>
-                        ))
-                    ) : (
-                        <p className="loading-message">
-                            📌 단어 목록을 불러오는 중...
-                        </p>
-                    )}
+                            <button onClick={createOffer} className="button">
+                                📡 나의 화면 보여주기
+                            </button>
+                            <button onClick={endMedia} className="button">
+                                🛑 종료
+                            </button>
+                            <button onClick={toggleMute} className="button">
+                                {isMuted ? "🔇 음소거 해제" : "🎤 음소거"}
+                            </button>
+                        </div>
+                    </div>
+    
+                    {/* 채팅 컨테이너 */}
+                    <div className="chat-container" role="region">
+                        <div ref={chatBoxRef} className="chat-box">
+                            {messages.map((msg, idx) => (
+                                <div
+                                    key={idx}
+                                    className={msg.user_id === userId ? "my-message" : "other-message"}
+                                >
+                                    <strong>user{msg.user_id}:</strong> {msg.message}
+                                </div>
+                            ))}
+                        </div>
+    
+                        {/* 입력창 */}
+                        <div className="input-container">
+                            <input
+                                type="text"
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="메시지 입력..."
+                                className="input"
+                            />
+                            <button onClick={sendMessage} className="send-button">
+                                전송
+                            </button>
+                        </div>
+                    </div>
                 </div>
-
-                {/* 방 나가기 버튼 */}
-                {/* <div className="leave-ButtonContainer">
-                    <button
-                        onClick={() => sendLeave({ showAlert: true })}
-                        className=".leave-button"
-                    >
-                        방 나가기
-                    </button>
-                </div> */}
+    
+                {/* 오른쪽 - 게임 UI */}
+                <div className="webrtc-game-container">
+                    <h2>🎮 사물 맞추기 게임</h2>
+                    <p>입모양을 보고, 색상이 들어간 정답을 선택하세요!</p>
+    
+                    {/* 🛠️ 로그 추가: items 상태 확인 */}
+                    {console.log("📌 렌더링 중 items 상태:", items)}
+    
+                    <div className="game-buttons">
+                        {items.length > 0 ? (
+                            items.map((word, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => sendChoice(word)}
+                                    className={`game-button 
+                                        ${choice === word ? "selected" : ""} 
+                                        ${correctAnswer === word ? "correct" : "incorrect"}`}
+                                    aria-label={`게임 버튼: ${word}`}
+                                >
+                                    {word}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );
+    
 };
+
+
 
 export default Webrtc;
