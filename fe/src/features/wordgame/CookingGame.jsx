@@ -282,16 +282,16 @@ const checkIncorrect = (result) => {
 
 const PorongSpeech = ({ text, position= "center", onNext }) => {
     return (
-      <div className={`porong-container ${position}`}>
+      <div className={`cooking-porong-container ${position}`}>
         <img src={tutoPorong} alt="포롱이" className="porong-image" />
-        <div className="porong-speech-bubble">
+        <div className="cooking-porong-speech-bubble">
           {text.split("\n").map((line, index) => (
             <span key={index}>
               {line}
               <br />
             </span>
           ))}
-          {onNext && <button onClick={onNext} className="porong-nextbutton">다음</button>}
+          {onNext && <button onClick={onNext} className="cooking-porong-nextbutton">다음</button>}
         </div>
       </div>
     );
@@ -405,12 +405,12 @@ const restart = () => {
             />
             )}
 
-        <h1 className={`cooking-game-title ${tutorialStep === 1 ? "highlight" : ""}`}>
+        <h1 className={`cooking-game-title ${tutorialStep === 1 ? "cooking-highlight" : ""}`}>
             {gameData.foodName || "요리 만들기"}
         </h1>
         {/* 🔹 튜토리얼 1단계: 음식 이름 강조 */}
         {tutorialStep === 1 && (
-            <div className="porong-container near-title">
+            <div className="cooking-porong-container near-title">
                 <PorongSpeech 
                     text="완성해야 할 음식의 이름을 확인해보자!" 
                     onNext={() => setTutorialStep(2)} 
@@ -438,7 +438,7 @@ const restart = () => {
         )}
                                  
         {/* 🔹 선택 가능한 재료 목록 */}
-        <div className={`item-selection ${tutorialStep === 2 ? "highlight" : ""}`}>
+        <div className={`item-selection ${tutorialStep === 2 ? "cooking-highlight" : ""}`}>
           {gameData.itemList.map((item, index) => (
             <button key={index} className={item === gameData.item1 || item === gameData.item2 ? "selected" : ""}>
               {item}
@@ -446,7 +446,7 @@ const restart = () => {
           ))}
         </div>
         {tutorialStep === 2 && (
-            <div className="porong-container near-item">
+            <div className="cooking-porong-container near-item">
                 <PorongSpeech 
                     text="음식을 만들기 위한 재료를 찾아야 해!" 
                     onNext={() => setTutorialStep(3)} 
@@ -455,7 +455,7 @@ const restart = () => {
         )}
 
         {/* 🔹 마이크 버튼 및 안내 문구 */}
-        <div className={`cooking-record-container ${tutorialStep === 3 ? "highlight" : ""}`}>
+        <div className={`cooking-record-container ${tutorialStep === 3 ? "cooking-highlight" : ""}`}>
         <p className="cooking-record-guide">
             {isRecording ? "녹음을 완료하려면 정지 버튼을 눌러주세요" : "녹음을 하려면 마이크 버튼을 눌러주세요"}
         </p>
@@ -464,7 +464,7 @@ const restart = () => {
         </button>
                   
         {tutorialStep === 3 && (
-            <div className="porong-container near-record">
+            <div className="cooking-porong-container cooking-near-record">
                 <PorongSpeech 
                     text="마이크 버튼을 눌러 고른 재료가 맞는지 확인해보자!" 
                     onNext={() => setTutorialStep(4)} 
@@ -476,14 +476,14 @@ const restart = () => {
   
         {/* 🔹 게임 재시작 버튼 */}
         <button 
-            className={`cooking-start-button ${tutorialStep === 5 ? "highlight" : ""}`} 
+            className={`cooking-start-button ${tutorialStep === 5 ? "cooking-highlight" : ""}`} 
             disabled={isTimerActive && tutorialStep !== 5} 
             onClick={restart}
         >
             게임 시작
         </button>
         {tutorialStep === 5 && (
-            <div className="porong-container near-next">
+            <div className="cooking-porong-container near-next">
                 <PorongSpeech 
                     text="이제 계속해서 발음 연습을 해볼까요?" 
                     onNext={handleTutorialComplete} 
@@ -509,7 +509,7 @@ const restart = () => {
           <p>{score}</p>
         </div>
   
-        <div className={`cooking-feedback-box ${feedbackAnimation} ${tutorialStep === 4 ? "highlight" : ""}`}>
+        <div className={`cooking-feedback-box ${feedbackAnimation} ${tutorialStep === 4 ? "cooking-highlight" : ""}`}>
           <h3>🚨 피드백</h3>
           {feedbackMessage ? (
             <>
@@ -522,7 +522,7 @@ const restart = () => {
         </div>
 
         {tutorialStep === 4 && (
-            <div className="porong-container near-feedback">
+            <div className="cooking-porong-container near-feedback">
                 <PorongSpeech 
                     text="여기서 정답인지 확인할 수 있어!" 
                     onNext={() => setTutorialStep(5)} 

@@ -9,6 +9,7 @@ import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
 import CorrectPopup from "../../components/popup/CorrectPopup"; 
 import { useNavigate } from "react-router-dom";
+import tutoPorong from "../../assets/images/tuto_porong.png"
 
 const AnimalGame = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -34,6 +35,12 @@ const AnimalGame = () => {
   const [feedbackAnimation, setFeedbackAnimation] = useState(""); 
   const [spokenAnswers, setSpokenAnswers] = useState(new Set()); // ✅ 이미 맞춘 정답 저장
   const navigate = useNavigate();
+
+    // 🔹 튜토리얼 상태 관리
+    const [isTutorialCompleted, setIsTutorialCompleted] = useState(false);
+    const [showGreeting, setShowGreeting] = useState(true);
+    const [tutorialStep, setTutorialStep] = useState(null);
+    const [username, setUsername] = useState("");
 
    // ✅ 공통 fetch 함수 (Access Token 포함)
    const fetchResource = async (url, setState) => {
@@ -307,11 +314,6 @@ const checkIncorrect = (result) => {
     }
 };
 
-
-
-
-
-  
   useEffect(() => {
     const handleResize = () => {
       if (imageRef.current) {
@@ -329,23 +331,114 @@ const checkIncorrect = (result) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // 🔹 튜토리얼 완료 상태 저장
+  const handleTutorialComplete = async () => {
+    try {
+      await springApi.patch("/users/me/tutorial/3", { completed: true });
+      setIsTutorialCompleted(true);
+      setTutorialStep(null);
+      setShowGreeting(false);
+    } catch (error) {
+      console.error("❌ 튜토리얼 완료 상태 저장 실패:", error);
+    }
+  };
+
+  // 🔹 튜토리얼 다시보기
+  const handleRestartTutorial = async () => {
+    try {
+      await springApi.patch("/users/me/tutorial/3", { completed: false });
+      setIsTutorialCompleted(false);
+      setTutorialStep(1);
+    } catch (error) {
+      console.error("❌ 튜토리얼 다시보기 실패:", error);
+    }
+  };
+
+  // 🔹 포롱이 대사 컴포넌트
+  const PorongSpeech = ({ text, position = "center", onNext }) => {
+    return (
+      <div className={`animal-porong-container ${position}`}>
+        <img src={tutoPorong} alt="포롱이" className="porong-image" />
+        <div className="animal-porong-speech-bubble">
+          {text.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
+          {onNext && <button onClick={onNext} className="animal-porong-nextbutton">다음</button>}
+        </div>
+      </div>
+    );
+  };
+
+
+
+  // 🔹 튜토리얼 상태 가져오기 (유저가 봤는지 확인)
+  useEffect(() => {
+    const fetchTutorialStatus = async () => {
+      try {
+        const response = await springApi.get("/users/me/tutorial");
+        const hasSeenAnimal = response.data.data.has_seen_animal;
+        
+        if (hasSeenAnimal) {
+          setIsTutorialCompleted(true);
+          setShowGreeting(false);
+        } else {
+          setShowGreeting(true);
+        }
+      } catch (error) {
+        console.error("❌ 튜토리얼 상태 가져오기 실패:", error);
+      }
+    };
+    fetchTutorialStatus();
+  }, []);
 
   return (
     <div className="animal-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <HomeButton />
-  
+    <button className="animal-restart-tutorial-btn" onClick={handleRestartTutorial}>▶ 튜토리얼</button>
+
       <div className="animal-game-overlay">
         <button className="pause-button">
           <PausePopup onExit={() => navigate("/wgame")} />
         </button>
-        <h1 className="animal-game-title">숨은 동물을 찾아보자!</h1>
+
+        {/* 🔹 튜토리얼 시작 (신규 유저) */}
+        {(showGreeting && !isTutorialCompleted && tutorialStep === null) && (
+          <PorongSpeech
+            text={`안녕하세요, ${username}님! \n 저는 포롱이예요🦊 \n 숨은 동물을 찾는 방법을 배워볼까요?`}
+            position="center"
+            onNext={() => {
+              setShowGreeting(false);
+              setTutorialStep(1);
+            }}
+          />
+        )}
+                
+
+        {/* 🔹 1단계: 게임 제목 강조 */}
+        <h1 
+            className={`animal-game-title ${tutorialStep === 1 ? "cooking-highlight" : ""}`} 
+        >
+            숨은 동물을 찾아보자!
+        </h1>
+        {tutorialStep === 1 && (
+            <div className="animal-porong-container animal-near-title">
+            <PorongSpeech
+                text="그림에서 숨은 동물을 찾아봐요!"
+                onNext={() => setTutorialStep(2)}
+            />
+        </div>
+        )}
+
   
         <div className="animal-game-content">
           
           {/* 왼쪽 칼럼 */}
           <div className="animal-left-column">
             {/* 이미지를 감싸는 컨테이너 */}
-            <div className="animal-image-container">
+            <div className={`animal-image-container ${tutorialStep === 2 ? "cooking-highlight" : ""}`}>
               {gameData.imageData && (
                 <img
                   ref={imageRef}
@@ -355,6 +448,16 @@ const checkIncorrect = (result) => {
                   onLoad={handleImageLoad}
                 />
               )}
+
+                {/* 2단계 : 이미지 강조 + 말풍선 */}
+                {tutorialStep === 2 && (
+                    <div className="animal-porong-container animal-near-image">
+                    <PorongSpeech
+                        text="바위나 나무 사이에 숨은 동물을 찾아보자!"
+                        onNext={() => setTutorialStep(3)}  // 다음 단계로 이동
+                    />
+                    </div>
+                )}
   
                 {Array.isArray(gameData.circleData) &&
                 gameData.circleData.map((circle, index) => {
@@ -375,7 +478,9 @@ const checkIncorrect = (result) => {
             </div>
             
           {/* 🔹 피드백 박스 */}
-            <div className={`animal-feedback-box ${feedbackAnimation}`}>
+          <div 
+            className={`animal-feedback-box ${feedbackAnimation} ${tutorialStep === 4 ? "cooking-highlight" : ""}`}
+            >
             <h3>피드백</h3>
             {feedbackMessage ? (
                 <>
@@ -387,7 +492,16 @@ const checkIncorrect = (result) => {
             )}
             </div>
             </div>
-  
+            
+            {tutorialStep === 4 && (
+                <div className="animal-porong-container animal-near-feedback">
+                <PorongSpeech
+                    text="내 발음과 정답을 확인할 수 있어!"
+                    onNext={() => setTutorialStep(5)}
+                />
+                </div>
+            )}
+
           {showCorrectPopup && (
             <CorrectPopup
               message="축하합니다! 5개 정답을 모두 맞추셨어요!"
@@ -396,7 +510,7 @@ const checkIncorrect = (result) => {
           )}
   
           {/* 동물 리스트 (오른쪽 칼럼) */}
-          <div className="animal-list">
+          <div className={`animal-list ${tutorialStep === 5 ? "cooking-highlight" : ""}`}>
             <h3>음성으로 동물을 맞춰보세요!</h3>
             <p>{(gameData.answerList || []).length} / 5</p>
             <ul>
@@ -413,9 +527,19 @@ const checkIncorrect = (result) => {
             </ul>
           </div>
         </div>
+
+         {/* 🔹 튜토리얼 5단계: animal-list 강조 + 말풍선 */}
+        {tutorialStep === 5 && (
+            <div className="animal-porong-container animal-near-list">
+            <PorongSpeech
+                text="여기서 내가 지금까지 맞춘 동물들을 확인할 수 있어!"
+                onNext={() => setTutorialStep(6)}
+            />
+            </div>
+        )}
   
         {/* 녹음 버튼 */}
-        <div className="animal-record-container">
+        <div className={`animal-record-container ${tutorialStep === 3 ? "cooking-highlight" : ""}`}>
         <p className="animal-record-guide">
             {isRecording ? "녹음을 완료하려면 정지 버튼을 눌러주세요" : "녹음을 하려면 마이크 버튼을 눌러주세요"}
         </p>
@@ -430,6 +554,26 @@ const checkIncorrect = (result) => {
           />
         </button>
         </div>
+              
+      {/* ✅ 3단계: 마이크 버튼 강조 + 말풍선 */}
+      {tutorialStep === 3 && (
+        <div className="animal-porong-container animal-near-record">
+          <PorongSpeech
+            text="마이크 버튼을 눌러 동물 이름을 말해보자!"
+            onNext={() => setTutorialStep(4)}
+          />
+        </div>
+      )}
+
+        {/* 🔹 6단계: 튜토리얼 완료 */}
+        {tutorialStep === 6 && (
+        <div className="animal-porong-container animal-near-next">
+          <PorongSpeech
+            text="이제 게임을 시작해볼까?"
+            onNext={handleTutorialComplete} 
+          />
+        </div>
+      )}
 
       </div>
     </div>

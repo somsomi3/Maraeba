@@ -384,3 +384,129 @@
     padding: 0.5vh 0.8vh;
   }
 }
+
+/* ======================================= */
+/* 튜토리얼: 포롱이 말풍선 스타일 */
+/* ======================================= */
+
+/* 🔹 포롱이 말풍선 컨테이너 */
+.animal-porong-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index: 300;       /* 다른 요소 위에 표시되도록 */
+    font-family: Pretendard; /* 폰트 예시 */
+    width: 600px;      /* 말풍선 전체 영역 너비 (상황에 맞게 조정) */
+    /* height: auto;    높이가 자동으로 맞춰짐 */
+  }
+  
+  /* 🔹 포롱이 이미지 */
+  .porong-image {
+    width: 100px;       /* 포롱이 이미지 크기 */
+    margin-right: 10px; /* 말풍선과 간격 */
+  }
+  
+  /* 🔹 말풍선 (포롱이 대사) */
+  .animal-porong-speech-bubble {
+    background: #fff8dc; 
+    padding: 17px 20px;
+    border-radius: 10px;
+    border: 2px solid #f4a261;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 5px;
+    font-weight: 600;
+  }
+  
+  /* 🔹 "다음" 버튼 */
+  .animal-porong-nextbutton {
+    background-color: #f9ba87;
+    border: none;
+    border-radius: 15px;
+    margin-top: 7%;
+    font-family: Pretendard;
+    font-weight: 700;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .animal-porong-nextbutton:hover {
+    background-color: #ffb347;
+    transform: scale(1.05);
+  }
+  
+  .animal-restart-tutorial-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: darkorange;
+    color: rgb(245, 243, 241);
+    border: none;
+    padding: 15px 24px;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  
+  .animal-restart-tutorial-btn:hover {
+    background-color: rgba(253, 152, 28, 0.777);
+    transform: scale(1.05);
+  }
+
+  /* ======================================= */
+  /* 튜토리얼 위치(.near-*) 클래스 예시 */
+  /* ======================================= */
+  
+  /* 🔹 튜토리얼 단계별 위치 설정 */
+  .animal-porong-container.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .animal-porong-container.animal-near-title {
+    top: 10%;
+    left: 30%;
+    transform: translateX(-50%);
+  }
+  
+  .animal-porong-container.animal-near-image {
+    top: 120%;
+    left: -30%;
+  }
+  
+  .animal-porong-container.animal-near-record {
+    top: 65%;
+    right: 30%;
+  }
+  
+  .animal-porong-container.animal-near-feedback {
+    bottom: 15%;
+    left: 0%;
+  }
+
+  .animal-porong-container.animal-near-list {
+    top : 10%;
+    right: 35%;
+  }
+
+  .animal-porong-container.animal-near-next {
+    top : 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* ======================================= */
+  /* 강조(Highlight) 효과 */
+  /* ======================================= */
+  .cooking-highlight {
+    filter: brightness(1.2);
+    border: 3px solid orange;
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.7);
+    transition: all 0.3s ease-in-out;
+  }

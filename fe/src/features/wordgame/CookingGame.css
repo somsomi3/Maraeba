@@ -448,7 +448,7 @@
 }
 
 /* ✅ 포롱이 기본 스타일 */
-.porong-container {
+.cooking-porong-container {
     position: absolute;
     display: flex;
     flex-direction: row;
@@ -458,11 +458,11 @@
     font-family: 'Gamja Flower', sans-serif;
   }
   
-  .porong-image {
+  .cooking-porong-image {
     width: 120px;
   }
   
-  .porong-speech-bubble {
+  .cooking-porong-speech-bubble {
     background: #fff8dc;
     padding: 17px 20px;
     border-radius: 10px;
@@ -474,7 +474,7 @@
     font-weight: 600;
   }
 
-  .porong-nextbutton {
+  .cooking-porong-nextbutton {
     font-size: 1rem; /* 🔴 글씨 크기 키우기 */
     font-weight: bold; /* 🔴 글씨 두껍게 */
     padding: 10px 20px; /* 🔴 패딩 추가 */
@@ -485,41 +485,41 @@
     transition: all 0.2s ease-in-out; /* 🔴 부드러운 효과 */
 }
 
-.porong-nextbutton:hover {
+.cooking-porong-nextbutton:hover {
     background-color: #ffb74d; /* 🔴 호버 시 배경색 변경 */
     transform: scale(1.1); /* 🔴 살짝 확대 */
 }
 
 /* ✅ 튜토리얼 단계별 위치 조정 */
-.porong-container.near-title {
+.cooking-porong-container.near-title {
     top: 5%;
     left: 20%;
     transform: translateX(-50%);
 }
 
-.porong-container.near-item {
+.cooking-porong-container.near-item {
     top: 30%;
     left: 10%;
 }
 
-.porong-container.near-record {
+.cooking-porong-container.cooking-near-record {
     top: 100%;
     left: 20%;
-    transform: translateX(-90%);
+    transform: translateX(-50%);
 }
 
-.porong-container.near-feedback {
+.cooking-porong-container.near-feedback {
     top: 30%;
     right: 10%;
 }
 
-.porong-container.near-next {
+.cooking-porong-container.near-next {
     bottom: 10%;
     right: 48%;
 }
 
 /* 🔥 강조 효과 추가 */
-.highlight {
+.cooking-highlight {
     /* color: red !important;  🔴 글씨색 빨간색 */
     font-weight: bold !important;  /* 🔴 굵게 */
     border: 3px solid red !important;  /* 🔴 테두리 추가 */
