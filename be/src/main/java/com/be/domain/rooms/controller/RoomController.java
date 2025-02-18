@@ -1,7 +1,6 @@
 package com.be.domain.rooms.controller;
 
 import com.be.common.model.response.BaseResponseBody;
-import com.be.db.entity.Room;
 import com.be.db.repository.RoomRepository;
 import com.be.db.repository.RoomUserRepository;
 import com.be.db.repository.UserRepository;
@@ -47,22 +46,10 @@ public class RoomController {
 	/**
 	 * 방 목록 조회 API
 	 */
+
 	@GetMapping("/list")
 	public ResponseEntity<List<RoomResponse>> getAllRooms() {
-		List<Room> rooms = roomRepository.findAll();
-
-		// 활성화된 방만 응답
-		List<RoomResponse> roomResponses = rooms.stream()
-			.filter(Room::isActive)
-			.map(room -> new RoomResponse(
-				room.getId(),
-				room.getTitle(),
-				room.getHost().getUsername(),
-				room.getUserCnt(),
-				room.getRoomPassword()
-			))
-			.toList();
-
+		List<RoomResponse> roomResponses = roomService.getAllRooms();
 		return ResponseEntity.ok(roomResponses);
 	}
 
@@ -84,17 +71,6 @@ public class RoomController {
 		return ResponseEntity.ok().body(roomJoinResponse);
 	}
 
-	/**
-	 * 방 나가기 API(필요하다면 생성)
-	 * WebSocket에서 처리 중이긴 하지만
-	 * REST로도 요청하려면 아래와 같이
-	 * 구현하면 됨 (예시).
-	 */
-	//    @PostMapping("/leave")
-	//    public ResponseEntity<? extends BaseResponseBody> leaveRoom(@RequestBody UserLeaveRequest request) {
-	//        roomService.leaveRoom(request);
-	//        return ResponseEntity.ok().body(BaseResponseBody.of("방 떠나기 성공", 200));
-	//    }
 
 	/**
 	 * 방 삭제 API(필요시)
