@@ -6,6 +6,7 @@ import { logout } from "../../store/authSlice";
 import HomeButton from "../../components/button/HomeButton";
 import "./ProfileInfo.css"; // ✅ 기존 CSS 유지
 import ProfileImageSelector from "./ProfileImageSelector";
+import backgroundImage from"../../assets/background/mypage_Bg.webp";
 
 const ProfileInfo = () => {
     const token = useSelector((state) => state.auth.token);
@@ -96,7 +97,7 @@ const ProfileInfo = () => {
         };
 
     return (
-        <div className="profile-container">
+        <div className="profile-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
             {/* ✅ 사이드바 */}
             <div className="sidebar">
                 <div className="profile-header">
