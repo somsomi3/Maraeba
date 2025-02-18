@@ -8,7 +8,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import com.be.common.auth.service.TokenService;
 import com.be.domain.rooms.SignalingHandler;
-import com.be.domain.rooms.AudioWebSocketHandler;
+
 import com.be.common.auth.WebSocketAuthInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketConfig implements WebSocketConfigurer {
 
 	private final SignalingHandler signalingHandler;
-	private final AudioWebSocketHandler audioWebSocketHandler;
 	private final TokenService tokenService; // 🔥 JWT 인증을 위한 서비스 추가
 
 	@Override
@@ -29,12 +28,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
 				.addInterceptors(new WebSocketAuthInterceptor(tokenService)) // ✅ 인증 인터셉터 추가
 		 .setAllowedOriginPatterns("*");
 
-		registry.addHandler(audioWebSocketHandler, "/WebRTC/audio")
-				.addInterceptors(new WebSocketAuthInterceptor(tokenService)) // ✅ 인증 인터셉터 추가
-			.setAllowedOriginPatterns("*");
 
 		log.info("✅ WebSocket 핸들러 등록 완료: /WebRTC/signaling (JWT 인증 포함)");
-		log.info("✅ WebSocket 핸들러 등록 완료: /WebRTC/audio (JWT 인증 포함)");
 
 	}
 }
