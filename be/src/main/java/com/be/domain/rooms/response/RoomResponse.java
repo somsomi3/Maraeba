@@ -14,10 +14,12 @@ public class RoomResponse {
 
 	private String title;
 
+	private String hostUserId;
+
 	private String hostUsername; // 방장의 이름만 전달
 
 	private int userCnt;
 
-	private String roomPassword;
+	private boolean roomPassword;
 
 }

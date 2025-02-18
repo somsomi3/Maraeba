@@ -119,3 +119,9 @@
     margin-top: 2rem;
     text-align: center;
 }
+
+/*방장 아이디 표시*/
+.small-text {
+    font-size: 0.8em; /* 글씨 크기 줄이기 */
+    color: gray; /* 색상 약간 연하게 */
+}

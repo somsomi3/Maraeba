@@ -178,7 +178,9 @@ const RoomList = () => {
                         <thead>
                             <tr>
                                 <th>번호</th>
+                                <th>방장</th>
                                 <th>방 이름</th>
+                                <th>인원 수</th>
                                 <th>비밀번호</th>
                             </tr>
                         </thead>
@@ -195,6 +197,12 @@ const RoomList = () => {
                                 >
                                     <td>{index + 1}</td>
                                     <td>
+                                        {room.host_username}
+                                        <span className="small-text">
+                                            ({room.host_user_id})
+                                        </span>
+                                    </td>
+                                    <td>
                                         <button
                                             className="room-link"
                                             onClick={(e) => {
@@ -206,6 +214,7 @@ const RoomList = () => {
                                             {room.title}
                                         </button>
                                     </td>
+                                    <td>{room.user_cnt}/2</td>
                                     <td>{room.room_password ? "🔒" : "🔓"}</td>
                                 </tr>
                             ))}
