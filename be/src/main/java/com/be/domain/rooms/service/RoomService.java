@@ -13,6 +13,7 @@ import com.be.domain.rooms.request.RoomRemoveRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.request.UserLeaveRequest;
 import com.be.domain.rooms.response.RoomJoinResponse;
+import com.be.domain.rooms.response.RoomResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,10 +34,21 @@ public class RoomService {
 	/**
 	 * 방 목록 조회
 	 */
-	public List<Room> getAllRooms() {
-		return roomRepository.findAll();
-	}
+	@Transactional(readOnly = true)
+	public List<RoomResponse> getAllRooms() {
+		List<Room> rooms = roomRepository.findAll();
 
+		return rooms.stream()
+				.filter(Room::isActive) // 활성화된 방만 필터링
+				.map(room -> new RoomResponse(
+						room.getId(),
+						room.getTitle(),
+						room.getHost().getUsername(),
+						room.getUserCnt(),
+						room.getRoomPassword()
+				))
+				.toList();
+	}
 	/**
 	 * 방 생성
 	 */

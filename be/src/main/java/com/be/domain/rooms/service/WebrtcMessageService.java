@@ -2,7 +2,6 @@ package com.be.domain.rooms.service;
 
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
-import com.be.db.entity.User;
 import com.be.db.entity.WebrtcMessage;
 import com.be.db.repository.RoomRepository;
 import com.be.db.repository.UserRepository;
