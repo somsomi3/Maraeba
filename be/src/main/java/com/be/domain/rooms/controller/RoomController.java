@@ -1,9 +1,17 @@
 package com.be.domain.rooms.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.be.common.model.response.BaseResponseBody;
-import com.be.db.repository.RoomRepository;
-import com.be.db.repository.RoomUserRepository;
-import com.be.db.repository.UserRepository;
 import com.be.domain.rooms.request.CreateRoomRequest;
 import com.be.domain.rooms.request.RoomRemoveRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
@@ -11,15 +19,11 @@ import com.be.domain.rooms.response.PostCreateRoomRes;
 import com.be.domain.rooms.response.RoomJoinResponse;
 import com.be.domain.rooms.response.RoomResponse;
 import com.be.domain.rooms.service.RoomService;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @Getter
@@ -29,9 +33,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomController {
 
-	private final UserRepository userRepository;
-	private final RoomUserRepository roomUserRepository;
-	private final RoomRepository roomRepository;
 	private final RoomService roomService;
 
 	/**

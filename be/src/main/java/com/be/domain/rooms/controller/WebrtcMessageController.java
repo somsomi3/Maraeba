@@ -1,14 +1,18 @@
 package com.be.domain.rooms.controller;
 
-import com.be.domain.rooms.request.WebrtcMessageRequest;
-import com.be.common.model.response.BaseResponseBody;
-import com.be.domain.rooms.service.WebrtcMessageService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.be.common.model.response.BaseResponseBody;
+import com.be.domain.rooms.request.WebrtcMessageRequest;
+import com.be.domain.rooms.service.WebrtcMessageService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -20,7 +24,7 @@ public class WebrtcMessageController {
     // ✅ 메시지 저장
     @PostMapping("/webrtcs/message")
     public ResponseEntity<? extends BaseResponseBody> saveMessage(@RequestBody WebrtcMessageRequest request,
-                                                                  @AuthenticationPrincipal UserDetails userDetails) {
+        @AuthenticationPrincipal UserDetails userDetails) {
         if (request == null) {
             return ResponseEntity.badRequest().body(BaseResponseBody.of("잘못된 요청: 요청 본문이 없음", 400));
         }
