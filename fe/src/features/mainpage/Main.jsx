@@ -17,7 +17,7 @@ const Main = () => {
                     alt="프로필 이미지"
                     className="main-profile-image"
                 />
-                <p className="profile-text">프로필</p>
+                <p className="profile-text">보호자용</p>
                 {/* <LogoutButton /> */}
             </div>
             <div className="card-container">

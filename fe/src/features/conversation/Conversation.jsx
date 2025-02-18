@@ -154,7 +154,7 @@ const Conversation = () => {
             <form onSubmit={handleSubmit} className="creation-form">
               <label>
                 상대방 역할
-                <input type="text" name="aiRole" value={formData.aiRole} onChange={handleInputChange} placeholder="AI의 역할을 입력해주세요." className={tutorialStep === 2 ? 'highlight' : ''} />
+                <input type="text" name="aiRole" value={formData.aiRole} onChange={handleInputChange} placeholder="상대방의 역할을 입력해주세요." className={tutorialStep === 2 ? 'highlight' : ''} />
               </label>
 
               <label>
