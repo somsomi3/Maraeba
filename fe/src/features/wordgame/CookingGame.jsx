@@ -9,6 +9,7 @@ import recordIcon from "../../assets/icons/record.png";
 import stopIcon from "../../assets/icons/pause.png";
 import { useSelector } from "react-redux"; 
 import dish from "../../assets/images/dish.png"
+import tutoPorong from "../../assets/images/tuto_porong.png"
 
 const CookingGame = () => {
   const [isRecording, setIsRecording] = useState(false); // 녹음 중인지 여부
@@ -39,6 +40,10 @@ const CookingGame = () => {
   const backendURL = import.meta.env.VITE_STATIC_API_URL; // 환경변수에서 백엔드 주소 가져오기
   const [feedbackAnimation, setFeedbackAnimation] = useState(""); 
   const [showFoodHighlight, setShowFoodHighlight] = useState(false);
+  const [isTutorialCompleted, setIsTutorialCompleted] = useState(false); 
+  const [showGreeting, setShowGreeting] = useState(true); // ✅ 인삿말 표시 여부
+  const [tutorialStep, setTutorialStep] = useState(null);  
+  const [username, setUsername] = useState("");
 
    // ✅ 공통 fetch 함수 (Access Token 포함)
    const fetchResource = async (url, setState) => {
@@ -252,6 +257,84 @@ const checkIncorrect = (result) => {
     }
   };
 
+  const handleTutorialComplete = async () => {
+    try {
+      await springApi.patch("/users/me/tutorial/2", { completed: true });
+      console.log("튜토리얼 완료 상태 저장");
+      setIsTutorialCompleted(true);
+    //   setTutorialStep(null); // 튜토리얼 완료 후 인삿말 숨기기
+      setTutorialStep(0);
+      setShowGreeting(false);
+    } catch (error) {
+      console.error("❌ 튜토리얼 완료 상태 저장 실패:", error);
+    }
+  };
+  
+  const handleRestartTutorial = async () => {
+    try {
+      await springApi.patch("/users/me/tutorial/2", { completed: false });
+      setIsTutorialCompleted(false);
+      setTutorialStep(1);
+    } catch (error) {
+      console.error("❌ 튜토리얼 다시보기 실패:", error);
+    }
+  };
+
+const PorongSpeech = ({ text, position= "center", onNext }) => {
+    return (
+      <div className={`porong-container ${position}`}>
+        <img src={tutoPorong} alt="포롱이" className="porong-image" />
+        <div className="porong-speech-bubble">
+          {text.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
+          {onNext && <button onClick={onNext} className="porong-nextbutton">다음</button>}
+        </div>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await springApi.get("/users/me");
+        setUsername(response.data.username); // ✅ username 저장
+      } catch (error) {
+        console.error("❌ 사용자 정보 불러오기 실패:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+
+    // useEffect(() => {
+    //     if (tutorialStep === null) {
+    //         setShowGreeting(true);
+    //     }
+    // }, [tutorialStep]);
+
+  useEffect(() => {
+    const fetchTutorialStatus = async () => {
+      try {
+        const response = await springApi.get("/users/me/tutorial");
+        const hasSeenFood = response.data.data.has_seen_food; 
+        
+        if (hasSeenFood) {
+          setIsTutorialCompleted(true);
+          setShowGreeting(false); // 튜토리얼을 봤다면 인삿말 표시 X
+        } else {
+          setShowGreeting(true);  
+        }
+      } catch (error) {
+        console.error("❌ 튜토리얼 상태 가져오기 실패:", error);
+      }
+    };
+    fetchTutorialStatus();
+  },);
+
 // ⏳ 타이머 설정
 useEffect(() => {
     if (!isTimerActive || timeLeft <= 0) {
@@ -300,6 +383,9 @@ const restart = () => {
   return (
     <div className="cooking-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <HomeButton />
+        <button className="cooking-restart-tutorial-btn" onClick={handleRestartTutorial}>
+        ▶ 튜토리얼
+        </button>
 
       {/* 🎮 게임 UI (왼쪽) */}
       <div className="cooking-game-overlay">
@@ -307,7 +393,30 @@ const restart = () => {
           <PausePopup onExit={() => navigate("/wgame")} />
         </button>
   
-        <h1 className="cooking-game-title">{gameData.foodName || "요리 만들기"}</h1>
+        {(showGreeting && !isTutorialCompleted && tutorialStep === null) && (
+            <PorongSpeech
+                text={`안녕하세요, ${username}님! \n 저는 포롱이예요🦊 \n 포롱이와 함께 발음 연습 방법을 익혀볼까요?`}
+                position="center"
+                onNext={() => {
+                    console.log("📢 튜토리얼 시작: 인삿말 숨김, Step 1로 이동");
+                setShowGreeting(false);
+                setTutorialStep(1);
+                }}
+            />
+            )}
+
+        <h1 className={`cooking-game-title ${tutorialStep === 1 ? "highlight" : ""}`}>
+            {gameData.foodName || "요리 만들기"}
+        </h1>
+        {/* 🔹 튜토리얼 1단계: 음식 이름 강조 */}
+        {tutorialStep === 1 && (
+            <div className="porong-container near-title">
+                <PorongSpeech 
+                    text="완성해야 할 음식의 이름을 확인해보자!" 
+                    onNext={() => setTutorialStep(2)} 
+                />
+            </div>
+        )}
         
         {/* 🔹 정답 조합 UI */}
         <div className="combination">
@@ -317,7 +426,10 @@ const restart = () => {
           <span className="equals-sign">=</span>
           <img src={foodImg.food || "/assets/images/placeholder.png"} alt="결과 음식" className={`recipe-image ${showFoodHighlight ? "food-highlight" : ""}`} />
         </div>
-  
+
+        
+       
+
         {/* 🔹 AI가 인식한 텍스트 표시 */}
         {gameData.recognizedText && (
           <div className="recognized-text">
@@ -326,29 +438,59 @@ const restart = () => {
         )}
                                  
         {/* 🔹 선택 가능한 재료 목록 */}
-        <div className="item-selection">
+        <div className={`item-selection ${tutorialStep === 2 ? "highlight" : ""}`}>
           {gameData.itemList.map((item, index) => (
             <button key={index} className={item === gameData.item1 || item === gameData.item2 ? "selected" : ""}>
               {item}
             </button>
           ))}
         </div>
-  
+        {tutorialStep === 2 && (
+            <div className="porong-container near-item">
+                <PorongSpeech 
+                    text="음식을 만들기 위한 재료를 찾아야 해!" 
+                    onNext={() => setTutorialStep(3)} 
+                />
+            </div>
+        )}
+
         {/* 🔹 마이크 버튼 및 안내 문구 */}
-        <div className="cooking-record-container">
+        <div className={`cooking-record-container ${tutorialStep === 3 ? "highlight" : ""}`}>
         <p className="cooking-record-guide">
             {isRecording ? "녹음을 완료하려면 정지 버튼을 눌러주세요" : "녹음을 하려면 마이크 버튼을 눌러주세요"}
         </p>
         <button className="cooking-record-button" disabled={!isTimerActive} onClick={isRecording ? stopRecording : startRecording}>
             <img src={isRecording ? stopIcon : recordIcon} alt="녹음 버튼" className="cooking-record-icon" />
         </button>
+                  
+        {tutorialStep === 3 && (
+            <div className="porong-container near-record">
+                <PorongSpeech 
+                    text="마이크 버튼을 눌러 고른 재료가 맞는지 확인해보자!" 
+                    onNext={() => setTutorialStep(4)} 
+                />
+            </div>
+        )}
+
         </div>
   
         {/* 🔹 게임 재시작 버튼 */}
-        <button className="cooking-start-button" disabled={isTimerActive} onClick={restart}>
-          게임 시작
+        <button 
+            className={`cooking-start-button ${tutorialStep === 5 ? "highlight" : ""}`} 
+            disabled={isTimerActive && tutorialStep !== 5} 
+            onClick={restart}
+        >
+            게임 시작
         </button>
-  
+        {tutorialStep === 5 && (
+            <div className="porong-container near-next">
+                <PorongSpeech 
+                    text="이제 계속해서 발음 연습을 해볼까요?" 
+                    onNext={handleTutorialComplete} 
+                />
+            </div>
+        )}
+
         {audioURL && (
           <div className="audio-preview">
             <h2>녹음된 오디오</h2>
@@ -367,7 +509,7 @@ const restart = () => {
           <p>{score}</p>
         </div>
   
-        <div className={`cooking-feedback-box ${feedbackAnimation}`}>
+        <div className={`cooking-feedback-box ${feedbackAnimation} ${tutorialStep === 4 ? "highlight" : ""}`}>
           <h3>🚨 피드백</h3>
           {feedbackMessage ? (
             <>
@@ -378,6 +520,16 @@ const restart = () => {
             <p>📝 여기에 피드백이 표시됩니다.</p>
           )}
         </div>
+
+        {tutorialStep === 4 && (
+            <div className="porong-container near-feedback">
+                <PorongSpeech 
+                    text="여기서 정답인지 확인할 수 있어!" 
+                    onNext={() => setTutorialStep(5)} 
+                />
+            </div>
+        )}
+
       </div>
     </div>
   );

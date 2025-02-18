@@ -415,3 +415,139 @@
   border-radius: 1vh;
 }
 
+.cooking-restart-tutorial-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: darkorange;
+    color: rgb(245, 243, 241);
+    border: none;
+    padding: 15px 24px;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  
+  .cooking-restart-tutorial-btn:hover {
+    background-color: rgba(253, 152, 28, 0.777);
+    transform: scale(1.05);
+  }
+
+/* 마이크 버튼 강조 */
+.cooking-record-button.highlight {
+    border: 3px solid #ffcc00;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+}
+
+/* 정답 피드백 강조 */
+.cooking-feedback-box.highlight {
+    border: 3px solid #ffcc00;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+}
+
+/* ✅ 포롱이 기본 스타일 */
+.porong-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 540px;
+    z-index: 300;
+    font-family: 'Gamja Flower', sans-serif;
+  }
+  
+  .porong-image {
+    width: 120px;
+  }
+  
+  .porong-speech-bubble {
+    background: #fff8dc;
+    padding: 17px 20px;
+    border-radius: 10px;
+    border: 2px solid #f4a261;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 20px;
+    margin-top: 5px;
+    font-weight: 600;
+  }
+
+  .porong-nextbutton {
+    font-size: 1rem; /* 🔴 글씨 크기 키우기 */
+    font-weight: bold; /* 🔴 글씨 두껍게 */
+    padding: 10px 20px; /* 🔴 패딩 추가 */
+    background-color: #ffcc80; /* 🔴 배경색 변경 */
+    border: 2px solid #ff9800; /* 🔴 테두리 추가 */
+    border-radius: 10px; /* 🔴 둥근 모서리 */
+    cursor: pointer; /* 🔴 커서 변경 */
+    transition: all 0.2s ease-in-out; /* 🔴 부드러운 효과 */
+}
+
+.porong-nextbutton:hover {
+    background-color: #ffb74d; /* 🔴 호버 시 배경색 변경 */
+    transform: scale(1.1); /* 🔴 살짝 확대 */
+}
+
+/* ✅ 튜토리얼 단계별 위치 조정 */
+.porong-container.near-title {
+    top: 5%;
+    left: 20%;
+    transform: translateX(-50%);
+}
+
+.porong-container.near-item {
+    top: 30%;
+    left: 10%;
+}
+
+.porong-container.near-record {
+    top: 100%;
+    left: 20%;
+    transform: translateX(-90%);
+}
+
+.porong-container.near-feedback {
+    top: 30%;
+    right: 10%;
+}
+
+.porong-container.near-next {
+    bottom: 10%;
+    right: 48%;
+}
+
+/* 🔥 강조 효과 추가 */
+.highlight {
+    /* color: red !important;  🔴 글씨색 빨간색 */
+    font-weight: bold !important;  /* 🔴 굵게 */
+    border: 3px solid red !important;  /* 🔴 테두리 추가 */
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7) !important;  /* 🔴 빨간색 발광 효과 */
+    transition: all 0.3s ease-in-out;
+}
+
+.cooking-game-title.highlight,
+.item-selection.highlight,
+.cooking-record-container.highlight,
+.cooking-feedback-box.highlight {
+    background-color: rgba(255, 0, 0, 0.1) !important;  /* 🔴 배경 색상 연하게 추가 */
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.cooking-start-button.highlight {
+    background-color: rgba(255, 0, 0, 0.1) !important;  /* 🔴 배경 색상 연하게 추가 */
+    padding: 5px;
+    border-radius: 5px;
+    border: 3px solid red !important;  /* 🔴 테두리 추가 */
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7) !important;  /* 🔴 빨간색 발광 효과 */
+    font-weight: bold !important;  /* 🔴 굵게 */
+}
+
+.cooking-start-button:disabled.highlight {
+    background-color: rgba(255, 0, 0, 0.2) !important;  /* 🔴 disabled 상태에서도 강조 */
+    color: white !important;
+    opacity: 1 !important; /* 기본적으로 disabled는 opacity가 낮아지므로, 강조 스타일 유지 */
+    cursor: not-allowed;
+}
