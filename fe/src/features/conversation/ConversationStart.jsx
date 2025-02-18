@@ -15,11 +15,13 @@ const ConversationStart = () => {
   const [isRecording, setIsRecording] = useState(false); // 녹음 상태
   const [recordingIcon, setRecordingIcon] = useState(recordbtn); // 🔥 버튼 아이콘 상태 추가
   const [audioBlob, setAudioBlob] = useState(null); // 녹음된 음성 파일
+  const [ttsAudioUrl, setTtsAudioUrl] = useState(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const [recordWarning, setRecordWarning] = useState(true);
   const [isSwapped, setIsSwapped] = useState(false);
-  // 🔥 녹음 시작
+
+
   const toggleRecording = async () => {
     if (!isRecording) {
       // ✅ 녹음 시작
@@ -104,6 +106,8 @@ const ConversationStart = () => {
   
       setIsSwapped(true);
       setAudioBlob(null);
+      handleTTS(aiResponse.data.answer);
+
     } catch (error) {
       console.error('🚨 음성 처리 오류:', error.response?.data || error.message);
     }
@@ -115,6 +119,20 @@ const ConversationStart = () => {
       processAudio();
     }
   }, [audioBlob]); // 녹음이 완료되면 실행
+  
+  const handleTTS = async (text) => {
+    try {
+      const response = await flaskApi.post('/ai/tts', { text }, { responseType: 'blob' });
+
+      // ✅ MP3 파일을 Blob으로 변환하여 URL 생성
+      const audioBlob = new Blob([response.data], { type: 'audio/mp3' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      setTtsAudioUrl(audioUrl);
+    } catch (error) {
+      console.error("🚨 TTS 변환 실패:", error);
+      setTtsAudioUrl(null);
+    }
+  };
 
   return (
     <div className="conversation-start-container">
@@ -124,7 +142,14 @@ const ConversationStart = () => {
         <div className="message-content">
           <p className="role-name">{aiRole || "상대의 역할 이름"}</p> {/* AI 역할 표시 */}
           <div className="message-bubble">
-            <p className="message-text">{messages[messages.length - 1].text.slice(3)}</p>
+            <p className="message-text">{messages[messages.length - 1].text}</p>
+            {ttsAudioUrl && (
+              <div className="tts-audio-container">
+                <button className="tts-button" onClick={() => new Audio(ttsAudioUrl).play()}>
+                  🔈 음성 듣기
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

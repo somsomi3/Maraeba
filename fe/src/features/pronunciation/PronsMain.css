@@ -70,11 +70,12 @@
   }
 
   .start {
-    font-size: 1.2vw;
+    font-size: 1.2rem;
+    margin-top: 10px;
     font-family: SDSamliphopang;
     background-color: #f5b041;
-    width: 7vw;
-    height: 4vw;
+    width: 100px;
+    height: 30px;
     color: #fff;
     border: none;
     border-radius: 10rem;
