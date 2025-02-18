@@ -10,10 +10,6 @@ const WordMain = () => {
 
   return (
     <div className="word-main-container">
-      {/* 홈 버튼 */}
-      <button className="home-button" onClick={() => navigate('/single')}>
-        ↩
-      </button>
 
       {/* 제목 이미지 */}
       <img src={wordtitle} alt="Wordgame Title" className="wordtitle-image" />
