@@ -8,6 +8,7 @@ import ProfileImageSelector from "./ProfileImageSelector";
 import PronunciationHistoryChart from "./PronunciationHistoryChart";
 import PronunciationDetailChart from "./PronunciationDetailChart";
 import "./Profile.css";
+import bear from "../../assets/profiles/profile1.png";
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -19,12 +20,15 @@ const Profile = () => {
 
     // 🔥 탭 상태 추가 (0: 발음 학습 기록, 1: 클래스별 발음 학습 통계)
     const [activeTab, setActiveTab] = useState(0);
-    const [selectedProfile, setSelectedProfile] = useState("/assets/profiles/profile1.png");
+
+    const [selectedProfile, setSelectedProfile] = useState(() => {
+        return localStorage.getItem("profileImage") || bear;
+    });
     useEffect(() => {
-        const savedProfile = localStorage.getItem("profileImage");
-        if (savedProfile) {
-          setSelectedProfile(savedProfile);
-        }
+        // const savedProfile = localStorage.getItem("profileImage");
+        // if (savedProfile) {
+        //     setSelectedProfile(savedProfile);
+        // }
 
         const fetchUserInfo = async () => {
             if (!token) {
@@ -69,20 +73,27 @@ const Profile = () => {
     const handleProfileChange = (newProfile) => {
         setSelectedProfile(newProfile);
         localStorage.setItem("profileImage", newProfile); // ✅ 선택한 프로필 저장
-      };
+    };
 
     return (
         <div className="profile-container">
             {/* 사이드바 */}
             <div className="sidebar">
-            <ProfileImageSelector selectedImage={selectedProfile} onSelect={handleProfileChange} />
-            <h2>{username}</h2>
+                <ProfileImageSelector
+                    selectedImage={selectedProfile}
+                    onSelect={handleProfileChange}
+                />
+                <h2>{username}</h2>
                 <nav className="profile-menu">
                     <ul>
                         <li className="active">내 프로필</li>
-                        <li onClick={() => navigate("/profile-info")}>회원정보 수정</li>
+                        <li onClick={() => navigate("/profile-info")}>
+                            회원정보 수정
+                        </li>
                         <li onClick={handleLogout}>로그아웃</li>
-                        <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
+                        <li onClick={() => navigate("/profile-delete")}>
+                            회원 탈퇴
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -93,14 +104,18 @@ const Profile = () => {
 
                 {/* 🔥 탭 버튼 추가 */}
                 <div className="tab-container">
-                    <button 
-                        className={`tab-button ${activeTab === 0 ? "active" : ""}`} 
+                    <button
+                        className={`tab-button ${
+                            activeTab === 0 ? "active" : ""
+                        }`}
                         onClick={() => setActiveTab(0)}
                     >
                         📊 발음 학습 기록
                     </button>
-                    <button 
-                        className={`tab-button ${activeTab === 1 ? "active" : ""}`} 
+                    <button
+                        className={`tab-button ${
+                            activeTab === 1 ? "active" : ""
+                        }`}
                         onClick={() => setActiveTab(1)}
                     >
                         📈 클래스별 발음 학습 통계
