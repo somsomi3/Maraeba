@@ -9,6 +9,7 @@ import PronunciationHistoryChart from "./PronunciationHistoryChart";
 import PronunciationDetailChart from "./PronunciationDetailChart";
 import "./Profile.css";
 import bear from "../../assets/profiles/profile1.png";
+import backgroundImage from"../../assets/background/mypage_Bg.webp";
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -76,7 +77,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="profile-container">
+        <div className="profile-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
             {/* 사이드바 */}
             <div className="sidebar">
                 <ProfileImageSelector

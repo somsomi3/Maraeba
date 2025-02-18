@@ -5,7 +5,7 @@ import conversationTitle from '../../assets/images/conversation.png';
 import HomeButton from '../../components/button/HomeButton';
 import { springApi } from '../../utils/api';
 import DarongSpeech from './DarongSpeech'; // ✅ 다롱이 말풍선 컴포넌트 추가
-
+import backgroundImage from"../../assets/background/ai_Bg.webp";
 
 const Conversation = () => {
   const navigate = useNavigate();
@@ -119,7 +119,7 @@ const Conversation = () => {
 
   return (
     <>
-      <div className="conversation-container">
+      <div className="conversation-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
         <div className="conversation-header">
           <img src={conversationTitle} alt="이야기 나누기" className="conversation-title-image" />
         </div>
