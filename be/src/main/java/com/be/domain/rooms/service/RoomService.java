@@ -43,9 +43,10 @@ public class RoomService {
 				.map(room -> new RoomResponse(
 						room.getId(),
 						room.getTitle(),
+						room.getHost().getUserId(),
 						room.getHost().getUsername(),
 						room.getUserCnt(),
-						room.getRoomPassword()
+					room.getRoomPassword() != null && !room.getRoomPassword().isBlank()
 				))
 				.toList();
 	}
