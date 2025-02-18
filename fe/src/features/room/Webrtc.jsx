@@ -465,7 +465,7 @@ const Webrtc = () => {
 
         try {
             const response = await springApi.post(
-                "/webrtc/messages",
+                "/webrtcs/message",
                 requestPayload
             );
             console.log("✅ 메시지 저장 성공:", response.data);
@@ -541,7 +541,7 @@ const Webrtc = () => {
         console.log("📄 WebRTC 로그 전송:", logData);
 
         try {
-            const response = await springApi.post("/webrtc/logs", logData, {
+            const response = await springApi.post("/webrtcs/log", logData, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("token"),
                 },
