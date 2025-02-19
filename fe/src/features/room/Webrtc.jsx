@@ -7,6 +7,7 @@ import "./Webrtc.css";
 import backgroundImage from "../../assets/background/Webrtc_Bg.webp";
 // import rtc from '../../assets/images/rtc.png';
 
+
 const Webrtc = () => {
     // ===================================================
     //                      상태 & 참조
@@ -44,6 +45,102 @@ const Webrtc = () => {
     const userId = useSelector((state) => state.auth.userId);
     const { roomId } = useParams();
     const navigate = useNavigate();
+
+    const [isRecording, setIsRecording] = useState(false); // 녹음 중인지 여부
+    const [feedbackMessage, setFeedbackMessage] = useState(""); // 피드백 메시지
+
+    // 음성 녹음을 통한 단어 선택(참가자)
+    const mediaRecorderRef = useRef(null); // MediaRecorder 참조
+    const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
+    
+    
+    
+    // ===================================================
+    //                  음성 녹음 기능
+    // ===================================================
+    // 🎤 녹음 시작
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (event) => {
+                audioChunksRef.current.push(event.data);
+            };
+
+            mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+                audioChunksRef.current = [];
+                await sendAudioToServer(audioBlob); // 녹음된 오디오를 서버로 전송
+            };
+
+            mediaRecorderRef.current = mediaRecorder;
+            mediaRecorder.start();
+            setIsRecording(true);
+
+            // 4초 후 자동 녹음 종료
+            setTimeout(() => {
+                stopRecording();
+            }, 4000);
+        } catch (error) {
+            console.error("마이크 권한 요청 실패:", error);
+        }
+    };
+
+    // 🎤 녹음 종료
+    const stopRecording = () => {
+        if (mediaRecorderRef.current) {
+            mediaRecorderRef.current.stop();
+            setIsRecording(false);
+        }
+    };
+
+    // ===================================================
+    //          녹음된 음성을 백엔드로 전송
+    // ===================================================
+
+    const sendAudioToServer = async (audioBlob) => {
+        const formData = new FormData();
+        formData.append("audio", audioBlob, "audio.webm");
+
+        try {
+            if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
+
+            const response = await springApi.post(`/rgames/upload-voice/${roomId}`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true,
+            });
+
+            if (response.status === 200) {
+                const result = response.data;
+                console.log("AI 변환된 단어:", result);
+
+                // 🟢 변환된 단어가 `items` 목록 중 하나인지 확인
+                if (result && items.includes(result)) {
+                    console.log("올바른 단어, 버튼 자동 선택:", result);
+
+                    // UI에서 해당 버튼을 클릭한 것처럼 보이게 설정
+                    setChoice(result);
+
+                    // WebSocket을 통해 상대방에게도 선택 정보 전송
+                    sendChoice(result);
+                } else {
+                    console.warn("⚠️ 변환된 단어가 목록에 없습니다:", result);
+                    setFeedbackMessage("❌ 올바른 단어를 말해주세요.");
+                }
+            }
+        } catch (error) {
+            console.error("❌ 음성 전송 오류:", error);
+        }
+    };
+
+
+
+
+
 
     // ===================================================
     //                 초기 방장 여부 확인
@@ -657,23 +754,23 @@ const Webrtc = () => {
     // 참가자: 단어를 골랐을 때
     const sendChoice = (word) => {
         setChoice(word);
-        if (isHost) {
-            console.error("❌ 방장은 choice를 보낼 수 없습니다.");
+        if (!word) {
+            console.error("🚨 `sendChoice()` 호출 시 word가 undefined입니다!");
             return;
         }
-        if (
-            webSocketRef.current &&
-            webSocketRef.current.readyState === WebSocket.OPEN
-        ) {
-            const msg = {
-                type: "choice",
-                user_id: userId,
-                choice: word,
-                room_id: roomId,
-                sentAt: new Date().toISOString(),
-            };
-            console.log("📡 choice 전송:", msg);
-            webSocketRef.current.send(JSON.stringify(msg));
+
+        if (!isHost) {  
+            if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+                const msg = {
+                    type: "choice",
+                    user_id: userId,
+                    choice: word,
+                    room_id: roomId,
+                    sentAt: new Date().toISOString(),
+                };
+                console.log("📡 choice 전송:", msg);
+                webSocketRef.current.send(JSON.stringify(msg));
+            }
         }
     };
 
@@ -709,7 +806,7 @@ const Webrtc = () => {
             sendItems();
         }
     }, [items]); // items 변경 감지
-    const colors = ["빨강", "주황", "노랑", "초록", "파랑", "보라"]; // 인덱스별 색상 지정
+
 
     // ===================================================
     //                      렌더링
@@ -733,29 +830,6 @@ const Webrtc = () => {
                             >
                                 게임 시작
                             </button>
-                        )}
-    
-                        {/* 정답 선택 UI */}
-                        {isHost && (
-                            <div className="host-answer-selection">
-                                <h3>정답 선택</h3>
-                                <div className="answer-buttons">
-                                    {items.length > 0 ? (
-                                        items.map((word, index) => (
-                                            <div key={index} className="answer-button-wrapper">
-                                                <button
-                                                    onClick={() => sendAnswerChoice(word)}
-                                                    className="answer-button"
-                                                >
-                                                    {colors[index]}
-                                                </button>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
-                                    )}
-                                </div>
-                            </div>
                         )}
                     </div>
     
@@ -794,7 +868,7 @@ const Webrtc = () => {
                             </button>
                         </div>
                     </div>
-    
+
                     {/* 채팅 컨테이너 */}
                     <div className="chat-container" role="region">
                         <div ref={chatBoxRef} className="chat-box">
@@ -807,7 +881,7 @@ const Webrtc = () => {
                                 </div>
                             ))}
                         </div>
-    
+
                         {/* 입력창 */}
                         <div className="input-container">
                             <input
@@ -828,19 +902,35 @@ const Webrtc = () => {
                 <div className="webrtc-game-container">
                     <h2>🎮 사물 맞추기 게임</h2>
                     <p>입모양을 보고, 색상이 들어간 정답을 선택하세요!</p>
-    
+                    {!isHost && (
+                        <div className="voice-record-container">
+                            <p className="voice-record-guide">
+                                {isRecording ? " 🎤 녹음을 완료하려면 정지 버튼을 누르세요" : " 🎤 녹음을 하려면 마이크 버튼을 누르세요"}
+                            </p>
+                            <button className="voice-record-button" onClick={isRecording ? stopRecording : startRecording}>
+                                {isRecording ? "⏹️" : "🎤"}
+                            </button>
+                        </div>
+                    )}
                     {/* 🛠️ 로그 추가: items 상태 확인 */}
                     {console.log("📌 렌더링 중 items 상태:", items)}
-    
+
                     <div className="game-buttons">
                         {items.length > 0 ? (
                             items.map((word, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => sendChoice(word)}
+                                    onClick={() => {
+                                        if (isHost) {
+                                            sendAnswerChoice(word);  // 방장은 정답을 선택하면 참가자에게 전송됨
+                                        } else {
+                                            setChoice(word);  // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
+                                        }
+                                    }}
+                                    onDoubleClick={() => !isHost && sendChoice(word)}  // 참가자가 음성으로 선택한 경우만 방장에게 전송
                                     className={`game-button 
-                                        ${choice === word ? "selected" : ""} 
-                                        ${correctAnswer === word ? "correct" : "incorrect"}`}
+                    ${choice === word ? "selected" : ""} 
+                    ${correctAnswer === word ? "correct" : ""}`}  // 정답(방장이 선택한 것)은 참가자에게 강조
                                     aria-label={`게임 버튼: ${word}`}
                                 >
                                     {word}
