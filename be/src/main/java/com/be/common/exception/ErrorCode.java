@@ -17,7 +17,11 @@ public enum ErrorCode {
 	SOCIAL_LOGIN_FAILED("Social Login Failed", HttpStatus.FORBIDDEN),
 	EMAIL_SEND_FAIL("Send Email Failed", HttpStatus.CONFLICT),
 	DATABASE_ERROR("Database Error", HttpStatus.INTERNAL_SERVER_ERROR),
-	ROOM_PASSWORD_INCORRECT("Room Password Incorrect", HttpStatus.BAD_REQUEST ),;
+	ROOM_PASSWORD_INCORRECT("Room Password Incorrect", HttpStatus.BAD_REQUEST),
+	ROOM_USER_DUPLICATED("Duplicate Room User", HttpStatus.CONFLICT),
+	ROOM_USER_NOT_FOUND("Room User Not Found", HttpStatus.NOT_FOUND),
+	ROOM_IS_NOT_ACTIVE("Room is not active", HttpStatus.BAD_REQUEST),
+	;
 
 
 	private final String message;
