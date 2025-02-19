@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { springApi,logoutApi } from "../../utils/api";
+import { springApi, logoutApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice";
 import HomeButton from "../../components/button/HomeButton";
 import "./Profile.css";
-import backgroundImage from"../../assets/background/mypage_Bg.webp";
-import defaultProfile from "../../assets/profiles/profile1.png"
-
+import backgroundImage from "../../assets/background/mypage_Bg.webp";
+import defaultProfile from "../../assets/profiles/profile1.png";
 
 const ChangePassword = () => {
     const token = useSelector((state) => state.auth.token);
@@ -20,23 +19,25 @@ const ChangePassword = () => {
     const navigate = useNavigate();
 
     const [profileImage, setProfileImage] = useState(() => {
-            return localStorage.getItem("profileImage") || defaultProfile;
-        });
-    
-        useEffect(() => {
-            const fetchUserData = async () => {
-              try {
+        return localStorage.getItem("profileImage") || defaultProfile;
+    });
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
                 const response = await springApi.get("/users/me");
                 setUsername(response.data.username); // ✅ username 저장
-              } catch (error) {
+                if (response.data.provider !== "LOCAL") {
+                    alert("소셜 로그인 사용자는 비밀번호 변경이 불가능합니다.");
+                    navigate("/profile");
+                }
+            } catch (error) {
                 console.error("❌ 사용자 정보 불러오기 실패:", error);
-              }
-            };
-          
-            fetchUserData();
-          }, []);
-        
+            }
+        };
 
+        fetchUserData();
+    }, [navigate]);
 
     // ✅ 비밀번호 변경 요청
     const handleChangePassword = async (e) => {
@@ -66,25 +67,30 @@ const ChangePassword = () => {
         }
     };
 
-     const handleLogout = async () => {
-            try {
-                await logoutApi();
-                dispatch(logout());
-                navigate("/login");
-                alert("로그아웃 되었습니다.");
-            } catch (error) {
-                alert("로그아웃에 실패했습니다.");
-            }
-        };
-
-    
+    const handleLogout = async () => {
+        try {
+            await logoutApi();
+            dispatch(logout());
+            navigate("/login");
+            alert("로그아웃 되었습니다.");
+        } catch (error) {
+            alert("로그아웃에 실패했습니다.");
+        }
+    };
 
     return (
-        <div className="profile-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div
+            className="profile-container"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
             {/* ✅ 사이드바 추가 */}
             <div className="sidebar">
-            <div className="profile-header">
-                    <img src={profileImage} alt="프로필 이미지" className="my-profile-image" />
+                <div className="profile-header">
+                    <img
+                        src={profileImage}
+                        alt="프로필 이미지"
+                        className="my-profile-image"
+                    />
                 </div>
                 <h2>{username}</h2>
                 <nav className="profile-menu">
@@ -95,7 +101,9 @@ const ChangePassword = () => {
                         </li>
                         <li className="active">비밀번호 변경</li>
                         <li onClick={handleLogout}>로그아웃</li>
-                        <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
+                        <li onClick={() => navigate("/profile-delete")}>
+                            회원 탈퇴
+                        </li>
                     </ul>
                 </nav>
             </div>
