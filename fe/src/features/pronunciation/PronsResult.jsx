@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api";
-import pororo from "../../assets/images/pororo.png";
 import "./PronsResult.css";
 import { useSelector } from "react-redux";
+import defaultProfile from "../../assets/profiles/profile1.png"
 
 const PronsResult = () => {
   const navigate = useNavigate();
@@ -19,6 +19,10 @@ const PronsResult = () => {
   const token = useSelector((state) => state.auth.token);
   const [isClassTitlesFetched, setIsClassTitlesFetched] = useState(false);
 
+  const [profileImage, setProfileImage] = useState(() => {
+          return localStorage.getItem("profileImage") || defaultProfile;
+      });
+      
   useEffect(() => {
     // PronsMain에서 저장된 제목을 localStorage에서 가져와 classTitleMap에 저장
     const fetchClassTitles = async () => {
@@ -83,10 +87,8 @@ const PronsResult = () => {
     setIsRestarting(true); // 🔵 로딩 상태 활성화
 
     try {
-      console.log(`📡 새 세션 시작 요청: /prons/start/class/${latestRecord.class_id}`);
       const response = await springApi.post(`/prons/start/class/${latestRecord.class_id}`);
       const sessionId = response.data.session_id;
-      console.log("✅ 새 세션 생성 완료, session_id:", sessionId);
       localStorage.setItem("session_id", sessionId);
       navigate(`/prons/class/${latestRecord.class_id}/seq/1`);
     } catch (error) {
@@ -112,7 +114,7 @@ const PronsResult = () => {
     {latestRecord && (
       <div className="current-session-result">
         <div className="profile">
-          <img src={pororo} alt="Profile" />
+        <img src={profileImage} alt="프로필 이미지" className="profile" />
         </div>
         <div className="session-info">
           <h2>{classTitleMap[latestRecord.class_id] || "학습 제목"}</h2>

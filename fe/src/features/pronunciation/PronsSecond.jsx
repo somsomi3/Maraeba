@@ -7,7 +7,7 @@ import "./PronsSecond.css";
 import GoBackButton from "../../components/button/GoBackButton";
 import PausePopup from "../../components/popup/PausePopup";
 import RecordButton from "../../components/button/RecordButton";
-
+import PronsCompletePopup from "./PronsCompletePopup"; 
 import lipshape from "../../assets/images/lipshape.png";
 import tongue from "../../assets/images/tongue.png";
 
@@ -42,6 +42,7 @@ const PronsSecond = () => {
   const [username, setUsername] = useState("");
   const [showGreeting, setShowGreeting] = useState(true); // ✅ 인삿말 표시 여부
   const [recordWarning, setRecordWarning] = useState(true);
+  const [isCompletePopupOpen, setIsCompletePopupOpen] = useState(false);
 
   const getClassBackground = (class_id) => {
     switch (class_id) {
@@ -95,27 +96,6 @@ useEffect(() => {
     fetchData();
   }, [class_id, seq_id]);
 
-//   const fetchResource = async (url, setState) => {
-//     try {
-//       const response = await fetch(url, {
-//         headers: {
-//           Authorization: `Bearer ${token}`, // ✅ 토큰 포함하여 요청
-//         },
-//       });
-
-//       if (!response.ok) {
-//         throw new Error("리소스 로딩 실패");
-//       }
-
-//       const blob = await response.blob();
-//       const blobUrl = URL.createObjectURL(blob);
-//       setState(blobUrl);
-//     } catch (error) {
-//       console.error(`❌ ${url} 가져오기 실패:`, error);
-//       setState(null); // 실패하면 기본 이미지 또는 null
-//     }
-//   };
-
   const isCameraOn = useSelector((state) => state.camera.isCameraOn);
   const shouldRestart = useSelector((state) => state.camera.shouldRestart);
   const cameraStreamRef = useRef(null);
@@ -150,7 +130,6 @@ useEffect(() => {
     }
   }, [shouldRestart]);
 
-
   useEffect(() => {
     const fetchTutorialStatus = async () => {
       try {
@@ -173,7 +152,6 @@ useEffect(() => {
   const handleTutorialComplete = async () => {
     try {
       await springApi.patch("/users/me/tutorial/1", { completed: true });
-      console.log("튜토리얼 완료 상태 저장");
       setIsTutorialCompleted(true);
       setShowGreeting(false); // 튜토리얼 완료 후 인삿말 숨기기
     } catch (error) {
@@ -224,8 +202,8 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
       await springApi.post(`/prons/session/history/${session_id}`);
       console.log("✅ 히스토리 저장 완료");
 
-      alert("학습이 성공적으로 완료되었습니다!");
-      navigate("/prons/result"); // 학습 메인 페이지로 이동
+      setIsCompletePopupOpen(true);
+    //   navigate("/prons/result"); 
     } catch (error) {
       console.error("❌ 세션 종료 또는 데이터 저장 실패:", error);
       alert("학습 종료를 처리하는 중 오류가 발생했습니다.");
@@ -395,7 +373,7 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
         )}
 
             <button className={`next-button ${tutorialStep === 6 ? "highlight" : ""}`} onClick={handleSaveCorrectAndNext}>
-            {parseInt(seq_id) === classMaxSeqMap[class_id] ? "🔚학습 끝내기" : "다음으로"}
+            {parseInt(seq_id) === classMaxSeqMap[class_id] ? "학습 끝내기" : "다음으로"}
             </button>
             
             {/* ✅ 6단계: 튜토리얼 완료 */}
@@ -406,7 +384,7 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
                 onNext={handleTutorialComplete}
             />
             )}
-
+            {isCompletePopupOpen && <PronsCompletePopup onClose={() => navigate("/prons/result")} />}
         </>
       )}
     </div>
