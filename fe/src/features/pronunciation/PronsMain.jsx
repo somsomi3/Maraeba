@@ -17,8 +17,6 @@ const PronsMain = () => {
     const fetchClasses = async () => {
       try {
         const response = await springApi.get("/prons");
-        console.log("백엔드 응답:", response.data);
-
         if (Array.isArray(response.data)) {
           setClassData(response.data); // 응답이 배열이면 그대로 저장
         } else if (response.data && Array.isArray(response.data.classes)) {
@@ -39,12 +37,10 @@ const PronsMain = () => {
 
   const handleStart = async (classId, title) => {
     try {
-      console.log(`수업 세션 생성 요청: /prons/start/class/${classId}`);
       const response = await springApi.post(`/prons/start/class/${classId}`);
       const sessionId = response.data.session_id; // 응답에서 세션 ID 추출
       const pronId = response.data.id
 
-      console.log("세션 생성 완료, session_id:", sessionId);
       localStorage.setItem("session_id", sessionId); // session_id 저장
       localStorage.setItem("class_title", title); // 🔹 수업 제목 저장
       localStorage.setItem("pron_id", pronId)

@@ -60,7 +60,6 @@ const ChangePassword = () => {
             dispatch(logout()); // ✅ 로그아웃 처리
             navigate("/login"); // ✅ 로그인 페이지 이동
         } catch (error) {
-            console.error("❌ 비밀번호 변경 실패:", error);
             alert("비밀번호 변경 중 오류가 발생했습니다.");
         } finally {
             setLoading(false);
@@ -74,7 +73,6 @@ const ChangePassword = () => {
                 navigate("/login");
                 alert("로그아웃 되었습니다.");
             } catch (error) {
-                console.error("❌ 로그아웃 실패:", error);
                 alert("로그아웃에 실패했습니다.");
             }
         };
