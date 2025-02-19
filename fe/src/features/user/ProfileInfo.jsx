@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice"; 
 import HomeButton from "../../components/button/HomeButton";
 import "./ProfileInfo.css"; 
-import ProfileImageSelector from "./ProfileImageSelector";
 import backgroundImage from"../../assets/background/mypage_Bg.webp";
 import defaultProfile from "../../assets/profiles/profile1.png"
 
