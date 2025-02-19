@@ -9,7 +9,7 @@ import PronunciationHistoryChart from "./PronunciationHistoryChart";
 import PronunciationDetailChart from "./PronunciationDetailChart";
 import "./Profile.css";
 import bear from "../../assets/profiles/profile1.png";
-import backgroundImage from"../../assets/background/mypage_Bg.webp";
+import backgroundImage from "../../assets/background/mypage_Bg.webp";
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -18,6 +18,7 @@ const Profile = () => {
     const [username, setUsername] = useState("사용자");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [provider, setProvider] = useState("LOCAL");
 
     // 🔥 탭 상태 추가 (0: 발음 학습 기록, 1: 클래스별 발음 학습 통계)
     const [activeTab, setActiveTab] = useState(0);
@@ -26,7 +27,6 @@ const Profile = () => {
         return localStorage.getItem("profileImage") || bear;
     });
     useEffect(() => {
-
         const fetchUserInfo = async () => {
             if (!token) {
                 navigate("/login");
@@ -34,9 +34,9 @@ const Profile = () => {
             }
 
             try {
-                const response = await springApi.get("/users/me", {
-                });
+                const response = await springApi.get("/users/me", {});
                 setUsername(response.data.username);
+                setProvider(response.data.provider);
             } catch (error) {
                 console.error("❌ 사용자 정보를 불러오는 중 오류 발생:", error);
                 if (error.response?.status === 401) {
@@ -71,7 +71,10 @@ const Profile = () => {
     };
 
     return (
-        <div className="profile-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div
+            className="profile-container"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
             {/* 사이드바 */}
             <div className="sidebar">
                 <ProfileImageSelector
@@ -85,12 +88,41 @@ const Profile = () => {
                         <li onClick={() => navigate("/profile-info")}>
                             회원정보 수정
                         </li>
-                        <li onClick={() => navigate("/change-password")}>비밀번호 변경</li>
+                        <li
+                            onClick={() =>
+                                provider === "LOCAL" &&
+                                navigate("/change-password")
+                            }
+                            className={provider !== "LOCAL" ? "disabled" : ""}
+                            style={{
+                                color:
+                                    provider !== "LOCAL" ? "gray" : "inherit",
+                                cursor:
+                                    provider !== "LOCAL"
+                                        ? "not-allowed"
+                                        : "pointer",
+                            }}
+                        >
+                            비밀번호 변경
+                        </li>
                         <li onClick={handleLogout}>로그아웃</li>
-                        <li onClick={() => navigate("/profile-delete")}>
+                        <li
+                            onClick={() =>
+                                provider === "LOCAL" &&
+                                navigate("/profile-delete")
+                            }
+                            className={provider !== "LOCAL" ? "disabled" : ""}
+                            style={{
+                                color:
+                                    provider !== "LOCAL" ? "gray" : "inherit",
+                                cursor:
+                                    provider !== "LOCAL"
+                                        ? "not-allowed"
+                                        : "pointer",
+                            }}
+                        >
                             회원 탈퇴
                         </li>
-                        
                     </ul>
                 </nav>
             </div>
