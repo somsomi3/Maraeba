@@ -26,21 +26,15 @@ const Profile = () => {
         return localStorage.getItem("profileImage") || bear;
     });
     useEffect(() => {
-        // const savedProfile = localStorage.getItem("profileImage");
-        // if (savedProfile) {
-        //     setSelectedProfile(savedProfile);
-        // }
 
         const fetchUserInfo = async () => {
             if (!token) {
-                console.warn("❌ 토큰이 없습니다. 로그인 페이지로 이동");
                 navigate("/login");
                 return;
             }
 
             try {
                 const response = await springApi.get("/users/me", {
-                    // headers: { Authorization: `Bearer ${token}` },
                 });
                 setUsername(response.data.username);
             } catch (error) {
@@ -91,17 +85,19 @@ const Profile = () => {
                         <li onClick={() => navigate("/profile-info")}>
                             회원정보 수정
                         </li>
+                        <li onClick={() => navigate("/change-password")}>비밀번호 변경</li>
                         <li onClick={handleLogout}>로그아웃</li>
                         <li onClick={() => navigate("/profile-delete")}>
                             회원 탈퇴
                         </li>
+                        
                     </ul>
                 </nav>
             </div>
 
             {/* 메인 컨텐츠 */}
-            <div className="profile-content">
-                <h1>마이페이지</h1>
+            <div className="mypage-profile-content">
+                {/* <h1>마이페이지</h1> */}
 
                 {/* 🔥 탭 버튼 추가 */}
                 <div className="tab-container">

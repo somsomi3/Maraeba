@@ -1,10 +1,16 @@
 package com.be.db.entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(
@@ -28,5 +34,7 @@ public class RoomUser extends BaseEntity {
     private Room room;
 
     private Boolean isHost;  // 방장 여부
+
+    private Boolean isExist = false; // 방 나갔는지 여부
 
 }
