@@ -6,51 +6,77 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    color: black;
 }
 
 .room-popup-content {
-    background: rgb(246, 206, 152);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: #fff8e1;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 300px;
+    width: 320px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.room-popup-content h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ff9800;
 }
 
 .room-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .room-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 12px;
+    border: 2px solid #ffcc80;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s ease-in-out;
 }
 
-.create-roombtn {
-    background-color: rgb(254, 178, 119);
+.room-input:focus {
+    border: 2px solid #ff9800;
+}
+
+.create-roombtn, .cancel-button {
+    background: linear-gradient(135deg, #ffb74d, #ff9800);
+    color: white;
     border: none;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 10px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.create-roombtn:hover, .cancel-button:hover {
+    background: linear-gradient(135deg, #ffa726, #ff5722);
+    transform: scale(1.05);
 }
 
 .cancel-button {
-    background-color: rgb(254, 178, 119);
-    border: none;
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-    width: 300px;
+    background: linear-gradient(135deg, #e57373, #d32f2f);
+    margin-top: 12px;
+    width: 100%;
+}
+
+.cancel-button:hover {
+    background: linear-gradient(135deg, #ef5350, #c62828);
 }
