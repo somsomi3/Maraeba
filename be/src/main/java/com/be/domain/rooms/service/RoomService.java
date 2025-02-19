@@ -1,5 +1,11 @@
 package com.be.domain.rooms.service;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
 import com.be.db.entity.Room;
@@ -14,13 +20,9 @@ import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.request.UserLeaveRequest;
 import com.be.domain.rooms.response.RoomJoinResponse;
 import com.be.domain.rooms.response.RoomResponse;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -39,16 +41,16 @@ public class RoomService {
 		List<Room> rooms = roomRepository.findAll();
 
 		return rooms.stream()
-				.filter(Room::isActive) // 활성화된 방만 필터링
-				.map(room -> new RoomResponse(
-						room.getId(),
-						room.getTitle(),
-						room.getHost().getUserId(),
-						room.getHost().getUsername(),
-						room.getUserCnt(),
-					room.getRoomPassword() != null && !room.getRoomPassword().isBlank()
-				))
-				.toList();
+			.filter(Room::isActive) // 활성화된 방만 필터링
+			.map(room -> new RoomResponse(
+				room.getId(),
+				room.getTitle(),
+				room.getHost().getUserId(),
+				room.getHost().getUsername(),
+				room.getUserCnt(),
+				room.getRoomPassword() != null && !room.getRoomPassword().isBlank()
+			))
+			.toList();
 	}
 	/**
 	 * 방 생성
@@ -149,8 +151,7 @@ public class RoomService {
 			log.info("중복 leave 요청: 사용자({}) 방({}) 이미 떠났습니다.", userId, roomId);
 		}
 
-		// 방에서 해당 사용자 삭제
-		roomUserRepository.delete(roomUserOpt.get());
+		// 방에서 해당 사용자 나감
 		log.info("사용자({})가 방({})에서 나갔습니다.", userId, roomId);
 
 		// 방 인원 수 감소
