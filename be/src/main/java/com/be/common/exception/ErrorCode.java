@@ -21,7 +21,7 @@ public enum ErrorCode {
 	ROOM_USER_DUPLICATED("Duplicate Room User", HttpStatus.CONFLICT),
 	ROOM_USER_NOT_FOUND("Room User Not Found", HttpStatus.NOT_FOUND),
 	ROOM_IS_NOT_ACTIVE("Room is not active", HttpStatus.BAD_REQUEST),
-	;
+	ROOM_IS_FULL("Room is full",HttpStatus .CONFLICT);
 
 
 	private final String message;

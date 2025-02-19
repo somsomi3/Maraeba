@@ -72,7 +72,12 @@ const Webrtc = () => {
 
             console.log("응답: ", response.data);
 
-            const isHostValue = response.data.host || false;
+            if (response.data.user_cnt > 2) {
+                console.error("최대 인원 수 초과");
+                navigate("/room/RoomList");
+            }
+
+            const isHostValue = response.data.is_host || false;
             setIsHost(isHostValue);
 
             //사용자 이름 저장
@@ -80,7 +85,7 @@ const Webrtc = () => {
             setMyUsername(responseUsername);
 
             console.log("🚀 방장 여부:", isHostValue ? "방장" : "참가자");
-            console.log("참가자 이름 : ", responseUsername);
+            console.log("유저 응답 : ", responseUsername);
         } catch (error) {
             console.error("방장 여부 확인 실패:", error.message);
             navigate("/room/RoomList");
@@ -103,13 +108,13 @@ const Webrtc = () => {
                 webSocketRef.current &&
                 webSocketRef.current.readyState === WebSocket.OPEN
             ) {
-                webSocketRef.current.send(
-                    JSON.stringify({
-                        type: "leave",
-                        room_id: roomId,
-                        user_id: userId,
-                    })
-                );
+                const leaveMessage = {
+                    type: "leave",
+                    room_id: roomId,
+                    user_id: userId,
+                };
+                webSocketRef.current.send(JSON.stringify(leaveMessage));
+                console.log("🚀 방 퇴장 메시지 전송:", leaveMessage);
             }
         };
         window.addEventListener("beforeunload", handleBeforeUnload);
@@ -139,8 +144,8 @@ const Webrtc = () => {
 
         // 실제 서버 주소/포트를 맞춰주세요.
         webSocketRef.current = new WebSocket(
-            // `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
-            `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            // `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         // 소켓 open
@@ -304,12 +309,12 @@ const Webrtc = () => {
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
-                // {
-                //     urls: "turn:3.39.252.223:3478?transport=tcp",
-                //     username: import.meta.env.VITE_USERNAME_URL,
-                //     credential: import.meta.env.VITE_PASSWORD_URL,
-                // },
-                { urls: "stun:stun.l.google.com:19302" },
+                {
+                    urls: "turn:3.39.252.223:3478?transport=tcp",
+                    username: import.meta.env.VITE_USERNAME_URL,
+                    credential: import.meta.env.VITE_PASSWORD_URL,
+                },
+                // { urls: "stun:stun.l.google.com:19302" },
             ],
         });
 
@@ -854,7 +859,7 @@ const Webrtc = () => {
                                             : "other-message"
                                     }
                                 >
-                                    <strong>{msg.username}:</strong>
+                                    <strong>{msg.username}: </strong>
                                     {msg.message}
                                 </div>
                             ))}

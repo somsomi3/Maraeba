@@ -108,16 +108,19 @@ public class RoomService {
 				throw new CustomException(ErrorCode.ROOM_PASSWORD_INCORRECT);
 			}
 		}
-
-		// DB에 RoomUser 추가
 		boolean isHost = room.getHost().getId().equals(userId);
-		RoomUser roomUser = new RoomUser();
-		roomUser.setRoom(room);
-		roomUser.setUser(user);
-		roomUser.setIsHost(isHost);
-		roomUser.setIsExist(false);
-		roomUserRepository.save(roomUser);
-
+		// 방목록에서 입장한 적이 있는지 확인
+		if(roomUserRepository.findByUserIdAndRoomId(userId, roomId).isEmpty()) {
+			if(room.getUserCnt()==2) {
+				throw new CustomException(ErrorCode.ROOM_IS_FULL,"방이 가득 찼습니다.");
+			}
+			RoomUser temp = new RoomUser();
+			temp.setRoom(room);
+			temp.setUser(user);
+			temp.setIsHost(isHost);
+			temp.setIsExist(false);
+			roomUserRepository.save(temp);
+		}
 		log.info("사용자({})가 방({})에 참가. 방장 여부: {}", userId, roomId, isHost);
 		return RoomJoinResponse.of(200, isHost);
 	}
@@ -136,9 +139,11 @@ public class RoomService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		if (room.getUserCnt() >= 2) {
-			throw new CustomException(ErrorCode.ROOM_NOT_FOUND, "방 인원 초과");
-		}
+		// if (room.getUserCnt() >= 2) {
+		// 	room.setUserCnt(room.getUserCnt()+1); // 잠시 올렸다가 내림
+		// 	roomRepository.save(room);
+		// 	throw new CustomException(ErrorCode.ROOM_NOT_FOUND, "방 인원 초과");
+		// }
 
 		// 방목록에서 입장한 적이 있는지 확인
 		RoomUser roomUser = roomUserRepository.findByUserIdAndRoomId(userId, roomId)
@@ -146,14 +151,10 @@ public class RoomService {
 		// 이미 참가 중인 유저면 userCnt 변경 없이 곧바로 OK 응답
 		log.info("입장 : {}}({}) {}({})에 참가 시도.", user.getUsername(), userId, room.getTitle(), roomId);
 		if (!roomUser.getIsExist()) { // 현재 방에 존재하지 않는다면
-			if (!room.isActive() && !roomUser.getIsHost()) {
-				throw new CustomException(ErrorCode.ROOM_IS_NOT_ACTIVE, "비활성화 된 방");
-			}
-			room.setActive(true);
 			roomUser.setIsExist(true); // 방에 존재한다고 표시
-			// 방 인원 수 증가
-			room.setUserCnt(room.getUserCnt() + 1); // 존재하게 되어서 인원 수 증가
-			return ValidUserResponse.of(user.getUsername(), roomUser.getIsHost());
+			room.setUserCnt(room.getUserCnt()+1); // 존재하게 되어서 인원 수 증가
+			room.setActive(true);
+			return ValidUserResponse.of(user.getUsername(), roomUser.getIsHost(),room.getUserCnt());
 		} else { // 현재 방에 존재한다면
 			throw new CustomException(ErrorCode.ROOM_USER_DUPLICATED, "중복된 사용자 감지");
 		}
@@ -175,6 +176,7 @@ public class RoomService {
 		} else {
 			RoomUser roomUser = roomUserOpt.get();
 			// 방에서 해당 사용자 나감
+
 			log.info("사용자({})가 방({})에서 나갔습니다.", userId, roomId);
 
 			roomUser.setIsExist(false);
@@ -184,12 +186,10 @@ public class RoomService {
 				.orElseThrow(() -> new CustomException(ErrorCode.ROOM_NOT_FOUND));
 
 			// 인원이 0 미만이 되지 않도록 처리
-			int currentCnt = Math.min(room.getUserCnt(), 2);
-			int updatedCount = Math.max(currentCnt - 1, 0);
-			room.setUserCnt(updatedCount);
+			room.setUserCnt(room.getUserCnt()-1);
 
 			//userCnt가 0이 되면, 방을 비활성화(isActive = false) 시도
-			if (updatedCount == 0) {
+			if (room.getUserCnt() <= 0) {
 				room.setActive(false);
 			}
 
