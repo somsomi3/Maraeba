@@ -35,9 +35,9 @@
 }
 
   .pw-button {
-    background-color: #4CAF50;
+    background-color: #78b87a;
     color: white;
-    padding: 7px 15px;
+    padding: 9px 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -71,7 +71,7 @@
   }
   
 /* 메인 컨텐츠 */
-.profile-content {
+.mypage-profile-content {
     flex: 1;
     padding: 40px;
     /* text-align: center; */
@@ -187,6 +187,19 @@
     background: #ffc567;
 }
 
+.pw-info-box {
+    padding: 5px;
+    font-family: NPSregular;
+}
+
+.pw-input {
+    width: 90%;
+    padding: 13px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: none;
+}
 
 /* 📌 반응형 스타일 */
 @media screen and (max-width: 1024px) {

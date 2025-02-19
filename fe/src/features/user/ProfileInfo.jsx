@@ -4,9 +4,10 @@ import { springApi, logoutApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice"; 
 import HomeButton from "../../components/button/HomeButton";
-import "./ProfileInfo.css"; // ✅ 기존 CSS 유지
+import "./ProfileInfo.css"; 
 import ProfileImageSelector from "./ProfileImageSelector";
 import backgroundImage from"../../assets/background/mypage_Bg.webp";
+import defaultProfile from "../../assets/profiles/profile1.png"
 
 const ProfileInfo = () => {
     const token = useSelector((state) => state.auth.token);
@@ -16,6 +17,10 @@ const ProfileInfo = () => {
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [profileImage, setProfileImage] = useState(() => {
+        return localStorage.getItem("profileImage") || defaultProfile;
+    });
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -78,12 +83,7 @@ const ProfileInfo = () => {
             alert("이메일 변경 중 오류 발생");
         }
     };
-
-    // ✅ 비밀번호 변경 페이지로 이동
-    const handleChangePassword = () => {
-        navigate("/change-password");
-    };
-
+    
      const handleLogout = async () => {
             try {
                 await logoutApi(); // 로그아웃 API 호출
@@ -101,13 +101,14 @@ const ProfileInfo = () => {
             {/* ✅ 사이드바 */}
             <div className="sidebar">
                 <div className="profile-header">
-                    <h2>회원정보 수정</h2>
-                    
+                    <img src={profileImage} alt="프로필 이미지" className="my-profile-image" />
                 </div>
+                <h2>{newUsername}</h2>
                 <nav className="profile-menu">
                     <ul>
                         <li onClick={() => navigate("/profile")}>내 프로필</li>
                         <li className="active">회원정보 수정</li>
+                        <li onClick={() => navigate("/change-password")}>비밀번호 변경</li>
                         <li onClick={handleLogout}>로그아웃</li>
                         <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
                     </ul>
@@ -138,10 +139,6 @@ const ProfileInfo = () => {
                             />
                             <button className="profile-button" onClick={handleUpdateEmail} >이메일 변경</button>
                         </div>
-
-                        <button className="change-password-btn" onClick={handleChangePassword}>
-                            비밀번호 변경
-                        </button>
                     </>
                 )}
             </div>
