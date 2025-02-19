@@ -21,6 +21,8 @@ const Webrtc = () => {
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
+    const [myUsername, setMyUsername] = useState();
+    const [otherUsername, setOtherUsername] = useState();
 
     // 통화 시간 기록 (로그 저장에 활용)
     const [startTime, setStartTime] = useState(null);
@@ -51,6 +53,7 @@ const Webrtc = () => {
     useEffect(() => {
         if (!roomId) {
             console.error("🚨 roomId가 없습니다. 방장 여부 확인 불가");
+            navigate("/room/RoomList");
             return;
         }
         fetchHostStatus(); // 서버에 방 참가 요청하여 방장 여부 확인
@@ -58,7 +61,7 @@ const Webrtc = () => {
 
     const fetchHostStatus = async () => {
         try {
-            const response = await springApi.post(`/rooms/join`, {
+            const response = await springApi.post(`/rooms/valid`, {
                 user_id: userId,
                 room_id: roomId,
             });
@@ -67,9 +70,22 @@ const Webrtc = () => {
                 throw new Error("🚨 서버 응답이 없습니다.");
             }
 
-            const isHostValue = response.data.host || false;
+            console.log("응답: ", response.data);
+
+            if (response.data.user_cnt > 2) {
+                console.error("최대 인원 수 초과");
+                navigate("/room/RoomList");
+            }
+
+            const isHostValue = response.data.is_host || false;
             setIsHost(isHostValue);
+
+            //사용자 이름 저장
+            const responseUsername = response.data.username;
+            setMyUsername(responseUsername);
+
             console.log("🚀 방장 여부:", isHostValue ? "방장" : "참가자");
+            console.log("유저 응답 : ", responseUsername);
         } catch (error) {
             console.error("방장 여부 확인 실패:", error.message);
             navigate("/room/RoomList");
@@ -92,13 +108,13 @@ const Webrtc = () => {
                 webSocketRef.current &&
                 webSocketRef.current.readyState === WebSocket.OPEN
             ) {
-                webSocketRef.current.send(
-                    JSON.stringify({
-                        type: "leave",
-                        room_id: roomId,
-                        user_id: userId,
-                    })
-                );
+                const leaveMessage = {
+                    type: "leave",
+                    room_id: roomId,
+                    user_id: userId,
+                };
+                webSocketRef.current.send(JSON.stringify(leaveMessage));
+                console.log("🚀 방 퇴장 메시지 전송:", leaveMessage);
             }
         };
         window.addEventListener("beforeunload", handleBeforeUnload);
@@ -419,35 +435,48 @@ const Webrtc = () => {
     //                   채팅 로직
     // ===================================================
     const sendMessage = () => {
-        if (
-            message.trim() &&
-            webSocketRef.current &&
-            webSocketRef.current.readyState === WebSocket.OPEN
-        ) {
-            if (!userId) {
-                console.error("사용자 ID 없음");
-                return;
-            }
-            const messageObject = {
-                type: "chat",
-                user_id: userId,
-                message: message.trim(),
-                room_id: roomId,
-                sentAt: new Date().toISOString(),
-            };
-            console.log("📡 채팅 메시지 전송:", messageObject);
-
-            webSocketRef.current.send(JSON.stringify(messageObject));
-
-            // UI에 채팅 추가
-            setMessages((prev) => [...prev, messageObject]);
-            setMessage("");
-
-            // (선택) DB에 저장
-            saveMessageToDB(messageObject);
-        } else {
-            console.error("❌ WebSocket 연결이 닫혀 있거나 메시지가 비어있음");
+        if (!message.trim()) {
+            console.error("❌ 메시지가 비어 있음");
+            return;
         }
+        if (!myUsername) {
+            console.error("❌ 사용자 이름 없음! (아직 로딩 중일 가능성 있음)");
+            return;
+        }
+        if (
+            !webSocketRef.current ||
+            webSocketRef.current.readyState !== WebSocket.OPEN
+        ) {
+            console.error("❌ WebSocket 연결이 닫혀 있음");
+            return;
+        }
+
+        if (!userId) {
+            console.error("사용자 ID 없음");
+            return;
+        }
+        if (!myUsername) {
+            console.error("사용자 이름 없음!");
+            return;
+        }
+        const messageObject = {
+            type: "chat",
+            user_id: userId,
+            username: myUsername,
+            message: message.trim(),
+            room_id: roomId,
+            sentAt: new Date().toISOString(),
+        };
+        console.log("📡 채팅 메시지 전송:", messageObject);
+
+        webSocketRef.current.send(JSON.stringify(messageObject));
+
+        // UI에 채팅 추가
+        setMessages((prev) => [...prev, messageObject]);
+        setMessage("");
+
+        // (선택) DB에 저장
+        saveMessageToDB(messageObject);
     };
 
     const saveMessageToDB = async (messageObject) => {
@@ -570,7 +599,9 @@ const Webrtc = () => {
             return;
         }
         try {
-            const response = await springApi.post(`/rgames/start/${roomId}`, { userId });
+            const response = await springApi.post(`/rgames/start/${roomId}`, {
+                userId,
+            });
             if (response.status === 200) {
                 setIsGameStarted(true);
             }
@@ -715,7 +746,10 @@ const Webrtc = () => {
     //                      렌더링
     // ===================================================
     return (
-        <div className="webrtc-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div
+            className="webrtc-container"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
             <div className="webrtc-game-overlay">
                 {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
                 <GoBackButton />
@@ -734,7 +768,7 @@ const Webrtc = () => {
                                 게임 시작
                             </button>
                         )}
-    
+
                         {/* 정답 선택 UI */}
                         {isHost && (
                             <div className="host-answer-selection">
@@ -742,9 +776,14 @@ const Webrtc = () => {
                                 <div className="answer-buttons">
                                     {items.length > 0 ? (
                                         items.map((word, index) => (
-                                            <div key={index} className="answer-button-wrapper">
+                                            <div
+                                                key={index}
+                                                className="answer-button-wrapper"
+                                            >
                                                 <button
-                                                    onClick={() => sendAnswerChoice(word)}
+                                                    onClick={() =>
+                                                        sendAnswerChoice(word)
+                                                    }
                                                     className="answer-button"
                                                 >
                                                     {colors[index]}
@@ -752,33 +791,46 @@ const Webrtc = () => {
                                             </div>
                                         ))
                                     ) : (
-                                        <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
+                                        <p className="loading-message">
+                                            📌 단어 목록을 불러오는 중...
+                                        </p>
                                     )}
                                 </div>
                             </div>
                         )}
                     </div>
-    
+
                     <div className="video-container">
                         <div className="video-wrapper">
                             {/* 상대방 화면 */}
                             <div className="video-box">
                                 <div className="video-label">상대방 화면</div>
-                                <video ref={remoteVideoRef} autoPlay playsInline className="large-video"
-                                       aria-label="상대방 비디오"/>
+                                <video
+                                    ref={remoteVideoRef}
+                                    autoPlay
+                                    playsInline
+                                    className="large-video"
+                                    aria-label="상대방 비디오"
+                                />
                             </div>
-    
+
                             {/* 본인 화면 */}
                             <div className="video-box small-video-container">
                                 <div className="video-label">본인 화면</div>
                                 <div className="role-badge">
                                     {isHost ? "👑" : "🎄"}
                                 </div>
-                                <video ref={localVideoRef} autoPlay playsInline muted className="small-video"
-                                       aria-label="내 비디오"/>
+                                <video
+                                    ref={localVideoRef}
+                                    autoPlay
+                                    playsInline
+                                    muted
+                                    className="small-video"
+                                    aria-label="내 비디오"
+                                />
                             </div>
                         </div>
-    
+
                         <div className="button-container">
                             <button onClick={startMedia} className="button">
                                 🎥 나의 화면 열기
@@ -794,20 +846,25 @@ const Webrtc = () => {
                             </button>
                         </div>
                     </div>
-    
+
                     {/* 채팅 컨테이너 */}
                     <div className="chat-container" role="region">
                         <div ref={chatBoxRef} className="chat-box">
                             {messages.map((msg, idx) => (
                                 <div
                                     key={idx}
-                                    className={msg.user_id === userId ? "my-message" : "other-message"}
+                                    className={
+                                        msg.username === myUsername
+                                            ? "my-message"
+                                            : "other-message"
+                                    }
                                 >
-                                    <strong>user{msg.user_id}:</strong> {msg.message}
+                                    <strong>{msg.username}: </strong>
+                                    {msg.message}
                                 </div>
                             ))}
                         </div>
-    
+
                         {/* 입력창 */}
                         <div className="input-container">
                             <input
@@ -817,21 +874,24 @@ const Webrtc = () => {
                                 placeholder="메시지 입력..."
                                 className="input"
                             />
-                            <button onClick={sendMessage} className="send-button">
+                            <button
+                                onClick={sendMessage}
+                                className="send-button"
+                            >
                                 전송
                             </button>
                         </div>
                     </div>
                 </div>
-    
+
                 {/* 오른쪽 - 게임 UI */}
                 <div className="webrtc-game-container">
                     <h2>🎮 사물 맞추기 게임</h2>
                     <p>입모양을 보고, 색상이 들어간 정답을 선택하세요!</p>
-    
+
                     {/* 🛠️ 로그 추가: items 상태 확인 */}
                     {console.log("📌 렌더링 중 items 상태:", items)}
-    
+
                     <div className="game-buttons">
                         {items.length > 0 ? (
                             items.map((word, index) => (
@@ -840,23 +900,26 @@ const Webrtc = () => {
                                     onClick={() => sendChoice(word)}
                                     className={`game-button 
                                         ${choice === word ? "selected" : ""} 
-                                        ${correctAnswer === word ? "correct" : "incorrect"}`}
+                                        ${
+                                            correctAnswer === word
+                                                ? "correct"
+                                                : "incorrect"
+                                        }`}
                                     aria-label={`게임 버튼: ${word}`}
                                 >
                                     {word}
                                 </button>
                             ))
                         ) : (
-                            <p className="loading-message">📌 단어 목록을 불러오는 중...</p>
+                            <p className="loading-message">
+                                📌 단어 목록을 불러오는 중...
+                            </p>
                         )}
                     </div>
                 </div>
             </div>
         </div>
     );
-    
 };
-
-
 
 export default Webrtc;

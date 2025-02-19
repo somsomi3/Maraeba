@@ -15,9 +15,11 @@ import com.be.common.model.response.BaseResponseBody;
 import com.be.domain.rooms.request.CreateRoomRequest;
 import com.be.domain.rooms.request.RoomRemoveRequest;
 import com.be.domain.rooms.request.UserJoinRequest;
+import com.be.domain.rooms.request.ValidUserRequest;
 import com.be.domain.rooms.response.PostCreateRoomRes;
 import com.be.domain.rooms.response.RoomJoinResponse;
 import com.be.domain.rooms.response.RoomResponse;
+import com.be.domain.rooms.response.ValidUserResponse;
 import com.be.domain.rooms.service.RoomService;
 
 import lombok.Getter;
@@ -72,6 +74,19 @@ public class RoomController {
 		return ResponseEntity.ok().body(roomJoinResponse);
 	}
 
+	/**
+	 * 입장했을 경우 해당 유저 처리
+	 * @param request
+	 * @return
+	 */
+	@PostMapping("/valid")
+	public ResponseEntity<? extends BaseResponseBody> validUser(@RequestBody ValidUserRequest request) {
+		log.info("Room ID: {}", request.getRoomId());
+		log.info("User ID: {}", request.getUserId());
+
+		ValidUserResponse response = roomService.validUser(request);
+		return ResponseEntity.ok().body(response);
+	}
 
 	/**
 	 * 방 삭제 API(필요시)
