@@ -83,7 +83,7 @@ const ConversationStart = () => {
   
       // ✅ 2. AI 응답 요청
       if (!sessionId) {
-        console.error("❌ sessionId가 없습니다!");
+        console.error("sessionId가 없습니다");
         return;
       }
   
@@ -94,8 +94,6 @@ const ConversationStart = () => {
       const aiResponse = await springApi.post('/chat/play', chatFormData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-  
-      console.log("🤖 AI Response:", aiResponse.data.answer);
   
       // ✅ 3. UI 업데이트 (STT 변환된 유저 텍스트 & AI 응답 추가)
       setMessages((prev) => {

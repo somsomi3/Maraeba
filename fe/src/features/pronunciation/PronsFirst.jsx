@@ -23,8 +23,6 @@ const PronsFirst = () => {
         const fetchPronunciationData = async () => {
             try {
                 const response = await springApi.get(`/prons/class/${class_id}/seq/${seq_id}`);
-                console.log("✅ 가져온 데이터:", response.data.data);
-
                 const { tutorial_video_url, id: pronId } = response.data.data;
 
                 localStorage.setItem("pron_id", pronId);

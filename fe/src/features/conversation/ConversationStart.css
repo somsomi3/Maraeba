@@ -143,3 +143,16 @@
 .conversation-record-warning.hidden {
     display: none;
 }
+
+.tts-button {
+    padding: 7px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(221, 222, 240);
+    font-family: NPSregular;
+    cursor: pointer;
+}
+
+.tts-button :hover {
+    background-color: rgb(130, 136, 247);
+}

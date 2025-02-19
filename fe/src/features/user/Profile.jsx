@@ -29,14 +29,12 @@ const Profile = () => {
 
         const fetchUserInfo = async () => {
             if (!token) {
-                console.warn("❌ 토큰이 없습니다. 로그인 페이지로 이동");
                 navigate("/login");
                 return;
             }
 
             try {
                 const response = await springApi.get("/users/me", {
-                    // headers: { Authorization: `Bearer ${token}` },
                 });
                 setUsername(response.data.username);
             } catch (error) {
