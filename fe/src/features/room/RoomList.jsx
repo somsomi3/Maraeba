@@ -46,7 +46,7 @@ const RoomList = () => {
         fetchRooms();
         const interval = setInterval(() => {
             fetchRooms();
-        }, 10000);
+        }, 10000000);
         return () => clearInterval(interval);
         // eslint-disable-next-line
     }, []);
