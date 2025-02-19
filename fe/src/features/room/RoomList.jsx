@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api.js";
 import { useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import "./RoomList.css";
 import GoBackButton from "../../components/button/GoBackButton";
 import HomeButton from "../../components/button/HomeButton";
 import backgroundImage from"../../assets/background/waitingRoom_Bg.webp";
+import tutoPorong from "../../assets/images/tuto_porong.png"
 
 const PAGE_SIZE = 5; // 한 화면에 보여줄 최대 방 개수
 
@@ -23,14 +24,16 @@ const RoomList = () => {
     const token = useSelector((state) => state.auth.token);
     const userId = useSelector((state) => state.auth.userId);
 
+    // ✅ 튜토리얼 상태 관리
+    const [tutorialStep, setTutorialStep] = useState(null);
+
     // 방 목록 불러오기
     const fetchRooms = async () => {
         try {
             setLoading(true);
             const response = await springApi.get("/rooms/list");
             // 🔹 서버에서 받아온 데이터를 id 기준으로 내림차순 정렬 후 상태 저장
-            const sortedData = [...response.data].sort((a, b) => b.id - a.id);
-            setRooms(sortedData);
+            setRooms(response.data.sort((a, b) => b.id - a.id));
         } catch (error) {
             console.error("❌ 방 목록 불러오기 실패:", error);
         } finally {
@@ -43,16 +46,11 @@ const RoomList = () => {
         fetchRooms();
         const interval = setInterval(() => {
             fetchRooms();
-        }, 10000000);
+        }, 10000);
         return () => clearInterval(interval);
         // eslint-disable-next-line
     }, []);
 
-    useEffect(() => {
-        if (rooms.length > 0) {
-            setRooms([...rooms].sort((a, b) => b.id - a.id));
-        }
-    }, [rooms]);
 
     // 방 클릭 (행 선택)
     const handleJoinRoomTitle = async (room) => {
@@ -171,32 +169,72 @@ const RoomList = () => {
         }
     };
 
+    // ✅ 튜토리얼 버튼 클릭 시 실행 (초기화)
+    const startTutorial = () => {
+        if (tutorialStep === null) {
+            setTutorialStep(1); // ✅ 한 번만 실행되도록 보장
+        }
+    };
+
+    // ✅ 튜토리얼 완료 처리
+    const completeTutorial = () => {
+        setTutorialStep(null); // 튜토리얼 종료
+    };
+
+    // ✅ 공통적으로 사용할 포롱이 대사 컴포넌트
+    const PorongSpeech = ({ text, position = "center", onNext }) => (
+        <div className={`roomlist-porong-container ${position}`}>
+            <img src={tutoPorong} alt="포롱이" className="porong-image" />
+            <div className="roomlist-porong-speech-bubble">
+                {text.split("\n").map((line, index) => (
+                    <span key={index}>
+                        {line}
+                        <br />
+                    </span>
+                ))}
+                {onNext && <button onClick={onNext} className="roomlist-porong-nextbutton">다음</button>}
+            </div>
+        </div>
+    );
 
     return (
         <div className="waiting-room-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <GoBackButton />
             <HomeButton />
+
+            <button className="roomlist-restart-tutorial-btn" onClick={startTutorial}>
+                ▶ 튜토리얼
+            </button>
+
             <div className="waiting-room">
                 {/* 방 생성 팝업 */}
                 <CreateRoomPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
-    
-                <h1 className="title">방 목록</h1>
-    
+                {/* 🔹 방 목록 제목 (튜토리얼 1단계) */}
+                <h1 className={`title ${tutorialStep === 1 ? "cooking-highlight" : ""}`}>방 목록</h1>
+                {tutorialStep === 1 && (
+                    <PorongSpeech text="이곳에서 게임을 진행할 방을 찾을 수 있어요!" position="roomlist-near-title" onNext={() => setTutorialStep(2)} />
+                )}
+
+                {/* 🔹 방 액션 버튼 (튜토리얼 2단계) */}
                 <div className="room-actions">
-                    <button className="create-room-btn" onClick={() => setIsPopupOpen(true)}>
-                        방 만들기
-                    </button>
+                <button className={`create-room-btn ${tutorialStep === 2 ? "cooking-highlight" : ""}`} onClick={() => setIsPopupOpen(true)}>
+                    방 만들기
+                </button>
+                {tutorialStep === 2 && (
+                    <PorongSpeech text="방을 만들고 친구와 함께 플레이할 수도 있어요!" position="roomlist-near-create" onNext={() => setTutorialStep(3)} />
+                )}
     
                     <button className="refresh-room-btn" onClick={fetchRooms} disabled={loading}>
                         {loading ? "🔄 불러오는 중..." : "🔄 새로고침"}
                     </button>
     
-                    <button className="join-room-btn" onClick={handleJoinRoom} disabled={!selectedRoom}>
+                    <button className={`join-room-btn ${tutorialStep === 4 ? "cooking-highlight" : ""}`} onClick={handleJoinRoom} disabled={!selectedRoom}>
                         입장하기
                     </button>
                 </div>
-    
-                <div className="room-list-container">
+                
+                 {/* 🔹 방 목록 (튜토리얼 3단계) */}
+                 <div className={`room-list-container ${tutorialStep === 3 ? "cooking-highlight" : ""}`}>
                     {loading ? (
                         <p>⏳ 방 목록을 불러오는 중...</p>
                     ) : rooms.length > 0 ? (
@@ -248,6 +286,20 @@ const RoomList = () => {
                     )}
                 </div>
     
+                {tutorialStep === 3 && (
+                    <PorongSpeech text="현재 생성된 방들이 여기 나와요!" position="roomlist-near-list" onNext={() => setTutorialStep(4)} />
+                )}
+
+                {/* 🔹 입장 버튼 강조 (튜토리얼 4단계) */}
+                {tutorialStep === 4 && (
+                    <PorongSpeech text="원하는 방을 선택하고 입장 버튼을 눌러 참여하세요!" position="roomlist-near-join" onNext={() => setTutorialStep(5)} />
+                )}
+
+                {/* 🔹 튜토리얼 완료 메시지 (튜토리얼 5단계) */}
+                {tutorialStep === 5 && (
+                    <PorongSpeech text="이제 방을 선택해서 게임을 시작해보세요!" position="roomlist-near-next" onNext={completeTutorial} />
+                )}
+
                 {/* 페이지네이션 UI (room-list-container 바깥으로 이동) */}
                 <div className="pagination">
                     <button 
