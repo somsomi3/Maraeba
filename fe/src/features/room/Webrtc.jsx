@@ -938,6 +938,12 @@ const Webrtc = () => {
                                 type="text"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault(); // 폼 자동 제출 방지
+                                        sendMessage();
+                                    }
+                                }}
                                 placeholder="메시지 입력..."
                                 className="input"
                             />
