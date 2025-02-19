@@ -1,0 +1,325 @@
+/* 전체 컨테이너: 반응형 배경 이미지 */
+.waiting-room-container {
+    font-family: NPSbold;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 부모 컨테이너 */
+.waiting-room {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(193, 231, 200, 0.9);
+    padding: 2rem;
+    color: #333;
+    width: 50%;  /* 기본 PC 화면에서는 40% */
+    height: 83vh;
+    max-width: 800px;
+    min-width: 320px;
+    border-radius: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+.title {
+    flex: 0.5;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* 상단 버튼 영역 */
+.room-actions {
+    font-family: NPSbold;
+    flex: 0.5;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap; /* 반응형 대응 */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.create-room-btn,
+.refresh-room-btn,
+.join-room-btn {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 0.8rem;
+    transition: background-color 0.3s;
+    flex: 1 1 30%;
+    min-width: 120px;
+    text-align: center;
+}
+
+.refresh-room-btn {
+    background-color: #ffa500;
+}
+
+.join-room-btn {
+    background-color: #00a0e9;
+}
+
+.create-room-btn:hover {
+    background-color: #45a049;
+}
+
+.refresh-room-btn:hover {
+    background-color: #ff8c00;
+}
+
+.join-room-btn:hover {
+    background-color: #008bbd;
+}
+
+.join-room-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 방 목록 컨테이너 */
+.room-list-container {
+    display: flex;
+    flex-direction: column;
+    flex: 9.5;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    max-height: 60%;
+    overflow-y: auto;
+}
+
+/* 방 목록 테이블 */
+.room-table {
+    width: 100%;
+    border-collapse: separate;
+    background-color: #fff;
+    border-spacing: 0;
+    border-radius: 2rem;
+    font-size: 1rem;
+    overflow: hidden;
+}
+
+/* 테이블 헤더 & 바디 */
+.room-table th,
+.room-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+/* 테이블 헤더 */
+.room-table thead {
+    background-color: #ffb682;
+}
+
+/* 선택된 행 강조 */
+.room-table tr.selected {
+    background-color: #e7f0ff;
+}
+
+/* 방 이름 버튼 */
+.room-link {
+    background: none;
+    border: none;
+    color: #005bb5;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* 방이 없는 경우 안내 문구 */
+.no-rooms {
+    font-size: 1.5rem;
+    color: #444;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+/* 방장 아이디 표시 */
+.small-text {
+    font-size: 0.9rem;
+    color: gray;
+}
+
+/* 페이지네이션 */
+.pagination {
+    flex: 0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 10px;
+    width: 100%;
+}
+
+.pagination-btn {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.pagination-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* ============================= */
+/*       태블릿 (1024px 이하)    */
+/* ============================= */
+@media screen and (max-width: 1024px) {
+    .waiting-room {
+        width: 60%;      /* 태블릿에서는 60% */
+        height: 80vh;    /* 조금 줄이기 */
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .create-room-btn,
+    .refresh-room-btn,
+    .join-room-btn {
+        font-size: 0.95rem;
+        padding: 0.7rem 1rem;
+    }
+
+    .room-list-container {
+        max-height: 55%; /* 태블릿에서 리스트 컨테이너 줄이기 */
+    }
+}
+
+/* ============================= */
+/*      모바일 (768px 이하)      */
+/* ============================= */
+@media screen and (max-width: 768px) {
+    .waiting-room {
+        width: 80%;
+        height: auto;    /* 내용에 따라 자동 높이 */
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.6rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .room-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .create-room-btn,
+    .refresh-room-btn,
+    .join-room-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+        min-width: 100%;
+    }
+
+    /* 방 목록 컨테이너 */
+    .room-list-container {
+        max-height: 50%;
+    }
+
+    /* 테이블 폰트 크기 줄이기 */
+    .room-table {
+        font-size: 0.9rem;
+    }
+
+    .room-table th,
+    .room-table td {
+        padding: 0.8rem;
+    }
+
+    .pagination {
+        flex-direction: column;
+        margin-top: 0.5rem;
+    }
+
+    .pagination-btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.8rem;
+    }
+    .page-info {
+        font-size: 1rem;
+    }
+}
+
+/* ============================= */
+/*   매우 작은 화면 (480px 이하)  */
+/* ============================= */
+@media screen and (max-width: 480px) {
+    .waiting-room {
+        width: 90%;
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 1.4rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .create-room-btn,
+    .refresh-room-btn,
+    .join-room-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.7rem;
+    }
+
+    .room-list-container {
+        max-height: 45%;
+    }
+
+    .room-table {
+        font-size: 0.85rem;
+    }
+
+    .room-table th,
+    .room-table td {
+        padding: 0.6rem;
+    }
+
+    .pagination {
+        gap: 5px;
+    }
+
+    .pagination-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .page-info {
+        font-size: 0.9rem;
+    }
+}
