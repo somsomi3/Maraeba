@@ -401,24 +401,4 @@ src
     });
     ```
 
-
-- 로그인 관련
-
-    - 백엔드 서버 켜는법
-
-        `be/src/main/resources/application.yml` 생성
-
-        mysql 로그인(application.yml에 name, pw 변경)
-
-        `CREATE DATABASE maraeba_db`
-
-        서버 켜기
-
-    - 로그인 할 때만 페이지 접근 가능하게 만들기
-
-        1. main.jsx
-            `<Route element={<ProtectedLayout />}></Route>` 주석 해제
-
-        2. ProtectedLayout.jsx에서 isAuthenticated 관련 주석 해제 
-
     

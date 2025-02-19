@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { springApi } from "../../utils/api";
+import { springApi,logoutApi } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice";
 import HomeButton from "../../components/button/HomeButton";
 import "./Profile.css";
 import backgroundImage from"../../assets/background/mypage_Bg.webp";
+import defaultProfile from "../../assets/profiles/profile1.png"
+
 
 const ChangePassword = () => {
     const token = useSelector((state) => state.auth.token);
@@ -13,8 +15,28 @@ const ChangePassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [username, setUsername] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [profileImage, setProfileImage] = useState(() => {
+            return localStorage.getItem("profileImage") || defaultProfile;
+        });
+    
+        useEffect(() => {
+            const fetchUserData = async () => {
+              try {
+                const response = await springApi.get("/users/me");
+                setUsername(response.data.username); // ✅ username 저장
+              } catch (error) {
+                console.error("❌ 사용자 정보 불러오기 실패:", error);
+              }
+            };
+          
+            fetchUserData();
+          }, []);
+        
+
 
     // ✅ 비밀번호 변경 요청
     const handleChangePassword = async (e) => {
@@ -45,13 +67,28 @@ const ChangePassword = () => {
         }
     };
 
+     const handleLogout = async () => {
+            try {
+                await logoutApi();
+                dispatch(logout());
+                navigate("/login");
+                alert("로그아웃 되었습니다.");
+            } catch (error) {
+                console.error("❌ 로그아웃 실패:", error);
+                alert("로그아웃에 실패했습니다.");
+            }
+        };
+
+    
+
     return (
         <div className="profile-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
             {/* ✅ 사이드바 추가 */}
             <div className="sidebar">
-                <div className="profile-header">
-                    <h2>비밀번호 변경</h2>
+            <div className="profile-header">
+                    <img src={profileImage} alt="프로필 이미지" className="my-profile-image" />
                 </div>
+                <h2>{username}</h2>
                 <nav className="profile-menu">
                     <ul>
                         <li onClick={() => navigate("/profile")}>내 프로필</li>
@@ -59,6 +96,8 @@ const ChangePassword = () => {
                             회원정보 수정
                         </li>
                         <li className="active">비밀번호 변경</li>
+                        <li onClick={handleLogout}>로그아웃</li>
+                        <li onClick={() => navigate("/profile-delete")}>회원 탈퇴</li>
                     </ul>
                 </nav>
             </div>
@@ -67,28 +106,31 @@ const ChangePassword = () => {
             <div className="profile-content">
                 <h2>비밀번호 변경</h2>
                 <form onSubmit={handleChangePassword}>
-                    <div className="info-box">
+                    <div className="pw-info-box">
                         <label>현재 비밀번호</label>
                         <input
                             type="password"
+                            className="pw-input"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="info-box">
+                    <div className="pw-info-box">
                         <label>새 비밀번호</label>
                         <input
                             type="password"
+                            className="pw-input"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             required
                         />
                     </div>
-                    <div className="info-box">
+                    <div className="pw-info-box">
                         <label>새 비밀번호 확인</label>
                         <input
                             type="password"
+                            className="pw-input"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
