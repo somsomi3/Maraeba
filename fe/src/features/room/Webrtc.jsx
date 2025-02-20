@@ -876,21 +876,7 @@ const Webrtc = () => {
                 <GoBackButton />
                 {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
                 <div className="video-chat-wrapper">
-                    <div className="video-answer-wrapper">
-                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
-                        {isHost && (
-                            <button
-                                onClick={() => {
-                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
-                                    startGame(); // ✅ 단어 목록 불러오기 실행
-                                }}
-                                className="start-game-button"
-                            >
-                                게임 시작
-                            </button>
-                        )}
-                    </div>
-
+               
                     <div className="video-container">
                         <div className="video-wrapper">
                             {/* 상대방 화면 */}
@@ -983,7 +969,6 @@ const Webrtc = () => {
 
                 {/* 오른쪽 - 게임 UI */}
                 <div className="webrtc-game-container">
-                    <h2>🎮 사물 맞추기 게임</h2>
                     <div
                         style={{
                             display: "inline-flex",
@@ -994,6 +979,41 @@ const Webrtc = () => {
                         <p style={{ margin: 0 }}>
                             입모양을 보고, 색상이 들어간 정답을 말하세요!
                         </p>
+                    </div>
+                    {/* 🛠️ 로그 추가: items 상태 확인 */}
+                    {console.log("📌 렌더링 중 items 상태:", items)}
+
+                    <div className="game-buttons">
+                        {items.length > 0 ? (
+                            items.map((word, index) => (
+                                <button
+                                key={index}
+                                onClick={() => {
+                                    if (isHost) {
+                                        sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
+                                    } else {
+                                        setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
+                                    }
+                                }}
+                                onDoubleClick={() =>
+                                    !isHost && sendChoice(word)
+                                } // 참가자가 음성으로 선택한 경우만 방장에게 전송
+                                className={`game-button 
+                                    ${choice === word ? "selected" : ""} 
+                                    ${correctAnswer === word ? "correct" : ""}`} // 정답(방장이 선택한 것)은 참가자에게 강조
+                                    aria-label={`게임 버튼: ${word}`}
+                                    >
+                                    {word}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="loading-message">
+                                📌 단어 목록을 불러오는 중...
+                            </p>
+                        )}
+
+                    </div>
+                    
                         {/* 말하기/그만하기 버튼 */}
                         {!isHost && (
                             <button
@@ -1007,39 +1027,19 @@ const Webrtc = () => {
                                 {isRecording ? "그만하기" : "말하기"}
                             </button>
                         )}
-                    </div>
-                    {/* 🛠️ 로그 추가: items 상태 확인 */}
-                    {console.log("📌 렌더링 중 items 상태:", items)}
-
-                    <div className="game-buttons">
-                        {items.length > 0 ? (
-                            items.map((word, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        if (isHost) {
-                                            sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
-                                        } else {
-                                            setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
-                                        }
-                                    }}
-                                    onDoubleClick={() =>
-                                        !isHost && sendChoice(word)
-                                    } // 참가자가 음성으로 선택한 경우만 방장에게 전송
-                                    className={`game-button 
-                    ${choice === word ? "selected" : ""} 
-                    ${correctAnswer === word ? "correct" : ""}`} // 정답(방장이 선택한 것)은 참가자에게 강조
-                                    aria-label={`게임 버튼: ${word}`}
-                                >
-                                    {word}
-                                </button>
-                            ))
-                        ) : (
-                            <p className="loading-message">
-                                📌 단어 목록을 불러오는 중...
-                            </p>
+                        
+                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
+                        {isHost && (
+                            <button
+                                onClick={() => {
+                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
+                                    startGame(); // ✅ 단어 목록 불러오기 실행
+                                }}
+                                className="start-game-button"
+                            >
+                                게임 시작
+                            </button>
                         )}
-                    </div>
                 </div>
             </div>
         </div>
