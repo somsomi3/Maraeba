@@ -42,13 +42,11 @@ export default defineConfig(({ mode }) => {
           cleanupOutdatedCaches: true, // ✅ 오래된 캐시 자동 삭제
           globPatterns: [
             "**/*.{js,css,html,png,svg,ico,json}", // ✅ public & dist 내부 파일만 포함
-            "public/**/*.{png,svg,jpg,jpeg,gif,css}" // ✅ public 폴더 내 파일 포함
+            "public/**/*.{png,svg,jpg,jpeg,gif,css}", // ✅ public 폴더 내 파일 포함
           ],
           runtimeCaching: [
             {
-              urlPattern: new RegExp(
-                `^(${env.VITE_SPRING_API_URL}|${env.VITE_FLASK_API_URL})/`
-              ), // ✅ API 요청 캐싱 (NetworkFirst)
+              urlPattern: new RegExp(`^(${env.VITE_SPRING_API_URL}|${env.VITE_FLASK_API_URL})/`), // ✅ API 요청 캐싱 (NetworkFirst)
               handler: "NetworkFirst",
               options: {
                 cacheName: "api-cache",
@@ -73,12 +71,6 @@ export default defineConfig(({ mode }) => {
     ],
     server: {
       host: "0.0.0.0",
-    },
-    build: {
-      minify: "esbuild",
-      esbuild: {
-        drop: ["console", "debugger"],
-      },
     },
   };
 });

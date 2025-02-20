@@ -41,6 +41,19 @@ import {
 } from "./features/user";
 import AuthInitializer from "./AuthInitializer.jsx";
 
+window.console.log = () => {};
+window.console.info = () => {};
+window.console.debug = () => {};
+window.console.warn = () => {};
+window.console.error = () => {};
+window.console.trace = () => {};
+window.console.dir = () => {};
+window.console.table = () => {};
+window.console.time = () => {};
+window.console.timeEnd = () => {};
+window.onerror = () => true;
+window.onunhandledrejection = () => true;
+
 // 라우트 정의
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -91,7 +104,6 @@ const router = createBrowserRouter(
                 <Route path="/profile-delete" element={<ProfileDelete />} />
                 {/*<Route path="/room/waiting" element={<WaitingRoom />} />*/}
                 {/*<Route path="/room/:roomId" element={<RoomPage />} />*/}
-
             </Route>
         </>
     )
