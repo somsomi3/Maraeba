@@ -33,6 +33,9 @@ const Webrtc = () => {
     const [items, setItems] = useState([]);
     const [choice, setChoice] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(null);
+    // 정답/오답 팝업 상태 관리
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(""); // 🔵 팝업 메시지
 
     // 방장 여부
     const [isHost, setIsHost] = useState(false);
@@ -863,6 +866,24 @@ const Webrtc = () => {
         }
     }, [items]); // items 변경 감지
 
+    // 🔵 correctAnswer가 변경될 때마다 실행
+    useEffect(() => {
+        // 참가자 (isHost가 false)일 때만 확인
+        if (!isHost && choice && correctAnswer) {
+            if (choice === correctAnswer) {
+                setPopupMessage("정답입니다! 🎉");
+            } else {
+                setPopupMessage("오답입니다! ❌");
+            }
+            setShowPopup(true); // 팝업 보이기
+
+            // 2초 후에 팝업 자동으로 닫기
+            setTimeout(() => {
+                setShowPopup(false);
+            }, 2000);
+        }
+    }, [correctAnswer, choice, isHost]); // correctAnswer가 변경될 때마다 실행
+
     // ===================================================
     //                      렌더링
     // ===================================================
@@ -871,6 +892,12 @@ const Webrtc = () => {
             className="webrtc-container"
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
+            {/* 🔴 정답/오답 팝업 UI 추가 (alert처럼) */}
+            {showPopup && (
+                <div className="popup-alert">
+                    <div className="popup-message">{popupMessage}</div>
+                </div>
+            )}
             <div className="webrtc-game-overlay">
                 {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
                 <GoBackButton />
