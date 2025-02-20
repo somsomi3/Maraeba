@@ -35,9 +35,9 @@ const Main = () => {
                 {/* 오른쪽 카드 */}
                 <div className="card multi-mode" onClick={() => navigate("/room/RoomList")}>
                     <div className="card-content">
-                        <h2>선생님과 단어 놀이</h2>
+                        <h2>함께하는 단어 게임</h2>
                         <p>
-                            선생님과 친구들과의 영상 단어 카드 놀이를 통해 다양한 단어들을 직접 말해봐요!
+                            친구들과의 영상 단어 놀이를 통해 다양한 단어들을 직접 말해봐요!
                         </p>
                     </div>
                     <img src={wordStuff} alt="단어 학습 관련 이미지" className="card-image multi-image" />
