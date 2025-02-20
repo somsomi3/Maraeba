@@ -575,3 +575,101 @@
     gap: 1rem;
 }
 
+.restart-tutorial-btn {
+    z-index: 1002;
+}
+
+/* ==============================
+   🎯 WebRTC 튜토리얼 강조 효과
+============================== */
+.webrtc-highlight {
+    filter: brightness(1.2);
+    border: 3px solid #ff9800;
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.7);
+    transition: all 0.3s ease-in-out;
+}
+
+/* ==============================
+   🗨️ WebRTC 포롱이 말풍선 컨테이너
+============================== */
+.webrtc-porong-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index: 300;
+    font-family: "Pretendard";
+    width: 500px;
+}
+
+/* 📌 포롱이 이미지 */
+.webrtc-porong-image {
+    width: 100px;
+    margin-right: 10px;
+}
+
+/* 🗨️ 말풍선 스타일 */
+.webrtc-porong-speech-bubble {
+    background: rgba(255, 248, 220, 1);
+    padding: 17px 20px;
+    border-radius: 10px;
+    border: 2px solid #f4a261;
+    color: #222; /* ✅ 글자 색 어둡게 */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* ▶ "다음" 버튼 */
+.webrtc-porong-nextbutton {
+    background-color: #f9ba87;
+    border: none;
+    border-radius: 15px;
+    margin-top: 10px;
+    font-family: "Pretendard";
+    font-weight: 700;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.webrtc-porong-nextbutton:hover {
+    background-color: #ffb347;
+    transform: scale(1.05);
+}
+
+/* ==============================
+   📌 WebRTC 튜토리얼 단계별 포롱이 위치
+============================== */
+
+/* 1️⃣ 영상 통화 영역 안내 */
+.webrtc-porong-container.webrtc-near-video {
+    top: 80%;
+    right: 65%;
+}
+
+/* 2️⃣ 게임 UI 안내 */
+.webrtc-porong-container.webrtc-near-game {
+    top: 30%;
+    left: 5%;
+}
+
+/* 3️⃣ 단어 선택 버튼 안내 */
+.webrtc-porong-container.webrtc-near-buttons {
+    top: 60%;
+    left: 5%;
+}
+
+/* 4️⃣ 음성 녹음 버튼 안내 */
+.webrtc-porong-container.webrtc-near-record {
+    top: 15%;
+    right: 40%;
+}
+
+/* 5️⃣ 게임 시작 버튼 안내 */
+.webrtc-porong-container.webrtc-near-start {
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+}
