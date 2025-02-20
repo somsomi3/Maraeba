@@ -6,7 +6,7 @@ import GoBackButton from "../../components/button/GoBackButton";
 import "./Webrtc.css";
 import backgroundImage from "../../assets/background/Webrtc_Bg.webp";
 // import rtc from '../../assets/images/rtc.png';
-import tutoPorong from "../../assets/images/tuto_porong.png"
+import tutoPorong from "../../assets/images/tuto_porong.png";
 
 const Webrtc = () => {
     // ===================================================
@@ -58,7 +58,6 @@ const Webrtc = () => {
     // 음성 녹음을 통한 단어 선택(참가자)
     const mediaRecorderRef = useRef(null); // MediaRecorder 참조
     const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
-    
 
     // ===================================================
     //                  음성 녹음 기능
@@ -101,11 +100,6 @@ const Webrtc = () => {
         if (mediaRecorderRef.current) {
             mediaRecorderRef.current.stop();
             setIsRecording(false);
-        }
-        // 🛑 녹음 스트림(마이크) 해제
-        if (localStream) {
-            localStream.getTracks().forEach((track) => track.stop());
-            setLocalStream(null);
         }
     };
 
@@ -583,7 +577,7 @@ const Webrtc = () => {
         const now = new Date();
         now.setHours(now.getHours() + 9); // UTC -> KST 변환
         const formattedTime = now.toISOString(); // ISO 형식으로 변환
-        
+
         const messageObject = {
             type: "chat",
             user_id: userId,
@@ -875,7 +869,6 @@ const Webrtc = () => {
         }
     };
 
-
     const startTutorial = () => {
         if (tutorialStep === null) {
             setTutorialStep(1);
@@ -891,9 +884,19 @@ const Webrtc = () => {
             <img src={tutoPorong} alt="포롱이" className="porong-image" />
             <div className="webrtc-porong-speech-bubble">
                 {text.split("\n").map((line, index) => (
-                    <span key={index}>{line}<br /></span>
+                    <span key={index}>
+                        {line}
+                        <br />
+                    </span>
                 ))}
-                {onNext && <button onClick={onNext} className="webrtc-porong-nextbutton">다음</button>}
+                {onNext && (
+                    <button
+                        onClick={onNext}
+                        className="webrtc-porong-nextbutton"
+                    >
+                        다음
+                    </button>
+                )}
             </div>
         </div>
     );
@@ -934,7 +937,9 @@ const Webrtc = () => {
             className="webrtc-container"
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
-                <button className="restart-tutorial-btn" onClick={startTutorial}>▶ 튜토리얼</button>
+            <button className="restart-tutorial-btn" onClick={startTutorial}>
+                ▶ 튜토리얼
+            </button>
             {/* 🔴 정답/오답 팝업 UI 추가 (alert처럼) */}
             {showPopup && (
                 <div className="popup-alert">
@@ -946,7 +951,6 @@ const Webrtc = () => {
                 <GoBackButton />
                 {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
                 <div className="video-chat-wrapper">
-               
                     <div className="video-container">
                         <div className="video-wrapper">
                             {/* 상대방 화면 */}
@@ -956,7 +960,11 @@ const Webrtc = () => {
                                     ref={remoteVideoRef}
                                     autoPlay
                                     playsInline
-                                    className={`large-video ${tutorialStep === 1 ? "cooking-highlight" : ""}`}
+                                    className={`large-video ${
+                                        tutorialStep === 1
+                                            ? "cooking-highlight"
+                                            : ""
+                                    }`}
                                     aria-label="상대방 비디오"
                                 />
                             </div>
@@ -972,7 +980,11 @@ const Webrtc = () => {
                                     autoPlay
                                     playsInline
                                     muted
-                                    className={`small-video ${tutorialStep === 1 ? "cooking-highlight" : ""}`}
+                                    className={`small-video ${
+                                        tutorialStep === 1
+                                            ? "cooking-highlight"
+                                            : ""
+                                    }`}
                                     aria-label="내 비디오"
                                 />
                             </div>
@@ -1055,7 +1067,11 @@ const Webrtc = () => {
                             gap: "1rem", // 문구와 버튼 사이 간격
                         }}
                     >
-                         <p className={tutorialStep === 2 ? "cooking-highlight" : ""}>
+                        <p
+                            className={
+                                tutorialStep === 2 ? "cooking-highlight" : ""
+                            }
+                        >
                             입모양을 보고, 색상이 들어간 정답을 말하세요!
                         </p>
                     </div>
@@ -1071,26 +1087,30 @@ const Webrtc = () => {
                         />
                     )}
 
-                    <div className={`game-buttons ${tutorialStep === 3 ? "cooking-highlight" : ""}`}>
+                    <div
+                        className={`game-buttons ${
+                            tutorialStep === 3 ? "cooking-highlight" : ""
+                        }`}
+                    >
                         {items.length > 0 ? (
                             items.map((word, index) => (
                                 <button
-                                key={index}
-                                onClick={() => {
-                                    if (isHost) {
-                                        sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
-                                    } else {
-                                        setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
-                                    }
-                                }}
-                                onDoubleClick={() =>
-                                    !isHost && sendChoice(word)
-                                } // 참가자가 음성으로 선택한 경우만 방장에게 전송
-                                className={`game-button 
+                                    key={index}
+                                    onClick={() => {
+                                        if (isHost) {
+                                            sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
+                                        } else {
+                                            setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
+                                        }
+                                    }}
+                                    onDoubleClick={() =>
+                                        !isHost && sendChoice(word)
+                                    } // 참가자가 음성으로 선택한 경우만 방장에게 전송
+                                    className={`game-button 
                                     ${choice === word ? "selected" : ""} 
                                     ${correctAnswer === word ? "correct" : ""}`} // 정답(방장이 선택한 것)은 참가자에게 강조
                                     aria-label={`게임 버튼: ${word}`}
-                                    >
+                                >
                                     {word}
                                 </button>
                             ))
@@ -1109,22 +1129,22 @@ const Webrtc = () => {
                             onNext={() => setTutorialStep(4)}
                         />
                     )}
-                    
-                        {/* 말하기/그만하기 버튼 */}
-                        {!isHost && (
-                            <button
-                                className={`voice-record-button ${
-                                    isRecording ? "recording" : ""
-                                }`}
-                                onClick={
-                                    isRecording ? stopRecording : startRecording
-                                }
-                            >
-                                {isRecording ? "그만하기" : "말하기"}
-                            </button>
-                        )}
 
-                         {/* 🟢 튜토리얼 4단계: 음성 녹음 버튼 강조
+                    {/* 말하기/그만하기 버튼 */}
+                    {!isHost && (
+                        <button
+                            className={`voice-record-button ${
+                                isRecording ? "recording" : ""
+                            }`}
+                            onClick={
+                                isRecording ? stopRecording : startRecording
+                            }
+                        >
+                            {isRecording ? "그만하기" : "말하기"}
+                        </button>
+                    )}
+
+                    {/* 🟢 튜토리얼 4단계: 음성 녹음 버튼 강조
                         {tutorialStep === 4 && (
                             <PorongSpeech
                                 text="이 버튼을 눌러 정답을 음성으로 말해요!"
@@ -1132,28 +1152,30 @@ const Webrtc = () => {
                                 onNext={() => setTutorialStep(5)}
                             />
                         )} */}
-                        
-                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
-                        {isHost && (
-                            <button
-                                onClick={() => {
-                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
-                                    startGame(); // ✅ 단어 목록 불러오기 실행
-                                }}
-                                className={`start-game-button ${tutorialStep === 4 ? "cooking-highlight" : ""}`}
-                            >
-                                게임 시작
-                            </button>
-                        )}
 
-                        {/* 🟢 튜토리얼 5단계: 게임 시작 버튼 강조 */}
-                        {tutorialStep === 4 && (
-                            <PorongSpeech
-                                text="게임을 시작해 보세요!"
-                                position="webrtc-near-start"
-                                onNext={completeTutorial}
-                            />
-                        )}
+                    {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
+                    {isHost && (
+                        <button
+                            onClick={() => {
+                                console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
+                                startGame(); // ✅ 단어 목록 불러오기 실행
+                            }}
+                            className={`start-game-button ${
+                                tutorialStep === 4 ? "cooking-highlight" : ""
+                            }`}
+                        >
+                            게임 시작
+                        </button>
+                    )}
+
+                    {/* 🟢 튜토리얼 5단계: 게임 시작 버튼 강조 */}
+                    {tutorialStep === 4 && (
+                        <PorongSpeech
+                            text="게임을 시작해 보세요!"
+                            position="webrtc-near-start"
+                            onNext={completeTutorial}
+                        />
+                    )}
                 </div>
             </div>
         </div>
