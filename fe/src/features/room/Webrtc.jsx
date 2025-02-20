@@ -1048,7 +1048,6 @@ const Webrtc = () => {
 
                 {/* 오른쪽 - 게임 UI */}
                 <div className="webrtc-game-container">
-                    <h2>🎮 사물 맞추기 게임</h2>
                     <div
                         style={{
                             display: "inline-flex",
