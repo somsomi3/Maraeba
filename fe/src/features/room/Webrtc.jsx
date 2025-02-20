@@ -6,6 +6,7 @@ import GoBackButton from "../../components/button/GoBackButton";
 import "./Webrtc.css";
 import backgroundImage from "../../assets/background/Webrtc_Bg.webp";
 // import rtc from '../../assets/images/rtc.png';
+import tutoPorong from "../../assets/images/tuto_porong.png"
 
 const Webrtc = () => {
     // ===================================================
@@ -49,10 +50,12 @@ const Webrtc = () => {
 
     const [isRecording, setIsRecording] = useState(false); // 녹음 중인지 여부
     const [feedbackMessage, setFeedbackMessage] = useState(""); // 피드백 메시지
+    const [tutorialStep, setTutorialStep] = useState(null);
 
     // 음성 녹음을 통한 단어 선택(참가자)
     const mediaRecorderRef = useRef(null); // MediaRecorder 참조
     const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
+    
 
     // ===================================================
     //                  음성 녹음 기능
@@ -853,6 +856,29 @@ const Webrtc = () => {
         }
     };
 
+
+    const startTutorial = () => {
+        if (tutorialStep === null) {
+            setTutorialStep(1);
+        }
+    };
+
+    const completeTutorial = () => {
+        setTutorialStep(null);
+    };
+
+    const PorongSpeech = ({ text, position = "center", onNext }) => (
+        <div className={`webrtc-porong-container ${position}`}>
+            <img src={tutoPorong} alt="포롱이" className="porong-image" />
+            <div className="webrtc-porong-speech-bubble">
+                {text.split("\n").map((line, index) => (
+                    <span key={index}>{line}<br /></span>
+                ))}
+                {onNext && <button onClick={onNext} className="webrtc-porong-nextbutton">다음</button>}
+            </div>
+        </div>
+    );
+
     /**
      * items가 변경될 때마다
      * - 방장이면 다른 참가자에게도 전송
@@ -871,26 +897,14 @@ const Webrtc = () => {
             className="webrtc-container"
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
+                <button className="restart-tutorial-btn" onClick={startTutorial}>▶ 튜토리얼</button>
             <div className="webrtc-game-overlay">
                 {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
                 <GoBackButton />
+
                 {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
                 <div className="video-chat-wrapper">
-                    <div className="video-answer-wrapper">
-                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
-                        {isHost && (
-                            <button
-                                onClick={() => {
-                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
-                                    startGame(); // ✅ 단어 목록 불러오기 실행
-                                }}
-                                className="start-game-button"
-                            >
-                                게임 시작
-                            </button>
-                        )}
-                    </div>
-
+               
                     <div className="video-container">
                         <div className="video-wrapper">
                             {/* 상대방 화면 */}
@@ -900,7 +914,7 @@ const Webrtc = () => {
                                     ref={remoteVideoRef}
                                     autoPlay
                                     playsInline
-                                    className="large-video"
+                                    className={`large-video ${tutorialStep === 1 ? "cooking-highlight" : ""}`}
                                     aria-label="상대방 비디오"
                                 />
                             </div>
@@ -916,7 +930,7 @@ const Webrtc = () => {
                                     autoPlay
                                     playsInline
                                     muted
-                                    className="small-video"
+                                    className={`small-video ${tutorialStep === 1 ? "cooking-highlight" : ""}`}
                                     aria-label="내 비디오"
                                 />
                             </div>
@@ -937,6 +951,15 @@ const Webrtc = () => {
                             </button>
                         </div>
                     </div>
+
+                    {/* 🟢 튜토리얼 1단계: 비디오 컨테이너 설명 */}
+                    {tutorialStep === 1 && (
+                        <PorongSpeech
+                            text="여기서 상대방과 영상 통화를 할 수 있어요!"
+                            position="webrtc-near-video"
+                            onNext={() => setTutorialStep(2)}
+                        />
+                    )}
 
                     {/* 채팅 컨테이너 */}
                     <div className="chat-container" role="region">
@@ -983,7 +1006,6 @@ const Webrtc = () => {
 
                 {/* 오른쪽 - 게임 UI */}
                 <div className="webrtc-game-container">
-                    <h2>🎮 사물 맞추기 게임</h2>
                     <div
                         style={{
                             display: "inline-flex",
@@ -991,9 +1013,61 @@ const Webrtc = () => {
                             gap: "1rem", // 문구와 버튼 사이 간격
                         }}
                     >
-                        <p style={{ margin: 0 }}>
+                         <p className={tutorialStep === 2 ? "cooking-highlight" : ""}>
                             입모양을 보고, 색상이 들어간 정답을 말하세요!
                         </p>
+                    </div>
+                    {/* 🛠️ 로그 추가: items 상태 확인 */}
+                    {console.log("📌 렌더링 중 items 상태:", items)}
+
+                    {/* 🟢 튜토리얼 2단계: 게임 설명 */}
+                    {tutorialStep === 2 && (
+                        <PorongSpeech
+                            text="게임이 시작되면 정답을 말해야 해요!"
+                            position="webrtc-near-game"
+                            onNext={() => setTutorialStep(3)}
+                        />
+                    )}
+
+                    <div className={`game-buttons ${tutorialStep === 3 ? "cooking-highlight" : ""}`}>
+                        {items.length > 0 ? (
+                            items.map((word, index) => (
+                                <button
+                                key={index}
+                                onClick={() => {
+                                    if (isHost) {
+                                        sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
+                                    } else {
+                                        setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
+                                    }
+                                }}
+                                onDoubleClick={() =>
+                                    !isHost && sendChoice(word)
+                                } // 참가자가 음성으로 선택한 경우만 방장에게 전송
+                                className={`game-button 
+                                    ${choice === word ? "selected" : ""} 
+                                    ${correctAnswer === word ? "correct" : ""}`} // 정답(방장이 선택한 것)은 참가자에게 강조
+                                    aria-label={`게임 버튼: ${word}`}
+                                    >
+                                    {word}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="loading-message">
+                                📌 단어 목록을 불러오는 중...
+                            </p>
+                        )}
+                    </div>
+
+                    {/* 🟢 튜토리얼 3단계: 게임 버튼 강조 */}
+                    {tutorialStep === 3 && (
+                        <PorongSpeech
+                            text="여기에서 정답을 선택할 수 있어요!"
+                            position="webrtc-near-buttons"
+                            onNext={() => setTutorialStep(4)}
+                        />
+                    )}
+                    
                         {/* 말하기/그만하기 버튼 */}
                         {!isHost && (
                             <button
@@ -1007,39 +1081,37 @@ const Webrtc = () => {
                                 {isRecording ? "그만하기" : "말하기"}
                             </button>
                         )}
-                    </div>
-                    {/* 🛠️ 로그 추가: items 상태 확인 */}
-                    {console.log("📌 렌더링 중 items 상태:", items)}
 
-                    <div className="game-buttons">
-                        {items.length > 0 ? (
-                            items.map((word, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        if (isHost) {
-                                            sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
-                                        } else {
-                                            setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
-                                        }
-                                    }}
-                                    onDoubleClick={() =>
-                                        !isHost && sendChoice(word)
-                                    } // 참가자가 음성으로 선택한 경우만 방장에게 전송
-                                    className={`game-button 
-                    ${choice === word ? "selected" : ""} 
-                    ${correctAnswer === word ? "correct" : ""}`} // 정답(방장이 선택한 것)은 참가자에게 강조
-                                    aria-label={`게임 버튼: ${word}`}
-                                >
-                                    {word}
-                                </button>
-                            ))
-                        ) : (
-                            <p className="loading-message">
-                                📌 단어 목록을 불러오는 중...
-                            </p>
+                         {/* 🟢 튜토리얼 4단계: 음성 녹음 버튼 강조
+                        {tutorialStep === 4 && (
+                            <PorongSpeech
+                                text="이 버튼을 눌러 정답을 음성으로 말해요!"
+                                position="webrtc-near-record"
+                                onNext={() => setTutorialStep(5)}
+                            />
+                        )} */}
+                        
+                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
+                        {isHost && (
+                            <button
+                                onClick={() => {
+                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
+                                    startGame(); // ✅ 단어 목록 불러오기 실행
+                                }}
+                                className={`start-game-button ${tutorialStep === 4 ? "cooking-highlight" : ""}`}
+                            >
+                                게임 시작
+                            </button>
                         )}
-                    </div>
+
+                        {/* 🟢 튜토리얼 5단계: 게임 시작 버튼 강조 */}
+                        {tutorialStep === 4 && (
+                            <PorongSpeech
+                                text="게임을 시작해 보세요!"
+                                position="webrtc-near-start"
+                                onNext={completeTutorial}
+                            />
+                        )}
                 </div>
             </div>
         </div>

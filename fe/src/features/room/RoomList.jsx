@@ -200,7 +200,7 @@ const RoomList = () => {
         <div className="waiting-room-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
             <HomeButton />
 
-            <button className="roomlist-restart-tutorial-btn" onClick={startTutorial}>
+            <button className="restart-tutorial-btn" onClick={startTutorial}>
                 ▶ 튜토리얼
             </button>
 

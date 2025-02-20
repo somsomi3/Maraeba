@@ -415,25 +415,6 @@
   border-radius: 1vh;
 }
 
-.cooking-restart-tutorial-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: darkorange;
-    color: rgb(245, 243, 241);
-    border: none;
-    padding: 15px 24px;
-    font-size: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-  }
-  
-  .cooking-restart-tutorial-btn:hover {
-    background-color: rgba(253, 152, 28, 0.777);
-    transform: scale(1.05);
-  }
 
 /* 마이크 버튼 강조 */
 .cooking-record-button.highlight {
