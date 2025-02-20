@@ -38,11 +38,11 @@ public class Room extends BaseEntity {
 
     // 세션에 저장된 메시지들 (OneToMany)
     @OneToMany(mappedBy = "room")
-    @JsonIgnore // 직렬화에서 메시지 목록을 제외하여 Lazy Loading 문제 방지
-    private List<WebrtcMessage> messages = new ArrayList<>();
+    @JsonIgnore
+    private List<WebRTCMessage> messages = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "room")
-    @JsonIgnore // 직렬화에서 메시지 목록을 제외하여 Lazy Loading 문제 방지
+    @JsonIgnore
     private List<RoomUser> roomUsers = new ArrayList<>();
 }

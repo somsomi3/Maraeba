@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WebrtcMessageRequest {
+public class WebRTCMessageRequest {
     private Long userId;
     private Long roomId;
     private LocalDateTime sentAt;

@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomRemoveRequest {
-    private String roomId; // ✅ 방 비밀번호 필드 추가
+    private String roomId; // 방 비밀번호 필드 추가
 
     public static RoomRemoveRequest of(String roomId) {
         return new RoomRemoveRequest(roomId);
