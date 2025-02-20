@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isCameraOn: false, 
-  shouldRestart: false, // ✅ 화면 이동 시 자동 실행 여부
+  shouldRestart: false,
 };
 
 const cameraSlice = createSlice({

@@ -4,7 +4,6 @@ import './WordMain.css';
 import wordtitle from '../../assets/images/wordtitle.png';
 import HomeButton from '../../components/button/HomeButton';
 
-
 const WordMain = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 React Router 훅
 
@@ -53,7 +52,7 @@ const WordMain = () => {
         </div>
         
       </div>
-      <HomeButton />
+      <HomeButton to='/single' />
     </div>
     
   );
