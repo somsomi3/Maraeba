@@ -460,15 +460,15 @@
 .other-message {
     align-self: flex-start;
     max-width: 80%;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     background: #f1f1f1;
     color: black;
     font-family: "Nunito", sans-serif;
-    font-size: 1.4rem;
-    border-radius: 0.4rem;
+    /*font-size: 1.2rem;*/
+    border-radius: 1.2rem;
     padding: 0.8rem 1.2rem;
     word-break: break-word;
-    box-shadow: 0.3rem 0.3rem 0rem rgba(0,0,0,0.3);
+    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0,0,0,0.2);
 }
 
 /* ==============================
