@@ -15,10 +15,4 @@ public class GameResult {
     private String correctAnswer;
     private boolean isUserCorrect;
 
-    //@AllArgsConstructor 사용
-//    public GameResult(Long sessionId, String correctAnswer, boolean isUserCorrect) {
-//        this.sessionId = sessionId;
-//        this.correctAnswer = correctAnswer;
-//        this.isUserCorrect = isUserCorrect;
-//    }
 }

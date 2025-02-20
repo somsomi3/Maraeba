@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "webrtc_message")
-public class WebrtcMessage extends BaseEntity {
+public class WebRTCMessage extends BaseEntity {
 
     // 메시지를 받는 사용자 (나 자신)
     @ManyToOne(fetch = FetchType.LAZY)

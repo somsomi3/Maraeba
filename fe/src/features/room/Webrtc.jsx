@@ -387,8 +387,13 @@ const Webrtc = () => {
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = stream;
             }
-            const now = new Date().toISOString().slice(0, 19);
-            setStartTime(now); // 시작시간 저장
+
+            const now = new Date();
+            now.setHours(now.getHours() + 9); // UTC -> KST 변환
+
+            const formattedTime = now.toISOString().slice(0, 19); // 한국 시간 기준 ISO 문자열 저장
+
+            setStartTime(formattedTime); // 시작시간 저장
             console.log("미디어 시작:", now);
         } catch (error) {
             console.error("미디어 접근 실패:", error);
@@ -402,12 +407,18 @@ const Webrtc = () => {
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = null;
             }
-            const now = new Date().toISOString().slice(0, 19);
-            setEndTime(now);
-            console.log("미디어 종료:", now);
-            saveWebRTCLog(startTime, now); //로그 저장 실행
+
+            const now = new Date();
+            now.setHours(now.getHours() + 9); // UTC → KST 변환
+
+            const formattedTime = now.toISOString().slice(0, 19); // 한국 시간 기준 ISO 문자열 저장
+            setEndTime(formattedTime);
+            console.log("미디어 종료:", formattedTime);
+
+            saveWebRTCLog(startTime, formattedTime); // 로그 저장 실행
         }
     };
+
 
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
@@ -553,23 +564,25 @@ const Webrtc = () => {
             console.error("❌ WebSocket 연결이 닫혀 있음");
             return;
         }
-
         if (!userId) {
             console.error("사용자 ID 없음");
             return;
         }
-        if (!myUsername) {
-            console.error("사용자 이름 없음!");
-            return;
-        }
+
+        // 한국 시간(KST) 변환
+        const now = new Date();
+        now.setHours(now.getHours() + 9); // UTC -> KST 변환
+        const formattedTime = now.toISOString(); // ISO 형식으로 변환
+
         const messageObject = {
             type: "chat",
             user_id: userId,
             username: myUsername,
             message: message.trim(),
             room_id: roomId,
-            sentAt: new Date().toISOString(),
+            sentAt: formattedTime, // 한국 시간으로 변환된 값 사용
         };
+
         console.log("📡 채팅 메시지 전송:", messageObject);
 
         webSocketRef.current.send(JSON.stringify(messageObject));

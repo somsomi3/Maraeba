@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "webrtc_log") // ✅ 테이블 이름을 명확히 지정
+@Table(name = "webrtc_log")
 public class WebRTCLog extends BaseEntity {
 	//BaseEntity에서 상속받은 그냥Id(고유번호), 생성시간, 수정시간)
 	@ManyToOne(fetch = FetchType.LAZY)
