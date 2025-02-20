@@ -7,10 +7,11 @@
   align-items: center;
   justify-content: flex-start;
   background-color: #ffe0b1; /* 배경색 */
-  height: 100vh;
+  height: 100%;
   padding: 20px;
   font-family: Arial, sans-serif;
   position: relative;
+  overflow: hidden;
 }
 
 /* 제목 이미지 */
@@ -27,6 +28,8 @@
   justify-content: center;
   gap: 20px;
   width: 100%;
+  max-height: 100%;
+  overflow: auto;
 }
 
 /* 게임 카드 공통 스타일 */
@@ -41,7 +44,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  height: calc(70vh);
   padding: 1rem;
   margin: 1rem;
   text-align: center;
@@ -85,7 +89,11 @@
   line-height: 1.6;
   text-shadow: 2px 2px 4px rgba(239, 153, 58); /* 텍스트 그림자 */
   margin: 0;
-  
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  min-height: 120px;
 }
 
 /* 버튼 그룹 */

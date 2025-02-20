@@ -73,16 +73,16 @@ const AnimalGame = () => {
             withCredentials: true, 
         });
 
-        console.log("🔍 Response 객체:", response);
+        // console.log("🔍 Response 객체:", response);
         const data = response.data;
-        console.log("응답 데이터:", data);
+        // console.log("응답 데이터:", data);
 
         if (!data.image_url) {
             throw new Error("❌ image_url이 올바르지 않습니다.");
         }
 
         const fullImageUrl = `${backendURL}${data.image_url}`; // 서버 경로 보정
-        console.log("🔍 최종 이미지 URL:", fullImageUrl);
+        // console.log("🔍 최종 이미지 URL:", fullImageUrl);
 
         // ✅ `fetchResource` 사용하여 이미지 로드
         fetchResource(fullImageUrl, (blobUrl) => {
@@ -137,7 +137,7 @@ const AnimalGame = () => {
   // 정답 확인 API 요청
   const sendAudioToServer = async (audioBlob) => {
     try {
-        console.log("🎤 음성 데이터를 백엔드로 전송 중...");
+        // console.log("🎤 음성 데이터를 백엔드로 전송 중...");
 
         // 1️⃣ Access Token 가져오기
         // const token = localStorage.getItem("token");
@@ -154,7 +154,7 @@ const AnimalGame = () => {
         formData.append("imageNumber", gameData.imageNumber);
         formData.append("answerList", JSON.stringify(currentAnswerList)); // ✅ JSON 문자열 변환
 
-        console.log("📤 최종 전송할 FormData:", [...formData.entries()]);
+        // console.log("📤 최종 전송할 FormData:", [...formData.entries()]);
 
         // 3️⃣ 백엔드 API 호출 (Authorization 포함)
         const response = await springApi.post('/wgames/find-animal/is-correct', formData, {
@@ -167,7 +167,7 @@ const AnimalGame = () => {
 
         // 4️⃣ 백엔드 응답 데이터 확인
         const result = response.data;
-        console.log("✅ 백엔드 응답 데이터:", result);
+        // console.log("✅ 백엔드 응답 데이터:", result);
 
 
         if (result.duplication) {
@@ -184,7 +184,7 @@ const AnimalGame = () => {
         checkIncorrect(result);
 
         if (result.if_correct && !currentAnswerList.includes(result.animal_name))  {
-            console.log("🎯 정답 확인! 추가된 동물:", result.animal_name);
+            // console.log("🎯 정답 확인! 추가된 동물:", result.animal_name);
 
             // 5️⃣ 정답 리스트 & 동그라미 위치 업데이트
             setGameData((prevState) => ({
@@ -195,7 +195,7 @@ const AnimalGame = () => {
 
             // 6️⃣ 모든 정답을 맞추면 게임 재시작
             if (result.cnt === 5) {
-                console.log("🎉 5개 정답 완료! 게임을 새로 시작합니다.");
+                // console.log("🎉 5개 정답 완료! 게임을 새로 시작합니다.");
                 setShowCorrectPopup(true); 
             }
         } else {
@@ -394,6 +394,19 @@ const checkIncorrect = (result) => {
     fetchTutorialStatus();
   }, []);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await springApi.get("/users/me");
+        setUsername(response.data.username); // ✅ username 저장
+      } catch (error) {
+        console.error("❌ 사용자 정보 불러오기 실패:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, []);
+
   return (
     <div className="animal-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <HomeButton />
@@ -453,7 +466,7 @@ const checkIncorrect = (result) => {
                 {tutorialStep === 2 && (
                     <div className="animal-porong-container animal-near-image">
                     <PorongSpeech
-                        text="바위나 나무 사이에 숨은 동물을 찾아보자!"
+                        text="바위나 나무 사이에 숨은 동물을 찾아봐요!"
                         onNext={() => setTutorialStep(3)}  // 다음 단계로 이동
                     />
                     </div>
@@ -496,7 +509,7 @@ const checkIncorrect = (result) => {
             {tutorialStep === 4 && (
                 <div className="animal-porong-container animal-near-feedback">
                 <PorongSpeech
-                    text="내 발음과 정답을 확인할 수 있어!"
+                    text="내 발음과 정답을 확인할 수 있어요!"
                     onNext={() => setTutorialStep(5)}
                 />
                 </div>
@@ -532,7 +545,7 @@ const checkIncorrect = (result) => {
         {tutorialStep === 5 && (
             <div className="animal-porong-container animal-near-list">
             <PorongSpeech
-                text="여기서 내가 지금까지 맞춘 동물들을 확인할 수 있어!"
+                text="여기서 지금까지 맞춘 동물들을 확인할 수 있어요!"
                 onNext={() => setTutorialStep(6)}
             />
             </div>
@@ -559,7 +572,7 @@ const checkIncorrect = (result) => {
       {tutorialStep === 3 && (
         <div className="animal-porong-container animal-near-record">
           <PorongSpeech
-            text="마이크 버튼을 눌러 동물 이름을 말해보자!"
+            text="마이크 버튼을 눌러 동물 이름을 말해봐요!"
             onNext={() => setTutorialStep(4)}
           />
         </div>
@@ -569,7 +582,7 @@ const checkIncorrect = (result) => {
         {tutorialStep === 6 && (
         <div className="animal-porong-container animal-near-next">
           <PorongSpeech
-            text="이제 게임을 시작해볼까?"
+            text="이제 게임을 시작해볼까요?"
             onNext={handleTutorialComplete} 
           />
         </div>
