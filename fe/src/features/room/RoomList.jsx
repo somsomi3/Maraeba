@@ -4,7 +4,6 @@ import { springApi } from "../../utils/api.js";
 import { useSelector } from "react-redux";
 import CreateRoomPopup from "../room/CreatePopup";
 import "./RoomList.css";
-import GoBackButton from "../../components/button/GoBackButton";
 import HomeButton from "../../components/button/HomeButton";
 import backgroundImage from"../../assets/background/waitingRoom_Bg.webp";
 import tutoPorong from "../../assets/images/tuto_porong.png"
@@ -199,7 +198,6 @@ const RoomList = () => {
 
     return (
         <div className="waiting-room-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
-            <GoBackButton />
             <HomeButton />
 
             <button className="roomlist-restart-tutorial-btn" onClick={startTutorial}>
