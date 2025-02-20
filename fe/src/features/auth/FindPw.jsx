@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api"; // API 요청을 위한 springApi
+import logo from "../../assets/logo.png"
 import "./index.css";
 
 const FindPw = () => {
@@ -40,7 +41,8 @@ const FindPw = () => {
 
 
   return (
-    <div className="form-container">
+    <div className="findid-form-container">
+         <img src={logo} alt="logo" className="register-logo"/>
       <h2>비밀번호 찾기</h2>
       <form onSubmit={handleSubmit}>
         <div className="login-input-group">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { springApi } from '../../utils/api';
+import logo from '../../assets/logo.png'
 import './index.css'; // 기존 CSS 유지
 
 const Register = () => {
@@ -14,6 +15,16 @@ const Register = () => {
   const [isUserIdChecked, setIsUserIdChecked] = useState(false);
 
   const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return "비밀번호는 8자 이상, 영어 대소문자, 숫자, 특수문자를 포함해야 합니다.";
+    }
+    return "";
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +32,18 @@ const Register = () => {
       ...prevData,
       [name]: value,
     }));
-    if (name === 'user_id') setIsUserIdChecked(false);
+
+    if (name === "user_id") setIsUserIdChecked(false);
+
+    if (name === "password") {
+      setPasswordError(validatePassword(value)); // 비밀번호 검증 실행
+    }
+
+    if (name === "confirmPassword") {
+      setConfirmPasswordError(
+        value !== formData.password ? "비밀번호가 일치하지 않습니다." : ""
+      );
+    }
   };
 
   const checkUserId = () => {
@@ -65,7 +87,8 @@ const Register = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="register-form-container">
+        <img src={logo} alt="로고" className="register-logo" />
       <h2>회원가입</h2>
       <form onSubmit={handleSubmit}>
         <div className="login-input-group inline-group">
@@ -90,6 +113,7 @@ const Register = () => {
             onChange={handleChange}
             required
           />
+           {passwordError && <p className="error-message">{passwordError}</p>}
         </div>
         <div className="login-input-group">
           <input
@@ -101,6 +125,7 @@ const Register = () => {
             onChange={handleChange}
             required
           />
+           {confirmPasswordError && <p className="error-message">{confirmPasswordError}</p>}
         </div>
         <div className="login-input-group">
           <input
@@ -126,7 +151,7 @@ const Register = () => {
         </div>
         <button className="auth-button" type="submit">회원가입</button>
       </form>
-      <button className="secondary-button" onClick={() => navigate('/')}>로그인</button>
+      <button className="secondary-button" onClick={() => navigate('/')}>메인으로 돌아가기</button>
     </div>
   );
 };

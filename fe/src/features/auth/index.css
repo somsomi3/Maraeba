@@ -22,7 +22,44 @@
     max-width: 90vw; /* 📌 화면이 너무 작을 때 조절 */
     text-align: center;
     margin-top: 20px;
+    font-family: Pretendard;
 }
+
+.register-form-container {
+    border-radius: 12px;
+    max-width: 60vw; 
+    text-align: center;
+    font-family: Pretendard;
+    background: rgba(255, 255, 255, 0.8); /* 반투명 배경 */
+    border-radius: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 500px;
+    width: 50vw;
+}
+
+.register-logo {
+    width: 80px;
+    display: block;
+    margin-left: 2%;
+}
+
+.findid-form-container {
+    border-radius: 12px;
+    max-width: 60vw; 
+    text-align: center;
+    font-family: Pretendard;
+    background: rgba(255, 255, 255, 0.8); /* 반투명 배경 */
+    border-radius: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 500px;
+    width: 50vw;
+}
+
+
 
 .mainform {
     gap: 3px
@@ -33,6 +70,7 @@
     margin-bottom: 1vw;
     display: flex;
     flex-direction: column;
+    font-family: NPSregular;
 }
 
 /* ID, 이메일 입력 필드와 버튼을 나란히 배치 */
@@ -86,6 +124,7 @@
     cursor: pointer;
     text-decoration: none;
     outline: none;
+    font-family: Pretendard;
 }
 
 
