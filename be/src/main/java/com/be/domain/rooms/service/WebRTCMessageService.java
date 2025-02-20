@@ -2,25 +2,25 @@ package com.be.domain.rooms.service;
 
 import com.be.common.exception.CustomException;
 import com.be.common.exception.ErrorCode;
-import com.be.db.entity.WebrtcMessage;
+import com.be.db.entity.WebRTCMessage;
 import com.be.db.repository.RoomRepository;
 import com.be.db.repository.UserRepository;
-import com.be.db.repository.WebrtcMessageRepository;
-import com.be.domain.rooms.request.WebrtcMessageRequest;
+import com.be.db.repository.WebRTCMessageRepository;
+import com.be.domain.rooms.request.WebRTCMessageRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class WebrtcMessageService {
+public class WebRTCMessageService {
 
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
-    private final WebrtcMessageRepository webrtcMessageRepository;
+    private final WebRTCMessageRepository webRTCMessageRepository;
 
     // 채팅 메시지 저장
-    public void saveMessage(WebrtcMessageRequest request) {
+    public void saveMessage(WebRTCMessageRequest request) {
 
         if (request.getUserId() == null) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -33,7 +33,7 @@ public class WebrtcMessageService {
 
         // 날짜 값을 LocalDateTime으로 변환
         LocalDateTime sentAtDateTime = LocalDateTime.parse(sentAt);
-        WebrtcMessage webrtcMessage = new WebrtcMessage();
+        WebRTCMessage webrtcMessage = new WebRTCMessage();
 
         webrtcMessage.setUser(userRepository.findById(request.getUserId()).orElseThrow(()->new CustomException(ErrorCode.USER_NOT_FOUND)));
         webrtcMessage.setMessage(request.getMessage());
@@ -41,6 +41,6 @@ public class WebrtcMessageService {
         webrtcMessage.setSentAt(sentAtDateTime);  // sentAt 설정
 
         // DB에 저장
-        webrtcMessageRepository.save(webrtcMessage);
+        webRTCMessageRepository.save(webrtcMessage);
     }
 }

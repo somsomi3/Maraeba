@@ -3,6 +3,7 @@ package com.be.domain.rooms.controller;
 import java.io.IOException;
 import java.util.Map;
 
+import com.be.domain.rooms.service.GameService;
 import com.be.domain.wgames.common.service.SpeechService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/rgames")
 public class GameController {
 
-    private final RoomRepository roomRepository;
+    private final GameService gameService;
     private final ColorItemService colorItemService;
     private final SpeechService speechService;
 
@@ -36,15 +37,11 @@ public class GameController {
 
     @PostMapping("/start/{room_id}")
     public ResponseEntity<GameStartResponse> startGame(
-        @PathVariable("room_id") Long roomId,
-        @RequestBody UserJoinRequest request) {
+            @PathVariable("room_id") Long roomId,
+            @RequestBody UserJoinRequest request) {
 
-        Room room = roomRepository.findById(roomId)
-            .orElseThrow(() -> new RuntimeException("Room not found"));
-
-        boolean isHost = room.getHost().getId().equals(request.getUserId()); // 현재 사용자가 방장인지 확인
-
-        return ResponseEntity.ok(new GameStartResponse(roomId, isHost));
+        GameStartResponse response = gameService.startGame(roomId, request.getUserId());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/upload-voice/{room_id}")
