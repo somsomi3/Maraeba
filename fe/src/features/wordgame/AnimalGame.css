@@ -438,25 +438,7 @@
     transform: scale(1.05);
   }
   
-  .animal-restart-tutorial-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: darkorange;
-    color: rgb(245, 243, 241);
-    border: none;
-    padding: 15px 24px;
-    font-size: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-  }
-  
-  .animal-restart-tutorial-btn:hover {
-    background-color: rgba(253, 152, 28, 0.777);
-    transform: scale(1.05);
-  }
+
 
   /* ======================================= */
   /* 튜토리얼 위치(.near-*) 클래스 예시 */

@@ -383,7 +383,7 @@ const restart = () => {
   return (
     <div className="cooking-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <HomeButton />
-        <button className="cooking-restart-tutorial-btn" onClick={handleRestartTutorial}>
+        <button className="restart-tutorial-btn" onClick={handleRestartTutorial}>
         ▶ 튜토리얼
         </button>
 
