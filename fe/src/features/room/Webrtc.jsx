@@ -7,7 +7,6 @@ import "./Webrtc.css";
 import backgroundImage from "../../assets/background/Webrtc_Bg.webp";
 // import rtc from '../../assets/images/rtc.png';
 
-
 const Webrtc = () => {
     // ===================================================
     //                      상태 & 참조
@@ -54,16 +53,16 @@ const Webrtc = () => {
     // 음성 녹음을 통한 단어 선택(참가자)
     const mediaRecorderRef = useRef(null); // MediaRecorder 참조
     const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
-    
-    
-    
+
     // ===================================================
     //                  음성 녹음 기능
     // ===================================================
     // 🎤 녹음 시작
     const startRecording = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+            });
             const mediaRecorder = new MediaRecorder(stream);
 
             mediaRecorder.ondataavailable = (event) => {
@@ -71,7 +70,9 @@ const Webrtc = () => {
             };
 
             mediaRecorder.onstop = async () => {
-                const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+                const audioBlob = new Blob(audioChunksRef.current, {
+                    type: "audio/webm",
+                });
                 audioChunksRef.current = [];
                 await sendAudioToServer(audioBlob); // 녹음된 오디오를 서버로 전송
             };
@@ -95,6 +96,11 @@ const Webrtc = () => {
             mediaRecorderRef.current.stop();
             setIsRecording(false);
         }
+        // 🛑 녹음 스트림(마이크) 해제
+        if (localStream) {
+            localStream.getTracks().forEach((track) => track.stop());
+            setLocalStream(null);
+        }
     };
 
     // ===================================================
@@ -106,15 +112,20 @@ const Webrtc = () => {
         formData.append("audio", audioBlob, "audio.webm");
 
         try {
-            if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
+            if (!token)
+                throw new Error("Access Token이 없습니다. 로그인하세요.");
 
-            const response = await springApi.post(`/rgames/upload-voice/${roomId}`, formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
-                },
-                withCredentials: true,
-            });
+            const response = await springApi.post(
+                `/rgames/upload-voice/${roomId}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                    withCredentials: true,
+                }
+            );
 
             if (response.status === 200) {
                 const result = response.data;
@@ -138,11 +149,6 @@ const Webrtc = () => {
             console.error("❌ 음성 전송 오류:", error);
         }
     };
-
-
-
-
-
 
     // ===================================================
     //                 초기 방장 여부 확인
@@ -241,8 +247,8 @@ const Webrtc = () => {
 
         // 실제 서버 주소/포트를 맞춰주세요.
         webSocketRef.current = new WebSocket(
-            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
-            // `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            // `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         // 소켓 open
@@ -406,12 +412,12 @@ const Webrtc = () => {
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
-                {
-                    urls: "turn:3.39.252.223:3478?transport=tcp",
-                    username: import.meta.env.VITE_USERNAME_URL,
-                    credential: import.meta.env.VITE_PASSWORD_URL,
-                },
-                // { urls: "stun:stun.l.google.com:19302" },
+                // {
+                //     urls: "turn:3.39.252.223:3478?transport=tcp",
+                //     username: import.meta.env.VITE_USERNAME_URL,
+                //     credential: import.meta.env.VITE_PASSWORD_URL,
+                // },
+                { urls: "stun:stun.l.google.com:19302" },
             ],
         });
 
@@ -644,9 +650,25 @@ const Webrtc = () => {
                 webSocketRef.current.close();
             }
 
+            // 🛑 마이크 & 카메라 스트림 종료
+            if (localStream) {
+                localStream.getTracks().forEach((track) => track.stop());
+                setLocalStream(null);
+            }
+            // 🛑 WebRTC PeerConnection 닫기
+            if (peerConnectionRef.current) {
+                peerConnectionRef.current.close();
+                peerConnectionRef.current = null;
+            }
+            // 🛑 MediaRecorder 정리
+            if (mediaRecorderRef.current) {
+                mediaRecorderRef.current.stop();
+                mediaRecorderRef.current = null;
+            }
+
             navigate("/room/RoomList");
         },
-        [didLeave, userId, roomId, navigate]
+        [didLeave, userId, roomId, navigate, localStream]
     );
 
     // ===================================================
@@ -790,8 +812,11 @@ const Webrtc = () => {
             return;
         }
 
-        if (!isHost) {  
-            if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+        if (!isHost) {
+            if (
+                webSocketRef.current &&
+                webSocketRef.current.readyState === WebSocket.OPEN
+            ) {
                 const msg = {
                     type: "choice",
                     user_id: userId,
@@ -837,7 +862,6 @@ const Webrtc = () => {
             sendItems();
         }
     }, [items]); // items 변경 감지
-
 
     // ===================================================
     //                      렌더링
@@ -960,17 +984,30 @@ const Webrtc = () => {
                 {/* 오른쪽 - 게임 UI */}
                 <div className="webrtc-game-container">
                     <h2>🎮 사물 맞추기 게임</h2>
-                    <p>입모양을 보고, 색상이 들어간 정답을 선택하세요!</p>
-                    {!isHost && (
-                        <div className="voice-record-container">
-                            <p className="voice-record-guide">
-                                {isRecording ? " 🎤 녹음을 완료하려면 정지 버튼을 누르세요" : " 🎤 녹음을 하려면 마이크 버튼을 누르세요"}
-                            </p>
-                            <button className="voice-record-button" onClick={isRecording ? stopRecording : startRecording}>
-                                {isRecording ? "⏹️" : "🎤"}
+                    <div
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center", // 문구와 버튼 수직 정렬
+                            gap: "1rem", // 문구와 버튼 사이 간격
+                        }}
+                    >
+                        <p style={{ margin: 0 }}>
+                            입모양을 보고, 색상이 들어간 정답을 말하세요!
+                        </p>
+                        {/* 말하기/그만하기 버튼 */}
+                        {!isHost && (
+                            <button
+                                className={`voice-record-button ${
+                                    isRecording ? "recording" : ""
+                                }`}
+                                onClick={
+                                    isRecording ? stopRecording : startRecording
+                                }
+                            >
+                                {isRecording ? "그만하기" : "말하기"}
                             </button>
-                        </div>
-                    )}
+                        )}
+                    </div>
                     {/* 🛠️ 로그 추가: items 상태 확인 */}
                     {console.log("📌 렌더링 중 items 상태:", items)}
 
@@ -981,15 +1018,17 @@ const Webrtc = () => {
                                     key={index}
                                     onClick={() => {
                                         if (isHost) {
-                                            sendAnswerChoice(word);  // 방장은 정답을 선택하면 참가자에게 전송됨
+                                            sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
                                         } else {
-                                            setChoice(word);  // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
+                                            setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
                                         }
                                     }}
-                                    onDoubleClick={() => !isHost && sendChoice(word)}  // 참가자가 음성으로 선택한 경우만 방장에게 전송
+                                    onDoubleClick={() =>
+                                        !isHost && sendChoice(word)
+                                    } // 참가자가 음성으로 선택한 경우만 방장에게 전송
                                     className={`game-button 
                     ${choice === word ? "selected" : ""} 
-                    ${correctAnswer === word ? "correct" : ""}`}  // 정답(방장이 선택한 것)은 참가자에게 강조
+                    ${correctAnswer === word ? "correct" : ""}`} // 정답(방장이 선택한 것)은 참가자에게 강조
                                     aria-label={`게임 버튼: ${word}`}
                                 >
                                     {word}

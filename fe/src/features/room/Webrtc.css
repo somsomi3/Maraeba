@@ -1,21 +1,20 @@
-
 /* ------------------------------
    1. 전체 컨테이너
 ------------------------------ */
 .webrtc-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* 자식 요소들을 수직/수평 중앙 배치 */
-  padding: 0;
-  color: white;
-  height: 100vh;
-  width: 100vw;
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-  filter: brightness(1.05);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* 자식 요소들을 수직/수평 중앙 배치 */
+    padding: 0;
+    color: white;
+    height: 100vh;
+    width: 100vw;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    filter: brightness(1.05);
 }
 
 /* ------------------------------
@@ -23,641 +22,662 @@
    기존 절대 위치 대신 부모의 flex 배치 활용
 ------------------------------ */
 .webrtc-game-overlay {
-  width: 90%;
-  max-width: 100%;
-  height: 90%;
-  max-height: 100%;
-  
-  display: flex;
-  flex-direction: column;
-  justify-content:center;
-  align-items: center;
-  
-  /* 상대 단위 (rem)로 변경 */
-  backdrop-filter: blur(0.8rem);
-  border-radius: 2rem;
-  background: rgba(193, 231, 200, 0.8);
-  z-index: 100;
-  overflow: hidden;
-  padding: 1rem;
-  flex-wrap: wrap;
+    width: 90%;
+    max-width: 100%;
+    height: 90%;
+    max-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* 상대 단위 (rem)로 변경 */
+    backdrop-filter: blur(0.8rem);
+    border-radius: 2rem;
+    background: rgba(193, 231, 200, 0.8);
+    z-index: 100;
+    overflow: hidden;
+    padding: 1rem;
+    flex-wrap: wrap;
 }
 
 /* ------------------------------
    3. 비디오 영역
 ------------------------------ */
 .video-box {
-  flex: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  height: 100%;
-  width: 60%;
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    height: 100%;
+    width: 60%;
 }
 
 .video-label {
-  display: block;
-  font-family: 'NPSbold';
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: rgba(62, 24, 55, 1);
-  text-align: center;
+    display: block;
+    font-family: "NPSbold";
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: rgba(62, 24, 55, 1);
+    text-align: center;
 }
 
 /* 답변 영역 */
 .video-answer-wrapper {
-  display: flex;
-  flex: 2;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-  min-width: 15%;
-  height: 70%;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0);
-  border-radius: 1rem;
-  overflow: auto;
+    display: flex;
+    flex: 2;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    min-width: 15%;
+    height: 70%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0);
+    border-radius: 1rem;
+    overflow: auto;
 }
 
 /* 비디오와 채팅 래퍼 */
 .video-chat-wrapper {
-  display: flex;
-  flex : 7;
-  justify-content: flex-start;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-left: 0;
-  padding-left: 0;
-  width: 80%;
-  height: auto;
-  position: relative;
+    display: flex;
+    flex: 7;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-left: 0;
+    padding-left: 0;
+    width: 80%;
+    height: auto;
+    position: relative;
 }
 
 /* 비디오 컨테이너 (상대/내 화면) */
 .video-container {
-  display: flex;
-  flex: 5;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  width: 100%; /* 비율 적용 */
-  min-width: 60%;
-  background: transparent;
-  height: 90%; /* 높이 자동 조정 */
-  border-radius: 1rem;
-  padding-top: 2rem;
+    display: flex;
+    flex: 5;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: 100%; /* 비율 적용 */
+    min-width: 60%;
+    background: transparent;
+    height: 90%; /* 높이 자동 조정 */
+    border-radius: 1rem;
+    padding-top: 2rem;
 }
 
 /* 실제 비디오들을 감싸는 래퍼 */
 .video-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  align-items: flex-end;
-  justify-content: center;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  min-height: 40vh;
-  flex-wrap: wrap;
-  position: relative; /* 필요 시 위치 조정 */
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 40vh;
+    flex-wrap: wrap;
+    position: relative; /* 필요 시 위치 조정 */
 }
 
 /* 큰 화면 비디오 */
 .large-video {
-  flex: 4;
-  width: 80%; /* 기존 70% → 80%로 증가 */
-  height: auto; /* 비율 유지 */
-  max-width: 900px; /* 최대 크기 제한 */
-  aspect-ratio: 16 / 9; /* 가로세로 비율 유지 */
-  border: 0.3rem solid #444;
-  background: black;
-  display: block;
-  border-radius: 1.5rem;
-  box-shadow: 0.4rem 0.4rem 1rem rgba(0, 0, 0, 0.3);
+    flex: 4;
+    width: 80%; /* 기존 70% → 80%로 증가 */
+    height: auto; /* 비율 유지 */
+    max-width: 900px; /* 최대 크기 제한 */
+    aspect-ratio: 16 / 9; /* 가로세로 비율 유지 */
+    border: 0.3rem solid #444;
+    background: black;
+    display: block;
+    border-radius: 1.5rem;
+    box-shadow: 0.4rem 0.4rem 1rem rgba(0, 0, 0, 0.3);
 }
 
 /* 작은 화면 비디오 */
 .small-video {
-  width: 100%; /* 기존 100% → 40%로 조정 */
-  max-width: 250px; /* 최대 크기 제한 */
-  height: 100%; /* 비율 유지 */
-  aspect-ratio: 16 / 9; /* 16:9 비율 유지 */
-  border: 0.3rem solid #777;
-  background: black;
-  display: block;
-  border-radius: 1.5rem;
-  box-shadow: 0.4rem 0.4rem 1rem rgba(0, 0, 0, 0.3);
+    width: 100%; /* 기존 100% → 40%로 조정 */
+    max-width: 250px; /* 최대 크기 제한 */
+    height: 100%; /* 비율 유지 */
+    aspect-ratio: 16 / 9; /* 16:9 비율 유지 */
+    border: 0.3rem solid #777;
+    background: black;
+    display: block;
+    border-radius: 1.5rem;
+    box-shadow: 0.4rem 0.4rem 1rem rgba(0, 0, 0, 0.3);
 }
 
 /* 내 화면 감싸는 컨테이너 */
 .small-video-container {
-  flex: 2;
-  width: 40%;
-  max-width: 350px;
-  height: 80%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 1rem;
+    flex: 2;
+    width: 40%;
+    max-width: 350px;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
 }
 
 /* ------------------------------
    4. 버튼 영역
 ------------------------------ */
 .start-game-button {
-  font-family: 'Gamja Flower', sans-serif;
-  background-color: #ffcc66;
-  color: rgba(62, 24, 55, 1);
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 1.5rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-  box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
-  transition: background 0.2s;
-  margin-bottom: 0.8rem;
-  width: 8rem;
-  height: 6vh; /* 필요에 따라 조정 */
-  text-align: center;
+    font-family: "Gamja Flower", sans-serif;
+    background-color: #ffcc66;
+    color: rgba(62, 24, 55, 1);
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+    transition: background 0.2s;
+    margin-bottom: 0.8rem;
+    width: 8rem;
+    height: 6vh; /* 필요에 따라 조정 */
+    text-align: center;
 }
 
 .start-game-button:hover {
-  background-color: #388E3C;
+    background-color: #388e3c;
 }
 
 /* 호스트 정답 선택 영역 */
 .host-answer-selection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 90%;
-  overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 90%;
+    overflow: hidden;
 }
 
 .host-answer-selection h3 {
-  font-family: 'Gamja Flower', sans-serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: rgba(62, 24, 55, 1);
-  text-align: center;
-  margin: 0.6rem;
+    font-family: "Gamja Flower", sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgba(62, 24, 55, 1);
+    text-align: center;
+    margin: 0.6rem;
 }
 
 /* 정답 버튼 */
 .answer-button {
-  background: #FFE2BA;
-  border: none;
-  width: 3rem;
-  height: 4rem;
-  text-align: center;
-  padding: 0.2rem 0.4rem;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease-in-out;
-  color: black;
-  word-break: break-word;
+    background: #ffe2ba;
+    border: none;
+    width: 3rem;
+    height: 4rem;
+    text-align: center;
+    padding: 0.2rem 0.4rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    color: black;
+    word-break: break-word;
 }
 
 .answer-button:hover {
-  background: lightgray;
+    background: lightgray;
 }
 
 .answer-button.selected {
-  background-color: red;
-  color: white;
-  border: 3px solid red;
+    background-color: red;
+    color: white;
+    border: 3px solid red;
 }
 
 /* 정답 버튼들을 감싸는 그리드 */
 .answer-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, auto);
-  gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 /* 일반 버튼 및 버튼 컨테이너 */
 .button-container {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: auto;
-  padding: 1rem;
-  width: 100%;
-  padding-top: 0;
-  text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: auto;
+    padding: 1rem;
+    width: 100%;
+    padding-top: 0;
+    text-align: center;
 }
 
 .button {
-  background-color: #4CAF50;
-  font-family: 'Gamja Flower', sans-serif;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.2rem;
-  font-size: 1.2rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-  min-width: 8rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+    background-color: #4caf50;
+    font-family: "Gamja Flower", sans-serif;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    min-width: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .button:hover {
-  background: #0056b3;
+    background: #0056b3;
+}
+
+.voice-record-button {
+    padding: 0.3rem 1rem;
+    border-radius: 1rem;
+    background: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    height: 2rem; /* 문구와 높이 맞춤 */
+    line-height: 1.5rem; /* 텍스트 수직 정렬 */
+    transition: background 0.2s;
+}
+
+.voice-record-button:hover {
+    background: #388e3c;
+}
+
+.voice-record-button.recording {
+    background: #d32f2f;
 }
 
 /* ------------------------------
    5. 채팅 영역
 ------------------------------ */
 .chat-container {
-  display: flex;
-  flex: 3;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  width: 25%;
-  min-width: 25%;
-  min-height: 50vh;
-  max-height: 50vh;
-  padding: 1rem;
-  background: rgba(223, 207, 207, 0.7);
-  border-radius: 1rem;
-  border: 0.2rem solid rgba(192, 168, 168, 0.5);
-  color: #4a3f3f;
-  overflow: hidden;
+    display: flex;
+    flex: 3;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    width: 25%;
+    min-width: 25%;
+    min-height: 50vh;
+    max-height: 50vh;
+    padding: 1rem;
+    background: rgba(223, 207, 207, 0.7);
+    border-radius: 1rem;
+    border: 0.2rem solid rgba(192, 168, 168, 0.5);
+    color: #4a3f3f;
+    overflow: hidden;
 }
 
 .chat-box {
-  flex: 1;
-  width: 90%;
-  height: 70%;
-  max-height: 70%;
-  overflow-y: auto;
-  background: #ffffff;
-  padding: 1.2rem;
-  border-radius: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  scroll-behavior: smooth;
+    flex: 1;
+    width: 90%;
+    height: 70%;
+    max-height: 70%;
+    overflow-y: auto;
+    background: #ffffff;
+    padding: 1.2rem;
+    border-radius: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
 }
 
 .input-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 100%;
-  height: 25%;
-  gap: 0.5rem;
-  align-items: center;
-  margin-top: auto;
-  padding: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: 25%;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: auto;
+    padding: 0.5rem;
 }
 
 .input {
-  flex: 1;
-  padding: 1rem;
-  border-radius: 1rem;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: 1.4rem;
-  background: white;
-  color: #333;
-  text-align: left;
-  width: 75%;
-  height: 10%;
+    flex: 1;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 1.4rem;
+    background: white;
+    color: #333;
+    text-align: left;
+    width: 75%;
+    height: 10%;
 }
 
 .send-button {
-  padding: 0.8rem 1.2rem;
-  border-radius: 1rem;
-  background: #005999;
-  color: white;
-  border: none;
-  cursor: pointer;
-  min-width: 5rem;
-  text-align: center;
-  transition: background 0.2s;
-  font-size: 1rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: 1rem;
+    background: #005999;
+    color: white;
+    border: none;
+    cursor: pointer;
+    min-width: 5rem;
+    text-align: center;
+    transition: background 0.2s;
+    font-size: 1rem;
 }
 
 /* ------------------------------
    6. 메시지 스타일
 ------------------------------ */
 .my-message {
-  align-self: flex-end;
-  background-color: #A7C7E7;
-  color: black;
-  font-family: "Nunito", sans-serif;
-  border-radius: 1.2rem;
-  padding: 0.8rem 1.2rem;
-  margin-bottom: 0.5rem;
-  max-width: 80%;
-  word-break: break-word;
-  box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+    align-self: flex-end;
+    background-color: #a7c7e7;
+    color: black;
+    font-family: "Nunito", sans-serif;
+    border-radius: 1.2rem;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 0.5rem;
+    max-width: 80%;
+    word-break: break-word;
+    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
 }
 
 .other-message {
-  align-self: flex-start;
-  background: #f1f1f1;
-  color: black;
-  border-radius: 0.4rem;
-  padding: 0.8rem 1.2rem;
-  font-size: 1.4rem;
-  font-family: "Nunito", sans-serif;
-  max-width: 80%;
-  word-break: break-word;
-  margin-bottom: 1rem;
-  box-shadow: 0.3rem 0.3rem 0rem rgba(0, 0, 0, 0.3);
+    align-self: flex-start;
+    background: #f1f1f1;
+    color: black;
+    border-radius: 0.4rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.4rem;
+    font-family: "Nunito", sans-serif;
+    max-width: 80%;
+    word-break: break-word;
+    margin-bottom: 1rem;
+    box-shadow: 0.3rem 0.3rem 0rem rgba(0, 0, 0, 0.3);
 }
 
 /* ------------------------------
    7. 게임 영역
 ------------------------------ */
 .webrtc-game-container {
-  flex: 3;
-  font-family: 'Gamja Flower', sans-serif;
-  font-size: 1.2rem;
-  font-weight: bold;
-  width: 89%;
-  max-width: 90%;
-  height: 40%;
-  max-height: 30vh;
-  text-align: center;
-  background: rgba(250, 210, 90, 0.8);
-  backdrop-filter: blur(6px);
-  border-radius: 1rem;
-  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
-  color: black;
-  z-index: 11;
-  overflow: auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  overflow: hidden;
+    flex: 3;
+    font-family: "Gamja Flower", sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 89%;
+    max-width: 90%;
+    height: 40%;
+    max-height: 30vh;
+    text-align: center;
+    background: rgba(250, 210, 90, 0.8);
+    backdrop-filter: blur(6px);
+    border-radius: 1rem;
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+    color: black;
+    z-index: 11;
+    overflow: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
 }
 
 .webrtc-game-container h2 {
-  margin: 0.2rem 0;
-  font-size: 1.7rem;
+    margin: 0.2rem 0;
+    font-size: 1.7rem;
 }
 
 .webrtc-game-container p {
-  margin: 0.2rem 0;
-  font-size: 1.3rem;
-  line-height: 1.2;
+    margin: 0.2rem 0;
+    font-size: 1.3rem;
+    line-height: 1.2;
 }
 
 .game-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.2rem;
-  margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
 }
 
 .game-button {
-  font-size: 1.2rem;
-  padding: 1.2rem 2rem;
-  border-radius: 1.5rem;
-  cursor: pointer;
-  transition: transform 0.2s, background-color 0.3s;
-  background: rgba(255, 244, 160, 0.9);
-  font-weight: bold;
-  border: none;
+    font-size: 1.2rem;
+    padding: 1.2rem 2rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    background: rgba(255, 244, 160, 0.9);
+    font-weight: bold;
+    border: none;
 }
 
 .game-button.selected {
-  background-color: lightblue;
+    background-color: lightblue;
 }
 
 .game-button.correct {
-  border: 3px solid red;
+    border: 3px solid red;
 }
 
 .game-button.incorrect {
-  border: 1px solid black;
+    border: 1px solid black;
 }
 
 .game-button:hover {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 .loading-message {
-  font-size: 1.1rem;
-  color: gray;
+    font-size: 1.1rem;
+    color: gray;
 }
 
 /* 게임 종료 버튼 (절대 위치 대신 flex 컨테이너 내 배치) */
 .leave-buttonContainer {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
 }
 
 .leave-button {
-  position: relative;
-  align-self: flex-end;
-  padding: 0.5rem 1rem;
-  background-color: #FF5733;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
+    position: relative;
+    align-self: flex-end;
+    padding: 0.5rem 1rem;
+    background-color: #ff5733;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
 }
 
 /* 비디오 배경 스타일 */
 .large-video,
 .small-video {
-  background: linear-gradient(to bottom, #1a1a1a, #000000);
-  border: 0.2rem solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(to bottom, #1a1a1a, #000000);
+    border: 0.2rem solid rgba(255, 255, 255, 0.2);
 }
 
 /* 역할 배지 */
 .role-badge {
-  position: absolute;
-  top: -1rem;
-  right: 1rem;
-  font-size: 2rem;
-  background: rgba(255, 215, 0, 0.9);
-  padding: 0.5rem;
-  border-radius: 50%;
-  box-shadow: 0rem 0.3rem 0.5rem rgba(0, 0, 0, 0.3);
-  z-index: 999;
+    position: absolute;
+    top: -1rem;
+    right: 1rem;
+    font-size: 2rem;
+    background: rgba(255, 215, 0, 0.9);
+    padding: 0.5rem;
+    border-radius: 50%;
+    box-shadow: 0rem 0.3rem 0.5rem rgba(0, 0, 0, 0.3);
+    z-index: 999;
 }
 
 /* 내 화면 컨테이너 (flex 사용) */
 .small-video-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* 게임 컨트롤 (필요 시) */
 .game-control-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem;
 }
 
 /* =============== 1024px 이하 (태블릿 및 중간 크기 화면) =============== */
 @media (max-width: 1024px) {
-  /* 전체 컨테이너의 여백 조정 */
-  .webrtc-container {
-    padding: 1rem;
-    height: auto; /* 내용에 따라 높이 자동 조정 */
-  }
-  
-  /* 오버레이 영역 크기 및 패딩 조정 */
-  .webrtc-game-overlay {
-    width: 95%;
-    height: auto;
-    padding: 1rem;
-    border-radius: 1.5rem;
-  }
-  
-  /* 비디오와 채팅 영역 세로로 재배치 */
-  .video-chat-wrapper {
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-  }
-  
-  /* 비디오 컨테이너와 채팅 컨테이너 넓이 100% 적용 */
-  .video-container,
-  .chat-container {
-    min-width: 100%;
-  }
-  
-  /* 비디오 래퍼의 최소 높이 축소 */
-  .video-wrapper {
-    min-height: 30vh;
-  }
-  
-  /* 큰 화면 비디오: 최대 크기 제한 해제 및 넓이 100% 적용 */
-  .large-video {
-    width: 100%;
-    max-width: none;
-    aspect-ratio: 16/9;
-  }
-  
-  /* 작은 화면 비디오: 중앙 정렬 및 크기 축소 */
-  .small-video {
-    width: 90%;
-    max-width: 250px;
-    height: auto;
-  }
-  
-  /* 채팅 영역: 넓이 100% 적용 및 최소 높이 축소 */
-  .chat-container {
-    width: 100%;
-    min-height: 40vh;
-  }
-  
-  /* 게임 영역: 넓이를 95%로, 높이는 자동 */
-  .webrtc-game-container {
-    width: 95%;
-    height: auto;
-    max-height: none;
-    font-size: 1rem;
-  }
+    /* 전체 컨테이너의 여백 조정 */
+    .webrtc-container {
+        padding: 1rem;
+        height: auto; /* 내용에 따라 높이 자동 조정 */
+    }
+
+    /* 오버레이 영역 크기 및 패딩 조정 */
+    .webrtc-game-overlay {
+        width: 95%;
+        height: auto;
+        padding: 1rem;
+        border-radius: 1.5rem;
+    }
+
+    /* 비디오와 채팅 영역 세로로 재배치 */
+    .video-chat-wrapper {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    /* 비디오 컨테이너와 채팅 컨테이너 넓이 100% 적용 */
+    .video-container,
+    .chat-container {
+        min-width: 100%;
+    }
+
+    /* 비디오 래퍼의 최소 높이 축소 */
+    .video-wrapper {
+        min-height: 30vh;
+    }
+
+    /* 큰 화면 비디오: 최대 크기 제한 해제 및 넓이 100% 적용 */
+    .large-video {
+        width: 100%;
+        max-width: none;
+        aspect-ratio: 16/9;
+    }
+
+    /* 작은 화면 비디오: 중앙 정렬 및 크기 축소 */
+    .small-video {
+        width: 90%;
+        max-width: 250px;
+        height: auto;
+    }
+
+    /* 채팅 영역: 넓이 100% 적용 및 최소 높이 축소 */
+    .chat-container {
+        width: 100%;
+        min-height: 40vh;
+    }
+
+    /* 게임 영역: 넓이를 95%로, 높이는 자동 */
+    .webrtc-game-container {
+        width: 95%;
+        height: auto;
+        max-height: none;
+        font-size: 1rem;
+    }
 }
 
 /* =============== 768px 이하 (모바일 화면) =============== */
 @media (max-width: 768px) {
-  /* 전체 컨테이너: 여백 및 패딩 축소 */
-  .webrtc-container {
-    padding: 0.5rem;
-  }
-  
-  /* 오버레이 영역: 폭을 100%에 가깝게 */
-  .webrtc-game-overlay {
-    width: 98%;
-    padding: 0.8rem;
-    border-radius: 1rem;
-  }
-  
-  /* 비디오와 채팅 영역: 세로 배치 및 간격 축소 */
-  .video-chat-wrapper {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-  
-  /* 비디오 컨테이너: 최소 넓이 100% 적용 */
-  .video-container {
-    min-width: 100%;
-    padding-top: 1rem;
-  }
-  
-  /* 비디오 래퍼: 최소 높이 축소 */
-  .video-wrapper {
-    min-height: 25vh;
-  }
-  
-  /* 큰 화면 비디오: 폭 100% 적용 */
-  .large-video {
-    width: 100%;
-    height: auto;
-  }
-  
-  /* 작은 화면 비디오: 중앙 정렬 유지 */
-  .small-video {
-    width: 90%;
-    max-width: 220px;
-    height: auto;
-  }
-  
-  /* 채팅 영역: 폭 100% 및 높이 축소 */
-  .chat-container {
-    width: 100%;
-    min-height: 35vh;
-  }
-  
-  /* 채팅 입력 및 전송 버튼: 폰트 크기 및 패딩 축소 */
-  .input {
-    font-size: 1rem;
-    padding: 0.8rem;
-    width: 75%;
-  }
-  .send-button {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-    min-width: 4rem;
-  }
-  
-  /* 게임 영역: 폭 98% 적용 및 폰트 크기 축소 */
-  .webrtc-game-container {
-    width: 98%;
-    height: auto;
-    max-height: none;
-    font-size: 0.9rem;
-  }
-  
-  /* 게임 버튼: 폭 100% 및 여백 조정 */
-  .game-button {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
-  }
+    /* 전체 컨테이너: 여백 및 패딩 축소 */
+    .webrtc-container {
+        padding: 0.5rem;
+    }
+
+    /* 오버레이 영역: 폭을 100%에 가깝게 */
+    .webrtc-game-overlay {
+        width: 98%;
+        padding: 0.8rem;
+        border-radius: 1rem;
+    }
+
+    /* 비디오와 채팅 영역: 세로 배치 및 간격 축소 */
+    .video-chat-wrapper {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    /* 비디오 컨테이너: 최소 넓이 100% 적용 */
+    .video-container {
+        min-width: 100%;
+        padding-top: 1rem;
+    }
+
+    /* 비디오 래퍼: 최소 높이 축소 */
+    .video-wrapper {
+        min-height: 25vh;
+    }
+
+    /* 큰 화면 비디오: 폭 100% 적용 */
+    .large-video {
+        width: 100%;
+        height: auto;
+    }
+
+    /* 작은 화면 비디오: 중앙 정렬 유지 */
+    .small-video {
+        width: 90%;
+        max-width: 220px;
+        height: auto;
+    }
+
+    /* 채팅 영역: 폭 100% 및 높이 축소 */
+    .chat-container {
+        width: 100%;
+        min-height: 35vh;
+    }
+
+    /* 채팅 입력 및 전송 버튼: 폰트 크기 및 패딩 축소 */
+    .input {
+        font-size: 1rem;
+        padding: 0.8rem;
+        width: 75%;
+    }
+    .send-button {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        min-width: 4rem;
+    }
+
+    /* 게임 영역: 폭 98% 적용 및 폰트 크기 축소 */
+    .webrtc-game-container {
+        width: 98%;
+        height: auto;
+        max-height: none;
+        font-size: 0.9rem;
+    }
+
+    /* 게임 버튼: 폭 100% 및 여백 조정 */
+    .game-button {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+    }
 }
