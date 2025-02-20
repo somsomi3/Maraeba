@@ -8,8 +8,6 @@ import com.be.domain.wgames.common.service.SpeechService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.be.db.entity.Room;
-import com.be.db.repository.RoomRepository;
 import com.be.domain.rooms.request.UserJoinRequest;
 import com.be.domain.rooms.response.GameStartResponse;
 import com.be.domain.rooms.service.ColorItemService;

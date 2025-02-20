@@ -84,7 +84,7 @@ const Profile = () => {
                 <h2>{username}</h2>
                 <nav className="profile-menu">
                     <ul>
-                        <li className="active">내 프로필</li>
+                        <li className="active">아이 프로필</li>
                         <li onClick={() => navigate("/profile-info")}>
                             회원정보 수정
                         </li>
