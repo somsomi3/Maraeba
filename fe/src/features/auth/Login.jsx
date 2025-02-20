@@ -89,13 +89,7 @@ const Login = () => {
       </div>
       <div>
         <button className="secondary-button" onClick={() => navigate("/register")}>
-          회원가입하기
-        </button>
-      </div>
-      {/* /main으로 이동하는 임시 버튼 */}
-      <div>
-        <button className="secondary-button" onClick={() => navigate("/main")}>
-          메인 페이지로 이동
+          회원가입
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { springApi } from "../../utils/api"; // ✅ springApi 추가
+import logo from "../../assets/logo.png"
 import "./index.css";
 
 const FindId = () => {
@@ -36,7 +37,8 @@ const FindId = () => {
 };
 
   return (
-    <div className="form-container">
+    <div className="findid-form-container">
+        <img src={logo} alt="logo" className="register-logo"/>
       <h2>아이디 찾기</h2>
       <form onSubmit={handleSubmit}>
         <div className="login-input-group">
