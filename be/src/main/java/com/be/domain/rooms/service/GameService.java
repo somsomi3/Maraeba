@@ -2,7 +2,6 @@ package com.be.domain.rooms.service;
 
 import com.be.db.entity.Room;
 import com.be.db.repository.RoomRepository;
-import com.be.domain.rooms.response.GameResult;
 import com.be.domain.rooms.response.GameStartResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -34,6 +34,9 @@ const Webrtc = () => {
     const [items, setItems] = useState([]);
     const [choice, setChoice] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(null);
+    // 정답/오답 팝업 상태 관리
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(""); // 🔵 팝업 메시지
 
     // 방장 여부
     const [isHost, setIsHost] = useState(false);
@@ -422,7 +425,6 @@ const Webrtc = () => {
         }
     };
 
-
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
@@ -567,8 +569,13 @@ const Webrtc = () => {
             console.error("❌ WebSocket 연결이 닫혀 있음");
             return;
         }
+
         if (!userId) {
             console.error("사용자 ID 없음");
+            return;
+        }
+        if (!myUsername) {
+            console.error("사용자 이름 없음!");
             return;
         }
 
@@ -576,7 +583,7 @@ const Webrtc = () => {
         const now = new Date();
         now.setHours(now.getHours() + 9); // UTC -> KST 변환
         const formattedTime = now.toISOString(); // ISO 형식으로 변환
-
+        
         const messageObject = {
             type: "chat",
             user_id: userId,
@@ -585,7 +592,6 @@ const Webrtc = () => {
             room_id: roomId,
             sentAt: formattedTime, // 한국 시간으로 변환된 값 사용
         };
-
         console.log("📡 채팅 메시지 전송:", messageObject);
 
         webSocketRef.current.send(JSON.stringify(messageObject));
@@ -902,6 +908,24 @@ const Webrtc = () => {
         }
     }, [items]); // items 변경 감지
 
+    // 🔵 correctAnswer가 변경될 때마다 실행
+    useEffect(() => {
+        // 참가자 (isHost가 false)일 때만 확인
+        if (!isHost && choice && correctAnswer) {
+            if (choice === correctAnswer) {
+                setPopupMessage("정답입니다! 🎉");
+            } else {
+                setPopupMessage("오답입니다! ❌");
+            }
+            setShowPopup(true); // 팝업 보이기
+
+            // 2초 후에 팝업 자동으로 닫기
+            setTimeout(() => {
+                setShowPopup(false);
+            }, 2000);
+        }
+    }, [correctAnswer, choice, isHost]); // correctAnswer가 변경될 때마다 실행
+
     // ===================================================
     //                      렌더링
     // ===================================================
@@ -911,10 +935,15 @@ const Webrtc = () => {
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
                 <button className="restart-tutorial-btn" onClick={startTutorial}>▶ 튜토리얼</button>
+            {/* 🔴 정답/오답 팝업 UI 추가 (alert처럼) */}
+            {showPopup && (
+                <div className="popup-alert">
+                    <div className="popup-message">{popupMessage}</div>
+                </div>
+            )}
             <div className="webrtc-game-overlay">
                 {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
                 <GoBackButton />
-
                 {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
                 <div className="video-chat-wrapper">
                
@@ -1019,6 +1048,7 @@ const Webrtc = () => {
 
                 {/* 오른쪽 - 게임 UI */}
                 <div className="webrtc-game-container">
+                    <h2>🎮 사물 맞추기 게임</h2>
                     <div
                         style={{
                             display: "inline-flex",
