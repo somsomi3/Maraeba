@@ -410,7 +410,7 @@ const checkIncorrect = (result) => {
   return (
     <div className="animal-game-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <HomeButton />
-    <button className="animal-restart-tutorial-btn" onClick={handleRestartTutorial}>▶ 튜토리얼</button>
+    <button className="restart-tutorial-btn" onClick={handleRestartTutorial}>▶ 튜토리얼</button>
 
       <div className="animal-game-overlay">
         <button className="pause-button">

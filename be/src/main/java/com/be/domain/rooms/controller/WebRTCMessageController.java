@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.be.common.model.response.BaseResponseBody;
-import com.be.domain.rooms.request.WebrtcMessageRequest;
-import com.be.domain.rooms.service.WebrtcMessageService;
+import com.be.domain.rooms.request.WebRTCMessageRequest;
+import com.be.domain.rooms.service.WebRTCMessageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class WebrtcMessageController {
+public class WebRTCMessageController {
 
-    private final WebrtcMessageService webrtcMessageService;
+    private final WebRTCMessageService webRTCMessageService;
 
     // ✅ 메시지 저장
     @PostMapping("/webrtcs/message")
-    public ResponseEntity<? extends BaseResponseBody> saveMessage(@RequestBody WebrtcMessageRequest request,
+    public ResponseEntity<? extends BaseResponseBody> saveMessage(@RequestBody WebRTCMessageRequest request,
         @AuthenticationPrincipal UserDetails userDetails) {
         if (request == null) {
             return ResponseEntity.badRequest().body(BaseResponseBody.of("잘못된 요청: 요청 본문이 없음", 400));
@@ -35,7 +35,7 @@ public class WebrtcMessageController {
         log.info("Received message_getsentat: {}", request.getSentAt());
 
         // 메시지 저장
-        webrtcMessageService.saveMessage(request);
+        webRTCMessageService.saveMessage(request);
         return ResponseEntity.ok().body(BaseResponseBody.of("WebSocket 메시지 저장 성공", 200));
     }
 

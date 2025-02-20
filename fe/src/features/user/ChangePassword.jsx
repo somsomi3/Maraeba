@@ -95,7 +95,9 @@ const ChangePassword = () => {
                 <h2>{username}</h2>
                 <nav className="profile-menu">
                     <ul>
-                        <li onClick={() => navigate("/profile")}>내 프로필</li>
+                        <li onClick={() => navigate("/profile")}>
+                            아이 프로필
+                        </li>
                         <li onClick={() => navigate("/profile-info")}>
                             회원정보 수정
                         </li>

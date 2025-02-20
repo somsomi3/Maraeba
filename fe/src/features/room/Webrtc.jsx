@@ -6,7 +6,7 @@ import GoBackButton from "../../components/button/GoBackButton";
 import "./Webrtc.css";
 import backgroundImage from "../../assets/background/Webrtc_Bg.webp";
 // import rtc from '../../assets/images/rtc.png';
-
+import tutoPorong from "../../assets/images/tuto_porong.png"
 
 const Webrtc = () => {
     // ===================================================
@@ -34,6 +34,9 @@ const Webrtc = () => {
     const [items, setItems] = useState([]);
     const [choice, setChoice] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(null);
+    // 정답/오답 팝업 상태 관리
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(""); // 🔵 팝업 메시지
 
     // 방장 여부
     const [isHost, setIsHost] = useState(false);
@@ -50,20 +53,22 @@ const Webrtc = () => {
 
     const [isRecording, setIsRecording] = useState(false); // 녹음 중인지 여부
     const [feedbackMessage, setFeedbackMessage] = useState(""); // 피드백 메시지
+    const [tutorialStep, setTutorialStep] = useState(null);
 
     // 음성 녹음을 통한 단어 선택(참가자)
     const mediaRecorderRef = useRef(null); // MediaRecorder 참조
     const audioChunksRef = useRef([]); // 녹음된 음성 데이터 조각
     
-    
-    
+
     // ===================================================
     //                  음성 녹음 기능
     // ===================================================
     // 🎤 녹음 시작
     const startRecording = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+            });
             const mediaRecorder = new MediaRecorder(stream);
 
             mediaRecorder.ondataavailable = (event) => {
@@ -71,7 +76,9 @@ const Webrtc = () => {
             };
 
             mediaRecorder.onstop = async () => {
-                const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+                const audioBlob = new Blob(audioChunksRef.current, {
+                    type: "audio/webm",
+                });
                 audioChunksRef.current = [];
                 await sendAudioToServer(audioBlob); // 녹음된 오디오를 서버로 전송
             };
@@ -95,6 +102,11 @@ const Webrtc = () => {
             mediaRecorderRef.current.stop();
             setIsRecording(false);
         }
+        // 🛑 녹음 스트림(마이크) 해제
+        if (localStream) {
+            localStream.getTracks().forEach((track) => track.stop());
+            setLocalStream(null);
+        }
     };
 
     // ===================================================
@@ -106,15 +118,20 @@ const Webrtc = () => {
         formData.append("audio", audioBlob, "audio.webm");
 
         try {
-            if (!token) throw new Error("Access Token이 없습니다. 로그인하세요.");
+            if (!token)
+                throw new Error("Access Token이 없습니다. 로그인하세요.");
 
-            const response = await springApi.post(`/rgames/upload-voice/${roomId}`, formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data",
-                },
-                withCredentials: true,
-            });
+            const response = await springApi.post(
+                `/rgames/upload-voice/${roomId}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                    withCredentials: true,
+                }
+            );
 
             if (response.status === 200) {
                 const result = response.data;
@@ -138,11 +155,6 @@ const Webrtc = () => {
             console.error("❌ 음성 전송 오류:", error);
         }
     };
-
-
-
-
-
 
     // ===================================================
     //                 초기 방장 여부 확인
@@ -381,8 +393,13 @@ const Webrtc = () => {
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = stream;
             }
-            const now = new Date().toISOString().slice(0, 19);
-            setStartTime(now); // 시작시간 저장
+
+            const now = new Date();
+            now.setHours(now.getHours() + 9); // UTC -> KST 변환
+
+            const formattedTime = now.toISOString().slice(0, 19); // 한국 시간 기준 ISO 문자열 저장
+
+            setStartTime(formattedTime); // 시작시간 저장
             console.log("미디어 시작:", now);
         } catch (error) {
             console.error("미디어 접근 실패:", error);
@@ -396,10 +413,15 @@ const Webrtc = () => {
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = null;
             }
-            const now = new Date().toISOString().slice(0, 19);
-            setEndTime(now);
-            console.log("미디어 종료:", now);
-            saveWebRTCLog(startTime, now); //로그 저장 실행
+
+            const now = new Date();
+            now.setHours(now.getHours() + 9); // UTC → KST 변환
+
+            const formattedTime = now.toISOString().slice(0, 19); // 한국 시간 기준 ISO 문자열 저장
+            setEndTime(formattedTime);
+            console.log("미디어 종료:", formattedTime);
+
+            saveWebRTCLog(startTime, formattedTime); // 로그 저장 실행
         }
     };
 
@@ -556,13 +578,19 @@ const Webrtc = () => {
             console.error("사용자 이름 없음!");
             return;
         }
+
+        // 한국 시간(KST) 변환
+        const now = new Date();
+        now.setHours(now.getHours() + 9); // UTC -> KST 변환
+        const formattedTime = now.toISOString(); // ISO 형식으로 변환
+        
         const messageObject = {
             type: "chat",
             user_id: userId,
             username: myUsername,
             message: message.trim(),
             room_id: roomId,
-            sentAt: new Date().toISOString(),
+            sentAt: formattedTime, // 한국 시간으로 변환된 값 사용
         };
         console.log("📡 채팅 메시지 전송:", messageObject);
 
@@ -644,9 +672,25 @@ const Webrtc = () => {
                 webSocketRef.current.close();
             }
 
+            // 🛑 마이크 & 카메라 스트림 종료
+            if (localStream) {
+                localStream.getTracks().forEach((track) => track.stop());
+                setLocalStream(null);
+            }
+            // 🛑 WebRTC PeerConnection 닫기
+            if (peerConnectionRef.current) {
+                peerConnectionRef.current.close();
+                peerConnectionRef.current = null;
+            }
+            // 🛑 MediaRecorder 정리
+            if (mediaRecorderRef.current) {
+                mediaRecorderRef.current.stop();
+                mediaRecorderRef.current = null;
+            }
+
             navigate("/room/RoomList");
         },
-        [didLeave, userId, roomId, navigate]
+        [didLeave, userId, roomId, navigate, localStream]
     );
 
     // ===================================================
@@ -790,8 +834,11 @@ const Webrtc = () => {
             return;
         }
 
-        if (!isHost) {  
-            if (webSocketRef.current && webSocketRef.current.readyState === WebSocket.OPEN) {
+        if (!isHost) {
+            if (
+                webSocketRef.current &&
+                webSocketRef.current.readyState === WebSocket.OPEN
+            ) {
                 const msg = {
                     type: "choice",
                     user_id: userId,
@@ -828,6 +875,29 @@ const Webrtc = () => {
         }
     };
 
+
+    const startTutorial = () => {
+        if (tutorialStep === null) {
+            setTutorialStep(1);
+        }
+    };
+
+    const completeTutorial = () => {
+        setTutorialStep(null);
+    };
+
+    const PorongSpeech = ({ text, position = "center", onNext }) => (
+        <div className={`webrtc-porong-container ${position}`}>
+            <img src={tutoPorong} alt="포롱이" className="porong-image" />
+            <div className="webrtc-porong-speech-bubble">
+                {text.split("\n").map((line, index) => (
+                    <span key={index}>{line}<br /></span>
+                ))}
+                {onNext && <button onClick={onNext} className="webrtc-porong-nextbutton">다음</button>}
+            </div>
+        </div>
+    );
+
     /**
      * items가 변경될 때마다
      * - 방장이면 다른 참가자에게도 전송
@@ -838,6 +908,23 @@ const Webrtc = () => {
         }
     }, [items]); // items 변경 감지
 
+    // 🔵 correctAnswer가 변경될 때마다 실행
+    useEffect(() => {
+        // 참가자 (isHost가 false)일 때만 확인
+        if (!isHost && choice && correctAnswer) {
+            if (choice === correctAnswer) {
+                setPopupMessage("정답입니다! 🎉");
+            } else {
+                setPopupMessage("오답입니다! ❌");
+            }
+            setShowPopup(true); // 팝업 보이기
+
+            // 2초 후에 팝업 자동으로 닫기
+            setTimeout(() => {
+                setShowPopup(false);
+            }, 2000);
+        }
+    }, [correctAnswer, choice, isHost]); // correctAnswer가 변경될 때마다 실행
 
     // ===================================================
     //                      렌더링
@@ -847,26 +934,19 @@ const Webrtc = () => {
             className="webrtc-container"
             style={{ backgroundImage: `url(${backgroundImage})` }}
         >
+                <button className="restart-tutorial-btn" onClick={startTutorial}>▶ 튜토리얼</button>
+            {/* 🔴 정답/오답 팝업 UI 추가 (alert처럼) */}
+            {showPopup && (
+                <div className="popup-alert">
+                    <div className="popup-message">{popupMessage}</div>
+                </div>
+            )}
             <div className="webrtc-game-overlay">
                 {/* 왼쪽 - 상대방(큰 화면) + 내 화면(작은 화면) */}
                 <GoBackButton />
                 {/* ✅ 비디오 컨테이너 + 채팅 컨테이너를 가로 정렬 */}
                 <div className="video-chat-wrapper">
-                    <div className="video-answer-wrapper">
-                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
-                        {isHost && (
-                            <button
-                                onClick={() => {
-                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
-                                    startGame(); // ✅ 단어 목록 불러오기 실행
-                                }}
-                                className="start-game-button"
-                            >
-                                게임 시작
-                            </button>
-                        )}
-                    </div>
-
+               
                     <div className="video-container">
                         <div className="video-wrapper">
                             {/* 상대방 화면 */}
@@ -876,7 +956,7 @@ const Webrtc = () => {
                                     ref={remoteVideoRef}
                                     autoPlay
                                     playsInline
-                                    className="large-video"
+                                    className={`large-video ${tutorialStep === 1 ? "cooking-highlight" : ""}`}
                                     aria-label="상대방 비디오"
                                 />
                             </div>
@@ -892,7 +972,7 @@ const Webrtc = () => {
                                     autoPlay
                                     playsInline
                                     muted
-                                    className="small-video"
+                                    className={`small-video ${tutorialStep === 1 ? "cooking-highlight" : ""}`}
                                     aria-label="내 비디오"
                                 />
                             </div>
@@ -913,6 +993,15 @@ const Webrtc = () => {
                             </button>
                         </div>
                     </div>
+
+                    {/* 🟢 튜토리얼 1단계: 비디오 컨테이너 설명 */}
+                    {tutorialStep === 1 && (
+                        <PorongSpeech
+                            text="여기서 상대방과 영상 통화를 할 수 있어요!"
+                            position="webrtc-near-video"
+                            onNext={() => setTutorialStep(2)}
+                        />
+                    )}
 
                     {/* 채팅 컨테이너 */}
                     <div className="chat-container" role="region">
@@ -960,38 +1049,49 @@ const Webrtc = () => {
                 {/* 오른쪽 - 게임 UI */}
                 <div className="webrtc-game-container">
                     <h2>🎮 사물 맞추기 게임</h2>
-                    <p>입모양을 보고, 색상이 들어간 정답을 선택하세요!</p>
-                    {!isHost && (
-                        <div className="voice-record-container">
-                            <p className="voice-record-guide">
-                                {isRecording ? " 🎤 녹음을 완료하려면 정지 버튼을 누르세요" : " 🎤 녹음을 하려면 마이크 버튼을 누르세요"}
-                            </p>
-                            <button className="voice-record-button" onClick={isRecording ? stopRecording : startRecording}>
-                                {isRecording ? "⏹️" : "🎤"}
-                            </button>
-                        </div>
-                    )}
+                    <div
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center", // 문구와 버튼 수직 정렬
+                            gap: "1rem", // 문구와 버튼 사이 간격
+                        }}
+                    >
+                         <p className={tutorialStep === 2 ? "cooking-highlight" : ""}>
+                            입모양을 보고, 색상이 들어간 정답을 말하세요!
+                        </p>
+                    </div>
                     {/* 🛠️ 로그 추가: items 상태 확인 */}
                     {console.log("📌 렌더링 중 items 상태:", items)}
 
-                    <div className="game-buttons">
+                    {/* 🟢 튜토리얼 2단계: 게임 설명 */}
+                    {tutorialStep === 2 && (
+                        <PorongSpeech
+                            text="게임이 시작되면 정답을 말해야 해요!"
+                            position="webrtc-near-game"
+                            onNext={() => setTutorialStep(3)}
+                        />
+                    )}
+
+                    <div className={`game-buttons ${tutorialStep === 3 ? "cooking-highlight" : ""}`}>
                         {items.length > 0 ? (
                             items.map((word, index) => (
                                 <button
-                                    key={index}
-                                    onClick={() => {
-                                        if (isHost) {
-                                            sendAnswerChoice(word);  // 방장은 정답을 선택하면 참가자에게 전송됨
-                                        } else {
-                                            setChoice(word);  // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
-                                        }
-                                    }}
-                                    onDoubleClick={() => !isHost && sendChoice(word)}  // 참가자가 음성으로 선택한 경우만 방장에게 전송
-                                    className={`game-button 
-                    ${choice === word ? "selected" : ""} 
-                    ${correctAnswer === word ? "correct" : ""}`}  // 정답(방장이 선택한 것)은 참가자에게 강조
+                                key={index}
+                                onClick={() => {
+                                    if (isHost) {
+                                        sendAnswerChoice(word); // 방장은 정답을 선택하면 참가자에게 전송됨
+                                    } else {
+                                        setChoice(word); // 참가자는 클릭 시 UI에만 반영 (방장에게 전송 X)
+                                    }
+                                }}
+                                onDoubleClick={() =>
+                                    !isHost && sendChoice(word)
+                                } // 참가자가 음성으로 선택한 경우만 방장에게 전송
+                                className={`game-button 
+                                    ${choice === word ? "selected" : ""} 
+                                    ${correctAnswer === word ? "correct" : ""}`} // 정답(방장이 선택한 것)은 참가자에게 강조
                                     aria-label={`게임 버튼: ${word}`}
-                                >
+                                    >
                                     {word}
                                 </button>
                             ))
@@ -1001,6 +1101,60 @@ const Webrtc = () => {
                             </p>
                         )}
                     </div>
+
+                    {/* 🟢 튜토리얼 3단계: 게임 버튼 강조 */}
+                    {tutorialStep === 3 && (
+                        <PorongSpeech
+                            text="여기에서 정답을 선택할 수 있어요!"
+                            position="webrtc-near-buttons"
+                            onNext={() => setTutorialStep(4)}
+                        />
+                    )}
+                    
+                        {/* 말하기/그만하기 버튼 */}
+                        {!isHost && (
+                            <button
+                                className={`voice-record-button ${
+                                    isRecording ? "recording" : ""
+                                }`}
+                                onClick={
+                                    isRecording ? stopRecording : startRecording
+                                }
+                            >
+                                {isRecording ? "그만하기" : "말하기"}
+                            </button>
+                        )}
+
+                         {/* 🟢 튜토리얼 4단계: 음성 녹음 버튼 강조
+                        {tutorialStep === 4 && (
+                            <PorongSpeech
+                                text="이 버튼을 눌러 정답을 음성으로 말해요!"
+                                position="webrtc-near-record"
+                                onNext={() => setTutorialStep(5)}
+                            />
+                        )} */}
+                        
+                        {/* 게임 시작 버튼 (방장만 보이도록 설정) */}
+                        {isHost && (
+                            <button
+                                onClick={() => {
+                                    console.log("🎮 게임 시작 버튼 클릭됨!"); // 🔥 디버깅 로그 추가
+                                    startGame(); // ✅ 단어 목록 불러오기 실행
+                                }}
+                                className={`start-game-button ${tutorialStep === 4 ? "cooking-highlight" : ""}`}
+                            >
+                                게임 시작
+                            </button>
+                        )}
+
+                        {/* 🟢 튜토리얼 5단계: 게임 시작 버튼 강조 */}
+                        {tutorialStep === 4 && (
+                            <PorongSpeech
+                                text="게임을 시작해 보세요!"
+                                position="webrtc-near-start"
+                                onNext={completeTutorial}
+                            />
+                        )}
                 </div>
             </div>
         </div>
