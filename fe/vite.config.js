@@ -74,5 +74,11 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "0.0.0.0",
     },
+    build: {
+      minify: "esbuild",
+      esbuild: {
+        drop: ["console", "debugger"],
+      },
+    },
   };
 });
