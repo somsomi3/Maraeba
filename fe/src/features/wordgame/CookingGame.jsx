@@ -136,8 +136,8 @@ const CookingGame = () => {
         
       if (response.status === 200) {
         const result = response.data;
-        console.log("✅ 정답 검증 결과:", result);
-        console.log("🔹 image_url:", result.image_url);
+        // console.log("✅ 정답 검증 결과:", result);
+        // console.log("🔹 image_url:", result.image_url);
 
         // ✅ 오답, 중복 정답 피드백 추가
         checkIncorrect(result);
@@ -146,7 +146,7 @@ const CookingGame = () => {
           if (result.image_url && result.image_url.includes("/")) {
               // URL 기반 이미지 처리
               const fullImageUrl = `${backendURL}${result.image_url}`; // 서버 경로 보정
-              console.log("🔹 서버에서 받은 이미지 URL:", fullImageUrl);
+            //   console.log("🔹 서버에서 받은 이미지 URL:", fullImageUrl);
 
               fetchResource(fullImageUrl, (blobUrl) => {
                 if (result.cnt === 1) {
@@ -226,7 +226,7 @@ const checkIncorrect = (result) => {
       });
 
       const result = response.data;
-      console.log("✅ 게임 시작 응답:", result);
+    //   console.log("✅ 게임 시작 응답:", result);
 
       setGameData({
         foodName: result.food_name || "",
@@ -260,7 +260,7 @@ const checkIncorrect = (result) => {
   const handleTutorialComplete = async () => {
     try {
       await springApi.patch("/users/me/tutorial/2", { completed: true });
-      console.log("튜토리얼 완료 상태 저장");
+    //   console.log("튜토리얼 완료 상태 저장");
       setIsTutorialCompleted(true);
     //   setTutorialStep(null); // 튜토리얼 완료 후 인삿말 숨기기
       setTutorialStep(0);
@@ -412,7 +412,7 @@ const restart = () => {
         {tutorialStep === 1 && (
             <div className="cooking-porong-container near-title">
                 <PorongSpeech 
-                    text="완성해야 할 음식의 이름을 확인해보자!" 
+                    text="완성해야 할 음식의 이름을 확인할 수 있어요!" 
                     onNext={() => setTutorialStep(2)} 
                 />
             </div>
@@ -448,7 +448,7 @@ const restart = () => {
         {tutorialStep === 2 && (
             <div className="cooking-porong-container near-item">
                 <PorongSpeech 
-                    text="음식을 만들기 위한 재료를 찾아야 해!" 
+                    text="음식을 만들기 위한 재료를 찾아야 해요!" 
                     onNext={() => setTutorialStep(3)} 
                 />
             </div>
@@ -466,7 +466,7 @@ const restart = () => {
         {tutorialStep === 3 && (
             <div className="cooking-porong-container cooking-near-record">
                 <PorongSpeech 
-                    text="마이크 버튼을 눌러 고른 재료가 맞는지 확인해보자!" 
+                    text="마이크 버튼을 눌러 고른 재료가 맞는지 확인해봐요!" 
                     onNext={() => setTutorialStep(4)} 
                 />
             </div>
@@ -524,7 +524,7 @@ const restart = () => {
         {tutorialStep === 4 && (
             <div className="cooking-porong-container near-feedback">
                 <PorongSpeech 
-                    text="여기서 정답인지 확인할 수 있어!" 
+                    text="여기서 정답인지 확인할 수 있어요!" 
                     onNext={() => setTutorialStep(5)} 
                 />
             </div>

@@ -25,9 +25,9 @@ const WordMain = () => {
             먼저, 냉장고가 어딨지? 냉장고에서 필요한 재료를 찾아 무사히 요리를 만들도록 하자!
           </p>
           <div className="button-group">
-            <button className="guide-button" onClick={() => alert('게임 방법')}>
+            {/* <button className="guide-button" onClick={() => alert('게임 방법')}>
               게임 방법
-            </button>
+            </button> */}
             <button className="game-start-button" onClick={() => navigate('/cooking-game')}>
               게임 시작
             </button>
@@ -43,9 +43,9 @@ const WordMain = () => {
             동물 친구들의 문제를 찾아 함께 즐거운 소풍을 즐기자!
           </p>
           <div className="button-group">
-            <button className="guide-button" onClick={() => alert('게임 방법')}>
+            {/* <button className="guide-button" onClick={() => alert('게임 방법')}>
               게임 방법
-            </button>
+            </button> */}
             <button className="game-start-button" onClick={() => navigate('/animal-game/start-game')}>
               게임 시작
             </button>
