@@ -106,49 +106,127 @@
 #### 폴더 구조 및 설명
 
 ```
-src                        
-├─ assets                  
-│  ├─ logo.png             
-│  └─ react.svg            
-├─ components              
-│  └─ button               
-│     ├─ CustomButton.css  
-│     └─ CustomButton.jsx  
-├─ features                
-│  ├─ auth                 
-│  │  ├─ FindId.jsx        
-│  │  ├─ FindPw.jsx        
-│  │  ├─ index.css         
-│  │  ├─ index.js          
-│  │  ├─ Login.jsx         
-│  │  └─ Register.jsx      
-│  ├─ conversation         
-│  │  ├─ Conversation.css  
-│  │  ├─ Conversation.jsx  
-│  │  └─ index.js          
-│  ├─ mainpage             
-│  │  ├─ index.js          
-│  │  ├─ Main.css          
-│  │  ├─ Main.jsx          
-│  │  ├─ MultiMain.css     
-│  │  ├─ MultiMain.jsx     
-│  │  ├─ SingleMain.css    
-│  │  └─ SingleMain.jsx    
-│  ├─ pronunciation        
-│  │  ├─ index.js          
-│  │  ├─ PronsMain.css     
-│  │  └─ PronsMain.jsx     
-│  ├─ session              
-│  └─ wordgame             
-│     ├─ index.js          
-│     ├─ WordMain.css      
-│     └─ WordMain.jsx      
-├─ utils                   
-│  └─ api.js               
-├─ App.css                 
-├─ App.jsx                 
-├─ index.css               
-└─ main.jsx                
+│── src/
+│   │── assets/
+│   │   │── background/
+│   │   │── fonts/
+│   │   │── icons/
+│   │   │── images/
+│   │   │── profiles/
+│   │   │── logo.png
+│   │   │── react.svg
+│   │
+│   │── components/
+│   │   │── button/
+│   │   │   │── ConversationButton.jsx
+│   │   │   │── GoBackButton.css
+│   │   │   │── GoBackButton.jsx
+│   │   │   │── HomeButton.css
+│   │   │   │── HomeButton.jsx
+│   │   │   │── LogoutButton.jsx
+│   │   │   │── RecordButton.css
+│   │   │   │── RecordButton.jsx
+│   │
+│   │   │── loading/
+│   │   │   │── CuteLoading.css
+│   │   │   │── CuteLoading.jsx
+│   │
+│   │   │── log/
+│   │   │   │── ProtectedLayout.jsx
+│   │
+│   │   │── popup/
+│   │   │   │── ConversationStopPopup.jsx
+│   │   │   │── CorrectPopup.css
+│   │   │   │── CorrectPopup.jsx
+│   │   │   │── PausePopup.css
+│   │   │   │── PausePopup.jsx
+│   │
+│   │── features/
+│   │   │── auth/
+│   │   │   │── FindId.jsx
+│   │   │   │── FindPw.jsx
+│   │   │   │── index.css
+│   │   │   │── index.js
+│   │   │   │── KakaoCallback.jsx
+│   │   │   │── KakaoLogin.jsx
+│   │   │   │── Login.jsx
+│   │   │   │── NaverCallback.jsx
+│   │   │   │── NaverLogin.jsx
+│   │   │   │── Register.jsx
+│   │
+│   │   │── conversation/
+│   │   │   │── Conversation.css
+│   │   │   │── Conversation.jsx
+│   │   │   │── ConversationStart.css
+│   │   │   │── ConversationStart.jsx
+│   │   │   │── DarongSpeech.css
+│   │   │   │── DarongSpeech.jsx
+│   │   │   │── index.js
+│   │
+│   │   │── mainpage/
+│   │   │   │── index.js
+│   │   │   │── Main.css
+│   │   │   │── Main.jsx
+│   │   │   │── MultiMain.css
+│   │   │   │── MultiMain.jsx
+│   │   │   │── SingleMain.css
+│   │   │   │── SingleMain.jsx
+│   │
+│   │   │── pronunciation/
+│   │   │   │── index.js
+│   │   │   │── PronsCompletePopup.css
+│   │   │   │── PronsCompletePopup.jsx
+│   │   │   │── PronsFirst.css
+│   │   │   │── PronsFirst.jsx
+│   │   │   │── PronsMain.css
+│   │   │   │── PronsMain.jsx
+│   │   │   │── PronsResult.css
+│   │   │   │── PronsResult.jsx
+│   │   │   │── PronsSecond.jsx
+│   │
+│   │   │── room/
+│   │   │   │── ChatBox.jsx
+│   │   │   │── CreatePopup.css
+│   │   │   │── CreatePopup.jsx
+│   │   │   │── index.js
+│   │   │   │── RoomList.css
+│   │   │   │── RoomList.jsx
+│   │   │   │── Webrtc.css
+│   │   │   │── Webrtc.jsx
+│   │
+│   │   │── user/
+│   │   │   │── ChangePassword.jsx
+│   │   │   │── index.js
+│   │   │   │── Profile.css
+│   │   │   │── Profile.jsx
+│   │   │   │── ProfileDelete.jsx
+│   │   │   │── ProfileInfo.css
+│   │   │   │── ProfileInfo.jsx
+│   │
+│   │   │── wordgame/
+│   │   │   │── AnimalGame.css
+│   │   │   │── AnimalGame.jsx
+│   │   │   │── CookingGame.css
+│   │   │   │── CookingGame.jsx
+│   │   │   │── index.js
+│   │   │   │── WordMain.css
+│   │   │   │── WordMain.jsx
+│   │
+│   │── store/
+│   │   │── authSlice.js
+│   │   │── browserSlice.js
+│   │   │── cameraSlice.js
+│   │   │── store.js
+│   │
+│   │── utils/
+│   │   │── api.js
+│   │
+│   │── .editorconfig
+│   │── App.css
+│   │── App.jsx
+│   │── AuthInitializer.jsx
+│   │── index.css
+│   │── main.jsx
 ```
 
 

@@ -48,7 +48,7 @@ public class User extends BaseEntity {
 	private List<WebRTCLog> webRTCLogs;
 
 	@OneToMany(mappedBy = "user")
-	private List<WebrtcMessage> websocketMessages;
+	private List<WebRTCMessage> websocketMessages;
 
 	@OneToMany(mappedBy = "host")
 	private List<Room> Rooms;
