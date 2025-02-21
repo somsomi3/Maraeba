@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 import CreateRoomPopup from "../room/CreatePopup";
 import "./RoomList.css";
 import HomeButton from "../../components/button/HomeButton";
-import backgroundImage from"../../assets/background/waitingRoom_Bg.webp";
-import tutoPorong from "../../assets/images/tuto_porong.png"
+import backgroundImage from "../../assets/background/waitingRoom_Bg.webp";
+import tutoPorong from "../../assets/images/tuto_porong.png";
 
 const PAGE_SIZE = 5; // 한 화면에 보여줄 최대 방 개수
 
@@ -49,7 +49,6 @@ const RoomList = () => {
         return () => clearInterval(interval);
         // eslint-disable-next-line
     }, []);
-
 
     // 방 클릭 (행 선택)
     const handleJoinRoomTitle = async (room) => {
@@ -148,7 +147,7 @@ const RoomList = () => {
     //     setTimeout(() => handleJoinRoom(), 0);
     // };
 
-        // ---- [페이지네이션 전용 로직 추가] ----
+    // ---- [페이지네이션 전용 로직 추가] ----
 
     // 1) 가장 최근 생성된 방부터 보여주려면, ID가 큰 순서대로 정렬 or created_at 등으로 정렬
     const sortedRooms = [...rooms].sort((a, b) => b.id - a.id);
@@ -157,8 +156,8 @@ const RoomList = () => {
     const totalPages = Math.ceil(sortedRooms.length / PAGE_SIZE);
 
     // 3) 현재 페이지에 해당하는 목록만 잘라서 보여주기
-    const startIndex = (currentPage - 1) * PAGE_SIZE; 
-    const endIndex = startIndex + PAGE_SIZE; 
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
     const currentPageRooms = sortedRooms.slice(startIndex, endIndex);
 
     // 4) 페이지 변경 함수
@@ -191,13 +190,23 @@ const RoomList = () => {
                         <br />
                     </span>
                 ))}
-                {onNext && <button onClick={onNext} className="roomlist-porong-nextbutton">다음</button>}
+                {onNext && (
+                    <button
+                        onClick={onNext}
+                        className="roomlist-porong-nextbutton"
+                    >
+                        다음
+                    </button>
+                )}
             </div>
         </div>
     );
 
     return (
-        <div className="waiting-room-container" style={{ backgroundImage: `url(${backgroundImage})` }}>
+        <div
+            className="waiting-room-container"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
             <HomeButton />
 
             <button className="restart-tutorial-btn" onClick={startTutorial}>
@@ -206,33 +215,69 @@ const RoomList = () => {
 
             <div className="waiting-room">
                 {/* 방 생성 팝업 */}
-                <CreateRoomPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
+                <CreateRoomPopup
+                    isOpen={isPopupOpen}
+                    onClose={() => setIsPopupOpen(false)}
+                />
                 {/* 🔹 방 목록 제목 (튜토리얼 1단계) */}
-                <h1 className={`title ${tutorialStep === 1 ? "cooking-highlight" : ""}`}>방 목록</h1>
+                <h1
+                    className={`title ${
+                        tutorialStep === 1 ? "cooking-highlight" : ""
+                    }`}
+                >
+                    방 목록
+                </h1>
                 {tutorialStep === 1 && (
-                    <PorongSpeech text="이곳에서 게임을 진행할 방을 찾을 수 있어요!" position="roomlist-near-title" onNext={() => setTutorialStep(2)} />
+                    <PorongSpeech
+                        text="이곳에서 게임을 진행할 방을 찾을 수 있어요!"
+                        position="roomlist-near-title"
+                        onNext={() => setTutorialStep(2)}
+                    />
                 )}
 
                 {/* 🔹 방 액션 버튼 (튜토리얼 2단계) */}
                 <div className="room-actions">
-                <button className={`create-room-btn ${tutorialStep === 2 ? "cooking-highlight" : ""}`} onClick={() => setIsPopupOpen(true)}>
-                    방 만들기
-                </button>
-                {tutorialStep === 2 && (
-                    <PorongSpeech text="방을 만들고 친구와 함께 플레이할 수도 있어요!" position="roomlist-near-create" onNext={() => setTutorialStep(3)} />
-                )}
-    
-                    <button className="refresh-room-btn" onClick={fetchRooms} disabled={loading}>
+                    <button
+                        className={`create-room-btn ${
+                            tutorialStep === 2 ? "cooking-highlight" : ""
+                        }`}
+                        onClick={() => setIsPopupOpen(true)}
+                    >
+                        방 만들기
+                    </button>
+                    {tutorialStep === 2 && (
+                        <PorongSpeech
+                            text="방을 만들고 친구와 함께 플레이할 수도 있어요!"
+                            position="roomlist-near-create"
+                            onNext={() => setTutorialStep(3)}
+                        />
+                    )}
+
+                    <button
+                        className="refresh-room-btn"
+                        onClick={fetchRooms}
+                        disabled={loading}
+                    >
                         {loading ? "🔄 불러오는 중..." : "🔄 새로고침"}
                     </button>
-    
-                    <button className={`join-room-btn ${tutorialStep === 4 ? "cooking-highlight" : ""}`} onClick={handleJoinRoom} disabled={!selectedRoom}>
+
+                    <button
+                        className={`join-room-btn ${
+                            tutorialStep === 4 ? "cooking-highlight" : ""
+                        }`}
+                        onClick={handleJoinRoom}
+                        disabled={!selectedRoom}
+                    >
                         입장하기
                     </button>
                 </div>
-                
-                 {/* 🔹 방 목록 (튜토리얼 3단계) */}
-                 <div className={`room-list-container ${tutorialStep === 3 ? "cooking-highlight" : ""}`}>
+
+                {/* 🔹 방 목록 (튜토리얼 3단계) */}
+                <div
+                    className={`room-list-container ${
+                        tutorialStep === 3 ? "cooking-highlight" : ""
+                    }`}
+                >
                     {loading ? (
                         <p>⏳ 방 목록을 불러오는 중...</p>
                     ) : rooms.length > 0 ? (
@@ -251,14 +296,39 @@ const RoomList = () => {
                                     {currentPageRooms.map((room, index) => (
                                         <tr
                                             key={room.id}
-                                            className={selectedRoom?.id === room.id ? "selected" : ""}
-                                            onClick={() => setSelectedRoom(room)}
+                                            className={
+                                                selectedRoom?.id === room.id
+                                                    ? "selected"
+                                                    : ""
+                                            }
+                                            onClick={() =>
+                                                setSelectedRoom(room)
+                                            }
                                         >
                                             {/* 화면에 표시할 번호: 최신순이라도 1,2,3... 등 순서대로 매기기 */}
-                                            <td>{(currentPage - 1) * PAGE_SIZE + index + 1}</td>
                                             <td>
-                                                {room.host_username}
-                                                <span className="small-text">({room.host_user_id})</span>
+                                                {(currentPage - 1) * PAGE_SIZE +
+                                                    index +
+                                                    1}
+                                            </td>
+                                            <td>
+                                                {room.host_username.length > 10
+                                                    ? room.host_username.slice(
+                                                          0,
+                                                          10
+                                                      ) + "..."
+                                                    : room.host_username}
+                                                <span className="small-text">
+                                                    (
+                                                    {room.host_user_id.length >
+                                                    10
+                                                        ? room.host_user_id.slice(
+                                                              0,
+                                                              10
+                                                          ) + "..."
+                                                        : room.host_user_id}
+                                                    )
+                                                </span>
                                             </td>
                                             <td>
                                                 <button
@@ -266,14 +336,25 @@ const RoomList = () => {
                                                     onClick={(e) => {
                                                         e.stopPropagation(); // tr onClick 중복 방지
                                                         setSelectedRoom(room);
-                                                        handleJoinRoomTitle(room);
+                                                        handleJoinRoomTitle(
+                                                            room
+                                                        );
                                                     }}
                                                 >
-                                                    {room.title}
+                                                    {room.title.length > 10
+                                                        ? room.title.slice(
+                                                              0,
+                                                              10
+                                                          ) + "..."
+                                                        : room.title}
                                                 </button>
                                             </td>
                                             <td>{room.user_cnt}/2</td>
-                                            <td>{room.room_password ? "🔒" : "🔓"}</td>
+                                            <td>
+                                                {room.room_password
+                                                    ? "🔒"
+                                                    : "🔓"}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -283,36 +364,48 @@ const RoomList = () => {
                         <p className="no-rooms">방이 아직 없어요!</p>
                     )}
                 </div>
-    
+
                 {tutorialStep === 3 && (
-                    <PorongSpeech text="현재 생성된 방들이 여기 나와요!" position="roomlist-near-list" onNext={() => setTutorialStep(4)} />
+                    <PorongSpeech
+                        text="현재 생성된 방들이 여기 나와요!"
+                        position="roomlist-near-list"
+                        onNext={() => setTutorialStep(4)}
+                    />
                 )}
 
                 {/* 🔹 입장 버튼 강조 (튜토리얼 4단계) */}
                 {tutorialStep === 4 && (
-                    <PorongSpeech text="원하는 방을 선택하고 입장 버튼을 눌러 참여하세요!" position="roomlist-near-join" onNext={() => setTutorialStep(5)} />
+                    <PorongSpeech
+                        text="원하는 방을 선택하고 입장 버튼을 눌러 참여하세요!"
+                        position="roomlist-near-join"
+                        onNext={() => setTutorialStep(5)}
+                    />
                 )}
 
                 {/* 🔹 튜토리얼 완료 메시지 (튜토리얼 5단계) */}
                 {tutorialStep === 5 && (
-                    <PorongSpeech text="이제 방을 선택해서 게임을 시작해보세요!" position="roomlist-near-next" onNext={completeTutorial} />
+                    <PorongSpeech
+                        text="이제 방을 선택해서 게임을 시작해보세요!"
+                        position="roomlist-near-next"
+                        onNext={completeTutorial}
+                    />
                 )}
 
                 {/* 페이지네이션 UI (room-list-container 바깥으로 이동) */}
                 <div className="pagination">
-                    <button 
-                        onClick={() => handlePageChange(currentPage - 1)} 
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                     >
                         ◀ 이전
                     </button>
-    
+
                     <span>
                         {currentPage} / {totalPages}
                     </span>
-    
-                    <button 
-                        onClick={() => handlePageChange(currentPage + 1)} 
+
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                     >
                         다음 ▶
@@ -321,7 +414,6 @@ const RoomList = () => {
             </div>
         </div>
     );
-    
 };
 
 export default RoomList;
