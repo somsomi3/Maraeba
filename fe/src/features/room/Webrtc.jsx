@@ -247,8 +247,8 @@ const Webrtc = () => {
 
         // 실제 서버 주소/포트를 맞춰주세요.
         webSocketRef.current = new WebSocket(
-            // `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
-            `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            `wss://i12e104.p.ssafy.io:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
+            // `ws://localhost:8081/WebRTC/signaling?token=${token}&roomId=${roomId}`
         );
 
         // 소켓 open
@@ -422,12 +422,12 @@ const Webrtc = () => {
     const createPeerConnection = () => {
         peerConnectionRef.current = new RTCPeerConnection({
             iceServers: [
-                // {
-                //     urls: "turn:3.39.252.223:3478?transport=tcp",
-                //     username: import.meta.env.VITE_USERNAME_URL,
-                //     credential: import.meta.env.VITE_PASSWORD_URL,
-                // },
-                { urls: "stun:stun.l.google.com:19302" },
+                {
+                    urls: "turn:3.39.252.223:3478?transport=tcp",
+                    username: import.meta.env.VITE_USERNAME_URL,
+                    credential: import.meta.env.VITE_PASSWORD_URL,
+                },
+                // { urls: "stun:stun.l.google.com:19302" },
             ],
         });
 
