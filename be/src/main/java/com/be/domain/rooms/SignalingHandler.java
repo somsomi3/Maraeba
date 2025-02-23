@@ -17,7 +17,9 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +42,8 @@ public class SignalingHandler extends TextWebSocketHandler {
 	// "마지막 ping" 시간을 저장
 	private final Map<String, Long> lastPingTimeMap = new ConcurrentHashMap<>();
 	private final Map<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
+	// username을 저장할 맵 추가
+	private final Map<String, String> sessionIdToUsername = new ConcurrentHashMap<>();
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
@@ -57,6 +61,7 @@ public class SignalingHandler extends TextWebSocketHandler {
 		String type = jsonMessage.has("type") ? jsonMessage.get("type").asText() : "unknown";
 		String roomId = jsonMessage.has("room_id") ? jsonMessage.get("room_id").asText() : null;
 		String userId = jsonMessage.has("user_id") ? jsonMessage.get("user_id").asText() : null;
+		String username = jsonMessage.has("username") ? jsonMessage.get("username").asText() : "";
 
 		log.info("📩 받은 메시지: {}", message.getPayload());
 
@@ -81,6 +86,28 @@ public class SignalingHandler extends TextWebSocketHandler {
 				// 세션-유저 매핑
 				sessionIdToRoomId.put(session.getId(), roomId);
 				sessionIdToUserId.put(session.getId(), userId);
+				sessionIdToUsername.put(session.getId(), username);
+
+				// 새 사용자를 위한 roomInfo 메시지 작성
+				Set<WebSocketSession> sessions = rooms.get(roomId);
+				List<Map<String, String>> participants = new ArrayList<>();
+				for (WebSocketSession s : sessions) {
+					if (!s.getId().equals(session.getId())) {
+						String otherUserId = sessionIdToUserId.get(s.getId());
+						String otherUsername = sessionIdToUsername.get(s.getId());
+						participants.add(Map.of("user_id", otherUserId, "username", otherUsername));
+					}
+				}
+				Map<String, Object> roomInfo = Map.of(
+					"type", "roomInfo",
+					"participants", participants
+				);
+				session.sendMessage(new TextMessage(objectMapper.writeValueAsString(roomInfo)));
+
+				TextMessage newJoinMessage = new TextMessage(objectMapper.writeValueAsString(
+					Map.of("type", "userJoined", "user_id", userId, "username", username)
+				));
+				broadcast(roomId, newJoinMessage, session);
 				break;
 
 			case "leave":
@@ -99,6 +126,7 @@ public class SignalingHandler extends TextWebSocketHandler {
 			case "items":
 			case "answer":
 			case "choice":
+			case "cameraOff":
 			case "candidate":
 			case "answerChoice":
 				broadcast(roomId, message, session);
@@ -208,6 +236,7 @@ public class SignalingHandler extends TextWebSocketHandler {
 		sessionIdToRoomId.remove(sessionId);
 		sessionIdToUserId.remove(sessionId);
 		alreadyLeftSessions.remove(sessionId); // 혹시 몰라서 한 번 더 cleanup
+		sessionIdToUsername.remove(sessionId);
 
 		// 연결 끊길 때 세션이 속한 모든 방에서 제거
 		rooms.values().forEach(sessions -> sessions.remove(session));

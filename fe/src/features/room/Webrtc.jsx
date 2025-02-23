@@ -12,7 +12,7 @@ const Webrtc = () => {
     // ===================================================
     //                      상태 & 참조
     // ===================================================
-    const [localStream, setLocalStream] = useState(null);
+
     const localStreamRef = useRef(null);
     const peerConnectionRef = useRef(null);
     const localVideoRef = useRef(null);
@@ -20,6 +20,8 @@ const Webrtc = () => {
     const chatBoxRef = useRef(null);
     const webSocketRef = useRef(null);
 
+    const [localStream, setLocalStream] = useState(null);
+    const [remoteStream, setRemoteStream] = useState(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
@@ -191,7 +193,7 @@ const Webrtc = () => {
             console.log("🚀 방장 여부:", isHostValue ? "방장" : "참가자");
             console.log("유저 응답 : ", responseUsername);
 
-            connectWebSocket(token, roomId);
+            connectWebSocket(token, roomId, responseUsername);
         } catch (error) {
             console.error("방장 여부 확인 실패:", error.message);
             navigate("/room/RoomList");
@@ -234,7 +236,7 @@ const Webrtc = () => {
     /**
      * WebSocket 연결 설정
      */
-    const connectWebSocket = (token, roomId) => {
+    const connectWebSocket = (token, roomId, username) => {
         if (!roomId) {
             console.error("❌ 방 ID(roomId)가 없습니다.");
             return;
@@ -261,6 +263,7 @@ const Webrtc = () => {
                 type: "join",
                 room_id: roomId,
                 user_id: userId,
+                username: username || "없음",
             };
             webSocketRef.current.send(JSON.stringify(joinMessage));
             console.log("🚀 방 입장 메시지 전송:", joinMessage);
@@ -309,7 +312,39 @@ const Webrtc = () => {
             return;
         }
 
-        const { type } = receivedMessage || {};
+        const { type, username, user_id, participants } = receivedMessage || {};
+
+        // cameraOff 메시지 처리: remote 측에서 내 카메라가 꺼졌음을 알림
+        if (type === "cameraOff") {
+            console.log("📴 cameraOff 메시지 수신");
+            setRemoteStream(null);
+            return;
+        }
+
+        // 내 user_id와 다르고, join 메시지라면 다른 참여자의 username으로 처리
+        if (type === "join") {
+            if (username && user_id !== userId) {
+                console.log("새로운 사용자 입장:", username);
+            }
+            return;
+        }
+
+        if (type === "roomInfo") {
+            // 새로 입장한 사용자가 방의 기존 참가자 정보를 받음
+            if (participants && participants.length > 0) {
+                const firstParticipant = participants[0];
+                setOtherUsername(firstParticipant.username);
+            }
+            return;
+        }
+
+        if (type === "userJoined") {
+            // 이미 입장해 있던 사용자가 새 사용자 정보를 브로드캐스트하면
+            if (username && user_id !== userId) {
+                setOtherUsername(username);
+            }
+            return;
+        }
 
         // ping (연결 유지를 위한 것)이면 바로 return
         if (type === "pong") {
@@ -406,6 +441,22 @@ const Webrtc = () => {
         }
     };
 
+    // cameraOff 메시지 전송 함수
+    const sendCameraOff = () => {
+        if (
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            const msg = {
+                type: "cameraOff",
+                room_id: roomId,
+                user_id: userId,
+            };
+            webSocketRef.current.send(JSON.stringify(msg));
+            console.log("🚫 cameraOff 메시지 전송:", msg);
+        }
+    };
+
     const endMedia = () => {
         if (localStreamRef.current) {
             localStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -424,6 +475,8 @@ const Webrtc = () => {
         console.log("미디어 종료:", formattedTime);
 
         saveWebRTCLog(startTime, formattedTime); // 로그 저장 실행
+        // signaling 메시지 전송하여 remote 측에서 cameraOff 처리
+        sendCameraOff();
     };
 
     const createPeerConnection = () => {
@@ -452,15 +505,39 @@ const Webrtc = () => {
 
         // 원격 트랙 수신
         peerConnectionRef.current.ontrack = (event) => {
-            if (remoteVideoRef.current) {
-                remoteVideoRef.current.srcObject = event.streams[0];
+            if (localStreamRef.current) {
+                const localTrackIds = localStreamRef.current
+                    .getTracks()
+                    .map((track) => track.id);
+                const incomingTrackIds = event.streams[0]
+                    .getTracks()
+                    .map((track) => track.id);
+                const isLocalStream = incomingTrackIds.every((id) =>
+                    localTrackIds.includes(id)
+                );
+                if (isLocalStream) {
+                    console.log("루프백 스트림 무시");
+                    return;
+                }
             }
+            const stream = event.streams[0];
+            if (remoteVideoRef.current) {
+                remoteVideoRef.current.srcObject = stream;
+            }
+            setRemoteStream(stream);
+            event.track.onended = () => {
+                console.log("Remote track ended");
+                setRemoteStream(null);
+            };
         };
 
         // 로컬 스트림 트랙 추가
-        if (localStream) {
-            localStream.getTracks().forEach((track) => {
-                peerConnectionRef.current.addTrack(track, localStream);
+        if (localStreamRef.current) {
+            localStreamRef.current.getTracks().forEach((track) => {
+                peerConnectionRef.current.addTrack(
+                    track,
+                    localStreamRef.current
+                );
             });
         }
     };
@@ -988,8 +1065,18 @@ const Webrtc = () => {
                                             ? "cooking-highlight"
                                             : ""
                                     }`}
+                                    style={{
+                                        display: remoteStream
+                                            ? "block"
+                                            : "none",
+                                    }}
                                     aria-label="상대방 비디오"
                                 />
+                                {!remoteStream && (
+                                    <div className="remote-fallback">
+                                        {otherUsername ? otherUsername : "없음"}
+                                    </div>
+                                )}
                             </div>
 
                             {/* 본인 화면 */}
