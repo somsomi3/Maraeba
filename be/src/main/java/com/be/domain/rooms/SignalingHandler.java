@@ -7,12 +7,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -20,21 +24,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
+@EnableScheduling
 @RequiredArgsConstructor
 public class SignalingHandler extends TextWebSocketHandler {
 
 	private final RoomService roomService;
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	/**
-	 * rooms:
-	 * key   = roomId
-	 * value = 해당 방에 연결된 WebSocketSession의 집합
-	 */
+	// 방정보
 	private final Map<String, Set<WebSocketSession>> rooms = new ConcurrentHashMap<>();
+	private final Map<String, String> sessionIdToRoomId = new ConcurrentHashMap<>();
+	private final Map<String, String> sessionIdToUserId = new ConcurrentHashMap<>();
+	private final Set<String> alreadyLeftSessions = ConcurrentHashMap.newKeySet();
+
+	// "마지막 ping" 시간을 저장
+	private final Map<String, Long> lastPingTimeMap = new ConcurrentHashMap<>();
+	private final Map<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
+		// 소켓 맵에 저장
+		sessionMap.put(session.getId(), session);
+		// 새 연결이 맺어지면, 초깃값을 넣어줌(지금 시각)
+		lastPingTimeMap.put(session.getId(), System.currentTimeMillis());
 		log.info("✅ WebRTC WebSocket 연결됨: {}", session.getId());
 	}
 
@@ -50,7 +62,10 @@ public class SignalingHandler extends TextWebSocketHandler {
 
 		// ping 메시지는 단순 연결 유지 용도로 보통 무시
 		if ("ping".equals(type)) {
-			log.debug("📡 Ping 메시지 수신 - 사용자: {}", session.getId());
+			log.info("📡 Ping 메시지 수신 - 사용자: {}", session.getId());
+			lastPingTimeMap.put(session.getId(), System.currentTimeMillis());
+			// (선택) "pong"을 보낼 수도 있음
+			session.sendMessage(new TextMessage("{\"type\":\"pong\"}"));
 			return;
 		}
 
@@ -62,11 +77,16 @@ public class SignalingHandler extends TextWebSocketHandler {
 
 		switch (type) {
 			case "join":
-				joinRoom(session, roomId);
+				joinRoom(session, roomId, userId);
+				// 세션-유저 매핑
+				sessionIdToRoomId.put(session.getId(), roomId);
+				sessionIdToUserId.put(session.getId(), userId);
 				break;
 
 			case "leave":
-				leaveRoom(session, roomId);
+				leaveRoom(session, roomId, userId);
+				// 중복 차감 방지용
+				alreadyLeftSessions.add(session.getId());
 				// DB에서도 해당 User를 방에서 나가게 처리
 				roomService.leaveRoom(
 					UserLeaveRequest.of(Long.valueOf(userId), roomId)
@@ -92,20 +112,20 @@ public class SignalingHandler extends TextWebSocketHandler {
 	/**
 	 * 방 참여 처리
 	 */
-	private void joinRoom(WebSocketSession session, String roomId) {
+	private void joinRoom(WebSocketSession session, String roomId, String userId) {
 		rooms.computeIfAbsent(roomId, k -> Collections.newSetFromMap(new ConcurrentHashMap<>()));
 		rooms.get(roomId).add(session);
-		log.info("👥 사용자 {} 방 {} 참여", session.getId(), roomId);
+		log.info("👥 사용자 {} 방 {} 소켓 등록", userId, roomId);
 	}
 
 	/**
 	 * 방 떠나기 처리
 	 */
-	private void leaveRoom(WebSocketSession session, String roomId) {
+	private void leaveRoom(WebSocketSession session, String roomId, String userId) {
 		if (rooms.containsKey(roomId)) {
 			Set<WebSocketSession> sessions = rooms.get(roomId);
 			sessions.remove(session);
-			log.info("🚪 사용자 {} 방 {} 떠남", session.getId(), roomId);
+			log.info("🚪 사용자 {} 방 {} 소켓 해제", userId, roomId);
 
 			// 방에 남은 사람이 없으면 제거 + DB에서도 삭제
 			if (sessions.isEmpty()) {
@@ -134,8 +154,61 @@ public class SignalingHandler extends TextWebSocketHandler {
 		}
 	}
 
+	// 일정 간격으로 lastPingTimeMap 확인
+	@Scheduled(fixedRate = 30000) // 30초마다 실행
+	public void checkInactiveSessions() {
+		log.info("Ping 검사");
+		long now = System.currentTimeMillis();
+		for (Map.Entry<String, Long> entry : lastPingTimeMap.entrySet()) {
+			String sessionId = entry.getKey();
+			long lastPing = entry.getValue();
+			// 예: 1분(60초) 이상 ping이 없으면 종료
+			if (now - lastPing > 60000) {
+				// 세션 가져오기
+				WebSocketSession session = sessionMap.get(sessionId);
+				if (session != null && session.isOpen()) {
+					log.warn("핑 타임아웃 - 세션 {} 닫기", sessionId);
+					try {
+						session.close();
+					} catch (IOException e) {
+						log.error("세션 닫기 실패", e);
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+		String sessionId = session.getId();
+		String roomId = sessionIdToRoomId.get(sessionId);
+		String userId = sessionIdToUserId.get(sessionId);
+
+		// 연결 종료 시 map에서 제거
+		sessionMap.remove(session.getId());
+		lastPingTimeMap.remove(sessionId);
+
+		// rooms 맵에서만 제거
+		if (roomId != null && rooms.containsKey(roomId)) {
+			rooms.get(roomId).remove(session);
+		}
+
+		// 이미 leave 메시지가 처리되었는지 확인
+		if (!alreadyLeftSessions.contains(sessionId)) {
+			// (가드) userId나 roomId가 null이면 leaveRoom은 스킵
+			if (userId == null || roomId == null) {
+				log.warn("afterConnectionClosed: userId 또는 roomId가 null이므로 leaveRoom 스킵 (sessionId={})", sessionId);
+			} else {
+				// 정상이면 여기서 DB leaveRoom
+				roomService.leaveRoom(UserLeaveRequest.of(Long.valueOf(userId), roomId));
+			}
+		}
+
+		// 매핑 제거
+		sessionIdToRoomId.remove(sessionId);
+		sessionIdToUserId.remove(sessionId);
+		alreadyLeftSessions.remove(sessionId); // 혹시 몰라서 한 번 더 cleanup
+
 		// 연결 끊길 때 세션이 속한 모든 방에서 제거
 		rooms.values().forEach(sessions -> sessions.remove(session));
 		log.info("🔴 WebRTC WebSocket 연결 종료: {}", session.getId());
