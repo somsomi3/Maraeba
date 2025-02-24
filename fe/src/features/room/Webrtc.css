@@ -28,7 +28,7 @@
 
     width: 90%;
     max-width: 100%;
-    height: auto;  /* 🔹 자식 내용에 맞춰 자동 조정 */
+    height: auto; /* 🔹 자식 내용에 맞춰 자동 조정 */
     max-height: 100%;
     padding: 1rem;
     border-radius: 2rem;
@@ -43,14 +43,14 @@
 ============================== */
 .video-chat-wrapper {
     display: flex;
-    flex: 6;            /* 비율 */
+    flex: 6; /* 비율 */
     flex-direction: row;
     align-items: stretch;
     justify-content: flex-start;
     position: relative;
 
     width: 95%;
-    height: auto;       /* 🔹 자동 높이 */
+    height: auto; /* 🔹 자동 높이 */
     margin-left: 0;
     padding-left: 0;
     gap: 1rem;
@@ -69,7 +69,7 @@
 
     width: 100%;
     min-width: 60%;
-    height: 90%;  /* 🔹 필요 시 유연조정 (ex: auto) */
+    height: 90%; /* 🔹 필요 시 유연조정 (ex: auto) */
     padding-top: 2rem;
     border-radius: 1rem;
     gap: 1rem;
@@ -89,7 +89,7 @@
     width: 100%;
     max-width: 100%;
     min-height: 40vh;
-    gap: 1rem;  /* 🔹 height: auto 로 충분 */
+    gap: 1rem; /* 🔹 height: auto 로 충분 */
 }
 
 /* ==============================
@@ -131,15 +131,29 @@
 ============================== */
 .large-video,
 .small-video {
-    align-self: flex-end;  
+    align-self: flex-end;
     display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 4 / 3;
     border-radius: 1.5rem;
-    box-shadow: 0.4rem 0.4rem 1rem rgba(0,0,0,0.3);
+    box-shadow: 0.4rem 0.4rem 1rem rgba(0, 0, 0, 0.3);
     border: 0.3rem solid #444;
     background: linear-gradient(to bottom, #1a1a1a, #000000);
+}
+.remote-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 1.5rem;
+    box-shadow: 0.4rem 0.4rem 1rem rgba(0, 0, 0, 0.3);
+    border: 0.3rem solid #444;
+    background: linear-gradient(to bottom, #1a1a1a, #000000);
+    color: white;
+    font-size: 1.5rem; /* 필요에 따라 조정 */
+    text-align: center;
 }
 
 /* ==============================
@@ -170,10 +184,10 @@
     top: 0.5rem;
     right: 0.5rem;
     font-size: 2rem;
-    background: rgba(255,215,0,0.9);
+    background: rgba(255, 215, 0, 0.9);
     padding: 0.5rem;
     border-radius: 50%;
-    box-shadow: 0 0.3rem 0.5rem rgba(0,0,0,0.3);
+    box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.3);
     z-index: 999;
     transform: translate(-35%, -70%);
 }
@@ -185,7 +199,7 @@
     display: block;
     align-self: center;
     width: 8rem;
-    height: 6vh; 
+    height: 6vh;
     margin: 1rem auto 0.8rem auto;
     padding: 0.6rem 1rem;
     font-family: "Gamja Flower", sans-serif;
@@ -195,7 +209,7 @@
     background-color: #4caf50;
     border: none;
     border-radius: 1.5rem;
-    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0,0,0,0.2);
+    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -218,7 +232,7 @@
     font-family: "Gamja Flower", sans-serif;
     font-size: 1.5rem;
     font-weight: bold;
-    color: rgba(62,24,55,1);
+    color: rgba(62, 24, 55, 1);
     margin: 0.6rem;
 }
 
@@ -252,8 +266,8 @@
 /* 정답 버튼 그리드 */
 .answer-buttons {
     display: grid;
-    grid-template-columns: repeat(2,1fr);
-    grid-template-rows: repeat(3,auto);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
     gap: 0.5rem;
     justify-content: center;
     align-items: center;
@@ -387,9 +401,9 @@
     min-height: 50vh;
     max-height: 50vh;
     padding: 1rem;
-    background: rgba(223,207,207,0.7);
+    background: rgba(223, 207, 207, 0.7);
     border-radius: 1rem;
-    border: 0.2rem solid rgba(192,168,168,0.5);
+    border: 0.2rem solid rgba(192, 168, 168, 0.5);
     color: #4a3f3f;
     overflow: hidden;
 }
@@ -455,7 +469,7 @@
     border-radius: 1.2rem;
     padding: 0.8rem 1.2rem;
     word-break: break-word;
-    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0,0,0,0.2);
+    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
 }
 .other-message {
     align-self: flex-start;
@@ -468,7 +482,7 @@
     border-radius: 1.2rem;
     padding: 0.8rem 1.2rem;
     word-break: break-word;
-    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0,0,0,0.2);
+    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
 }
 
 /* ==============================
@@ -494,10 +508,10 @@
     font-weight: bold;
     color: black;
     text-align: center;
-    background: rgba(250,210,90,0.8);
+    background: rgba(250, 210, 90, 0.8);
     backdrop-filter: blur(6px);
     border-radius: 1rem;
-    box-shadow: 0 0.4rem 0.8rem rgba(0,0,0,0.1);
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
     z-index: 11;
 }
 
@@ -522,7 +536,7 @@
     padding: 1rem 1.5rem;
     font-size: 1rem;
     font-weight: bold;
-    background: rgba(255,244,160,0.9);
+    background: rgba(255, 244, 160, 0.9);
     border: none;
     border-radius: 1.5rem;
     cursor: pointer;
