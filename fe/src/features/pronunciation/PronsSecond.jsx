@@ -219,10 +219,10 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
       return;
     }
 
-    if (isMatch === null) {
-      setIsPopupOpen(true);
-      return;
-    }
+    // if (isMatch === null) {
+    //   setIsPopupOpen(true);
+    //   return;
+    // }
 
     try {
       console.log("📡 정답 여부 저장 요청:", { session_id, pron_id, is_correct: isMatch ? 1 : 0 });
@@ -292,6 +292,12 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
 
 
             <div className={`camera-section ${tutorialStep === 2 ? "highlight" : ""}`}>
+             {!isCameraOn && (
+            <div className="camera-guide-text">
+                📷 ON 버튼을 누르고 입모양을 확인해요
+            </div>
+      )}
+              
               <div className="camera-frame">
                 <video ref={videoRef} autoPlay playsInline className="camera-video"></video>
               </div>
