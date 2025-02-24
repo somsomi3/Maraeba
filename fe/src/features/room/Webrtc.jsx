@@ -314,6 +314,17 @@ const Webrtc = () => {
 
         const { type, username, user_id, participants } = receivedMessage || {};
 
+        // leave 메시지 처리 추가
+        if (type === "leave") {
+            console.log("🚪 leave 메시지 수신:", receivedMessage);
+            // 만약 떠난 사용자가 나와 다른 사용자라면, 다른 사용자 정보 초기화
+            if (user_id !== userId) {
+                setOtherUsername(null);
+                setRemoteStream(null);
+            }
+            return;
+        }
+
         // cameraOff 메시지 처리: remote 측에서 내 카메라가 꺼졌음을 알림
         if (type === "cameraOff") {
             console.log("📴 cameraOff 메시지 수신");
@@ -334,6 +345,9 @@ const Webrtc = () => {
             if (participants && participants.length > 0) {
                 const firstParticipant = participants[0];
                 setOtherUsername(firstParticipant.username);
+            } else {
+                // 참가자가 없으면 "없음"으로 초기화
+                setOtherUsername(null);
             }
             return;
         }

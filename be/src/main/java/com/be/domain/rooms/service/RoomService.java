@@ -139,25 +139,28 @@ public class RoomService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-		// if (room.getUserCnt() >= 2) {
-		// 	room.setUserCnt(room.getUserCnt()+1); // 잠시 올렸다가 내림
-		// 	roomRepository.save(room);
-		// 	throw new CustomException(ErrorCode.ROOM_NOT_FOUND, "방 인원 초과");
-		// }
+		if (room.getUserCnt() >= 2) {
+			room.setUserCnt(room.getUserCnt() + 1); // 잠시 올렸다가 내림
+			roomRepository.save(room);
+			throw new CustomException(ErrorCode.ROOM_NOT_FOUND, "방 인원 초과");
+		}
 
 		// 방목록에서 입장한 적이 있는지 확인
 		RoomUser roomUser = roomUserRepository.findByUserIdAndRoomId(userId, roomId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ROOM_USER_NOT_FOUND, "룸유저를 찾을 수 없습니다."));
 		// 이미 참가 중인 유저면 userCnt 변경 없이 곧바로 OK 응답
 		log.info("입장 : {}}({}) {}({})에 참가 시도.", user.getUsername(), userId, room.getTitle(), roomId);
-		if (!roomUser.getIsExist()) { // 현재 방에 존재하지 않는다면
-			roomUser.setIsExist(true); // 방에 존재한다고 표시
-			room.setUserCnt(room.getUserCnt()+1); // 존재하게 되어서 인원 수 증가
-			room.setActive(true);
-			return ValidUserResponse.of(user.getUsername(), roomUser.getIsHost(),room.getUserCnt());
-		} else { // 현재 방에 존재한다면
-			throw new CustomException(ErrorCode.ROOM_USER_DUPLICATED, "중복된 사용자 감지");
+		if (roomUser.getIsExist()) {
+			log.info("중복 입장 감지 → 기존 세션 강제 leave 처리를 진행합니다.");
+			roomUser.setIsExist(false);
+			room.setUserCnt(room.getUserCnt() - 1);
+			if (room.getUserCnt() == 0)
+				room.setActive(false);
 		}
+		roomUser.setIsExist(true); // 방에 존재한다고 표시
+		room.setUserCnt(room.getUserCnt() + 1); // 존재하게 되어서 인원 수 증가
+		room.setActive(true);
+		return ValidUserResponse.of(user.getUsername(), roomUser.getIsHost(), room.getUserCnt());
 	}
 
 

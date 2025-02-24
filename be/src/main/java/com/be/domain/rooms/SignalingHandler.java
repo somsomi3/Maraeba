@@ -1,12 +1,12 @@
 package com.be.domain.rooms;
 
-import com.be.domain.rooms.request.RoomRemoveRequest;
-import com.be.domain.rooms.request.UserLeaveRequest;
-import com.be.domain.rooms.service.RoomService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,13 +16,14 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import com.be.domain.rooms.request.RoomRemoveRequest;
+import com.be.domain.rooms.request.UserLeaveRequest;
+import com.be.domain.rooms.service.RoomService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -118,6 +119,13 @@ public class SignalingHandler extends TextWebSocketHandler {
 				roomService.leaveRoom(
 					UserLeaveRequest.of(Long.valueOf(userId), roomId)
 				);
+				// 떠난 사용자의 정보를 포함한 leave 메시지를 브로드캐스트합니다.
+				TextMessage leaveBroadcast = new TextMessage(
+					objectMapper.writeValueAsString(
+						Map.of("type", "leave", "user_id", userId)
+					)
+				);
+				broadcast(roomId, leaveBroadcast, session);
 				break;
 
 			// 채팅, offer/answer, candidate 등은 방 전체 브로드캐스트
@@ -222,13 +230,20 @@ public class SignalingHandler extends TextWebSocketHandler {
 		}
 
 		// 이미 leave 메시지가 처리되었는지 확인
-		if (!alreadyLeftSessions.contains(sessionId)) {
-			// (가드) userId나 roomId가 null이면 leaveRoom은 스킵
-			if (userId == null || roomId == null) {
-				log.warn("afterConnectionClosed: userId 또는 roomId가 null이므로 leaveRoom 스킵 (sessionId={})", sessionId);
-			} else {
-				// 정상이면 여기서 DB leaveRoom
+		if (userId != null && roomId != null) {
+			if (!alreadyLeftSessions.contains(sessionId)) {
+				// (가드) userId나 roomId가 null이면 leaveRoom은 스킵
 				roomService.leaveRoom(UserLeaveRequest.of(Long.valueOf(userId), roomId));
+				try {
+					TextMessage leaveBroadcast = new TextMessage(
+						objectMapper.writeValueAsString(
+							Map.of("type", "leave", "user_id", userId)
+						)
+					);
+					broadcast(roomId, leaveBroadcast, session);
+				} catch (Exception e) {
+					log.error("Leave 메시지 브로드캐스트 실패", e);
+				}
 			}
 		}
 
