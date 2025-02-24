@@ -12,13 +12,16 @@ const Webrtc = () => {
     // ===================================================
     //                      상태 & 참조
     // ===================================================
-    const [localStream, setLocalStream] = useState(null);
+
+    const localStreamRef = useRef(null);
     const peerConnectionRef = useRef(null);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef(null);
     const chatBoxRef = useRef(null);
     const webSocketRef = useRef(null);
 
+    const [localStream, setLocalStream] = useState(null);
+    const [remoteStream, setRemoteStream] = useState(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
@@ -160,7 +163,7 @@ const Webrtc = () => {
             return;
         }
         fetchHostStatus(); // 서버에 방 참가 요청하여 방장 여부 확인
-    }, [roomId]);
+    }, [roomId, token]);
 
     const fetchHostStatus = async () => {
         try {
@@ -189,6 +192,8 @@ const Webrtc = () => {
 
             console.log("🚀 방장 여부:", isHostValue ? "방장" : "참가자");
             console.log("유저 응답 : ", responseUsername);
+
+            connectWebSocket(token, roomId, responseUsername);
         } catch (error) {
             console.error("방장 여부 확인 실패:", error.message);
             navigate("/room/RoomList");
@@ -203,7 +208,7 @@ const Webrtc = () => {
             console.error("❌ JWT 토큰 또는 roomId가 없습니다.");
             return;
         }
-        connectWebSocket(token, roomId);
+        // connectWebSocket(token, roomId);
 
         // 새로고침 / 브라우저 닫기 시 leave 메시지 전송
         const handleBeforeUnload = () => {
@@ -231,7 +236,7 @@ const Webrtc = () => {
     /**
      * WebSocket 연결 설정
      */
-    const connectWebSocket = (token, roomId) => {
+    const connectWebSocket = (token, roomId, username) => {
         if (!roomId) {
             console.error("❌ 방 ID(roomId)가 없습니다.");
             return;
@@ -258,6 +263,7 @@ const Webrtc = () => {
                 type: "join",
                 room_id: roomId,
                 user_id: userId,
+                username: username || "없음",
             };
             webSocketRef.current.send(JSON.stringify(joinMessage));
             console.log("🚀 방 입장 메시지 전송:", joinMessage);
@@ -270,10 +276,11 @@ const Webrtc = () => {
 
         // 소켓 close
         webSocketRef.current.onclose = () => {
-            console.warn("⚠️ WebSocket 연결 종료됨. 5초 후 재연결 시도...");
-            setTimeout(() => {
-                connectWebSocket(token, roomId);
-            }, 5000);
+            console.warn("⚠️ WebSocket 연결 종료됨.");
+            // console.warn("⚠️ WebSocket 연결 종료됨. 5초 후 재연결 시도...");
+            // setTimeout(() => {
+            //     connectWebSocket(token, roomId);
+            // }, 5000);
         };
     };
 
@@ -286,6 +293,7 @@ const Webrtc = () => {
             // 컴포넌트 언마운트 시
             if (!didLeave) {
                 console.log("[cleanup] 뒤로가기 or 라우트 이동 -> sendLeave");
+                endMedia(); // 미디어 종료 보장
                 sendLeave({ showAlert: false });
             }
         };
@@ -304,11 +312,57 @@ const Webrtc = () => {
             return;
         }
 
-        const { type } = receivedMessage || {};
+        const { type, username, user_id, participants } = receivedMessage || {};
+
+        // leave 메시지 처리 추가
+        if (type === "leave") {
+            console.log("🚪 leave 메시지 수신:", receivedMessage);
+            // 만약 떠난 사용자가 나와 다른 사용자라면, 다른 사용자 정보 초기화
+            if (user_id !== userId) {
+                setOtherUsername(null);
+                setRemoteStream(null);
+            }
+            return;
+        }
+
+        // cameraOff 메시지 처리: remote 측에서 내 카메라가 꺼졌음을 알림
+        if (type === "cameraOff") {
+            console.log("📴 cameraOff 메시지 수신");
+            setRemoteStream(null);
+            return;
+        }
+
+        // 내 user_id와 다르고, join 메시지라면 다른 참여자의 username으로 처리
+        if (type === "join") {
+            if (username && user_id !== userId) {
+                console.log("새로운 사용자 입장:", username);
+            }
+            return;
+        }
+
+        if (type === "roomInfo") {
+            // 새로 입장한 사용자가 방의 기존 참가자 정보를 받음
+            if (participants && participants.length > 0) {
+                const firstParticipant = participants[0];
+                setOtherUsername(firstParticipant.username);
+            } else {
+                // 참가자가 없으면 "없음"으로 초기화
+                setOtherUsername(null);
+            }
+            return;
+        }
+
+        if (type === "userJoined") {
+            // 이미 입장해 있던 사용자가 새 사용자 정보를 브로드캐스트하면
+            if (username && user_id !== userId) {
+                setOtherUsername(username);
+            }
+            return;
+        }
 
         // ping (연결 유지를 위한 것)이면 바로 return
-        if (type === "ping") {
-            console.log("📡 WebSocket Ping 수신");
+        if (type === "pong") {
+            console.log("📡 WebSocket pong 수신");
             return;
         }
 
@@ -384,6 +438,7 @@ const Webrtc = () => {
                 audio: true,
             });
             setLocalStream(stream);
+            localStreamRef.current = stream;
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = stream;
             }
@@ -400,23 +455,42 @@ const Webrtc = () => {
         }
     };
 
-    const endMedia = () => {
-        if (localStream) {
-            localStream.getTracks().forEach((track) => track.stop());
-            setLocalStream(null);
-            if (localVideoRef.current) {
-                localVideoRef.current.srcObject = null;
-            }
-
-            const now = new Date();
-            now.setHours(now.getHours() + 9); // UTC → KST 변환
-
-            const formattedTime = now.toISOString().slice(0, 19); // 한국 시간 기준 ISO 문자열 저장
-            setEndTime(formattedTime);
-            console.log("미디어 종료:", formattedTime);
-
-            saveWebRTCLog(startTime, formattedTime); // 로그 저장 실행
+    // cameraOff 메시지 전송 함수
+    const sendCameraOff = () => {
+        if (
+            webSocketRef.current &&
+            webSocketRef.current.readyState === WebSocket.OPEN
+        ) {
+            const msg = {
+                type: "cameraOff",
+                room_id: roomId,
+                user_id: userId,
+            };
+            webSocketRef.current.send(JSON.stringify(msg));
+            console.log("🚫 cameraOff 메시지 전송:", msg);
         }
+    };
+
+    const endMedia = () => {
+        if (localStreamRef.current) {
+            localStreamRef.current.getTracks().forEach((track) => track.stop());
+            localStreamRef.current = null;
+        }
+        setLocalStream(null);
+        if (localVideoRef.current) {
+            localVideoRef.current.srcObject = null;
+        }
+
+        const now = new Date();
+        now.setHours(now.getHours() + 9); // UTC → KST 변환
+
+        const formattedTime = now.toISOString().slice(0, 19); // 한국 시간 기준 ISO 문자열 저장
+        setEndTime(formattedTime);
+        console.log("미디어 종료:", formattedTime);
+
+        saveWebRTCLog(startTime, formattedTime); // 로그 저장 실행
+        // signaling 메시지 전송하여 remote 측에서 cameraOff 처리
+        sendCameraOff();
     };
 
     const createPeerConnection = () => {
@@ -445,15 +519,39 @@ const Webrtc = () => {
 
         // 원격 트랙 수신
         peerConnectionRef.current.ontrack = (event) => {
-            if (remoteVideoRef.current) {
-                remoteVideoRef.current.srcObject = event.streams[0];
+            if (localStreamRef.current) {
+                const localTrackIds = localStreamRef.current
+                    .getTracks()
+                    .map((track) => track.id);
+                const incomingTrackIds = event.streams[0]
+                    .getTracks()
+                    .map((track) => track.id);
+                const isLocalStream = incomingTrackIds.every((id) =>
+                    localTrackIds.includes(id)
+                );
+                if (isLocalStream) {
+                    console.log("루프백 스트림 무시");
+                    return;
+                }
             }
+            const stream = event.streams[0];
+            if (remoteVideoRef.current) {
+                remoteVideoRef.current.srcObject = stream;
+            }
+            setRemoteStream(stream);
+            event.track.onended = () => {
+                console.log("Remote track ended");
+                setRemoteStream(null);
+            };
         };
 
         // 로컬 스트림 트랙 추가
-        if (localStream) {
-            localStream.getTracks().forEach((track) => {
-                peerConnectionRef.current.addTrack(track, localStream);
+        if (localStreamRef.current) {
+            localStreamRef.current.getTracks().forEach((track) => {
+                peerConnectionRef.current.addTrack(
+                    track,
+                    localStreamRef.current
+                );
             });
         }
     };
@@ -648,6 +746,19 @@ const Webrtc = () => {
                 alert("방에서 나갑니다.");
             }
 
+            // 미디어 스트림이 살아있다면 종료
+            if (localStream) {
+                localStream.getTracks().forEach((track) => {
+                    track.stop();
+                    console.log(
+                        "Track stopped:",
+                        track.label,
+                        track.readyState
+                    );
+                });
+                setLocalStream(null);
+            }
+
             if (
                 webSocketRef.current &&
                 webSocketRef.current.readyState === WebSocket.OPEN
@@ -666,17 +777,20 @@ const Webrtc = () => {
                 webSocketRef.current.close();
             }
 
-            // 🛑 마이크 & 카메라 스트림 종료
-            if (localStream) {
-                localStream.getTracks().forEach((track) => track.stop());
-                setLocalStream(null);
-            }
-            // 🛑 WebRTC PeerConnection 닫기
             if (peerConnectionRef.current) {
+                const senders = peerConnectionRef.current.getSenders();
+                senders.forEach((sender) => {
+                    try {
+                        peerConnectionRef.current.removeTrack(sender);
+                    } catch (err) {
+                        console.warn("removeTrack error:", err);
+                    }
+                });
                 peerConnectionRef.current.close();
                 peerConnectionRef.current = null;
             }
-            // 🛑 MediaRecorder 정리
+
+            // 미디어 레코더 중지
             if (mediaRecorderRef.current) {
                 mediaRecorderRef.current.stop();
                 mediaRecorderRef.current = null;
@@ -965,8 +1079,18 @@ const Webrtc = () => {
                                             ? "cooking-highlight"
                                             : ""
                                     }`}
+                                    style={{
+                                        display: remoteStream
+                                            ? "block"
+                                            : "none",
+                                    }}
                                     aria-label="상대방 비디오"
                                 />
+                                {!remoteStream && (
+                                    <div className="remote-fallback">
+                                        {otherUsername ? otherUsername : "없음"}
+                                    </div>
+                                )}
                             </div>
 
                             {/* 본인 화면 */}
