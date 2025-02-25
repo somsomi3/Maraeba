@@ -2,7 +2,6 @@
 
 ---
 ## ✅프로젝트 진행 기간
-
 2025.01.13 ~ 2024.02.21(6주)
 
 ---
@@ -19,15 +18,14 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 
 ---
 
-## 🚩 프로젝트 설명 및 목표**
-- 마래바는 사용자의접근성을 향상하고, 즉각적인 피드백을 제공할 수 있으며, 동기를 부여할 수 있는 언어지도 서비스를 만듭니다.
+## 🌱 프로젝트 설명 및 목표
+- 마래바는 사용자의 접근성을 향상하고, 즉각적인 피드백을 제공할 수 있으며, 동기를 부여할 수 있는 언어지도 서비스를 만듭니다.
 - 발음 연습을 통해 발음의 정확도를 파악할 수 있습니다.
 - 발음 학습 후 마이페이지를 통해 학습율을 파악할 수 있습니다.
 - 단어 게임의 경우, 사용자 친화적인 UI로 꾸며진 요리 게임과 동물 찾기를 통해, 발음으로 알맞은 단어를 선택할 수 있습니다.
-- 화상 게임은 WebRTC기술을 사용하여, 상대방의 입모양을 읽는 독순술을 학습하고, 동시에 단어를 추리하여 말할 수 있게끔 합니다.
+- 실시간 화상 채팅 게임은 WebRTC기술을 사용하여, 상대방의 입모양을 읽는 독순술을 학습하고, 동시에 단어를 추리하여 말할 수 있게끔 합니다.
 
 - 위의 기술들을 사용할 경우, 언어 발달, 자신감 향상, 인재 양성의 기대효과를 바랄 수 있습니다.
-
 
 ---
 
@@ -91,23 +89,380 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 
 ## 📂 프로젝트 구조
 
+### AI
 ```plaintext
-./
-├── fe/                 # Front-End (React, Vite)
-├── be/                 # Back-End (Spring Boot)
-├── ai/                 # Back-End (Flask)
-└── README.md           # 프로젝트 문서
+
++---ai
+|   |   Dockerfile
+|   |   gpt.py
+|   |   logger.py
+|   |   model.py
+|   |   requirements.txt
+|   |   run.py
+|   |   stt.py
+|   |   tts.py
+|   +---app
+|   |       routes.py
+|   |       __init__.py
+|   +---audio
+|   |       가.wav
+|   |       ...
+|   |       하.wav
+|   \---test
+|           compare_test.py
+|           stt_test.py
 ```
+
+### Back-end
+```plaintext
++---be
+|   |
+|   \---src
+|       +---main
+|       |   +---java
+|       |   |   \---com
+|       |   |       \---be
+|       |   |           |   BeApplication.java
+|       |   |           +---common
+|       |   |           |   +---aop
+|       |   |           |   |       LoggingAspect.java
+|       |   |           |   +---auth
+|       |   |           |   |   |   JwtAuthenticationEntryPoint.java
+|       |   |           |   |   |   JwtAuthenticationFilter.java
+|       |   |           |   |   |   TokenType.java
+|       |   |           |   |   |   WebSocketAuthInterceptor.java
+|       |   |           |   |   +---model
+|       |   |           |   |   |       CustomUserDetails.java
+|       |   |           |   |   \---service
+|       |   |           |   |           TokenService.java
+|       |   |           |   +---exception
+|       |   |           |   |   \---handler
+|       |   |           |   |           GlobalExceptionHandler.java
+|       |   |           |   +---model
+|       |   |           |   |   \---response
+|       |   |           |   |           BaseResponseBody.java
+|       |   |           |   |           PageResponse.java
+|       |   |           |   \---util
+|       |   |           |           PasswordGenerator.java
+|       |   |           +---config
+|       |   |           |       AppConfig.java
+|       |   |           |       JpaConfig.java
+|       |   |           |       RedisConfig.java
+|       |   |           |       RedisSessionConfig.java
+|       |   |           |       SecurityConfig.java
+|       |   |           |       SwaggerConfig.java
+|       |   |           |       WebSocketConfig.java
+|       |   |           +---db
+|       |   |           |   |   AnimalDataLoader.java
+|       |   |           |   |   ColorItemDataLoader.java
+|       |   |           |   |   FoodDataLoader.java
+|       |   |           |   +---entity
+|       |   |           |   +---repository
+|       |   |           |   \---service
+|       |   |           |           BlacklistCleanupService.java
+|       |   |           \---domain
+|       |   |               +---auth
+|       |   |               |   +---controller
+|       |   |               |   +---dto
+|       |   |               |   +---request
+|       |   |               |   +---response
+|       |   |               |   \---service
+|       |   |               +---chatbot
+|       |   |               |   +---controller
+|       |   |               |   +---dto
+|       |   |               |   +---request
+|       |   |               |   +---response
+|       |   |               |   \---service
+|       |   |               +---prons
+|       |   |               |   +---controller
+|       |   |               |   +---dto
+|       |   |               |   +---request
+|       |   |               |   +---response
+|       |   |               |   \---service
+|       |   |               +---rooms
+|       |   |               |   |   ServletInitializer.java
+|       |   |               |   |   SignalingHandler.java
+|       |   |               |   +---controller
+|       |   |               |   +---request
+|       |   |               |   +---response
+|       |   |               |   \---service
+|       |   |               +---users
+|       |   |               |   +---controller
+|       |   |               |   +---dto
+|       |   |               |   +---request
+|       |   |               |   +---response
+|       |   |               |   \---service
+|       |   |               \---wgames
+|       |   |                   |   AudioConverter.java
+|       |   |                   +---common
+|       |   |                   |   \---service
+|       |   |                   +---cooks
+|       |   |                   |   +---controller
+|       |   |                   |   +---request
+|       |   |                   |   +---response
+|       |   |                   |   \---service
+|       |   |                   \---findAnimals
+|       |   |                       +---controller
+|       |   |                       +---request
+|       |   |                       +---response
+|       |   |                       \---service
+|       |   \---resources
+|       |       \---static
+|       |           +---foodImg
+|       |           |       감자튀김.png
+|       |           |       ...
+|       |           |       코코아.png
+|       |           +---foodItemImg
+|       |           |       감자.png
+|       |           |       ...
+|       |           |       파이 반죽.png
+|       |           +---img
+|       |           |       dish.png
+|       |           |       image.png
+|       |           +---tongue
+|       |           |       아.png
+|       |           |       ...
+|       |           |       이.png
+|       |           \---videos
+|       |                   가.mp4
+|       |                   ...
+|       |                   하.mp4
+|       \---test
+|           \---java
+|               \---com
+|                   \---be
+|                       |   BeApplicationTests.java
+|                       +---prons
+|                       |       PronsServiceImplTest.java
+|                       \---wgames
+|                               FoodGameServiceImplTest.java
+```
+
+### Front-end
+```plaintext
++---fe
+|   |   Dockerfile
+|   |   eslint.config.js
+|   |   index.html
+|   |   package-lock.json
+|   |   package.json
+|   |   README.md
+|   |   vite.config.js
+|   +---nginx
+|   |       default.conf
+|   +---public
+|   |       192image.png
+|   |       512image.png
+|   |       vite.svg
+|   \---src
+|       |   .editorconfig
+|       |   App.css
+|       |   App.jsx
+|       |   AuthInitializer.jsx
+|       |   index.css
+|       |   main.jsx
+|       +---assets
+|       |   |   logo.png
+|       |   |   react.svg
+|       |   +---background
+|       |   |       ai_Bg.webp
+|       |   |       ...
+|       |   |       Webrtc_Bg.webp
+|       |   +---fonts
+|       |   |       Dovemayo_wild.ttf
+|       |   |       ...
+|       |   |       SDSamliphopangcheTTFBasic.ttf
+|       |   +---icons
+|       |   |       goback_button.png
+|       |   |       ...
+|       |   |       stop.png
+|       |   +---images
+|       |   |       aiCat.png
+|       |   |       ...
+|       |   |       yaho.png
+|       |   \---profiles
+|       |           profile1.png
+|       |           ...
+|       |           profile9.png
+|       +---components
+|       |   +---button
+|       |   |       ConversationButton.jsx
+|       |   |       GoBackButton.css
+|       |   |       GoBackButton.jsx
+|       |   |       HomeButton.css
+|       |   |       HomeButton.jsx
+|       |   |       LogoutButton.css
+|       |   |       LogoutButton.jsx
+|       |   |       RecordButton.css
+|       |   |       RecordButton.jsx
+|       |   +---loading
+|       |   |       CuteLoading.css
+|       |   |       CuteLoading.jsx
+|       |   +---log
+|       |   |       ProtectedLayout.jsx
+|       |   \---popup
+|       |           ConversationStopPopup.jsx
+|       |           CorrectPopup.css
+|       |           CorrectPopup.jsx
+|       |           PausePopup.css
+|       |           PausePopup.jsx
+|       +---features
+|       |   +---auth
+|       |   |       FindId.jsx
+|       |   |       FindPw.jsx
+|       |   |       index.css
+|       |   |       index.js
+|       |   |       KakaoCallback.jsx
+|       |   |       KakaoLogin.jsx
+|       |   |       Login.jsx
+|       |   |       NaverCallback.jsx
+|       |   |       NaverLogin.jsx
+|       |   |       Register.jsx
+|       |   +---conversation
+|       |   |       Conversation.css
+|       |   |       Conversation.jsx
+|       |   |       ConversationStart.css
+|       |   |       ConversationStart.jsx
+|       |   |       DarongSpeech.css
+|       |   |       DarongSpeech.jsx
+|       |   |       index.js
+|       |   +---mainpage
+|       |   |       index.js
+|       |   |       Main.css
+|       |   |       Main.jsx
+|       |   |       MultiMain.css
+|       |   |       MultiMain.jsx
+|       |   |       SingleMain.css
+|       |   |       SingleMain.jsx
+|       |   +---pronunciation
+|       |   |       index.js
+|       |   |       PronsCompletePopup.css
+|       |   |       PronsCompletePopup.jsx
+|       |   |       PronsFirst.css
+|       |   |       PronsFirst.jsx
+|       |   |       PronsMain.css
+|       |   |       PronsMain.jsx
+|       |   |       PronsResult.css
+|       |   |       PronsResult.jsx
+|       |   |       PronsSecond.css
+|       |   |       PronsSecond.jsx
+|       |   +---room
+|       |   |       ChatBox.jsx
+|       |   |       CreatePopup.css
+|       |   |       CreatePopup.jsx
+|       |   |       index.js
+|       |   |       RoomList.css
+|       |   |       RoomList.jsx
+|       |   |       Webrtc.css
+|       |   |       Webrtc.jsx
+|       |   +---user
+|       |   |       ChangePassword.jsx
+|       |   |       index.js
+|       |   |       Profile.css
+|       |   |       Profile.jsx
+|       |   |       ProfileDelete.jsx
+|       |   |       ProfileImageSelector.css
+|       |   |       ProfileImageSelector.jsx
+|       |   |       ProfileInfo.css
+|       |   |       ProfileInfo.jsx
+|       |   |       PronunciationDetailChart.css
+|       |   |       PronunciationDetailChart.jsx
+|       |   |       PronunciationHistoryChart.css
+|       |   |       PronunciationHistoryChart.jsx
+|       |   |       ResetPassword.jsx
+|       |   \---wordgame
+|       |           AnimalGame.css
+|       |           AnimalGame.jsx
+|       |           CookingGame.css
+|       |           CookingGame.jsx
+|       |           index.js
+|       |           WordMain.css
+|       |           WordMain.jsx
+|       +---store
+|       |       authSlice.js
+|       |       browserSlice.js
+|       |       cameraSlice.js
+|       |       store.js
+|       \---utils
+|               api.js
+\---readme_assets
+        erd.png
+        system_architecture.png
+
+```
+
+
+
+---
+
+## 🏛️ ERD
+![ERD 다이어그램](./readme_assets/erd.png)
+
+---
+
+## 🌐 시스템 아키텍처
+![시스템 아키텍쳐](./readme_assets/system_architecture.png)
+
+
+---
+
+## 🔐 인증 시퀀스 다이어그램
+
+### 일반 로그인 시퀀스 다이어그램
+![일반 로그인 시퀀스 다이어그램](./readme_assets/common_login.png)
+
+### 소셜 로그인 시퀀스 다이어그램
+![소셜 로그인 시퀀스 다이어그램](./readme_assets/social_login.png)
+
+### 로그아웃 시퀀스 다이어그램
+![로그아웃 시퀀스 다이어그램](./readme_assets/logout.png)
+
+### 보호된 자원 접근 시퀀스 다이어그램
+![보호된 자원 접근 시퀀스 다이어그램](./readme_assets/protected_resource.png)
 
 ---
 
 ## 👨‍💻 팀원
 
 | 이름   | 역할                  |
-| ------ | --------------------- |
+| ------ |---------------------|
 | 이은선 | 팀장, Back-End, UI/UX |
-| 이상혁 | Front-End             |
-| 박수민 | Front-End             |
-| 김정우 | Back-End, AI, Infra   |
-| 정한균 | Back-End, WebRTC      |
-| 전민경 | Back-End, WebRTC      |
+| 김정우 | Back-End, AI, Infra |
+| 전민경 | Back-End, WebRTC    |
+| 정한균 | Back-End            |
+| 박수민 | Front-End           |
+| 이상혁 | Front-End           |
+
+## 📌 역할 및 담당 업무
+
+### 🖥️ Back-End
+#### 이은선 [Back-End] (팀장)
+- 전체 UX/UI 디자인
+- 단어 학습 API 설계 및 구현
+- AI 학습 API 설계 및 구현
+
+#### 김정우 [Back-End]
+- 음성 인식 AI 서버 구축
+- 인프라 구축
+- 발음 학습 API 설계 및 구현
+
+#### 전민경 [Back-End]
+- WebSocket 시그널링 서버 구축
+- WebRTC 및 WebRTC 관련 API 구현
+- WebRTC 페이지 구현
+
+#### 정한균 [Back-End]
+- 회원 및 계정 API 설계 및 구현
+- Spring Security 및 OAuth 구현
+- WebRTC 사용자 분리 구현
+
+### 🎨 Front-End
+#### 박수민 [Front-End]
+- Redux 적용
+- 발음 학습 페이지 구현
+- 마이페이지 구현
+
+#### 이상혁 [Front-End]
+- 단어 게임 페이지 구현
+- 생성형 AI 활용 이미지 생성
+- WebRTC 페이지 CSS
