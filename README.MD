@@ -429,7 +429,7 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 | 이은선 | 팀장, Back-End, UI/UX |
 | 김정우 | Back-End, AI, Infra |
 | 전민경 | Back-End, WebRTC    |
-| 정한균 | Back-End            |
+| 정한균 | Back-End, WebRTC    |
 | 박수민 | Front-End           |
 | 이상혁 | Front-End           |
 
