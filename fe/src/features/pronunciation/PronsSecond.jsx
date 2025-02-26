@@ -323,7 +323,7 @@ const PorongSpeech = ({ text, position= "center", onNext }) => {
 
           {/* ✅ 발음 정보 표시 */}
           {data?.pronunciation && (
-            <div className="pronunciation-box">
+            <div className="pronunciation-box" onClick={()=> navigate('/prons/result')}>
               {data.pronunciation}
             </div>
           )}
