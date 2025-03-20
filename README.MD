@@ -5,6 +5,10 @@
 2025.01.13 ~ 2025.02.21(6주)
 
 ---
+## 프로젝트 기획회의 및 규칙 정리 노션
+https://bloom-columnist-15a.notion.site/Team-Project-Template-174db90bf54380ed8780fe7d24ea8530
+
+---
 
 ## 🚩 서비스 한줄 소개
 음성 AI와 WebRTC 기반 청각 장애 아동 언어지도 서비스
