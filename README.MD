@@ -435,7 +435,7 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 
 ---
 
-## 🏛️ ERD
+## 🧩 ERD
 ![ERD 다이어그램](./readme_assets/erd.png)
 
 ---
