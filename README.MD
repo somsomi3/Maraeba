@@ -1,19 +1,34 @@
-# 🎯 청각 장애인 아동을 위한 언어 지도 서비스 **마래바**
+# 🎯 청각 장애인 아동을 위한 언어 지도 서비스, **마래바**
 
+
+## 목차
+1. [프로젝트 소개](#-프로젝트-소개)
+2. [개요](#-개요)
+3. [프로젝트 설명 및 목표](#-프로젝트-설명-및-목표)
+4. [기술 스택](#-기술-스택)
+5. [주요 기능 및 구현 화면](#-주요-기능-및-구현-화면)
+6. [프로젝트 구조](#-프로젝트-구조)
+7. [ERD](#-erd)
+8. [시스템 아키텍쳐](#-시스템-아키텍처)
+9. [인증 시퀀스 다이어그램](#-인증-시퀀스-다이어그램)
+10. [팀원별 담당업무](#-팀원별-담당업무)
 ---
-## ✅프로젝트 진행 기간
+
+## ✅ 프로젝트 소개
+### 🚩 서비스 한줄 소개
+음성 AI와 WebRTC 기반 청각 장애 아동 언어지도 서비스
+
+### 프로젝트 진행 기간
 2025.01.13 ~ 2025.02.21(6주)
 
----
-## 프로젝트 기획회의 및 규칙 정리 노션
+### 프로젝트 참여 인원
+6명(백엔드 4명, 프론트엔드 2명)
+
+### 노션(프로젝트 회의 & 규칙 정리)
 https://bloom-columnist-15a.notion.site/Team-Project-Template-174db90bf54380ed8780fe7d24ea8530
 
 ---
 
-## 🚩 서비스 한줄 소개
-음성 AI와 WebRTC 기반 청각 장애 아동 언어지도 서비스
-
----
 ## 📌 개요
 
 마래바는 청각 장애인 아동이 효과적으로 발음을 교정하고 언어를 익힐 수 있도록 돕는 서비스입니다.
@@ -28,7 +43,6 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 - 발음 학습 후 마이페이지를 통해 학습율을 파악할 수 있습니다.
 - 단어 게임의 경우, 사용자 친화적인 UI로 꾸며진 요리 게임과 동물 찾기를 통해, 발음으로 알맞은 단어를 선택할 수 있습니다.
 - 실시간 화상 채팅 게임은 WebRTC기술을 사용하여, 상대방의 입모양을 읽는 독순술을 학습하고, 동시에 단어를 추리하여 말할 수 있게끔 합니다.
-
 - 위의 기술들을 사용할 경우, 언어 발달, 자신감 향상, 인재 양성의 기대효과를 바랄 수 있습니다.
 
 ---
@@ -53,9 +67,11 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 
 ---
 
-## 🚀 주요 기능
+## 🚀 주요 기능 및 구현 화면
 
 1. **발음 연습 및 피드백**
+
+   <img width="4878" height="2548" alt="마래바_화상채팅_용량줄임" src="https://github.com/user-attachments/assets/79b55a53-165f-437d-a713-dc050517b367" />
 
    - 원하는 발음 수업을 골라서 연습 할 수 있습니다.
    - 영상과 시각 자료를 보고 발음을 따라하며 녹음합니다.
@@ -66,20 +82,32 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 2. **단어 게임**
 
    - 단어 게임은 음식 게임과 동물 게임이 있습니다.
-   - 음식 게임
-   - 제시된 음식을 보고 보기에서 재료를 유추하는 게임입니다.
-   - 음성을 녹음하여 재료를 선택합니다.
-   - 동물 게임
+  
+   #### 🍔 음식 게임
+   <img width="5363" height="2801" alt="마래바_단어게임_음식게임" src="https://github.com/user-attachments/assets/8d55c32f-1028-4132-bd2e-a1397ebf8bfb" />
+
+      - 제시된 음식을 보고 보기에서 재료를 유추하는 게임입니다.
+      - 음성을 녹음하여 재료를 선택합니다.
+
+
+   #### 🐶 동물 게임
+   <img width="5363" height="2801" alt="마래바_단어게임_숨은그림찾기" src="https://github.com/user-attachments/assets/b9edc5e4-ee56-47a7-978a-e532fdb9ec8d" />
+
    - 제시된 그림을 보고 숨어있는 동물을 유추하는 게임입니다.
    - 음성을 녹음하여 동물을 맞춰봅니다.
 
 3. **AI와 대화하기**
+   <img width="5363" height="2801" alt="마래바_AI대화" src="https://github.com/user-attachments/assets/e97f986c-b891-4db3-8d7f-9d6a16e9da28" />
 
    - ChatGPT를 사용하여 대화 할 수 있습니다.
    - 상황과 역할을 고르거나, 직접 설정하여 대화를 시작할 수 있습니다.
    - 음성 녹음을 통해 대화를 이어가면서 문장력을 기를 수 있습니다.
 
-4. **실시간 화상 채팅 게임**
+5. **실시간 화상 채팅 게임**
+   <img width="5363" height="2801" alt="마래바_화상채팅_초기화면_18초" src="https://github.com/user-attachments/assets/ebe8bf16-8010-427c-aecc-83a90b3a1d7f" />
+
+   <img width="5363" height="2801" alt="마래바_화상채팅" src="https://github.com/user-attachments/assets/4fa5f125-d109-4bca-9f3a-7b8aef2e7a1a" />
+
 
    - WebRTC와 WebSocket을 사용한 실시간 1대1 단어 유추 게임입니다.
    - 방장과 참가자가 비디오와 오디오를 공유합니다.
@@ -92,8 +120,9 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 ---
 
 ## 📂 프로젝트 구조
+<details>
+  <summary>AI</summary>
 
-### AI
 ```plaintext
 
 +---ai
@@ -116,8 +145,11 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 |           compare_test.py
 |           stt_test.py
 ```
+</details>
 
-### Back-end
+<details>
+  <summary>Back-end</summary>
+
 ```plaintext
 +---be
 |   |
@@ -241,8 +273,11 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 |                       \---wgames
 |                               FoodGameServiceImplTest.java
 ```
+</details>
 
-### Front-end
+<details>
+  <summary>Front-end</summary>
+
 ```plaintext
 +---fe
 |   |   Dockerfile
@@ -394,6 +429,7 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
         system_architecture.png
 
 ```
+</details>
 
 
 
@@ -412,21 +448,30 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 
 ## 🔐 인증 시퀀스 다이어그램
 
-### 일반 로그인 시퀀스 다이어그램
+<details>
+  <summary>일반 로그인 시퀀스 다이어그램</summary>
+
 ![일반 로그인 시퀀스 다이어그램](./readme_assets/common_login.png)
+</details>
 
-### 소셜 로그인 시퀀스 다이어그램
+<details>
+  <summary>소셜 로그인 시퀀스 다이어그램</summary>
 ![소셜 로그인 시퀀스 다이어그램](./readme_assets/social_login.png)
+</details>
 
-### 로그아웃 시퀀스 다이어그램
+<details>
+  <summary>로그아웃 시퀀스 다이어그램</summary>
 ![로그아웃 시퀀스 다이어그램](./readme_assets/logout.png)
+</details>
 
-### 보호된 자원 접근 시퀀스 다이어그램
+<details>
+  <summary>보호된 자원 접근 시퀀스 다이어그램</summary>
 ![보호된 자원 접근 시퀀스 다이어그램](./readme_assets/protected_resource.png)
+</details>
 
 ---
 
-## 👨‍💻 팀원
+## 👤 팀원별 담당업무
 
 | 이름   | 역할                  |
 | ------ |---------------------|
@@ -436,8 +481,6 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 | 정한균 | Back-End, WebRTC    |
 | 박수민 | Front-End           |
 | 이상혁 | Front-End           |
-
-## 📌 역할 및 담당 업무
 
 ### 🖥️ Back-End
 #### 이은선 [Back-End] (팀장)
