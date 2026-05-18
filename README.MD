@@ -456,16 +456,19 @@ AI 기술과 WebRTC를 활용한 게임을 통해 청각 장애 아동이 재밌
 
 <details>
   <summary>소셜 로그인 시퀀스 다이어그램</summary>
+
 ![소셜 로그인 시퀀스 다이어그램](./readme_assets/social_login.png)
 </details>
 
 <details>
   <summary>로그아웃 시퀀스 다이어그램</summary>
+
 ![로그아웃 시퀀스 다이어그램](./readme_assets/logout.png)
 </details>
 
 <details>
   <summary>보호된 자원 접근 시퀀스 다이어그램</summary>
+
 ![보호된 자원 접근 시퀀스 다이어그램](./readme_assets/protected_resource.png)
 </details>
 
